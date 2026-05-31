@@ -460,36 +460,30 @@
         </div>
     </section>
 
-    <section id="streamers" class="py-32 bg-black relative z-10 border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col items-center mb-16 reveal text-center">
-                <span class="font-primary text-baneAccentLight font-bold uppercase tracking-[0.4em] text-[10px] mb-3 block">Comunidad</span>
-                <h2 class="font-heading text-4xl md:text-5xl font-black text-white uppercase tracking-widest">Creadores</h2>
-                <div class="h-[1px] w-12 bg-baneAccentLight mt-6 mb-6"></div>
-                <p class="text-gray-500 text-sm max-w-md">Apoya a la comunidad de Bane Esports siguiendo a nuestros creadores de contenido oficiales.</p>
-            </div>
-
+    <!-- TARJETAS DE STREAMERS CON IDs PARA JAVASCRIPT -->
             <div class="flex flex-wrap justify-center gap-6 reveal">
-                <div class="streamer-card w-full sm:w-[280px] group bg-[#050505] border border-white/5 p-8 rounded-sm text-center flex flex-col items-center">
+                <!-- GryphonKing_ -->
+                <div id="card-GryphonKing_" class="streamer-card w-full sm:w-[280px] group bg-[#050505] border border-white/5 p-8 rounded-sm text-center flex flex-col items-center opacity-70 hover:opacity-100 transition-all duration-500">
                     <div class="relative mb-5">
-                        <div class="absolute -top-2 -right-2 bg-red-600 text-white text-[7px] font-bold uppercase tracking-widest px-2.5 py-1 z-10 rounded-sm pulse-live">LIVE</div>
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Streamer 1" class="w-24 h-24 rounded-full border-4 border-baneAccent grayscale group-hover:grayscale-0 transition-all duration-300">
+                        <div id="badge-GryphonKing_" class="hidden absolute -top-2 -right-2 bg-red-600 text-white text-[7px] font-bold uppercase tracking-widest px-2.5 py-1 z-10 rounded-sm pulse-live">LIVE</div>
+                        <img id="avatar-GryphonKing_" src="https://randomuser.me/api/portraits/men/32.jpg" alt="GryphonKing_" class="w-24 h-24 rounded-full border-4 border-gray-800 grayscale transition-all duration-300">
                     </div>
                     <h4 class="font-heading text-xl text-white font-bold uppercase tracking-widest mb-1">GryphonKing_</h4>
-                    <p class="font-primary text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em] flex-grow mb-4">Valorant / FPS</p>
-                    <a href="#" class="text-[9px] uppercase tracking-[0.3em] font-bold text-baneAccentLight bg-baneAccentLight/10 border border-baneAccentLight/30 px-6 py-2.5 rounded-sm hover:bg-baneAccentLight hover:text-black transition-all">Ver Stream</a>
+                    <p id="game-GryphonKing_" class="font-primary text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em] flex-grow mb-4">Cargando...</p>
+                    <a id="btn-GryphonKing_" href="https://twitch.tv/GryphonKing_" target="_blank" class="text-[9px] uppercase tracking-[0.3em] font-bold text-gray-600 bg-gray-800/10 border border-gray-800/30 px-6 py-2.5 rounded-sm transition-all pointer-events-none">Cargando</a>
                 </div>
 
-                <div class="streamer-card w-full sm:w-[280px] group bg-[#050505] border border-white/5 p-8 rounded-sm text-center flex flex-col items-center opacity-70 hover:opacity-100">
+                <!-- Bane_QueenV -->
+                <div id="card-Bane_QueenV" class="streamer-card w-full sm:w-[280px] group bg-[#050505] border border-white/5 p-8 rounded-sm text-center flex flex-col items-center opacity-70 hover:opacity-100 transition-all duration-500">
                     <div class="relative mb-5">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Streamer 2" class="w-24 h-24 rounded-full border-4 border-gray-800 grayscale transition-all duration-300">
+                        <div id="badge-Bane_QueenV" class="hidden absolute -top-2 -right-2 bg-red-600 text-white text-[7px] font-bold uppercase tracking-widest px-2.5 py-1 z-10 rounded-sm pulse-live">LIVE</div>
+                        <img id="avatar-Bane_QueenV" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Bane_QueenV" class="w-24 h-24 rounded-full border-4 border-gray-800 grayscale transition-all duration-300">
                     </div>
                     <h4 class="font-heading text-xl text-white font-bold uppercase tracking-widest mb-1">Bane_QueenV</h4>
-                    <p class="font-primary text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em] flex-grow mb-4">Mobile Legends / Variedad</p>
-                    <a href="#" class="text-[9px] uppercase tracking-[0.3em] font-bold text-gray-600 bg-gray-800/10 border border-gray-800/30 px-6 py-2.5 rounded-sm hover:bg-gray-800 hover:text-white transition-all">Offline</a>
+                    <p id="game-Bane_QueenV" class="font-primary text-gray-500 text-[10px] font-bold uppercase tracking-[0.2em] flex-grow mb-4">Cargando...</p>
+                    <a id="btn-Bane_QueenV" href="https://twitch.tv/Bane_QueenV" target="_blank" class="text-[9px] uppercase tracking-[0.3em] font-bold text-gray-600 bg-gray-800/10 border border-gray-800/30 px-6 py-2.5 rounded-sm transition-all pointer-events-none">Cargando</a>
                 </div>
             </div>
-        </div>
     </section>
 
     <section id="comunidad" class="relative py-32 bg-[#050505] overflow-hidden border-t border-white/5">
