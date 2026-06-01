@@ -1,203 +1,180 @@
-<script>
-    // 1. LÓGICA DE SESIÓN
-    function cerrarSesion() {
-        localStorage.removeItem('idToken');
-        window.location.href = 'index.html';
-    }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bane Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { baneAccent: '#8b0000', baneAccentLight: '#ff4655' } }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: white; }
+        .font-heading { font-family: 'Cinzel', serif; }
+    </style>
+</head>
+<body class="p-8">
 
-    // URL de tu API Gateway en AWS (Cámbiala por la tuya cuando la crees)
-    const API_URL = 'http://localhost:3000/api';
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-12 border-b border-white/10 pb-6">
+            <h1 class="font-heading text-3xl font-black tracking-widest">BANE <span class="text-baneAccentLight">ADMIN</span></h1>
+            <div class="flex gap-6 items-center">
+                <a href="index.html" class="text-xs tracking-[0.2em] uppercase text-gray-500 hover:text-white transition-colors">Volver a la Web</a>
+                <button onclick="cerrarSesion()" class="text-xs tracking-[0.2em] uppercase text-red-500 hover:text-red-400 font-bold transition-colors">Cerrar Sesión</button>
+            </div>
+        </header>
 
-    // Función auxiliar para obtener los headers con el Token de Cognito
-    function getAuthHeaders() {
-        const token = localStorage.getItem('idToken');
-        return {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Esto protege tu API
-        };
-    }
-
-    // ==========================================
-    // MÓDULO: PARTIDAS
-    // ==========================================
-    const formPartida = document.getElementById('form-partida');
-    const listaPartidas = document.getElementById('lista-partidas');
-
-    // GET: Leer partidas desde DynamoDB
-    async function cargarPartidas() {
-        listaPartidas.innerHTML = '<p class="text-gray-500 text-xs italic">Cargando partidas desde AWS...</p>';
-        try {
-            const response = await fetch(`${API_URL}/partidas`, { headers: getAuthHeaders() });
-            const partidas = await response.json();
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             
-            listaPartidas.innerHTML = '';
-            if (partidas.length === 0) {
-                listaPartidas.innerHTML = '<p class="text-gray-600 text-xs italic">No hay partidas registradas.</p>';
-                return;
-            }
-
-            partidas.forEach((partida) => {
-                const colorBane = partida.score_bane > partida.score_rival ? 'text-green-500' : 'text-red-500';
-                listaPartidas.innerHTML += `
-                    <div class="bg-[#0a0a0a] border border-white/5 p-4 flex justify-between items-center group transition-colors hover:border-white/20">
-                        <div>
-                            <span class="text-[10px] text-gray-500 uppercase tracking-widest block mb-1">${partida.torneo}</span>
-                            <div class="font-bold text-sm">BANE <span class="${colorBane}">${partida.score_bane}</span> - <span class="text-white">${partida.score_rival}</span> ${partida.rival}</div>
-                        </div>
-                        <button onclick="borrarPartida('${partida.id}')" class="text-gray-600 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </button>
+            <div class="bg-black border border-white/10 p-8 rounded-sm shadow-xl shadow-black">
+                <h2 class="font-heading text-xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Registrar Partida</h2>
+                
+                <form id="form-partida" class="flex flex-col gap-4">
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Equipo Rival</label>
+                        <input type="text" id="rival" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: Leviatán Academy" required>
                     </div>
-                `;
-            });
-        } catch (error) {
-            console.error("Error al cargar partidas:", error);
-            listaPartidas.innerHTML = '<p class="text-red-500 text-xs italic">Error de conexión con AWS.</p>';
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Torneo</label>
+                        <input type="text" id="torneo" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: Valorant Premier" required>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-1/2">
+                            <label class="text-[10px] uppercase tracking-widest text-baneAccentLight font-bold">Score BANE</label>
+                            <input type="number" id="score_bane" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" required>
+                        </div>
+                        <div class="w-1/2">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-400">Score Rival</label>
+                            <input type="number" id="score_rival" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-4 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
+                        Guardar Resultado
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-black border border-white/10 p-8 rounded-sm shadow-xl shadow-black">
+                <h2 class="font-heading text-xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Publicar Vlog / Noticia</h2>
+                
+                <form id="form-noticia" class="flex flex-col gap-4">
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Título</label>
+                        <input type="text" id="titulo_noticia" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: Bootcamping en Monterrey" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">ID del Video de YouTube</label>
+                        <input type="text" id="youtube_id" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: dQw4w9WgXcQ" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Descripción breve</label>
+                        <textarea id="desc_noticia" rows="3" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" required></textarea>
+                    </div>
+                    <button type="submit" class="mt-4 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
+                        Publicar Contenido
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+
+        // Función de seguridad para inyectar el Token en cada petición
+        function getAuthHeaders() {
+            const token = localStorage.getItem('idToken');
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            };
         }
-    }
 
-    // POST: Guardar nueva partida en DynamoDB
-    formPartida.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        // El botón muestra que está cargando
-        const btnSubmit = e.target.querySelector('button[type="submit"]');
-        const textoOriginal = btnSubmit.innerText;
-        btnSubmit.innerText = 'GUARDANDO...';
-        btnSubmit.disabled = true;
-
-        const nuevaPartida = {
-            id: crypto.randomUUID(), // Genera un ID único para DynamoDB
-            rival: document.getElementById('rival').value,
-            torneo: document.getElementById('torneo').value,
-            score_bane: parseInt(document.getElementById('score_bane').value),
-            score_rival: parseInt(document.getElementById('score_rival').value),
-            fecha_registro: new Date().toISOString()
-        };
-        
-        try {
-            const response = await fetch(`${API_URL}/partidas`, {
-                method: 'POST',
-                headers: getAuthHeaders(),
-                body: JSON.stringify(nuevaPartida)
-            });
-
-            if (response.ok) {
-                cargarPartidas(); // Recarga la lista desde AWS
-                e.target.reset(); // Limpia el formulario
-            } else {
-                alert("Hubo un error al guardar. Revisa tus permisos.");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        } finally {
-            btnSubmit.innerText = textoOriginal;
-            btnSubmit.disabled = false;
+        function cerrarSesion() {
+            localStorage.removeItem('idToken');
+            window.location.href = 'index.html';
         }
-    });
 
-    // DELETE: Borrar partida de DynamoDB
-    async function borrarPartida(id) {
-        if(confirm("¿Seguro que quieres eliminar este resultado permanentemente de DynamoDB?")) {
-            try {
-                await fetch(`${API_URL}/partidas?id=${id}`, {
-                    method: 'DELETE',
-                    headers: getAuthHeaders()
-                });
-                cargarPartidas(); // Recargar tras borrar
-            } catch (error) {
-                console.error("Error al borrar:", error);
-            }
-        }
-    }
+        // POST: Lógica del botón Guardar Partida
+        document.getElementById('form-partida').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            const textoOriginal = btnSubmit.innerText;
+            btnSubmit.innerText = 'GUARDANDO...';
+            btnSubmit.disabled = true;
 
-    // ==========================================
-    // MÓDULO: NOTICIAS (Sigue la misma lógica)
-    // ==========================================
-    const formNoticia = document.getElementById('form-noticia');
-    const listaNoticias = document.getElementById('lista-noticias');
-
-    async function cargarNoticias() {
-        listaNoticias.innerHTML = '<p class="text-gray-500 text-xs italic">Cargando noticias desde AWS...</p>';
-        try {
-            const response = await fetch(`${API_URL}/noticias`, { headers: getAuthHeaders() });
-            const noticias = await response.json();
+            const nuevaPartida = {
+                rival: document.getElementById('rival').value,
+                torneo: document.getElementById('torneo').value,
+                score_bane: parseInt(document.getElementById('score_bane').value),
+                score_rival: parseInt(document.getElementById('score_rival').value)
+            };
             
-            listaNoticias.innerHTML = '';
-            if (noticias.length === 0) {
-                listaNoticias.innerHTML = '<p class="text-gray-600 text-xs italic">No hay noticias publicadas.</p>';
-                return;
-            }
-
-            noticias.forEach((noticia) => {
-                listaNoticias.innerHTML += `
-                    <div class="bg-[#0a0a0a] border border-white/5 p-4 flex justify-between items-start group transition-colors hover:border-white/20">
-                        <div class="pr-4">
-                            <div class="font-bold text-sm text-baneAccentLight mb-1">${noticia.titulo}</div>
-                            <p class="text-xs text-gray-400 line-clamp-2">${noticia.descripcion}</p>
-                        </div>
-                        <button onclick="borrarNoticia('${noticia.id}')" class="text-gray-600 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </button>
-                    </div>
-                `;
-            });
-        } catch (error) {
-            console.error("Error al cargar noticias:", error);
-            listaNoticias.innerHTML = '<p class="text-red-500 text-xs italic">Error de conexión con AWS.</p>';
-        }
-    }
-
-    formNoticia.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const btnSubmit = e.target.querySelector('button[type="submit"]');
-        const textoOriginal = btnSubmit.innerText;
-        btnSubmit.innerText = 'PUBLICANDO...';
-        btnSubmit.disabled = true;
-
-        const nuevaNoticia = {
-            id: crypto.randomUUID(), // Partition Key en DynamoDB
-            titulo: document.getElementById('titulo_noticia').value,
-            youtube_id: document.getElementById('youtube_id').value,
-            descripcion: document.getElementById('desc_noticia').value,
-            fecha_creacion: new Date().toISOString()
-        };
-        
-        try {
-            const response = await fetch(`${API_URL}/noticias`, {
-                method: 'POST',
-                headers: getAuthHeaders(),
-                body: JSON.stringify(nuevaNoticia)
-            });
-
-            if (response.ok) {
-                cargarNoticias();
-                e.target.reset();
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        } finally {
-            btnSubmit.innerText = textoOriginal;
-            btnSubmit.disabled = false;
-        }
-    });
-
-    async function borrarNoticia(id) {
-        if(confirm("¿Seguro que quieres eliminar esta noticia de DynamoDB?")) {
             try {
-                await fetch(`${API_URL}/noticias?id=${id}`, {
-                    method: 'DELETE',
-                    headers: getAuthHeaders()
+                const response = await fetch(`${API_URL}/partidas`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(nuevaPartida)
                 });
-                cargarNoticias();
-            } catch (error) {
-                console.error("Error al borrar:", error);
-            }
-        }
-    }
 
-    // Inicializar cargando datos de AWS
-    cargarPartidas();
-    cargarNoticias();
-</script>
+                if (response.ok) {
+                    alert("¡Resultado de BANE guardado con éxito en la nube!");
+                    e.target.reset(); 
+                } else {
+                    const data = await response.json();
+                    alert("No tienes permisos: " + (data.error || "Sesión expirada"));
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error crítico de conexión con el servidor local.");
+            } finally {
+                btnSubmit.innerText = textoOriginal;
+                btnSubmit.disabled = false;
+            }
+        });
+
+        // POST: Lógica del botón Publicar Noticia
+        document.getElementById('form-noticia').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            const textoOriginal = btnSubmit.innerText;
+            btnSubmit.innerText = 'PUBLICANDO...';
+            btnSubmit.disabled = true;
+
+            const nuevaNoticia = {
+                titulo: document.getElementById('titulo_noticia').value,
+                youtube_id: document.getElementById('youtube_id').value,
+                descripcion: document.getElementById('desc_noticia').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/noticias`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(nuevaNoticia)
+                });
+
+                if (response.ok) {
+                    alert("¡Vlog publicado con éxito en la web!");
+                    e.target.reset();
+                } else {
+                    const data = await response.json();
+                    alert("No tienes permisos: " + (data.error || "Sesión expirada"));
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error crítico de conexión con el servidor local.");
+            } finally {
+                btnSubmit.innerText = textoOriginal;
+                btnSubmit.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
