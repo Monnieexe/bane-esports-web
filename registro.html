@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - BANE Esports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { baneAccent: '#8b0000', baneAccentLight: '#ff4655' } }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: white; }
+        .font-heading { font-family: 'Cinzel', serif; }
+    </style>
+</head>
+<body class="h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+    <!-- Fondo decorativo -->
+    <div class="absolute inset-0 z-0 opacity-10 flex items-center justify-center">
+        <h1 class="font-heading text-[15rem] font-black text-white">BANE</h1>
+    </div>
+
+    <!-- Caja de Registro -->
+    <div class="bg-black border border-white/10 p-10 rounded-sm shadow-2xl z-10 w-full max-w-md">
+        <div class="text-center mb-8">
+            <h2 class="font-heading text-3xl font-black tracking-widest text-white mb-2">ÚNETE A <span class="text-baneAccentLight">BANE</span></h2>
+            <p class="text-xs tracking-[0.2em] uppercase text-gray-500">Crea tu cuenta oficial</p>
+        </div>
+        
+        <form id="form-registro" class="flex flex-col gap-6">
+            <div>
+                <label class="text-[10px] uppercase tracking-widest text-gray-400 block mb-2">Correo Electrónico</label>
+                <input type="email" id="email" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="tu@correo.com" required>
+            </div>
+            <div>
+                <label class="text-[10px] uppercase tracking-widest text-gray-400 block mb-2">Contraseña</label>
+                <input type="password" id="password" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="Mín. 8 caracteres, números y letras" required>
+            </div>
+            <p id="mensaje" class="text-baneAccentLight text-xs hidden text-center font-bold"></p>
+            <button type="submit" id="btn-submit" class="mt-2 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
+                Registrarse
+            </button>
+        </form>
+        <div class="mt-6 text-center flex flex-col gap-3">
+            <a href="login.html" class="text-[10px] uppercase tracking-widest text-gray-500 hover:text-white transition-colors">¿Ya tienes cuenta? Inicia sesión</a>
+            <div class="w-16 h-[1px] bg-white/10 mx-auto"></div>
+            <a href="index.html" class="text-[10px] uppercase tracking-widest text-gray-600 hover:text-white transition-colors">Volver al inicio</a>
+        </div>
+    </div>
+
+    <!-- SDK de AWS Cognito -->
+    <script src="https://unpkg.com/amazon-cognito-identity-js@6.3.1/dist/amazon-cognito-identity.min.js"></script>
+    
+    <script>
+        document.getElementById('form-registro').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const mensaje = document.getElementById('mensaje');
+            const btnSubmit = document.getElementById('btn-submit');
+            
+            btnSubmit.innerText = "CREANDO CUENTA...";
+            mensaje.classList.add('hidden');
+
+            // 1. Configuración de tu AWS Cognito
+            const poolData = {
+                UserPoolId: 'us-east-2_87KXfmchF', // Tu User Pool ID
+                ClientId: 'AQUI_VA_TU_CLIENT_ID_LARGO' // ¡REEMPLAZA ESTO!
+            };
+            
+            const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+            
+            // 2. Atributos
+            const attributeList = [];
+            const dataEmail = { Name: 'email', Value: email };
+            const attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+            attributeList.push(attributeEmail);
+            
+            // 3. Registrar al usuario en AWS
+            userPool.signUp(email, password, attributeList, null, function(err, result){
+                if (err) {
+                    mensaje.innerText = "Error: " + (err.message || "No se pudo crear la cuenta");
+                    mensaje.classList.remove('text-green-500');
+                    mensaje.classList.add('text-baneAccentLight');
+                    mensaje.classList.remove('hidden');
+                    btnSubmit.innerText = "REGISTRARSE";
+                    return;
+                }
+                
+                // ¡Éxito!
+                mensaje.classList.remove('text-baneAccentLight');
+                mensaje.classList.add('text-green-500');
+                mensaje.innerText = "¡Cuenta creada con éxito! Redirigiendo...";
+                mensaje.classList.remove('hidden');
+                btnSubmit.innerText = "¡LISTO!";
+                
+                // Redirigir al login
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
