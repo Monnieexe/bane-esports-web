@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - BANE Esports</title>
+    <!-- Incluimos Tailwind para el estilo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white flex items-center justify-center h-screen">
+
+    <div class="bg-gray-900 p-8 rounded-lg w-96">
+        <h2 class="text-2xl font-bold mb-6 text-center">Acceso Staff</h2>
+        <input type="email" id="email" placeholder="Correo" class="w-full p-2 mb-4 bg-gray-800 rounded text-white">
+        <input type="password" id="password" placeholder="Contraseña" class="w-full p-2 mb-6 bg-gray-800 rounded text-white">
+        <button onclick="iniciarSesion()" class="w-full bg-red-600 hover:bg-red-700 p-2 rounded font-bold">ENTRAR</button>
+        <p id="mensaje" class="mt-4 text-center text-sm"></p>
+    </div>
+
+    <!-- SDK de AWS Cognito para el navegador -->
+    <script src="https://unpkg.com/amazon-cognito-identity-js@6.3.1/dist/amazon-cognito-identity.min.js"></script>
+    
+    <script>
+        async function iniciarSesion() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const mensaje = document.getElementById('mensaje');
+
+            // Aquí se conectará con los datos de image_5d6125.jpg
+            const poolData = {
+                UserPoolId: 'us-east-2_87KXfmchF', 
+                ClientId: 'TU_CLIENT_ID_QUE_COPIASTE'
+            };
+            
+            // Lógica para enviar a Cognito...
+            // (Vex debe completar esta parte usando el SDK)
+            mensaje.innerText = "Conectando con AWS...";
+        }
+    </script>
+</body>
+</html>
