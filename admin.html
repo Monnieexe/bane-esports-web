@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bane Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { baneAccent: '#8b0000', baneAccentLight: '#ff4655' } }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: white; }
+        .font-heading { font-family: 'Cinzel', serif; }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-12 border-b border-white/10 pb-6">
+            <h1 class="font-heading text-3xl font-black tracking-widest">BANE <span class="text-baneAccentLight">ADMIN</span></h1>
+            <span class="text-xs tracking-[0.2em] uppercase text-gray-500">Panel de Control</span>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            
+            <!-- FORMULARIO: NUEVO RESULTADO DE PARTIDA -->
+            <div class="bg-black border border-white/10 p-8 rounded-sm">
+                <h2 class="font-heading text-xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Registrar Partida</h2>
+                
+                <form id="form-partida" class="flex flex-col gap-4">
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Equipo Rival</label>
+                        <input type="text" id="rival" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1" placeholder="Ej: Leviatán Academy" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Torneo</label>
+                        <input type="text" id="torneo" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1" placeholder="Ej: Valorant Premier" required>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-1/2">
+                            <label class="text-[10px] uppercase tracking-widest text-baneAccentLight font-bold">Score BANE</label>
+                            <input type="number" id="score_bane" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1" required>
+                        </div>
+                        <div class="w-1/2">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-400">Score Rival</label>
+                            <input type="number" id="score_rival" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-4 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
+                        Guardar Resultado
+                    </button>
+                </form>
+            </div>
+
+            <!-- FORMULARIO: NUEVO VLOG / NOTICIA -->
+            <div class="bg-black border border-white/10 p-8 rounded-sm">
+                <h2 class="font-heading text-xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Publicar Vlog / Noticia</h2>
+                
+                <form id="form-noticia" class="flex flex-col gap-4">
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Título</label>
+                        <input type="text" id="titulo_noticia" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1" placeholder="Ej: Bootcamping en Monterrey" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">ID del Video de YouTube</label>
+                        <input type="text" id="youtube_id" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1" placeholder="Ej: dQw4w9WgXcQ" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Descripción breve</label>
+                        <textarea id="desc_noticia" rows="3" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1" required></textarea>
+                    </div>
+                    <button type="submit" class="mt-4 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
+                        Publicar Contenido
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SCRIPT DE CONEXIÓN CON TU FUTURO BACKEND -->
+    <script>
+        // Funciones que enviarán los datos a tu API en Node.js
+        document.getElementById('form-partida').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                rival: document.getElementById('rival').value,
+                torneo: document.getElementById('torneo').value,
+                score_bane: document.getElementById('score_bane').value,
+                score_rival: document.getElementById('score_rival').value
+            };
+            
+            console.log("Enviando a la base de datos...", data);
+            alert("¡Resultado guardado en la base de datos! (Simulación)");
+            // Aquí irá el fetch('http://tu-api/partidas', { method: 'POST' ... })
+            e.target.reset();
+        });
+
+        document.getElementById('form-noticia').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                titulo: document.getElementById('titulo_noticia').value,
+                youtube_id: document.getElementById('youtube_id').value,
+                descripcion: document.getElementById('desc_noticia').value
+            };
+            
+            console.log("Publicando noticia...", data);
+            alert("¡Noticia publicada en la web! (Simulación)");
+            // Aquí irá el fetch('http://tu-api/noticias', { method: 'POST' ... })
+            e.target.reset();
+        });
+    </script>
+</body>
+</html>
