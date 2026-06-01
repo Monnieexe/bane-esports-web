@@ -2,39 +2,107 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Login - BANE Esports</title>
-    <!-- Incluimos Tailwind para el estilo -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Staff - BANE Esports</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { baneAccent: '#8b0000', baneAccentLight: '#ff4655' } }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: white; }
+        .font-heading { font-family: 'Cinzel', serif; }
+    </style>
 </head>
-<body class="bg-black text-white flex items-center justify-center h-screen">
+<body class="h-screen flex items-center justify-center p-4 relative overflow-hidden">
 
-    <div class="bg-gray-900 p-8 rounded-lg w-96">
-        <h2 class="text-2xl font-bold mb-6 text-center">Acceso Staff</h2>
-        <input type="email" id="email" placeholder="Correo" class="w-full p-2 mb-4 bg-gray-800 rounded text-white">
-        <input type="password" id="password" placeholder="Contraseña" class="w-full p-2 mb-6 bg-gray-800 rounded text-white">
-        <button onclick="iniciarSesion()" class="w-full bg-red-600 hover:bg-red-700 p-2 rounded font-bold">ENTRAR</button>
-        <p id="mensaje" class="mt-4 text-center text-sm"></p>
+    <div class="absolute inset-0 z-0 opacity-10 flex items-center justify-center">
+        <h1 class="font-heading text-[15rem] font-black text-white">BANE</h1>
     </div>
 
-    <!-- SDK de AWS Cognito para el navegador -->
+    <div class="bg-black border border-white/10 p-10 rounded-sm shadow-2xl z-10 w-full max-w-md">
+        <div class="text-center mb-8">
+            <h2 class="font-heading text-3xl font-black tracking-widest text-white mb-2">STAFF <span class="text-baneAccentLight">LOGIN</span></h2>
+            <p class="text-xs tracking-[0.2em] uppercase text-gray-500">Acceso Restringido</p>
+        </div>
+        
+        <form id="form-login" class="flex flex-col gap-6">
+            <div>
+                <label class="text-[10px] uppercase tracking-widest text-gray-400 block mb-2">Correo Electrónico</label>
+                <input type="email" id="email" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="luke@baneesports.com" required>
+            </div>
+            <div>
+                <label class="text-[10px] uppercase tracking-widest text-gray-400 block mb-2">Contraseña</label>
+                <input type="password" id="password" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="••••••••" required>
+            </div>
+            <p id="mensaje-error" class="text-baneAccentLight text-xs hidden text-center font-bold"></p>
+            <button type="submit" id="btn-submit" class="mt-2 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
+                Iniciar Sesión
+            </button>
+        </form>
+        <div class="mt-6 text-center">
+            <a href="index.html" class="text-[10px] uppercase tracking-widest text-gray-500 hover:text-white transition-colors">Volver al inicio</a>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/amazon-cognito-identity-js@6.3.1/dist/amazon-cognito-identity.min.js"></script>
     
     <script>
-        async function iniciarSesion() {
+        document.getElementById('form-login').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const mensaje = document.getElementById('mensaje');
+            const mensajeError = document.getElementById('mensaje-error');
+            const btnSubmit = document.getElementById('btn-submit');
+            
+            btnSubmit.innerText = "AUTENTICANDO...";
+            mensajeError.classList.add('hidden');
 
-            // Aquí se conectará con los datos de image_5d6125.jpg
+            // 1. Configuración de tu AWS Cognito
             const poolData = {
-                UserPoolId: 'us-east-2_87KXfmchF', 
-                ClientId: 'TU_CLIENT_ID_QUE_COPIASTE'
+                UserPoolId: 'us-east-2_87KXfmchF', // Tu User Pool ID que creamos
+                ClientId: 'AQUI_VA_TU_CLIENT_ID_LARGO' // ¡REEMPLAZA ESTO CON EL TUYO!
             };
             
-            // Lógica para enviar a Cognito...
-            // (Vex debe completar esta parte usando el SDK)
-            mensaje.innerText = "Conectando con AWS...";
-        }
+            const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+            
+            const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+                Username: email,
+                Password: password,
+            });
+            
+            const userData = {
+                Username: email,
+                Pool: userPool
+            };
+            
+            const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+            
+            // 2. Proceso de Login
+            cognitoUser.authenticateUser(authenticationDetails, {
+                onSuccess: function (result) {
+                    // Si el login es exitoso, obtenemos el Token mágico
+                    const idToken = result.getIdToken().getJwtToken();
+                    
+                    // Lo guardamos en el navegador
+                    localStorage.setItem('idToken', idToken);
+                    
+                    // ¡Y redirigimos automáticamente al panel de administración!
+                    window.location.href = 'admin.html';
+                },
+                onFailure: function(err) {
+                    // Si la contraseña es incorrecta o el usuario no existe
+                    mensajeError.innerText = "Acceso denegado: " + (err.message || "Credenciales inválidas");
+                    mensajeError.classList.remove('hidden');
+                    btnSubmit.innerText = "INICIAR SESIÓN";
+                }
+            });
+        });
     </script>
 </body>
 </html>
