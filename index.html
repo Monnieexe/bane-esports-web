@@ -104,9 +104,12 @@
             <li><a href="#divisiones" class="hover:text-white transition-colors">Rosters</a></li>
             <li><a href="#matches" class="hover:text-white transition-colors">Matches</a></li>
             <li><a href="#shop" class="hover:text-white transition-colors">Shop</a></li>
-            <li><a id="btn-admin" href="admin.html" class="text-baneAccentLight hover:text-white transition-colors">PANEL ADMIN</a></li>
+            <li><a id="btn-admin" href="admin.html" class="hidden text-baneAccentLight hover:text-white transition-colors">PANEL ADMIN</a></li>
         </ul>
-        <a href="#newsletter" class="border border-white/20 text-gray-300 px-8 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black transition-all rounded-sm">Únete</a>
+        <div class="flex gap-4">
+            <a href="login.html" class="text-gray-400 hover:text-white px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Ingresar</a>
+            <a href="#newsletter" class="border border-white/20 text-gray-300 px-8 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black transition-all rounded-sm">Únete</a>
+        </div>
     </nav>
 
     <header class="relative w-full min-h-screen flex flex-col justify-center items-center overflow-hidden border-b border-white/5 pt-20">
@@ -444,6 +447,7 @@
         </div>
     </section>
 
+    <!-- SECCIÓN DE MATCHES (Modificada para Base de Datos) -->
     <section id="matches" class="py-32 bg-[#050505] relative z-10 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col items-center mb-16 reveal text-center">
@@ -452,15 +456,40 @@
                 <div class="h-[1px] w-12 bg-baneAccentLight mt-6"></div>
             </div>
 
-            <div class="max-w-3xl mx-auto w-full flex flex-col items-center justify-center bg-black border border-white/5 hover:border-baneAccentLight transition-all duration-500 rounded-sm p-12 md:p-24 reveal relative overflow-hidden group">
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.05)_0%,transparent_70%)] group-hover:bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.1)_0%,transparent_70%)] transition-all duration-500"></div>
-                
-                <h3 class="font-heading text-3xl md:text-4xl text-white font-bold uppercase tracking-widest mb-6 text-center z-10">Torneo Invitacional</h3>
-                <p class="font-primary text-gray-400 text-sm md:text-base font-light text-center max-w-lg z-10 leading-relaxed mb-10">Bane Esports ha sido invitado oficialmente. Nuestras escuadras están afilando las garras y preparando la strategy para reclamar la arena.</p>
-                
-                <div class="inline-flex items-center gap-4 bg-[#050505] border border-white/10 px-8 py-4 rounded-sm z-10">
-                    <div class="w-2 h-2 rounded-full bg-baneAccentLight animate-pulse"></div>
-                    <span class="font-primary font-bold text-[10px] md:text-xs text-white uppercase tracking-[0.3em]">Inicio: 7 de Junio de 2026</span>
+            <div id="lista-partidas" class="max-w-4xl mx-auto w-full flex flex-col gap-4">
+                <!-- Se mostrará esto si no hay partidas o mientras carga -->
+                <div class="w-full flex flex-col items-center justify-center bg-black border border-white/5 hover:border-baneAccentLight transition-all duration-500 rounded-sm p-12 md:p-24 reveal relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.05)_0%,transparent_70%)] group-hover:bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.1)_0%,transparent_70%)] transition-all duration-500"></div>
+                    <h3 class="font-heading text-3xl md:text-4xl text-white font-bold uppercase tracking-widest mb-6 text-center z-10">Torneo Invitacional</h3>
+                    <p class="font-primary text-gray-400 text-sm md:text-base font-light text-center max-w-lg z-10 leading-relaxed mb-10">Bane Esports ha sido invitado oficialmente. Nuestras escuadras están afilando las garras y preparando la strategy para reclamar la arena.</p>
+                    <div class="inline-flex items-center gap-4 bg-[#050505] border border-white/10 px-8 py-4 rounded-sm z-10">
+                        <div class="w-2 h-2 rounded-full bg-baneAccentLight animate-pulse"></div>
+                        <span class="font-primary font-bold text-[10px] md:text-xs text-white uppercase tracking-[0.3em]">Inicio: 7 de Junio de 2026</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE NOTICIAS (Modificada para Base de Datos) -->
+    <section id="noticias" class="py-32 bg-[#0a0a0a] relative z-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col items-center mb-20 reveal text-center">
+                <span class="font-primary text-gray-500 font-bold uppercase tracking-[0.4em] text-[10px] mb-3">Actualidad</span>
+                <h2 class="font-heading text-4xl md:text-5xl font-black text-white uppercase tracking-widest">Gryphon's Feed</h2>
+                <div class="h-[1px] w-12 bg-baneAccentLight mt-6"></div>
+            </div>
+
+            <div id="lista-noticias" class="max-w-4xl mx-auto w-full flex flex-col gap-4">
+                <!-- Se mostrará esto si no hay noticias o mientras carga -->
+                <div class="w-full flex flex-col items-center justify-center bg-[#050505] border border-white/5 rounded-sm p-12 md:p-24 reveal relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.03)_0%,transparent_70%)]"></div>
+                    <svg class="w-16 h-16 text-[#ff4655] mb-6 animate-pulse opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 11v6M9 14l3 3 3-3M14 4v5h5"></path>
+                    </svg>
+                    <h3 class="font-heading text-2xl md:text-3xl text-white font-bold uppercase tracking-widest mb-4 text-center z-10">Transmisión en Espera</h3>
+                    <p class="font-primary text-gray-500 text-sm font-light text-center max-w-md z-10 leading-relaxed">Nuestros agentes están recopilando la última información del campo de batalla. Mantente alerta para las próximas actualizaciones de la organización.</p>
                 </div>
             </div>
         </div>
@@ -491,28 +520,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="noticias" class="py-32 bg-[#0a0a0a] relative z-10 border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col items-center mb-20 reveal text-center">
-                <span class="font-primary text-gray-500 font-bold uppercase tracking-[0.4em] text-[10px] mb-3">Actualidad</span>
-                <h2 class="font-heading text-4xl md:text-5xl font-black text-white uppercase tracking-widest">Gryphon's Feed</h2>
-                <div class="h-[1px] w-12 bg-baneAccentLight mt-6"></div>
-            </div>
-
-            <div class="max-w-3xl mx-auto w-full flex flex-col items-center justify-center bg-[#050505] border border-white/5 rounded-sm p-12 md:p-24 reveal relative overflow-hidden">
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.03)_0%,transparent_70%)]"></div>
-                
-                <svg class="w-16 h-16 text-[#ff4655] mb-6 animate-pulse opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v10a2 2 0 01-2 2z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 11v6M9 14l3 3 3-3M14 4v5h5"></path>
-                </svg>
-                
-                <h3 class="font-heading text-2xl md:text-3xl text-white font-bold uppercase tracking-widest mb-4 text-center z-10">Transmisión en Espera</h3>
-                <p class="font-primary text-gray-500 text-sm font-light text-center max-w-md z-10 leading-relaxed">Nuestros agentes están recopilando la última información del campo de batalla. Mantente alerta para las próximas actualizaciones de la organización.</p>
             </div>
         </div>
     </section>
@@ -798,6 +805,7 @@
         </div>
     </div>
 
+    <!-- SCRIPTS ORIGINALES DE REVEAL Y MODALES -->
     <script>
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
@@ -845,26 +853,147 @@
         }
     </script>
     
+    <!-- NUEVO SCRIPT DE BASE DE DATOS Y LISTA VIP -->
     <script>
+        // ==========================================
+        // LÓGICA DE BASE DE DATOS Y WHITELIST
+        // ==========================================
+        const API_URL = 'http://localhost:3000/api';
+        let esAdminLocal = false;
+        
+        // LISTA VIP CON TU CORREO
+        const CORREOS_ADMIN = [
+            'ivonnesanchez057@gmail.com', 
+            'luke@baneesports.com',
+            'mary@baneesports.com',
+            'vex@baneesports.com'
+        ];
+
         document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('idToken'); 
-            
+            // 1. Verificar Sesión y Whitelist
+            const token = localStorage.getItem('idToken');
             if (token) {
                 try {
                     const payload = JSON.parse(atob(token.split('.')[1]));
+                    const correoUsuario = payload.email; 
                     
-                    if (payload['custom:rol'] === 'admin') {
-                        document.getElementById('btn-admin').classList.remove('hidden');
+                    if (CORREOS_ADMIN.includes(correoUsuario)) {
+                        esAdminLocal = true; 
+                        const btnAdmin = document.getElementById('btn-admin');
+                        if(btnAdmin) btnAdmin.classList.remove('hidden');
                     }
-                } catch (error) {
-                    console.error('Error procesando el token de Cognito:', error);
+                } catch(e) {
+                    console.error("Error leyendo la sesión");
                 }
             }
+            
+            // 2. Cargar Datos Dinámicos
+            cargarPartidas();
+            cargarNoticias();
         });
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('idToken');
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            };
+        }
+
+        // --- LÓGICA DE PARTIDAS ---
+        const listaPartidas = document.getElementById('lista-partidas');
+        async function cargarPartidas() {
+            if (!listaPartidas) return;
+            try {
+                const response = await fetch(`${API_URL}/partidas`);
+                if (!response.ok) return;
+                const partidas = await response.json();
+                
+                if (partidas && partidas.length > 0) {
+                    listaPartidas.innerHTML = ''; 
+                    partidas.forEach((partida) => {
+                        const colorBane = partida.score_bane > partida.score_rival ? 'text-green-500' : 'text-[#ff4655]';
+                        
+                        // Botón de borrar SOLO si eres admin
+                        const btnBorrar = esAdminLocal ? `
+                            <button onclick="borrarPartida('${partida.id}')" class="text-gray-600 hover:text-[#ff4655] transition-colors ml-4 z-20 relative" title="Eliminar">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        ` : '';
+
+                        listaPartidas.innerHTML += `
+                            <div class="w-full flex flex-row items-center justify-between bg-[#0a0a0a] border border-white/5 hover:border-[#ff4655] transition-colors duration-500 rounded-sm p-6 md:px-12 relative overflow-hidden group">
+                                <div class="flex flex-col z-10">
+                                    <span class="font-primary font-bold text-[10px] md:text-xs text-gray-500 uppercase tracking-[0.3em] mb-1">${partida.torneo}</span>
+                                    <div class="font-heading text-2xl md:text-3xl text-white font-bold uppercase tracking-widest">
+                                        BANE <span class="${colorBane}">${partida.score_bane}</span> - <span class="text-white">${partida.score_rival}</span> ${partida.rival}
+                                    </div>
+                                </div>
+                                ${btnBorrar}
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error("Error al cargar partidas:", error);
+            }
+        }
+
+        async function borrarPartida(id) {
+            if(confirm("¿Seguro que quieres eliminar este resultado?")) {
+                try {
+                    await fetch(`${API_URL}/partidas?id=${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+                    cargarPartidas();
+                } catch (error) { console.error(error); }
+            }
+        }
+
+        // --- LÓGICA DE NOTICIAS ---
+        const listaNoticias = document.getElementById('lista-noticias');
+        async function cargarNoticias() {
+            if (!listaNoticias) return;
+            try {
+                const response = await fetch(`${API_URL}/noticias`);
+                if (!response.ok) return;
+                const noticias = await response.json();
+                
+                if (noticias && noticias.length > 0) {
+                    listaNoticias.innerHTML = '';
+                    noticias.forEach((noticia) => {
+                        const btnBorrar = esAdminLocal ? `
+                            <button onclick="borrarNoticia('${noticia.id}')" class="text-gray-600 hover:text-[#ff4655] transition-colors ml-4 z-20 relative" title="Eliminar">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        ` : '';
+
+                        listaNoticias.innerHTML += `
+                            <div class="w-full flex flex-row justify-between items-start bg-[#0a0a0a] border border-white/5 hover:border-[#ff4655] transition-colors duration-500 rounded-sm p-6 md:p-8 relative overflow-hidden">
+                                <div class="z-10 w-full pr-4">
+                                    <h4 class="font-heading text-xl md:text-2xl text-[#ff4655] font-bold uppercase tracking-widest mb-2">${noticia.titulo}</h4>
+                                    <p class="font-primary text-gray-400 text-sm md:text-base font-light leading-relaxed">${noticia.descripcion}</p>
+                                </div>
+                                ${btnBorrar}
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error("Error al cargar noticias:", error);
+            }
+        }
+
+        async function borrarNoticia(id) {
+            if(confirm("¿Seguro que quieres eliminar esta noticia?")) {
+                try {
+                    await fetch(`${API_URL}/noticias?id=${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+                    cargarNoticias();
+                } catch (error) { console.error(error); }
+            }
+        }
     </script>
 
+    <!-- SCRIPT DE NEWSLETTER -->
     <script>
-    // FORMULARIO NEWSLETTER
     const form = document.getElementById('newsletter-form'); 
     form.addEventListener('submit', async (e) => {
         e.preventDefault(); 
@@ -894,6 +1023,7 @@
     });
     </script>
 
+    <!-- SCRIPT DE TWITCH -->
     <script>
         async function checkTwitchStatus() {
             try {
