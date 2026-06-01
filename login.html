@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Staff - BANE Esports</title>
+    <title>Acceso - BANE Esports</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -20,20 +20,22 @@
 </head>
 <body class="h-screen flex items-center justify-center p-4 relative overflow-hidden">
 
+    <!-- Fondo decorativo -->
     <div class="absolute inset-0 z-0 opacity-10 flex items-center justify-center">
         <h1 class="font-heading text-[15rem] font-black text-white">BANE</h1>
     </div>
 
+    <!-- Caja de Login -->
     <div class="bg-black border border-white/10 p-10 rounded-sm shadow-2xl z-10 w-full max-w-md">
         <div class="text-center mb-8">
-            <h2 class="font-heading text-3xl font-black tracking-widest text-white mb-2">STAFF <span class="text-baneAccentLight">LOGIN</span></h2>
-            <p class="text-xs tracking-[0.2em] uppercase text-gray-500">Acceso Restringido</p>
+            <h2 class="font-heading text-3xl font-black tracking-widest text-white mb-2">BANE <span class="text-baneAccentLight">LOGIN</span></h2>
+            <p class="text-xs tracking-[0.2em] uppercase text-gray-500">Ingresa a tu cuenta</p>
         </div>
         
         <form id="form-login" class="flex flex-col gap-6">
             <div>
                 <label class="text-[10px] uppercase tracking-widest text-gray-400 block mb-2">Correo Electrónico</label>
-                <input type="email" id="email" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="luke@baneesports.com" required>
+                <input type="email" id="email" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="tu@correo.com" required>
             </div>
             <div>
                 <label class="text-[10px] uppercase tracking-widest text-gray-400 block mb-2">Contraseña</label>
@@ -44,14 +46,27 @@
                 Iniciar Sesión
             </button>
         </form>
-        <div class="mt-6 text-center">
-            <a href="index.html" class="text-[10px] uppercase tracking-widest text-gray-500 hover:text-white transition-colors">Volver al inicio</a>
+        
+        <!-- ENLACES DE NAVEGACIÓN CORREGIDOS -->
+        <div class="mt-6 text-center flex flex-col gap-4">
+            <a href="registro.html" class="text-[10px] uppercase tracking-widest text-baneAccentLight hover:text-white transition-colors font-bold">¿No tienes cuenta? Regístrate aquí</a>
+            <div class="w-16 h-[1px] bg-white/10 mx-auto"></div>
+            <a href="index.html" class="text-[10px] uppercase tracking-widest text-gray-600 hover:text-white transition-colors">Volver al inicio</a>
         </div>
     </div>
 
+    <!-- SDK de AWS Cognito -->
     <script src="https://unpkg.com/amazon-cognito-identity-js@6.3.1/dist/amazon-cognito-identity.min.js"></script>
     
     <script>
+        // LA MISMA LISTA VIP PARA SABER A DÓNDE REDIRIGIR
+        const CORREOS_ADMIN = [
+            'ivonnesanchez057@gmail.com', 
+            'luke@baneesports.com',
+            'mary@baneesports.com',
+            'vex@baneesports.com'
+        ];
+
         document.getElementById('form-login').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -65,8 +80,8 @@
 
             // 1. Configuración de tu AWS Cognito
             const poolData = {
-                UserPoolId: 'us-east-2_87KXfmchF', // Tu User Pool ID que creamos
-                ClientId: 'AQUI_VA_TU_CLIENT_ID_LARGO' // ¡REEMPLAZA ESTO CON EL TUYO!
+                UserPoolId: 'us-east-2_87KXfmchF', 
+                ClientId: 'AQUI_VA_TU_CLIENT_ID_LARGO' // ¡RECUERDA PONER TU CLIENT ID AQUÍ!
             };
             
             const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
@@ -86,17 +101,21 @@
             // 2. Proceso de Login
             cognitoUser.authenticateUser(authenticationDetails, {
                 onSuccess: function (result) {
-                    // Si el login es exitoso, obtenemos el Token mágico
                     const idToken = result.getIdToken().getJwtToken();
-                    
-                    // Lo guardamos en el navegador
                     localStorage.setItem('idToken', idToken);
                     
-                    // ¡Y redirigimos automáticamente al panel de administración!
-                    window.location.href = 'admin.html';
+                    // Decodificamos el token para leer el correo
+                    const payload = JSON.parse(atob(idToken.split('.')[1]));
+                    const correoUsuario = payload.email;
+                    
+                    // LÓGICA INTELIGENTE: Si es admin, va al panel. Si es fan, va al inicio.
+                    if (CORREOS_ADMIN.includes(correoUsuario)) {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
                 },
                 onFailure: function(err) {
-                    // Si la contraseña es incorrecta o el usuario no existe
                     mensajeError.innerText = "Acceso denegado: " + (err.message || "Credenciales inválidas");
                     mensajeError.classList.remove('hidden');
                     btnSubmit.innerText = "INICIAR SESIÓN";
