@@ -94,23 +94,34 @@
 </head>
 <body class="antialiased selection:bg-baneAccentLight selection:text-black">
 
+    <!-- NAVEGACIÓN CORREGIDA CON FLEX-1 Y SELECTOR DE IDIOMA -->
     <nav class="fixed w-full z-50 top-0 bg-black/90 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between transition-all">
+        <!-- Bloque 1: Logo -->
         <div class="flex-1 flex justify-start items-center gap-2 font-heading text-2xl font-black tracking-widest text-white">
             <span class="text-baneAccentLight text-3xl">B</span> BANE
         </div>
         
+        <!-- Bloque 2: Menú Centrado -->
         <ul class="hidden md:flex justify-center gap-10 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 items-center">
-            <li><a href="#origen" class="hover:text-white transition-colors">Origen</a></li>
-            <li><a href="#staff" class="hover:text-white transition-colors">Staff</a></li>
-            <li><a href="#divisiones" class="hover:text-white transition-colors">Rosters</a></li>
-            <li><a href="#matches" class="hover:text-white transition-colors">Matches</a></li>
-            <li><a href="#shop" class="hover:text-white transition-colors">Shop</a></li>
+            <li><a href="#origen" data-i18n="nav_origen" class="hover:text-white transition-colors">Origen</a></li>
+            <li><a href="#staff" data-i18n="nav_staff" class="hover:text-white transition-colors">Staff</a></li>
+            <li><a href="#divisiones" data-i18n="nav_rosters" class="hover:text-white transition-colors">Rosters</a></li>
+            <li><a href="#matches" data-i18n="nav_matches" class="hover:text-white transition-colors">Matches</a></li>
+            <li><a href="#shop" data-i18n="nav_shop" class="hover:text-white transition-colors">Shop</a></li>
             <li><a id="btn-admin" href="admin.html" class="hidden text-baneAccentLight hover:text-white transition-colors">PANEL ADMIN</a></li>
         </ul>
         
+        <!-- Bloque 3: Botones e Idioma -->
         <div class="flex-1 flex justify-end items-center gap-4">
-            <a href="login.html" class="text-gray-400 hover:text-white px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Ingresar</a>
-            <a href="#newsletter" class="border border-white/20 text-gray-300 px-8 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black transition-all rounded-sm">Únete</a>
+            <select id="lang-selector" class="bg-transparent border border-white/20 text-gray-300 text-[10px] font-bold uppercase tracking-widest px-2 py-2 outline-none cursor-pointer hover:border-baneAccentLight hover:text-white transition-all rounded-sm">
+                <option value="es" class="bg-black">ES</option>
+                <option value="en" class="bg-black">EN</option>
+                <option value="ko" class="bg-black">KO</option>
+                <option value="ja" class="bg-black">JA</option>
+                <option value="zh" class="bg-black">ZH</option>
+            </select>
+            <a href="login.html" data-i18n="btn_login" class="text-gray-400 hover:text-white px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-all hidden sm:block">Ingresar</a>
+            <a href="#newsletter" data-i18n="btn_join" class="border border-white/20 text-gray-300 px-8 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black transition-all rounded-sm">Únete</a>
         </div>
     </nav>
 
@@ -130,10 +141,10 @@
                 </div>
                 <img src="grifo2.png.png" alt="Hipogrifo Derecho" class="hidden md:block absolute -right-4 lg:-right-12 w-48 lg:w-64 opacity-20 pointer-events-none" style="filter: invert(1) grayscale(1); mix-blend-mode: screen;">
             </div>
-            <h1 class="font-heading text-2xl md:text-4xl font-bold text-white uppercase tracking-[0.2em] mt-8 mb-4">
+            <h1 data-i18n="hero_title" class="font-heading text-2xl md:text-4xl font-bold text-white uppercase tracking-[0.2em] mt-8 mb-4">
                 The Power of <span class="text-baneAccentLight">The Gryphon</span>
             </h1>
-            <p class="font-primary text-gray-500 text-[10px] md:text-xs tracking-[0.4em] uppercase font-semibold">Forjados en la oscuridad. Dominamos la arena.</p>
+            <p data-i18n="hero_subtitle" class="font-primary text-gray-500 text-[10px] md:text-xs tracking-[0.4em] uppercase font-semibold">Forjados en la oscuridad. Dominamos la arena.</p>
         </div>
     </header>
 
@@ -803,6 +814,7 @@
         </div>
     </div>
 
+    <!-- SCRIPTS ORIGINALES DE REVEAL Y MODALES -->
     <script>
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
@@ -850,6 +862,7 @@
         }
     </script>
     
+    <!-- SCRIPT DE BASE DE DATOS Y LISTA VIP -->
     <script>
         // ==========================================
         // LÓGICA DE BASE DE DATOS Y WHITELIST
@@ -896,7 +909,7 @@
             };
         }
 
-        // --- LÓGICA DE PARTIDAS (ACTUALIZADA PARA ESCUADRAS) ---
+        // --- LÓGICA DE PARTIDAS (ESCUADRAS DINÁMICAS) ---
         const listaPartidas = document.getElementById('lista-partidas');
         async function cargarPartidas() {
             if (!listaPartidas) return;
@@ -910,14 +923,12 @@
                     partidas.forEach((partida) => {
                         const colorBane = partida.score_bane > partida.score_rival ? 'text-green-500' : 'text-[#ff4655]';
                         
-                        // Botón de borrar SOLO si eres admin
                         const btnBorrar = esAdminLocal ? `
                             <button onclick="borrarPartida('${partida.id}')" class="text-gray-600 hover:text-[#ff4655] transition-colors ml-4 z-20 relative" title="Eliminar">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         ` : '';
 
-                        // Reemplazamos "BANE" fijo por la escuadra dinámica
                         listaPartidas.innerHTML += `
                             <div class="w-full flex flex-row items-center justify-between bg-[#0a0a0a] border border-white/5 hover:border-[#ff4655] transition-colors duration-500 rounded-sm p-6 md:px-12 relative overflow-hidden group">
                                 <div class="flex flex-col z-10">
@@ -945,7 +956,7 @@
             }
         }
 
-        // --- LÓGICA DE NOTICIAS (ACTUALIZADA PARA IMÁGENES) ---
+        // --- LÓGICA DE NOTICIAS (SOPORTE DE IMÁGENES) ---
         const listaNoticias = document.getElementById('lista-noticias');
         async function cargarNoticias() {
             if (!listaNoticias) return;
@@ -963,7 +974,6 @@
                             </button>
                         ` : '';
 
-                        // Creamos el HTML de la imagen si es que existe
                         const htmlImagen = noticia.imagen_url ? `
                             <img src="${noticia.imagen_url}" alt="Noticia BANE" class="w-full md:w-64 h-40 object-cover rounded-sm border border-white/10 mb-4 md:mb-0 md:mr-8 opacity-80 group-hover:opacity-100 transition-opacity">
                         ` : '';
@@ -997,6 +1007,78 @@
         }
     </script>
 
+    <!-- NUEVO SCRIPT: MULTI-IDIOMA (ES, EN, KO, JA, ZH) -->
+    <script>
+        const translations = {
+            es: {
+                "nav_origen": "Origen",
+                "nav_staff": "Staff",
+                "nav_rosters": "Rosters",
+                "nav_matches": "Matches",
+                "nav_shop": "Shop",
+                "btn_login": "Ingresar",
+                "btn_join": "Únete",
+                "hero_title": 'The Power of <span class="text-baneAccentLight">The Gryphon</span>',
+                "hero_subtitle": "Forjados en la oscuridad. Dominamos la arena."
+            },
+            en: {
+                "nav_origen": "Origin",
+                "nav_staff": "Staff",
+                "nav_rosters": "Rosters",
+                "nav_matches": "Matches",
+                "nav_shop": "Shop",
+                "btn_login": "Login",
+                "btn_join": "Join",
+                "hero_title": 'The Power of <span class="text-baneAccentLight">The Gryphon</span>',
+                "hero_subtitle": "Forged in darkness. We dominate the arena."
+            },
+            ko: {
+                "nav_origen": "기원",
+                "nav_staff": "스태프",
+                "nav_rosters": "로스터",
+                "nav_matches": "매치",
+                "nav_shop": "상점",
+                "btn_login": "로그인",
+                "btn_join": "가입하기",
+                "hero_title": '그리폰의 <span class="text-baneAccentLight">힘</span>',
+                "hero_subtitle": "어둠 속에서 단련되어 아레나를 지배한다."
+            },
+            ja: {
+                "nav_origen": "起源",
+                "nav_staff": "スタッフ",
+                "nav_rosters": "ロースター",
+                "nav_matches": "マッチ",
+                "nav_shop": "ショップ",
+                "btn_login": "ログイン",
+                "btn_join": "参加する",
+                "hero_title": 'グリフォンの<span class="text-baneAccentLight">力</span>',
+                "hero_subtitle": "闇で鍛えられ、アリーナを支配する。"
+            },
+            zh: {
+                "nav_origen": "起源",
+                "nav_staff": "员工",
+                "nav_rosters": "阵容",
+                "nav_matches": "比赛",
+                "nav_shop": "商店",
+                "btn_login": "登录",
+                "btn_join": "加入",
+                "hero_title": '狮鹫的<span class="text-baneAccentLight">力量</span>',
+                "hero_subtitle": "在黑暗中锻造。我们主宰竞技场。"
+            }
+        };
+
+        document.getElementById('lang-selector').addEventListener('change', (e) => {
+            const lang = e.target.value;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key]; 
+                }
+            });
+        });
+    </script>
+
+    <!-- SCRIPT DE NEWSLETTER -->
     <script>
     const form = document.getElementById('newsletter-form'); 
     form.addEventListener('submit', async (e) => {
@@ -1027,6 +1109,7 @@
     });
     </script>
 
+    <!-- SCRIPT DE TWITCH -->
     <script>
         async function checkTwitchStatus() {
             try {
