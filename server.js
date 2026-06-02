@@ -170,6 +170,10 @@ app.delete('/api/noticias', esAdmin, async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log('Servidor blindado listo en http://localhost:3000');
+// ==========================================
+// CONFIGURACIÓN DE PUERTO DINÁMICO
+// ==========================================
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor blindado listo y operando en el puerto ${PORT}`);
 });
