@@ -94,11 +94,12 @@
 </head>
 <body class="antialiased selection:bg-baneAccentLight selection:text-black">
 
-    <nav class="fixed w-full z-50 top-0 bg-black/90 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12 flex justify-between items-center transition-all">
-        <div class="font-heading text-2xl font-black tracking-widest text-white flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 bg-black/90 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between transition-all">
+        <div class="flex-1 flex justify-start items-center gap-2 font-heading text-2xl font-black tracking-widest text-white">
             <span class="text-baneAccentLight text-3xl">B</span> BANE
         </div>
-        <ul class="hidden md:flex gap-10 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 items-center">
+        
+        <ul class="hidden md:flex justify-center gap-10 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 items-center">
             <li><a href="#origen" class="hover:text-white transition-colors">Origen</a></li>
             <li><a href="#staff" class="hover:text-white transition-colors">Staff</a></li>
             <li><a href="#divisiones" class="hover:text-white transition-colors">Rosters</a></li>
@@ -106,7 +107,8 @@
             <li><a href="#shop" class="hover:text-white transition-colors">Shop</a></li>
             <li><a id="btn-admin" href="admin.html" class="hidden text-baneAccentLight hover:text-white transition-colors">PANEL ADMIN</a></li>
         </ul>
-        <div class="flex gap-4">
+        
+        <div class="flex-1 flex justify-end items-center gap-4">
             <a href="login.html" class="text-gray-400 hover:text-white px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Ingresar</a>
             <a href="#newsletter" class="border border-white/20 text-gray-300 px-8 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black transition-all rounded-sm">Únete</a>
         </div>
@@ -447,7 +449,6 @@
         </div>
     </section>
 
-    <!-- SECCIÓN DE MATCHES (Modificada para Base de Datos) -->
     <section id="matches" class="py-32 bg-[#050505] relative z-10 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col items-center mb-16 reveal text-center">
@@ -457,7 +458,6 @@
             </div>
 
             <div id="lista-partidas" class="max-w-4xl mx-auto w-full flex flex-col gap-4">
-                <!-- Se mostrará esto si no hay partidas o mientras carga -->
                 <div class="w-full flex flex-col items-center justify-center bg-black border border-white/5 hover:border-baneAccentLight transition-all duration-500 rounded-sm p-12 md:p-24 reveal relative overflow-hidden group">
                     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.05)_0%,transparent_70%)] group-hover:bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.1)_0%,transparent_70%)] transition-all duration-500"></div>
                     <h3 class="font-heading text-3xl md:text-4xl text-white font-bold uppercase tracking-widest mb-6 text-center z-10">Torneo Invitacional</h3>
@@ -471,7 +471,6 @@
         </div>
     </section>
 
-    <!-- SECCIÓN DE NOTICIAS (Modificada para Base de Datos) -->
     <section id="noticias" class="py-32 bg-[#0a0a0a] relative z-10 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col items-center mb-20 reveal text-center">
@@ -481,7 +480,6 @@
             </div>
 
             <div id="lista-noticias" class="max-w-4xl mx-auto w-full flex flex-col gap-4">
-                <!-- Se mostrará esto si no hay noticias o mientras carga -->
                 <div class="w-full flex flex-col items-center justify-center bg-[#050505] border border-white/5 rounded-sm p-12 md:p-24 reveal relative overflow-hidden">
                     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.03)_0%,transparent_70%)]"></div>
                     <svg class="w-16 h-16 text-[#ff4655] mb-6 animate-pulse opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -805,7 +803,6 @@
         </div>
     </div>
 
-    <!-- SCRIPTS ORIGINALES DE REVEAL Y MODALES -->
     <script>
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
@@ -853,7 +850,6 @@
         }
     </script>
     
-    <!-- NUEVO SCRIPT DE BASE DE DATOS Y LISTA VIP -->
     <script>
         // ==========================================
         // LÓGICA DE BASE DE DATOS Y WHITELIST
@@ -900,7 +896,7 @@
             };
         }
 
-        // --- LÓGICA DE PARTIDAS ---
+        // --- LÓGICA DE PARTIDAS (ACTUALIZADA PARA ESCUADRAS) ---
         const listaPartidas = document.getElementById('lista-partidas');
         async function cargarPartidas() {
             if (!listaPartidas) return;
@@ -921,12 +917,13 @@
                             </button>
                         ` : '';
 
+                        // Reemplazamos "BANE" fijo por la escuadra dinámica
                         listaPartidas.innerHTML += `
                             <div class="w-full flex flex-row items-center justify-between bg-[#0a0a0a] border border-white/5 hover:border-[#ff4655] transition-colors duration-500 rounded-sm p-6 md:px-12 relative overflow-hidden group">
                                 <div class="flex flex-col z-10">
                                     <span class="font-primary font-bold text-[10px] md:text-xs text-gray-500 uppercase tracking-[0.3em] mb-1">${partida.torneo}</span>
                                     <div class="font-heading text-2xl md:text-3xl text-white font-bold uppercase tracking-widest">
-                                        BANE <span class="${colorBane}">${partida.score_bane}</span> - <span class="text-white">${partida.score_rival}</span> ${partida.rival}
+                                        ${partida.escuadra || 'BANE'} <span class="${colorBane}">${partida.score_bane}</span> - <span class="text-white">${partida.score_rival}</span> ${partida.rival}
                                     </div>
                                 </div>
                                 ${btnBorrar}
@@ -948,7 +945,7 @@
             }
         }
 
-        // --- LÓGICA DE NOTICIAS ---
+        // --- LÓGICA DE NOTICIAS (ACTUALIZADA PARA IMÁGENES) ---
         const listaNoticias = document.getElementById('lista-noticias');
         async function cargarNoticias() {
             if (!listaNoticias) return;
@@ -966,11 +963,19 @@
                             </button>
                         ` : '';
 
+                        // Creamos el HTML de la imagen si es que existe
+                        const htmlImagen = noticia.imagen_url ? `
+                            <img src="${noticia.imagen_url}" alt="Noticia BANE" class="w-full md:w-64 h-40 object-cover rounded-sm border border-white/10 mb-4 md:mb-0 md:mr-8 opacity-80 group-hover:opacity-100 transition-opacity">
+                        ` : '';
+
                         listaNoticias.innerHTML += `
-                            <div class="w-full flex flex-row justify-between items-start bg-[#0a0a0a] border border-white/5 hover:border-[#ff4655] transition-colors duration-500 rounded-sm p-6 md:p-8 relative overflow-hidden">
-                                <div class="z-10 w-full pr-4">
-                                    <h4 class="font-heading text-xl md:text-2xl text-[#ff4655] font-bold uppercase tracking-widest mb-2">${noticia.titulo}</h4>
-                                    <p class="font-primary text-gray-400 text-sm md:text-base font-light leading-relaxed">${noticia.descripcion}</p>
+                            <div class="w-full flex flex-col md:flex-row justify-between items-start bg-[#0a0a0a] border border-white/5 hover:border-[#ff4655] transition-colors duration-500 rounded-sm p-6 md:p-8 relative overflow-hidden group">
+                                <div class="flex flex-col md:flex-row w-full z-10 items-start">
+                                    ${htmlImagen}
+                                    <div class="flex-1 pr-4">
+                                        <h4 class="font-heading text-xl md:text-2xl text-[#ff4655] font-bold uppercase tracking-widest mb-2">${noticia.titulo}</h4>
+                                        <p class="font-primary text-gray-400 text-sm md:text-base font-light leading-relaxed whitespace-pre-wrap">${noticia.descripcion}</p>
+                                    </div>
                                 </div>
                                 ${btnBorrar}
                             </div>
@@ -992,7 +997,6 @@
         }
     </script>
 
-    <!-- SCRIPT DE NEWSLETTER -->
     <script>
     const form = document.getElementById('newsletter-form'); 
     form.addEventListener('submit', async (e) => {
@@ -1023,7 +1027,6 @@
     });
     </script>
 
-    <!-- SCRIPT DE TWITCH -->
     <script>
         async function checkTwitchStatus() {
             try {
