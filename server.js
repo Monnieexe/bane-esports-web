@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 1. Conexión a DynamoDB (Tu base de datos en AWS)
+// 1. Conexión a DynamoDB
 const client = new DynamoDBClient({
     region: process.env.AWS_REGION || 'us-east-2',
     credentials: {
@@ -28,7 +28,6 @@ const verifier = CognitoJwtVerifier.create({
 });
 
 // 🚨 LISTA VIP DE CORREOS DE ADMINISTRADORES 🚨
-// Añade aquí los correos que tendrán permiso de guardar datos
 const CORREOS_ADMIN = [
     'ivonnesanchez057@gmail.com', 
     'luke@baneesports.com',
@@ -46,10 +45,9 @@ const esAdmin = async (req, res, next) => {
         const payload = await verifier.verify(token);
         const correoUsuario = payload.email;
         
-        // Verifica si el correo está en la lista VIP
         if (CORREOS_ADMIN.includes(correoUsuario)) {
             req.user = payload; 
-            next(); // Pase VIP concedido
+            next();
         } else {
             res.status(403).json({ error: "Acceso denegado. Tu correo no pertenece al staff de BANE." });
         }
@@ -63,14 +61,12 @@ const esAdmin = async (req, res, next) => {
 // RUTAS DE PARTIDAS
 // ==========================================
 
-// POST: Guardar partida (PROTEGIDO POR esAdmin)
 app.post('/api/partidas', esAdmin, async (req, res) => {
-    // NUEVO: Recibimos "escuadra" desde el frontend
     const { escuadra, rival, torneo, score_bane, score_rival } = req.body;
     
     const nuevoMatch = {
         id: crypto.randomUUID(), 
-        escuadra: escuadra || 'BANE', // NUEVO: Guardamos la escuadra en AWS
+        escuadra: escuadra || 'BANE',
         rival: rival,
         torneo: torneo,
         score_bane: parseInt(score_bane),
@@ -90,7 +86,6 @@ app.post('/api/partidas', esAdmin, async (req, res) => {
     }
 });
 
-// GET: Leer partidas (PÚBLICO)
 app.get('/api/partidas', async (req, res) => {
     try {
         const resultado = await ddbDocClient.send(new ScanCommand({ TableName: 'BanePartidas' }));
@@ -102,7 +97,6 @@ app.get('/api/partidas', async (req, res) => {
     }
 });
 
-// DELETE: Borrar partida (PROTEGIDO POR esAdmin)
 app.delete('/api/partidas', esAdmin, async (req, res) => {
     const { id } = req.query;
     try {
@@ -121,14 +115,14 @@ app.delete('/api/partidas', esAdmin, async (req, res) => {
 // RUTAS DE NOTICIAS
 // ==========================================
 
-// POST: Publicar noticia (PROTEGIDO POR esAdmin)
 app.post('/api/noticias', esAdmin, async (req, res) => {
-    const { titulo, youtube_id, descripcion } = req.body;
+    const { titulo, youtube_id, imagen_url, descripcion } = req.body;
 
     const nuevaNoticia = {
         id: crypto.randomUUID(),
         titulo: titulo,
-        youtube_id: youtube_id,
+        youtube_id: youtube_id || '', // Evita errores si se envía vacío
+        imagen_url: imagen_url || '', // Evita errores si se envía vacío
         descripcion: descripcion,
         fecha: new Date().toISOString()
     };
@@ -145,7 +139,6 @@ app.post('/api/noticias', esAdmin, async (req, res) => {
     }
 });
 
-// GET: Leer noticias (PÚBLICO)
 app.get('/api/noticias', async (req, res) => {
     try {
         const resultado = await ddbDocClient.send(new ScanCommand({ TableName: 'BaneNoticias' }));
@@ -157,7 +150,6 @@ app.get('/api/noticias', async (req, res) => {
     }
 });
 
-// DELETE: Borrar noticia (PROTEGIDO POR esAdmin)
 app.delete('/api/noticias', esAdmin, async (req, res) => {
     const { id } = req.query;
     try {

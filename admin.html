@@ -31,11 +31,11 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             
+            <!-- SECCIÓN 1: REGISTRAR PARTIDA -->
             <div class="bg-black border border-white/10 p-8 rounded-sm shadow-xl shadow-black">
                 <h2 class="font-heading text-xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Registrar Partida</h2>
                 
                 <form id="form-partida" class="flex flex-col gap-4">
-                    <!-- NUEVO CAMPO: SELECCIÓN DE ESCUADRA -->
                     <div>
                         <label class="text-[10px] uppercase tracking-widest text-gray-400">Escuadra BANE</label>
                         <select id="escuadra" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" required>
@@ -70,6 +70,7 @@
                 </form>
             </div>
 
+            <!-- SECCIÓN 2: PUBLICAR VLOG / NOTICIA -->
             <div class="bg-black border border-white/10 p-8 rounded-sm shadow-xl shadow-black">
                 <h2 class="font-heading text-xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Publicar Vlog / Noticia</h2>
                 
@@ -79,8 +80,12 @@
                         <input type="text" id="titulo_noticia" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: Bootcamping en Monterrey" required>
                     </div>
                     <div>
-                        <label class="text-[10px] uppercase tracking-widest text-gray-400">ID del Video de YouTube</label>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">ID del Video de YouTube (Opcional)</label>
                         <input type="text" id="youtube_id" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: dQw4w9WgXcQ">
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">URL de la Imagen (Opcional)</label>
+                        <input type="text" id="imagen_url" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: https://i.imgur.com/foto.jpg">
                     </div>
                     <div>
                         <label class="text-[10px] uppercase tracking-widest text-gray-400">Descripción breve</label>
@@ -98,7 +103,7 @@
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
 
-        // Función de seguridad para inyectar el Token en cada petición
+        // Función de seguridad
         function getAuthHeaders() {
             const token = localStorage.getItem('idToken');
             return {
@@ -112,7 +117,7 @@
             window.location.href = 'index.html';
         }
 
-        // POST: Lógica del botón Guardar Partida
+        // POST: Lógica de Partidas
         document.getElementById('form-partida').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = e.target.querySelector('button[type="submit"]');
@@ -121,7 +126,7 @@
             btnSubmit.disabled = true;
 
             const nuevaPartida = {
-                escuadra: document.getElementById('escuadra').value, // <-- NUEVO DATO ENVIADO
+                escuadra: document.getElementById('escuadra').value,
                 rival: document.getElementById('rival').value,
                 torneo: document.getElementById('torneo').value,
                 score_bane: parseInt(document.getElementById('score_bane').value),
@@ -151,7 +156,7 @@
             }
         });
 
-        // POST: Lógica del botón Publicar Noticia
+        // POST: Lógica de Noticias
         document.getElementById('form-noticia').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btnSubmit = e.target.querySelector('button[type="submit"]');
@@ -162,6 +167,7 @@
             const nuevaNoticia = {
                 titulo: document.getElementById('titulo_noticia').value,
                 youtube_id: document.getElementById('youtube_id').value,
+                imagen_url: document.getElementById('imagen_url').value,
                 descripcion: document.getElementById('desc_noticia').value
             };
             
@@ -173,7 +179,7 @@
                 });
 
                 if (response.ok) {
-                    alert("¡Vlog publicado con éxito en la web!");
+                    alert("¡Contenido publicado con éxito en la web!");
                     e.target.reset();
                 } else {
                     const data = await response.json();
