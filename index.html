@@ -1089,7 +1089,10 @@
         document.addEventListener('DOMContentLoaded', checkTwitchStatus);
     </script>
 
-    <div id="google_translate_element" style="display:none;"></div>
+    <!-- NUEVO MOTOR OCULTO DE GOOGLE TRANSLATE (CORREGIDO) -->
+    <!-- En lugar de display:none, lo escondemos fuera de la pantalla -->
+    <div id="google_translate_element" style="position:absolute; top:-10000px; left:-10000px; width:1px; height:1px; overflow:hidden;"></div>
+    
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -1106,9 +1109,14 @@
         // Función que conecta tu botón con el motor oculto de Google
         function translatePage(lang) {
             var googleSelect = document.querySelector("select.goog-te-combo");
+            
             if (googleSelect) {
                 googleSelect.value = lang;
-                googleSelect.dispatchEvent(new Event("change"));
+                // Usamos bubbles:true para asegurar que el evento suba por el DOM y Google lo escuche
+                googleSelect.dispatchEvent(new Event("change", { bubbles: true }));
+            } else {
+                // Si el usuario cambia el idioma antes de que Google termine de cargar, lo reintenta en medio segundo
+                setTimeout(function() { translatePage(lang); }, 500);
             }
         }
     </script>
