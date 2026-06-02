@@ -102,11 +102,13 @@
 <body class="antialiased selection:bg-baneAccentLight selection:text-black">
 
     <nav class="fixed w-full z-50 top-0 bg-black/90 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between transition-all">
-        <div class="flex-1 flex justify-start items-center gap-2 font-heading text-2xl font-black tracking-widest text-white">
+        <!-- Bloque 1: Logo -->
+        <div class="font-heading text-2xl font-black tracking-widest text-white shrink-0 mr-8">
             <span class="text-baneAccentLight text-3xl">B</span> BANE
         </div>
         
-        <ul class="hidden md:flex justify-center gap-10 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 items-center">
+        <!-- Bloque 2: Menú Centrado -->
+        <ul class="hidden lg:flex justify-center gap-6 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 items-center w-full">
             <li><a href="#origen" class="hover:text-white transition-colors">Origen</a></li>
             <li><a href="#staff" class="hover:text-white transition-colors">Staff</a></li>
             <li><a href="#divisiones" class="hover:text-white transition-colors">Rosters</a></li>
@@ -115,7 +117,8 @@
             <li><a id="btn-admin" href="admin.html" class="hidden text-baneAccentLight hover:text-white transition-colors">PANEL ADMIN</a></li>
         </ul>
         
-        <div class="flex-1 flex justify-end items-center gap-4">
+        <!-- Bloque 3: Botones e Idioma -->
+        <div class="flex justify-end items-center gap-4 shrink-0 ml-4">
             <select id="lang-selector" class="bg-transparent border border-white/20 text-gray-300 text-[10px] font-bold uppercase tracking-widest px-2 py-2 outline-none cursor-pointer hover:border-baneAccentLight hover:text-white transition-all rounded-sm" onchange="translatePage(this.value)">
                 <option value="es" class="bg-black">ES</option>
                 <option value="en" class="bg-black">EN</option>
@@ -1089,10 +1092,8 @@
         document.addEventListener('DOMContentLoaded', checkTwitchStatus);
     </script>
 
-    <!-- NUEVO MOTOR OCULTO DE GOOGLE TRANSLATE (CORREGIDO) -->
-    <!-- En lugar de display:none, lo escondemos fuera de la pantalla -->
+    <!-- NUEVO MOTOR OCULTO DE GOOGLE TRANSLATE (MÉTODO COOKIE) -->
     <div id="google_translate_element" style="position:absolute; top:-10000px; left:-10000px; width:1px; height:1px; overflow:hidden;"></div>
-    
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -1106,20 +1107,30 @@
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script>
-        // Función que conecta tu botón con el motor oculto de Google
+        // MÉTODO INFALIBLE: Usar Cookies para forzar la traducción
         function translatePage(lang) {
-            var googleSelect = document.querySelector("select.goog-te-combo");
-            
-            if (googleSelect) {
-                googleSelect.value = lang;
-                // Usamos bubbles:true para asegurar que el evento suba por el DOM y Google lo escuche
-                googleSelect.dispatchEvent(new Event("change", { bubbles: true }));
+            if (lang === 'es') {
+                // Borrar cookie para volver a español original
+                document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=" + window.location.hostname + "; path=/;";
             } else {
-                // Si el usuario cambia el idioma antes de que Google termine de cargar, lo reintenta en medio segundo
-                setTimeout(function() { translatePage(lang); }, 500);
+                // Escribir cookie con el nuevo idioma
+                document.cookie = "googtrans=/es/" + lang + "; path=/";
+                document.cookie = "googtrans=/es/" + lang + "; domain=" + window.location.hostname + "; path=/";
             }
+            // Recargar para que Google lea la instrucción al instante
+            window.location.reload();
         }
-    </script>
 
+        // Al cargar la página, mantener el selector en el idioma actual
+        window.addEventListener('DOMContentLoaded', () => {
+            const match = document.cookie.match(/googtrans=\/es\/([^;]+)/);
+            if (match) {
+                const lang = match[1];
+                const selector = document.getElementById('lang-selector');
+                if(selector) selector.value = lang;
+            }
+        });
+    </script>
 </body>
 </html>
