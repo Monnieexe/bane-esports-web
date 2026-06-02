@@ -35,6 +35,17 @@
                 <h2 class="font-heading text-xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Registrar Partida</h2>
                 
                 <form id="form-partida" class="flex flex-col gap-4">
+                    <!-- NUEVO CAMPO: SELECCIÓN DE ESCUADRA -->
+                    <div>
+                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Escuadra BANE</label>
+                        <select id="escuadra" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" required>
+                            <option value="BANE Legacy">BANE Legacy</option>
+                            <option value="BANE Ignite">BANE Ignite</option>
+                            <option value="BANE Blaze">BANE Blaze</option>
+                            <option value="BANE Genesis">BANE Genesis</option>
+                        </select>
+                    </div>
+
                     <div>
                         <label class="text-[10px] uppercase tracking-widest text-gray-400">Equipo Rival</label>
                         <input type="text" id="rival" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: Leviatán Academy" required>
@@ -110,6 +121,7 @@
             btnSubmit.disabled = true;
 
             const nuevaPartida = {
+                escuadra: document.getElementById('escuadra').value, // <-- NUEVO DATO ENVIADO
                 rival: document.getElementById('rival').value,
                 torneo: document.getElementById('torneo').value,
                 score_bane: parseInt(document.getElementById('score_bane').value),
@@ -132,7 +144,7 @@
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert("Error crítico de conexión con el servidor local.");
+                alert("Error de conexión con el servidor en la nube.");
             } finally {
                 btnSubmit.innerText = textoOriginal;
                 btnSubmit.disabled = false;
@@ -169,7 +181,7 @@
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert("Error crítico de conexión con el servidor local.");
+                alert("Error de conexión con el servidor en la nube.");
             } finally {
                 btnSubmit.innerText = textoOriginal;
                 btnSubmit.disabled = false;

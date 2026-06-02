@@ -65,10 +65,12 @@ const esAdmin = async (req, res, next) => {
 
 // POST: Guardar partida (PROTEGIDO POR esAdmin)
 app.post('/api/partidas', esAdmin, async (req, res) => {
-    const { rival, torneo, score_bane, score_rival } = req.body;
+    // NUEVO: Recibimos "escuadra" desde el frontend
+    const { escuadra, rival, torneo, score_bane, score_rival } = req.body;
     
     const nuevoMatch = {
         id: crypto.randomUUID(), 
+        escuadra: escuadra || 'BANE', // NUEVO: Guardamos la escuadra en AWS
         rival: rival,
         torneo: torneo,
         score_bane: parseInt(score_bane),
