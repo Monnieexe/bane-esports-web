@@ -31,7 +31,8 @@ const verifier = CognitoJwtVerifier.create({
 const CORREOS_ADMIN = [
     'ivonnesanchez057@gmail.com', 
     'luke@baneesports.com',
-    'mary@baneesports.com'
+    'mary@baneesports.com',
+    'vex@baneesports.com'
 ];
 
 // 3. Cadenero de Seguridad (Middleware)
@@ -75,10 +76,7 @@ app.post('/api/partidas', esAdmin, async (req, res) => {
     };
 
     try {
-        await ddbDocClient.send(new PutCommand({
-            TableName: 'BanePartidas',
-            Item: nuevoMatch
-        }));
+        await ddbDocClient.send(new PutCommand({ TableName: 'BanePartidas', Item: nuevoMatch }));
         res.status(201).json({ mensaje: '¡Partida guardada!', id: nuevoMatch.id });
     } catch (error) {
         console.error(error);
@@ -100,10 +98,7 @@ app.get('/api/partidas', async (req, res) => {
 app.delete('/api/partidas', esAdmin, async (req, res) => {
     const { id } = req.query;
     try {
-        await ddbDocClient.send(new DeleteCommand({
-            TableName: 'BanePartidas',
-            Key: { id: id }
-        }));
+        await ddbDocClient.send(new DeleteCommand({ TableName: 'BanePartidas', Key: { id: id } }));
         res.json({ mensaje: 'Partida eliminada' });
     } catch (error) {
         console.error(error);
@@ -121,17 +116,14 @@ app.post('/api/noticias', esAdmin, async (req, res) => {
     const nuevaNoticia = {
         id: crypto.randomUUID(),
         titulo: titulo,
-        youtube_id: youtube_id || '', // Evita errores si se envía vacío
-        imagen_url: imagen_url || '', // Evita errores si se envía vacío
+        youtube_id: youtube_id || '', 
+        imagen_url: imagen_url || '', 
         descripcion: descripcion,
         fecha: new Date().toISOString()
     };
 
     try {
-        await ddbDocClient.send(new PutCommand({
-            TableName: 'BaneNoticias',
-            Item: nuevaNoticia
-        }));
+        await ddbDocClient.send(new PutCommand({ TableName: 'BaneNoticias', Item: nuevaNoticia }));
         res.status(201).json({ mensaje: '¡Noticia publicada!', id: nuevaNoticia.id });
     } catch (error) {
         console.error(error);
@@ -153,14 +145,62 @@ app.get('/api/noticias', async (req, res) => {
 app.delete('/api/noticias', esAdmin, async (req, res) => {
     const { id } = req.query;
     try {
-        await ddbDocClient.send(new DeleteCommand({
-            TableName: 'BaneNoticias',
-            Key: { id: id }
-        }));
+        await ddbDocClient.send(new DeleteCommand({ TableName: 'BaneNoticias', Key: { id: id } }));
         res.json({ mensaje: 'Noticia eliminada' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al borrar en AWS' });
+    }
+});
+
+// ==========================================
+// NUEVO: RUTAS DEL TORNEO (EQUIPOS)
+// ==========================================
+
+// POST es PÚBLICO: Cualquier capitán puede registrar su equipo
+app.post('/api/equipos', async (req, res) => {
+    const { nombre, logo_url, discord, jugadores } = req.body;
+
+    const nuevoEquipo = {
+        id: crypto.randomUUID(),
+        nombre: nombre || 'Sin Nombre',
+        logo_url: logo_url || '',
+        discord: discord || '',
+        jugadores: jugadores || [],
+        fecha_registro: new Date().toISOString()
+    };
+
+    try {
+        await ddbDocClient.send(new PutCommand({ TableName: 'BaneEquipos', Item: nuevoEquipo }));
+        res.status(201).json({ mensaje: '¡Equipo registrado con éxito!', id: nuevoEquipo.id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al guardar el equipo en AWS' });
+    }
+});
+
+// GET es PÚBLICO: Para mostrar la galería de equipos registrados
+app.get('/api/equipos', async (req, res) => {
+    try {
+        const resultado = await ddbDocClient.send(new ScanCommand({ TableName: 'BaneEquipos' }));
+        // Ordenamos del más viejo al más nuevo para que se formen como van llegando
+        const equiposOrdenados = resultado.Items.sort((a, b) => new Date(a.fecha_registro) - new Date(b.fecha_registro));
+        res.json(equiposOrdenados);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al consultar equipos en AWS' });
+    }
+});
+
+// DELETE es PRIVADO: Solo el staff puede eliminar equipos falsos o troll
+app.delete('/api/equipos', esAdmin, async (req, res) => {
+    const { id } = req.query;
+    try {
+        await ddbDocClient.send(new DeleteCommand({ TableName: 'BaneEquipos', Key: { id: id } }));
+        res.json({ mensaje: 'Equipo eliminado del torneo' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al borrar el equipo en AWS' });
     }
 });
 
