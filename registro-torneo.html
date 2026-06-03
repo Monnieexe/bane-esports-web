@@ -23,6 +23,7 @@
 </head>
 <body class="selection:bg-baneAccentLight selection:text-black antialiased">
 
+    <!-- Navbar -->
     <nav class="w-full bg-[#050505] border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between">
         <div class="font-heading text-2xl font-black tracking-widest text-white">
             <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2 hidden sm:inline">| REGISTRO OFICIAL</span>
@@ -38,7 +39,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
             
-            <!-- FORMULARIO ACTUALIZADO -->
+            <!-- FORMULARIO DE REGISTRO AVANZADO -->
             <div class="bg-[#050505] border border-white/5 p-8 md:p-12 rounded-sm shadow-2xl">
                 <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Inscribe a tu Escuadra</h3>
                 <form id="form-torneo" class="flex flex-col gap-4 font-primary">
@@ -75,32 +76,27 @@
                     <div class="border-t border-white/10 my-4"></div>
                     <label class="text-[10px] uppercase tracking-widest text-baneAccentLight font-bold mb-2">Roster Activo (Riot ID y Discord)</label>
                     
-                    <!-- Jugador 1 (Capitán) -->
                     <div class="grid grid-cols-2 gap-2">
                         <input type="text" id="eq_p1_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P1 Riot ID (Capitán)" required>
                         <input type="text" id="eq_p1_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P1 Discord" required>
                     </div>
-                    <!-- Jugador 2 -->
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="eq_p2_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P2 Riot ID" required>
+                        <input type="text" id="eq_p2_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P2 Riot ID (Main Reyna/Jett)" required>
                         <input type="text" id="eq_p2_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P2 Discord" required>
                     </div>
-                    <!-- Jugador 3 -->
                     <div class="grid grid-cols-2 gap-2">
                         <input type="text" id="eq_p3_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P3 Riot ID" required>
                         <input type="text" id="eq_p3_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P3 Discord" required>
                     </div>
-                    <!-- Jugador 4 -->
                     <div class="grid grid-cols-2 gap-2">
                         <input type="text" id="eq_p4_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P4 Riot ID" required>
                         <input type="text" id="eq_p4_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P4 Discord" required>
                     </div>
-                    <!-- Jugador 5 -->
                     <div class="grid grid-cols-2 gap-2">
                         <input type="text" id="eq_p5_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P5 Riot ID" required>
                         <input type="text" id="eq_p5_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P5 Discord" required>
                     </div>
-                    <!-- Jugador 6 (Suplente - Opcional) -->
+                    <!-- Jugador 6 -->
                     <div class="grid grid-cols-2 gap-2 mt-2">
                         <input type="text" id="eq_p6_riot" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente Riot ID (Opcional)">
                         <input type="text" id="eq_p6_dc" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente Discord (Opcional)">
@@ -109,11 +105,11 @@
                     <button type="submit" class="mt-6 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
                         Enviar Registro
                     </button>
-                    <p class="text-[8px] text-gray-500 text-center uppercase tracking-widest mt-2">Si necesitas editar tu equipo, vuelve a llenar el formulario.</p>
+                    <p class="text-[8px] text-gray-500 text-center uppercase tracking-widest mt-2">¿Error en tu registro? Vuelve a llenar el formulario y el Staff borrará el viejo.</p>
                 </form>
             </div>
 
-            <!-- GALERÍA EN VIVO -->
+            <!-- GALERÍA DE EQUIPOS -->
             <div class="flex flex-col">
                 <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Contendientes Confirmados</h3>
                 <div id="lista-equipos" class="flex flex-col gap-4 max-h-[850px] overflow-y-auto custom-scrollbar pr-2">
@@ -126,6 +122,7 @@
         </div>
     </div>
 
+    <!-- LOGICA FRONTEND -->
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
         let esAdminLocal = false;
@@ -144,8 +141,7 @@
         });
 
         function getAuthHeaders() {
-            const token = localStorage.getItem('idToken');
-            return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+            return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('idToken')}` };
         }
 
         const formTorneo = document.getElementById('form-torneo');
@@ -157,7 +153,6 @@
                 btnSubmit.innerText = 'REGISTRANDO...';
                 btnSubmit.disabled = true;
 
-                // Armar el arreglo de jugadores
                 let jugadoresArr = [
                     { riot: document.getElementById('eq_p1_riot').value, dc: document.getElementById('eq_p1_dc').value },
                     { riot: document.getElementById('eq_p2_riot').value, dc: document.getElementById('eq_p2_dc').value },
@@ -166,7 +161,6 @@
                     { riot: document.getElementById('eq_p5_riot').value, dc: document.getElementById('eq_p5_dc').value }
                 ];
                 
-                // Si llenaron el suplente, lo agregamos
                 const p6_riot = document.getElementById('eq_p6_riot').value;
                 const p6_dc = document.getElementById('eq_p6_dc').value;
                 if(p6_riot || p6_dc) {
@@ -192,9 +186,7 @@
                         alert("¡Escuadra registrada exitosamente para el Bane Invitational!");
                         e.target.reset();
                         cargarEquipos();
-                    } else {
-                        alert("Hubo un error en el servidor. Intenta de nuevo.");
-                    }
+                    } else { alert("Hubo un error en el servidor. Intenta de nuevo."); }
                 } catch (error) { console.error(error); alert("Error crítico de conexión."); }
                 finally { btnSubmit.innerText = textoOriginal; btnSubmit.disabled = false; }
             });
@@ -213,17 +205,15 @@
                     listaEquipos.innerHTML = '';
                     equipos.forEach(equipo => {
                         const imgHtml = equipo.logo_url 
-                            ? `<img src="${equipo.logo_url}" alt="${equipo.nombre}" class="w-20 h-20 object-contain bg-black border border-white/10 rounded-sm p-1">`
+                            ? `<img src="${equipo.logo_url}" class="w-20 h-20 object-contain bg-black border border-white/10 rounded-sm p-1">`
                             : `<div class="w-20 h-20 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-3xl text-gray-600">${equipo.nombre.charAt(0)}</div>`;
                         
-                        // Generar tarjetitas de jugadores
                         const jugadoresHtml = equipo.jugadores.map((j, index) => {
                             const rol = index === 5 ? 'Suplente' : `P${index + 1}`;
                             const borderColor = index === 5 ? 'border-gray-800' : 'border-white/10';
                             const textColor = index === 5 ? 'text-gray-500' : 'text-white';
-                            
                             return `
-                            <div class="bg-black/50 border ${borderColor} p-2 rounded-sm text-left flex flex-col justify-center">
+                            <div class="bg-black/50 border ${borderColor} p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
                                 <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">${rol}</span>
                                 <p class="text-[10px] ${textColor} font-bold truncate" title="${j.riot}">${j.riot}</p>
                                 <p class="text-[9px] text-gray-500 truncate" title="${j.dc}"><i class="text-[8px]">DC:</i> ${j.dc}</p>
