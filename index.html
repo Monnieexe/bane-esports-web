@@ -91,29 +91,12 @@
             animation: pulse-red 2s infinite;
         }
 
-        /* ================================================= */
-        /* ANIQUILAR BARRA DE GOOGLE TRANSLATE (NIVEL MASTER) */
-        /* ================================================= */
-        iframe.skiptranslate { 
-            display: none !important; 
-            visibility: hidden !important; 
-        }
-        body, html { 
-            top: 0px !important; 
-            position: static !important; 
-            margin-top: 0px !important; 
-            padding-top: 0px !important; 
-        }
-        #goog-gt-tt, .goog-te-balloon-frame { 
-            display: none !important; 
-        }
-        .goog-tooltip { 
-            display: none !important; 
-        }
-        .goog-text-highlight { 
-            background-color: transparent !important; 
-            box-shadow: none !important; 
-        }
+        /* ANIQUILAR BARRA DE GOOGLE TRANSLATE */
+        iframe.skiptranslate { display: none !important; visibility: hidden !important; }
+        body, html { top: 0px !important; position: static !important; margin-top: 0px !important; padding-top: 0px !important; }
+        #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
     </style>
 </head>
 <body class="antialiased selection:bg-baneAccentLight selection:text-black">
@@ -369,7 +352,10 @@
                     VOLVER A DIVISIONES
                 </button>
 
+                <!-- ROSTER VALORANT -->
                 <div id="roster-valorant" class="hidden">
+                    
+                    <!-- TITULARES -->
                     <div class="flex flex-col items-center mb-16 reveal text-center">
                         <span class="font-primary text-gray-500 font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Equipo Titular</span>
                         <h3 class="font-heading text-5xl md:text-6xl font-black text-white uppercase tracking-widest">VALORANT</h3>
@@ -450,19 +436,104 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
+                    <!-- IGNITE ROSTER -->
                     <div class="mt-24 mb-10">
                         <div class="flex flex-col items-center mb-16 reveal text-center">
-                            <span class="font-primary text-gray-500 font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Bane Ignite</span>
-                            <h3 class="font-heading text-5xl md:text-6xl font-black text-white uppercase tracking-widest">ACADEMY</h3>
+                            <span class="font-primary text-[#ff4655] font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Segundo Roster Oficial</span>
+                            <h3 class="font-heading text-5xl md:text-6xl font-black text-white uppercase tracking-widest">IGNITE</h3>
                             <div class="h-[1px] w-12 bg-gray-700 mt-6"></div>
                         </div>
-                        <p class="text-center font-primary text-gray-600 text-xs uppercase tracking-widest reveal">Roster en formación...</p>
+                        
+                        <!-- GRID IGNITE (5 Jugadores) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 reveal justify-center">
+                            
+                            <!-- RAGE -->
+                            <div onclick="abrirModalJugador('modal-rage')" class="player-card group cursor-pointer bg-[#050505] border border-baneBorder rounded-sm overflow-hidden flex flex-col h-[480px]">
+                                <div class="relative w-full h-[360px] bg-black flex items-center justify-center overflow-hidden">
+                                    <span class="absolute font-heading text-[18rem] text-white/[0.03] font-black z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none group-hover:scale-105 transition-transform duration-700">B</span>
+                                    <img src="rage_sinfondo.png" alt="Rage" class="w-full h-full object-cover object-top scale-[1.05] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                                    <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-[#050505] to-transparent z-20"></div>
+                                </div>
+                                <div class="px-6 pb-6 pt-3 bg-[#050505] flex flex-col justify-end flex-grow relative z-30">
+                                    <span class="font-primary text-[10px] text-[#ff4655] font-bold uppercase tracking-[0.2em] mb-2">IGL / Flex</span>
+                                    <div class="border-t border-[#1f1f1f] w-full mb-3"></div>
+                                    <div class="flex justify-between items-center">
+                                        <h4 class="font-heading text-[28px] text-white font-bold uppercase tracking-widest leading-none mt-1">RAGE</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- YUTA -->
+                            <div onclick="abrirModalJugador('modal-yuta')" class="player-card group cursor-pointer bg-[#050505] border border-baneBorder rounded-sm overflow-hidden flex flex-col h-[480px]">
+                                <div class="relative w-full h-[360px] bg-black flex items-center justify-center overflow-hidden">
+                                    <span class="absolute font-heading text-[18rem] text-white/[0.03] font-black z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none group-hover:scale-105 transition-transform duration-700">B</span>
+                                    <img src="yuta_sinfondo.png" alt="Yuta" class="w-full h-full object-cover object-top scale-[1.05] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                                    <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-[#050505] to-transparent z-20"></div>
+                                </div>
+                                <div class="px-6 pb-6 pt-3 bg-[#050505] flex flex-col justify-end flex-grow relative z-30">
+                                    <span class="font-primary text-[10px] text-[#ff4655] font-bold uppercase tracking-[0.2em] mb-2">Duelista</span>
+                                    <div class="border-t border-[#1f1f1f] w-full mb-3"></div>
+                                    <div class="flex justify-between items-center">
+                                        <h4 class="font-heading text-[28px] text-white font-bold uppercase tracking-widest leading-none mt-1">YUTA</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- NAV -->
+                            <div onclick="abrirModalJugador('modal-nav')" class="player-card group cursor-pointer bg-[#050505] border border-baneBorder rounded-sm overflow-hidden flex flex-col h-[480px]">
+                                <div class="relative w-full h-[360px] bg-black flex items-center justify-center overflow-hidden">
+                                    <span class="absolute font-heading text-[18rem] text-white/[0.03] font-black z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none group-hover:scale-105 transition-transform duration-700">B</span>
+                                    <img src="nav_sinfondo.png" alt="Nav" class="w-full h-full object-cover object-top scale-[1.05] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                                    <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-[#050505] to-transparent z-20"></div>
+                                </div>
+                                <div class="px-6 pb-6 pt-3 bg-[#050505] flex flex-col justify-end flex-grow relative z-30">
+                                    <span class="font-primary text-[10px] text-[#ff4655] font-bold uppercase tracking-[0.2em] mb-2">Controlador</span>
+                                    <div class="border-t border-[#1f1f1f] w-full mb-3"></div>
+                                    <div class="flex justify-between items-center">
+                                        <h4 class="font-heading text-[28px] text-white font-bold uppercase tracking-widest leading-none mt-1">NAV</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CRIS -->
+                            <div onclick="abrirModalJugador('modal-cris')" class="player-card group cursor-pointer bg-[#050505] border border-baneBorder rounded-sm overflow-hidden flex flex-col h-[480px]">
+                                <div class="relative w-full h-[360px] bg-black flex items-center justify-center overflow-hidden">
+                                    <span class="absolute font-heading text-[18rem] text-white/[0.03] font-black z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none group-hover:scale-105 transition-transform duration-700">B</span>
+                                    <img src="cris_sinfondo.png" alt="Cris" class="w-full h-full object-cover object-top scale-[1.05] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                                    <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-[#050505] to-transparent z-20"></div>
+                                </div>
+                                <div class="px-6 pb-6 pt-3 bg-[#050505] flex flex-col justify-end flex-grow relative z-30">
+                                    <span class="font-primary text-[10px] text-[#ff4655] font-bold uppercase tracking-[0.2em] mb-2">Duelista</span>
+                                    <div class="border-t border-[#1f1f1f] w-full mb-3"></div>
+                                    <div class="flex justify-between items-center">
+                                        <h4 class="font-heading text-[28px] text-white font-bold uppercase tracking-widest leading-none mt-1">CRIS</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- XVALKEI -->
+                            <div onclick="abrirModalJugador('modal-valkie')" class="player-card group cursor-pointer bg-[#050505] border border-baneBorder rounded-sm overflow-hidden flex flex-col h-[480px]">
+                                <div class="relative w-full h-[360px] bg-black flex items-center justify-center overflow-hidden">
+                                    <span class="absolute font-heading text-[18rem] text-white/[0.03] font-black z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none group-hover:scale-105 transition-transform duration-700">B</span>
+                                    <img src="valkie_sinfondo.png" alt="Xvalkei" class="w-full h-full object-cover object-top scale-[1.05] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                                    <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-[#050505] to-transparent z-20"></div>
+                                </div>
+                                <div class="px-6 pb-6 pt-3 bg-[#050505] flex flex-col justify-end flex-grow relative z-30">
+                                    <span class="font-primary text-[10px] text-[#ff4655] font-bold uppercase tracking-[0.2em] mb-2">Iniciador</span>
+                                    <div class="border-t border-[#1f1f1f] w-full mb-3"></div>
+                                    <div class="flex justify-between items-center">
+                                        <h4 class="font-heading text-[28px] text-white font-bold uppercase tracking-widest leading-none mt-1">XVALKEI</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 
+                <!-- ROSTER MOBILE LEGENDS -->
                 <div id="roster-ml" class="hidden">
                     <div class="flex flex-col items-center mb-16 reveal text-center">
                         <span class="font-primary text-gray-500 font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Equipo Titular</span>
@@ -509,6 +580,8 @@
                     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.05)_0%,transparent_70%)] z-0 pointer-events-none"></div>
                 </div>
             </div>
+        </div>
+    </section>
 
     <section id="matches" class="py-32 bg-[#0a0a0a] relative z-10 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
@@ -655,6 +728,7 @@
     </footer>
 
     <!-- MODALES DE JUGADORES (OCULTOS) -->
+    <!-- BANE TITULAR -->
     <div id="modal-monster" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 backdrop-blur-md p-4 opacity-0 transition-opacity duration-300" onclick="cerrarModalJugador('modal-monster', event)">
         <div class="relative w-full max-w-5xl bg-black border border-white/10 flex flex-col shadow-2xl rounded-sm max-h-[95vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
             <button onclick="cerrarModalJugador('modal-monster')" class="absolute top-6 right-6 text-gray-600 hover:text-white transition-colors z-50">
@@ -855,6 +929,202 @@
                     <span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Asistencias</span>
                     <h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">14/Match</h4>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BANE IGNITE MODALES -->
+    <div id="modal-rage" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 backdrop-blur-md p-4 opacity-0 transition-opacity duration-300" onclick="cerrarModalJugador('modal-rage', event)">
+        <div class="relative w-full max-w-5xl bg-black border border-white/10 flex flex-col shadow-2xl rounded-sm max-h-[95vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
+            <button onclick="cerrarModalJugador('modal-rage')" class="absolute top-6 right-6 text-gray-600 hover:text-white transition-colors z-50">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="flex flex-col md:flex-row border-b border-white/5 relative min-h-[480px]">
+                <div class="w-full md:w-1/2 p-10 md:p-14 flex flex-col justify-center border-r border-white/5 z-20 bg-[#050505]">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-[1px] bg-baneAccentLight"></div>
+                        <span class="font-primary text-white font-bold text-[9px] uppercase tracking-[0.4em]">IGL / Flex</span>
+                    </div>
+                    <h2 class="font-heading font-black text-6xl md:text-7xl text-white uppercase tracking-widest mb-4 leading-none">RAGE</h2>
+                    <div class="flex items-center gap-3 text-[9px] font-bold tracking-[0.3em] text-gray-500 uppercase mb-8 font-primary">
+                        <span class="text-white">BANE IGNITE</span><span class="text-[#1f1f1f]">|</span><span>CAPITÁN</span>
+                    </div>
+                    <p class="font-primary text-gray-400 text-sm font-light leading-relaxed mb-10 border-l border-white/10 pl-5">
+                        El cerebro táctico y líder indiscutible del roster. Su asombrosa capacidad como jugador flex le permite adaptarse a cualquier forma de juego, asegurando que el equipo siempre tenga la respuesta correcta ante el enemigo.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="flex items-center gap-3 px-6 py-3 border border-white/10 hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black text-gray-400 text-[9px] font-bold uppercase tracking-widest rounded-sm transition-all font-primary">
+                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                            Twitter
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 relative bg-black overflow-hidden flex items-center justify-center">
+                    <span class="absolute font-heading text-[25rem] text-white/[0.03] font-black leading-none select-none z-0">B</span>
+                    <img src="rage_sinfondo.png" alt="Rage" class="w-full h-full object-cover object-top scale-[1.05] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
+                    <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black to-transparent z-30"></div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 bg-[#050505] divide-x divide-white/5 font-primary">
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Rol</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">Flex</h4></div>
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Impacto</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">85% Win</h4></div>
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Precisión</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">30% HS</h4></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-yuta" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 backdrop-blur-md p-4 opacity-0 transition-opacity duration-300" onclick="cerrarModalJugador('modal-yuta', event)">
+        <div class="relative w-full max-w-5xl bg-black border border-white/10 flex flex-col shadow-2xl rounded-sm max-h-[95vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
+            <button onclick="cerrarModalJugador('modal-yuta')" class="absolute top-6 right-6 text-gray-600 hover:text-white transition-colors z-50">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="flex flex-col md:flex-row border-b border-white/5 relative min-h-[480px]">
+                <div class="w-full md:w-1/2 p-10 md:p-14 flex flex-col justify-center border-r border-white/5 z-20 bg-[#050505]">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-[1px] bg-baneAccentLight"></div>
+                        <span class="font-primary text-white font-bold text-[9px] uppercase tracking-[0.4em]">Duelista</span>
+                    </div>
+                    <h2 class="font-heading font-black text-6xl md:text-7xl text-white uppercase tracking-widest mb-4 leading-none">YUTA</h2>
+                    <div class="flex items-center gap-3 text-[9px] font-bold tracking-[0.3em] text-gray-500 uppercase mb-8 font-primary">
+                        <span class="text-white">BANE IGNITE</span><span class="text-[#1f1f1f]">|</span><span>TITULAR</span>
+                    </div>
+                    <p class="font-primary text-gray-400 text-sm font-light leading-relaxed mb-10 border-l border-white/10 pl-5">
+                        Fuerza bruta incontrolable. Su forma de jugar y su aim son totalmente explosivos; no existe site en el mapa que Yuta no pueda desarmar cuando toma la iniciativa de entrar.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="flex items-center gap-3 px-6 py-3 border border-white/10 hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black text-gray-400 text-[9px] font-bold uppercase tracking-widest rounded-sm transition-all font-primary">
+                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                            Twitter
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 relative bg-black overflow-hidden flex items-center justify-center">
+                    <span class="absolute font-heading text-[25rem] text-white/[0.03] font-black leading-none select-none z-0">B</span>
+                    <img src="yuta_sinfondo.png" alt="Yuta" class="w-full h-full object-cover object-top scale-[1.05] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
+                    <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black to-transparent z-30"></div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 bg-[#050505] divide-x divide-white/5 font-primary">
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Rol</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">Duelista</h4></div>
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Impacto</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">290 ACS</h4></div>
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Precisión</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">35% HS</h4></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-nav" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 backdrop-blur-md p-4 opacity-0 transition-opacity duration-300" onclick="cerrarModalJugador('modal-nav', event)">
+        <div class="relative w-full max-w-5xl bg-black border border-white/10 flex flex-col shadow-2xl rounded-sm max-h-[95vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
+            <button onclick="cerrarModalJugador('modal-nav')" class="absolute top-6 right-6 text-gray-600 hover:text-white transition-colors z-50">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="flex flex-col md:flex-row border-b border-white/5 relative min-h-[480px]">
+                <div class="w-full md:w-1/2 p-10 md:p-14 flex flex-col justify-center border-r border-white/5 z-20 bg-[#050505]">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-[1px] bg-baneAccentLight"></div>
+                        <span class="font-primary text-white font-bold text-[9px] uppercase tracking-[0.4em]">Controlador</span>
+                    </div>
+                    <h2 class="font-heading font-black text-6xl md:text-7xl text-white uppercase tracking-widest mb-4 leading-none">NAV</h2>
+                    <div class="flex items-center gap-3 text-[9px] font-bold tracking-[0.3em] text-gray-500 uppercase mb-8 font-primary">
+                        <span class="text-white">BANE IGNITE</span><span class="text-[#1f1f1f]">|</span><span>TITULAR</span>
+                    </div>
+                    <p class="font-primary text-gray-400 text-sm font-light leading-relaxed mb-10 border-l border-white/10 pl-5">
+                        El dueño del terreno. Su habilidad para dictar los tiempos de la partida mediante la colocación perfecta de sus humos permite aislar a los enemigos y brindar a Ignite el espacio que necesitan.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="flex items-center gap-3 px-6 py-3 border border-white/10 hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black text-gray-400 text-[9px] font-bold uppercase tracking-widest rounded-sm transition-all font-primary">
+                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                            Twitter
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 relative bg-black overflow-hidden flex items-center justify-center">
+                    <span class="absolute font-heading text-[25rem] text-white/[0.03] font-black leading-none select-none z-0">B</span>
+                    <img src="nav_sinfondo.png" alt="Nav" class="w-full h-full object-cover object-top scale-[1.05] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
+                    <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black to-transparent z-30"></div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 bg-[#050505] divide-x divide-white/5 font-primary">
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Rol</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">Smoker</h4></div>
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Impacto</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">80% KAST</h4></div>
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Asistencias</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">15/Match</h4></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cris" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 backdrop-blur-md p-4 opacity-0 transition-opacity duration-300" onclick="cerrarModalJugador('modal-cris', event)">
+        <div class="relative w-full max-w-5xl bg-black border border-white/10 flex flex-col shadow-2xl rounded-sm max-h-[95vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
+            <button onclick="cerrarModalJugador('modal-cris')" class="absolute top-6 right-6 text-gray-600 hover:text-white transition-colors z-50">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="flex flex-col md:flex-row border-b border-white/5 relative min-h-[480px]">
+                <div class="w-full md:w-1/2 p-10 md:p-14 flex flex-col justify-center border-r border-white/5 z-20 bg-[#050505]">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-[1px] bg-baneAccentLight"></div>
+                        <span class="font-primary text-white font-bold text-[9px] uppercase tracking-[0.4em]">Duelista</span>
+                    </div>
+                    <h2 class="font-heading font-black text-6xl md:text-7xl text-white uppercase tracking-widest mb-4 leading-none">CRIS</h2>
+                    <div class="flex items-center gap-3 text-[9px] font-bold tracking-[0.3em] text-gray-500 uppercase mb-8 font-primary">
+                        <span class="text-white">BANE IGNITE</span><span class="text-[#1f1f1f]">|</span><span>TITULAR</span>
+                    </div>
+                    <p class="font-primary text-gray-400 text-sm font-light leading-relaxed mb-10 border-l border-white/10 pl-5">
+                        Poder de fuego puro. Acompaña las ejecuciones con letalidad insaciable y reflejos sumamente agudos, castigando sin piedad cualquier error en el posicionamiento de la defensa enemiga.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="flex items-center gap-3 px-6 py-3 border border-white/10 hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black text-gray-400 text-[9px] font-bold uppercase tracking-widest rounded-sm transition-all font-primary">
+                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                            Twitter
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 relative bg-black overflow-hidden flex items-center justify-center">
+                    <span class="absolute font-heading text-[25rem] text-white/[0.03] font-black leading-none select-none z-0">B</span>
+                    <img src="cris_sinfondo.png" alt="Cris" class="w-full h-full object-cover object-top scale-[1.05] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
+                    <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black to-transparent z-30"></div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 bg-[#050505] divide-x divide-white/5 font-primary">
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Rol</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">Duelista</h4></div>
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Impacto</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">270 ACS</h4></div>
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Precisión</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">32% HS</h4></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-valkie" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 backdrop-blur-md p-4 opacity-0 transition-opacity duration-300" onclick="cerrarModalJugador('modal-valkie', event)">
+        <div class="relative w-full max-w-5xl bg-black border border-white/10 flex flex-col shadow-2xl rounded-sm max-h-[95vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
+            <button onclick="cerrarModalJugador('modal-valkie')" class="absolute top-6 right-6 text-gray-600 hover:text-white transition-colors z-50">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="flex flex-col md:flex-row border-b border-white/5 relative min-h-[480px]">
+                <div class="w-full md:w-1/2 p-10 md:p-14 flex flex-col justify-center border-r border-white/5 z-20 bg-[#050505]">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-[1px] bg-baneAccentLight"></div>
+                        <span class="font-primary text-white font-bold text-[9px] uppercase tracking-[0.4em]">Iniciador</span>
+                    </div>
+                    <h2 class="font-heading font-black text-6xl md:text-7xl text-white uppercase tracking-widest mb-4 leading-none">XVALKEI</h2>
+                    <div class="flex items-center gap-3 text-[9px] font-bold tracking-[0.3em] text-gray-500 uppercase mb-8 font-primary">
+                        <span class="text-white">BANE IGNITE</span><span class="text-[#1f1f1f]">|</span><span>6TO JUGADOR</span>
+                    </div>
+                    <p class="font-primary text-gray-400 text-sm font-light leading-relaxed mb-10 border-l border-white/10 pl-5">
+                        El elemento de soporte que todo roster envidia. Su recolección de información en tiempo real y su iniciación precisa desnudan la defensa enemiga antes de que siquiera vean venir el peligro.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="flex items-center gap-3 px-6 py-3 border border-white/10 hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black text-gray-400 text-[9px] font-bold uppercase tracking-widest rounded-sm transition-all font-primary">
+                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                            Twitter
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 relative bg-black overflow-hidden flex items-center justify-center">
+                    <span class="absolute font-heading text-[25rem] text-white/[0.03] font-black leading-none select-none z-0">B</span>
+                    <img src="valkie_sinfondo.png" alt="Xvalkei" class="w-full h-full object-cover object-top scale-[1.05] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
+                    <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black to-transparent z-30"></div>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 bg-[#050505] divide-x divide-white/5 font-primary">
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Rol</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">Iniciador</h4></div>
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Impacto</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">75% KAST</h4></div>
+                <div class="p-8 text-center"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-[0.3em] block mb-2">Asistencias</span><h4 class="font-heading font-black text-xl text-white uppercase tracking-widest">20/Match</h4></div>
             </div>
         </div>
     </div>
@@ -1105,7 +1375,7 @@
         document.addEventListener('DOMContentLoaded', checkTwitchStatus);
     </script>
 
-    <!-- TRADUCTOR GOOGLE TRANSLATE (MÉTODO COOKIE) -->
+    <!-- TRADUCTOR GOOGLE TRANSLATE -->
     <div id="google_translate_element" style="position:absolute; top:-10000px; left:-10000px; width:1px; height:1px; overflow:hidden;"></div>
     <script type="text/javascript">
         function googleTranslateElementInit() {
