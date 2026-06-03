@@ -23,10 +23,9 @@
 </head>
 <body class="selection:bg-baneAccentLight selection:text-black antialiased">
 
-    <!-- Navbar Minimalista -->
     <nav class="w-full bg-[#050505] border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between">
         <div class="font-heading text-2xl font-black tracking-widest text-white">
-            <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2">| REGISTRO OFICIAL</span>
+            <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2 hidden sm:inline">| REGISTRO OFICIAL</span>
         </div>
         <a href="index.html" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Volver a la Web</a>
     </nav>
@@ -39,42 +38,85 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
             
-            <!-- FORMULARIO -->
+            <!-- FORMULARIO ACTUALIZADO -->
             <div class="bg-[#050505] border border-white/5 p-8 md:p-12 rounded-sm shadow-2xl">
                 <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Inscribe a tu Escuadra</h3>
                 <form id="form-torneo" class="flex flex-col gap-4 font-primary">
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Nombre del Equipo</label>
-                        <input type="text" id="eq_nombre" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: Legacy" required>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] uppercase tracking-widest text-gray-400">Nombre del Equipo</label>
+                            <input type="text" id="eq_nombre" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: Legacy" required>
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase tracking-widest text-gray-400">Rango Promedio</label>
+                            <select id="eq_rango" class="w-full bg-black border border-white/10 text-gray-300 p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors cursor-pointer" required>
+                                <option value="" disabled selected>Selecciona un rango...</option>
+                                <option value="Hierro - Bronce">Hierro - Bronce</option>
+                                <option value="Plata - Oro">Plata - Oro</option>
+                                <option value="Platino - Diamante">Platino - Diamante</option>
+                                <option value="Ascendente - Inmortal">Ascendente - Inmortal</option>
+                                <option value="Radiante">Radiante</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest text-gray-400">URL del Logo (Opcional)</label>
-                        <input type="url" id="eq_logo" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: https://i.imgur.com/logo.png">
-                    </div>
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest text-gray-400">Discord del Capitán</label>
-                        <input type="text" id="eq_discord" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: usuario#1234" required>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] uppercase tracking-widest text-gray-400">Discord del Capitán</label>
+                            <input type="text" id="eq_discord" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: usuario#1234" required>
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase tracking-widest text-gray-400">URL del Logo (Opcional)</label>
+                            <input type="url" id="eq_logo" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: https://i.imgur.com/logo.png">
+                        </div>
                     </div>
                     
                     <div class="border-t border-white/10 my-4"></div>
-                    <label class="text-[10px] uppercase tracking-widest text-baneAccentLight font-bold mb-2">Riot IDs de los Jugadores</label>
+                    <label class="text-[10px] uppercase tracking-widest text-baneAccentLight font-bold mb-2">Roster Activo (Riot ID y Discord)</label>
                     
-                    <input type="text" id="eq_p1" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="Capitán (Riot ID)" required>
-                    <input type="text" id="eq_p2" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="Jugador 2 (Ej: Main Jett/Reyna)" required>
-                    <input type="text" id="eq_p3" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="Jugador 3 (Riot ID)" required>
-                    <input type="text" id="eq_p4" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="Jugador 4 (Riot ID)" required>
-                    <input type="text" id="eq_p5" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="Jugador 5 (Riot ID)" required>
+                    <!-- Jugador 1 (Capitán) -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="eq_p1_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P1 Riot ID (Capitán)" required>
+                        <input type="text" id="eq_p1_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P1 Discord" required>
+                    </div>
+                    <!-- Jugador 2 -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="eq_p2_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P2 Riot ID" required>
+                        <input type="text" id="eq_p2_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P2 Discord" required>
+                    </div>
+                    <!-- Jugador 3 -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="eq_p3_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P3 Riot ID" required>
+                        <input type="text" id="eq_p3_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P3 Discord" required>
+                    </div>
+                    <!-- Jugador 4 -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="eq_p4_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P4 Riot ID" required>
+                        <input type="text" id="eq_p4_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P4 Discord" required>
+                    </div>
+                    <!-- Jugador 5 -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="eq_p5_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P5 Riot ID" required>
+                        <input type="text" id="eq_p5_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P5 Discord" required>
+                    </div>
+                    <!-- Jugador 6 (Suplente - Opcional) -->
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <input type="text" id="eq_p6_riot" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente Riot ID (Opcional)">
+                        <input type="text" id="eq_p6_dc" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente Discord (Opcional)">
+                    </div>
 
                     <button type="submit" class="mt-6 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
                         Enviar Registro
                     </button>
+                    <p class="text-[8px] text-gray-500 text-center uppercase tracking-widest mt-2">Si necesitas editar tu equipo, vuelve a llenar el formulario.</p>
                 </form>
             </div>
 
             <!-- GALERÍA EN VIVO -->
             <div class="flex flex-col">
                 <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Contendientes Confirmados</h3>
-                <div id="lista-equipos" class="flex flex-col gap-4 max-h-[750px] overflow-y-auto custom-scrollbar pr-2">
+                <div id="lista-equipos" class="flex flex-col gap-4 max-h-[850px] overflow-y-auto custom-scrollbar pr-2">
                     <div class="text-center p-12 border border-white/5 bg-[#050505] rounded-sm">
                         <p class="font-primary text-gray-500 text-sm uppercase tracking-widest">Esperando a los primeros retadores...</p>
                     </div>
@@ -115,17 +157,28 @@
                 btnSubmit.innerText = 'REGISTRANDO...';
                 btnSubmit.disabled = true;
 
+                // Armar el arreglo de jugadores
+                let jugadoresArr = [
+                    { riot: document.getElementById('eq_p1_riot').value, dc: document.getElementById('eq_p1_dc').value },
+                    { riot: document.getElementById('eq_p2_riot').value, dc: document.getElementById('eq_p2_dc').value },
+                    { riot: document.getElementById('eq_p3_riot').value, dc: document.getElementById('eq_p3_dc').value },
+                    { riot: document.getElementById('eq_p4_riot').value, dc: document.getElementById('eq_p4_dc').value },
+                    { riot: document.getElementById('eq_p5_riot').value, dc: document.getElementById('eq_p5_dc').value }
+                ];
+                
+                // Si llenaron el suplente, lo agregamos
+                const p6_riot = document.getElementById('eq_p6_riot').value;
+                const p6_dc = document.getElementById('eq_p6_dc').value;
+                if(p6_riot || p6_dc) {
+                    jugadoresArr.push({ riot: p6_riot || 'Sin ID', dc: p6_dc || 'Sin DC' });
+                }
+
                 const nuevoEquipo = {
                     nombre: document.getElementById('eq_nombre').value,
                     logo_url: document.getElementById('eq_logo').value,
-                    discord: document.getElementById('eq_discord').value,
-                    jugadores: [
-                        document.getElementById('eq_p1').value,
-                        document.getElementById('eq_p2').value,
-                        document.getElementById('eq_p3').value,
-                        document.getElementById('eq_p4').value,
-                        document.getElementById('eq_p5').value
-                    ]
+                    rango: document.getElementById('eq_rango').value,
+                    discord_capitan: document.getElementById('eq_discord').value,
+                    jugadores: jugadoresArr
                 };
 
                 try {
@@ -160,22 +213,39 @@
                     listaEquipos.innerHTML = '';
                     equipos.forEach(equipo => {
                         const imgHtml = equipo.logo_url 
-                            ? `<img src="${equipo.logo_url}" alt="${equipo.nombre}" class="w-16 h-16 object-contain bg-black border border-white/10 rounded-sm p-1">`
-                            : `<div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-600">${equipo.nombre.charAt(0)}</div>`;
+                            ? `<img src="${equipo.logo_url}" alt="${equipo.nombre}" class="w-20 h-20 object-contain bg-black border border-white/10 rounded-sm p-1">`
+                            : `<div class="w-20 h-20 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-3xl text-gray-600">${equipo.nombre.charAt(0)}</div>`;
                         
-                        const jugadoresHtml = equipo.jugadores.map(j => `<span class="text-[10px] bg-white/5 border border-white/10 px-2 py-1 text-gray-400 rounded-sm">${j}</span>`).join('');
-                        const btnBorrar = esAdminLocal ? `<button onclick="borrarEquipo('${equipo.id}')" class="absolute top-4 right-4 text-gray-600 hover:text-[#ff4655] transition-colors" title="Expulsar Equipo"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>` : '';
+                        // Generar tarjetitas de jugadores
+                        const jugadoresHtml = equipo.jugadores.map((j, index) => {
+                            const rol = index === 5 ? 'Suplente' : `P${index + 1}`;
+                            const borderColor = index === 5 ? 'border-gray-800' : 'border-white/10';
+                            const textColor = index === 5 ? 'text-gray-500' : 'text-white';
+                            
+                            return `
+                            <div class="bg-black/50 border ${borderColor} p-2 rounded-sm text-left flex flex-col justify-center">
+                                <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">${rol}</span>
+                                <p class="text-[10px] ${textColor} font-bold truncate" title="${j.riot}">${j.riot}</p>
+                                <p class="text-[9px] text-gray-500 truncate" title="${j.dc}"><i class="text-[8px]">DC:</i> ${j.dc}</p>
+                            </div>`;
+                        }).join('');
+
+                        const btnBorrar = esAdminLocal ? `<button onclick="borrarEquipo('${equipo.id}')" class="absolute top-4 right-4 text-gray-600 hover:text-[#ff4655] transition-colors bg-black p-1 rounded-sm z-10" title="Expulsar Equipo"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>` : '';
 
                         listaEquipos.innerHTML += `
-                            <div class="bg-[#050505] border border-white/5 hover:border-baneAccentLight transition-all duration-300 p-6 rounded-sm relative group flex flex-col sm:flex-row items-center gap-6 shadow-lg">
+                            <div class="bg-[#050505] border border-white/5 hover:border-baneAccentLight transition-all duration-300 p-6 rounded-sm relative group flex flex-col shadow-lg">
                                 ${btnBorrar}
-                                ${imgHtml}
-                                <div class="flex-1 text-center sm:text-left">
-                                    <h4 class="font-heading text-xl text-white font-bold uppercase tracking-widest mb-1">${equipo.nombre}</h4>
-                                    <p class="font-primary text-[#ff4655] text-[9px] uppercase tracking-[0.2em] mb-3 font-bold">Capitán: ${equipo.discord}</p>
-                                    <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
-                                        ${jugadoresHtml}
+                                <div class="flex items-center gap-6 mb-4">
+                                    ${imgHtml}
+                                    <div class="flex-1">
+                                        <h4 class="font-heading text-xl text-white font-bold uppercase tracking-widest mb-1">${equipo.nombre}</h4>
+                                        <div class="flex gap-4 items-center">
+                                            <p class="font-primary text-[#ff4655] text-[9px] uppercase tracking-[0.2em] font-bold">Rango: ${equipo.rango || 'N/A'}</p>
+                                        </div>
                                     </div>
+                                </div>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                    ${jugadoresHtml}
                                 </div>
                             </div>
                         `;
