@@ -154,18 +154,20 @@ app.delete('/api/noticias', esAdmin, async (req, res) => {
 });
 
 // ==========================================
-// NUEVO: RUTAS DEL TORNEO (EQUIPOS)
+// RUTAS DEL TORNEO (EQUIPOS)
 // ==========================================
 
 // POST es PÚBLICO: Cualquier capitán puede registrar su equipo
 app.post('/api/equipos', async (req, res) => {
-    const { nombre, logo_url, discord, jugadores } = req.body;
+    // RECIBIMOS LOS NUEVOS CAMPOS DESDE EL FORMULARIO
+    const { nombre, logo_url, rango, discord_capitan, jugadores } = req.body;
 
     const nuevoEquipo = {
         id: crypto.randomUUID(),
         nombre: nombre || 'Sin Nombre',
         logo_url: logo_url || '',
-        discord: discord || '',
+        discord: discord_capitan || '',
+        rango: rango || 'No especificado',
         jugadores: jugadores || [],
         fecha_registro: new Date().toISOString()
     };
