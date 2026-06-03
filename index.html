@@ -499,14 +499,16 @@
             <!-- BRACKET DEL TORNEO -->
             <div class="mb-10 reveal">
                 <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-8 border-l-4 border-baneAccentLight pl-3">Llaves del Torneo</h3>
-                <div class="w-full bg-black border border-white/10 rounded-sm h-[600px] flex items-center justify-center relative overflow-hidden shadow-2xl">
-                    <!-- Aquí irá el <iframe> de Challonge/Start.gg cuando generes el torneo -->
-                    <p class="font-primary text-gray-500 uppercase tracking-widest text-xs z-10 relative">El Bracket se revelará al cerrar las inscripciones.</p>
-                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.05)_0%,transparent_70%)]"></div>
+                
+                <!-- Contenedor del Bracket Interactivo -->
+                <div class="w-full bg-black border border-white/10 rounded-sm h-[600px] relative overflow-hidden shadow-2xl">
+                    
+                    <!-- Iframe de Challonge (Modo Oscuro) -->
+                    <iframe src="https://challonge.com/es/bane_invitational_demo/module?theme=7575&show_standings=1" width="100%" height="100%" frameborder="0" scrolling="auto" allowtransparency="true" class="relative z-20"></iframe>
+                    
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.05)_0%,transparent_70%)] z-0 pointer-events-none"></div>
                 </div>
             </div>
-        </div>
-    </section>
 
     <section id="matches" class="py-32 bg-[#0a0a0a] relative z-10 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
