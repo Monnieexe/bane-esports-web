@@ -102,14 +102,12 @@
 <body class="antialiased selection:bg-baneAccentLight selection:text-black">
 
     <nav class="fixed w-full z-50 top-0 bg-black/90 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between transition-all">
-        <!-- Bloque 1: Logo -->
         <div class="flex-1 flex justify-start items-center">
             <div class="font-heading text-2xl font-black tracking-widest text-white whitespace-nowrap">
                 <span class="text-baneAccentLight text-3xl">B</span> BANE
             </div>
         </div>
         
-        <!-- Bloque 2: Menú Centrado -->
         <ul class="hidden lg:flex justify-center gap-6 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 items-center shrink-0 px-4">
             <li><a href="#origen" class="hover:text-white transition-colors">Origen</a></li>
             <li><a href="#staff" class="hover:text-white transition-colors">Staff</a></li>
@@ -120,7 +118,6 @@
             <li><a id="btn-admin" href="admin.html" class="hidden text-baneAccentLight hover:text-white transition-colors border border-baneAccentLight/30 px-2 py-1 rounded-sm">ADMIN</a></li>
         </ul>
         
-        <!-- Bloque 3: Botones e Idioma -->
         <div class="flex-1 flex justify-end items-center gap-4">
             <select id="lang-selector" class="bg-transparent border border-white/20 text-gray-300 text-[10px] font-bold uppercase tracking-widest px-2 py-2 outline-none cursor-pointer hover:border-baneAccentLight hover:text-white transition-all rounded-sm" onchange="translatePage(this.value)">
                 <option value="es" class="bg-black">ES</option>
@@ -529,7 +526,7 @@
 
                 </div>
 
-                <!-- ROSTER MOBILE LEGENDS (NUEVO) -->
+                <!-- ROSTER MOBILE LEGENDS -->
                 <div id="roster-ml" class="hidden">
                     <div class="flex flex-col items-center mb-16 reveal text-center">
                         <span class="font-primary text-gray-500 font-bold uppercase tracking-[0.3em] text-[10px] mb-2">Equipo Titular</span>
@@ -558,7 +555,8 @@
                         <div onclick="abrirModalJugador('modal-zsyxz')" class="player-card group cursor-pointer bg-[#050505] border border-baneBorder rounded-sm overflow-hidden flex flex-col h-[480px]">
                             <div class="relative w-full h-[360px] bg-black flex items-center justify-center overflow-hidden">
                                 <span class="absolute font-heading text-[18rem] text-white/[0.03] font-black z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none group-hover:scale-105 transition-transform duration-700">M</span>
-                                <img src="zsyxz_sinfondo.png" alt="zsyxz" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                                <!-- AQUI CORREGÍ LA IMAGEN A KEOS_SINFONDO -->
+                                <img src="keos_sinfondo.png" alt="zsyxz" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
                                 <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-[#050505] to-transparent z-20"></div>
                             </div>
                             <div class="px-6 pb-6 pt-3 bg-[#050505] flex flex-col justify-end flex-grow relative z-30">
@@ -619,7 +617,8 @@
                         <div onclick="abrirModalJugador('modal-zaek')" class="player-card group cursor-pointer bg-[#050505] border border-baneBorder rounded-sm overflow-hidden flex flex-col h-[480px] w-full sm:w-[280px]">
                             <div class="relative w-full h-[360px] bg-black flex items-center justify-center overflow-hidden">
                                 <span class="absolute font-heading text-[18rem] text-white/[0.03] font-black z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none group-hover:scale-105 transition-transform duration-700">M</span>
-                                <img src="keos_sinfondo.png" alt="Zaek" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                                <!-- AQUI CORREGÍ LA IMAGEN A ZSYXZ_SINFONDO -->
+                                <img src="zsyxz_sinfondo.png" alt="Zaek" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
                                 <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-[#050505] to-transparent z-20"></div>
                             </div>
                             <div class="px-6 pb-6 pt-3 bg-[#050505] flex flex-col justify-end flex-grow relative z-30">
@@ -633,7 +632,8 @@
                         <div onclick="abrirModalJugador('modal-ouma')" class="player-card group cursor-pointer bg-[#050505] border border-baneBorder rounded-sm overflow-hidden flex flex-col h-[480px] w-full sm:w-[280px]">
                             <div class="relative w-full h-[360px] bg-black flex items-center justify-center overflow-hidden">
                                 <span class="absolute font-heading text-[18rem] text-white/[0.03] font-black z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none group-hover:scale-105 transition-transform duration-700">M</span>
-                                <img src="ouma_sinfondo.jpg" alt="Ouma" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                                <!-- AQUI CORREGÍ OUMA A PNG -->
+                                <img src="ouma_sinfondo.png" alt="Ouma" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-10 grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
                                 <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-[#050505] to-transparent z-20"></div>
                             </div>
                             <div class="px-6 pb-6 pt-3 bg-[#050505] flex flex-col justify-end flex-grow relative z-30">
@@ -665,6 +665,9 @@
                 <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-8 border-l-4 border-baneAccentLight pl-3">Llaves del Torneo</h3>
                 
                 <div class="w-full bg-black border border-white/10 rounded-sm h-[300px] flex items-center justify-center relative overflow-hidden shadow-2xl">
+                    <!-- Iframe de Challonge oculto temporalmente -->
+                    <!-- <iframe src="https://challonge.com/es/bane_invitational_demo/module?theme=7575&show_standings=1" width="100%" height="100%" frameborder="0" scrolling="auto" allowtransparency="true" class="relative z-20"></iframe> -->
+                    
                     <p class="font-primary text-gray-500 uppercase tracking-widest text-xs md:text-sm z-10 relative">El Bracket se revelará al cerrar las inscripciones.</p>
                     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.05)_0%,transparent_70%)] z-0 pointer-events-none"></div>
                 </div>
@@ -1010,7 +1013,7 @@
         </div>
     </div>
 
-    <!-- XVALKEI CORREGIDO EN SU MODAL -->
+    <!-- XVALKEI CORREGIDO EN SU MODAL (-translate-y-16) -->
     <div id="modal-valkie" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 backdrop-blur-md p-4 opacity-0 transition-opacity duration-300" onclick="cerrarModalJugador('modal-valkie', event)">
         <div class="relative w-full max-w-5xl bg-black border border-white/10 flex flex-col shadow-2xl rounded-sm max-h-[95vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
             <button onclick="cerrarModalJugador('modal-valkie')" class="absolute top-6 right-6 text-gray-600 hover:text-white transition-colors z-50"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg></button>
@@ -1036,7 +1039,7 @@
         </div>
     </div>
 
-    <!-- MODALES MOBILE LEGENDS (NUEVOS) -->
+    <!-- MODALES MOBILE LEGENDS -->
     <div id="modal-kai" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 backdrop-blur-md p-4 opacity-0 transition-opacity duration-300" onclick="cerrarModalJugador('modal-kai', event)">
         <div class="relative w-full max-w-5xl bg-black border border-white/10 flex flex-col shadow-2xl rounded-sm max-h-[95vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
             <button onclick="cerrarModalJugador('modal-kai')" class="absolute top-6 right-6 text-gray-600 hover:text-white transition-colors z-50"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg></button>
@@ -1079,7 +1082,8 @@
                 </div>
                 <div class="w-full md:w-1/2 relative bg-black overflow-hidden flex items-center justify-center">
                     <span class="absolute font-heading text-[25rem] text-white/[0.03] font-black leading-none select-none z-0">M</span>
-                    <img src="zsyxz_sinfondo.png" alt="zsyxz" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
+                    <!-- AQUI CORREGÍ LA IMAGEN A KEOS_SINFONDO -->
+                    <img src="keos_sinfondo.png" alt="zsyxz" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
                     <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black to-transparent z-30"></div>
                 </div>
             </div>
@@ -1187,7 +1191,8 @@
                 </div>
                 <div class="w-full md:w-1/2 relative bg-black overflow-hidden flex items-center justify-center">
                     <span class="absolute font-heading text-[25rem] text-white/[0.03] font-black leading-none select-none z-0">M</span>
-                    <img src="keos_sinfondo.png" alt="Zaek" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
+                    <!-- AQUI CORREGÍ LA IMAGEN A ZSYXZ_SINFONDO -->
+                    <img src="zsyxz_sinfondo.png" alt="Zaek" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
                     <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black to-transparent z-30"></div>
                 </div>
             </div>
@@ -1214,7 +1219,8 @@
                 </div>
                 <div class="w-full md:w-1/2 relative bg-black overflow-hidden flex items-center justify-center">
                     <span class="absolute font-heading text-[25rem] text-white/[0.03] font-black leading-none select-none z-0">M</span>
-                    <img src="ouma_sinfondo.jpg" alt="Ouma" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
+                    <!-- AQUI CORREGÍ OUMA A PNG -->
+                    <img src="ouma_sinfondo.png" alt="Ouma" class="w-full h-full object-cover object-top scale-[1.1] origin-top translate-y-2 relative z-20 grayscale opacity-90 transition-all duration-500">
                     <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-black to-transparent z-30"></div>
                 </div>
             </div>
