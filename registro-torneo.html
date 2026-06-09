@@ -23,7 +23,6 @@
 </head>
 <body class="selection:bg-baneAccentLight selection:text-black antialiased">
 
-    <!-- Navbar -->
     <nav class="w-full bg-[#050505] border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between">
         <div class="font-heading text-2xl font-black tracking-widest text-white">
             <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2 hidden sm:inline">| REGISTRO OFICIAL</span>
@@ -34,13 +33,12 @@
     <div class="max-w-7xl mx-auto px-6 py-20">
         <div class="text-center mb-16">
             <h1 class="font-heading text-4xl md:text-6xl font-black text-white uppercase tracking-widest mb-4">Bane Invitational</h1>
-            <p class="font-primary text-gray-400 text-sm tracking-widest uppercase">Inicio oficial: 7 de Junio de 2026</p>
+            <p class="font-primary text-gray-400 text-sm tracking-widest uppercase">Inicio oficial: 12 de Junio de 2026</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
             
-            <!-- FORMULARIO DE REGISTRO AVANZADO -->
-            <div class="bg-[#050505] border border-white/5 p-8 md:p-12 rounded-sm shadow-2xl">
+            <div class="bg-[#050505] border border-white/5 p-8 md:p-12 rounded-sm shadow-2xl h-fit">
                 <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Inscribe a tu Escuadra</h3>
                 <form id="form-torneo" class="flex flex-col gap-4 font-primary">
                     
@@ -68,8 +66,13 @@
                             <input type="text" id="eq_discord" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: usuario#1234" required>
                         </div>
                         <div>
-                            <label class="text-[10px] uppercase tracking-widest text-gray-400">URL del Logo (Opcional)</label>
-                            <input type="url" id="eq_logo" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: https://i.imgur.com/logo.png">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-400">Sube tu Logo (Opcional)</label>
+                            <div class="relative w-full mt-1">
+                                <input type="file" id="eq_logo_file" accept="image/png, image/jpeg, image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                <div id="file-label" class="w-full bg-black border border-white/10 text-gray-500 p-3 text-sm focus:border-baneAccentLight transition-colors flex items-center justify-center border-dashed border-2 hover:border-white/30 truncate">
+                                    <span class="truncate px-2">Haz clic para buscar imagen</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -96,10 +99,13 @@
                         <input type="text" id="eq_p5_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P5 Riot ID" required>
                         <input type="text" id="eq_p5_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P5 Discord" required>
                     </div>
-                    <!-- Jugador 6 -->
                     <div class="grid grid-cols-2 gap-2 mt-2">
-                        <input type="text" id="eq_p6_riot" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente Riot ID (Opcional)">
-                        <input type="text" id="eq_p6_dc" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente Discord (Opcional)">
+                        <input type="text" id="eq_p6_riot" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente 1 Riot ID (Opcional)">
+                        <input type="text" id="eq_p6_dc" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente 1 DC (Opcional)">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="eq_p7_riot" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente 2 Riot ID (Opcional)">
+                        <input type="text" id="eq_p7_dc" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente 2 DC (Opcional)">
                     </div>
 
                     <button type="submit" class="mt-6 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
@@ -109,7 +115,6 @@
                 </form>
             </div>
 
-            <!-- GALERÍA DE EQUIPOS -->
             <div class="flex flex-col">
                 <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Contendientes Confirmados</h3>
                 <div id="lista-equipos" class="flex flex-col gap-4 max-h-[850px] overflow-y-auto custom-scrollbar pr-2">
@@ -120,12 +125,63 @@
             </div>
 
         </div>
+
+        <div class="mt-16 bg-[#050505] border border-white/5 p-8 md:p-12 rounded-sm shadow-2xl">
+            <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-8 border-l-4 border-baneAccentLight pl-3">Reglamento Oficial</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 font-primary text-sm text-gray-400 leading-relaxed">
+                <div class="flex flex-col gap-6">
+                    <div>
+                        <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">1. Formato del Torneo</h4>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li><strong>Estructura:</strong> Doble Eliminación (Winner Bracket y Lower Bracket).</li>
+                            <li><strong>Fase de llaves:</strong> Todas las partidas regulares se jugarán al Mejor de 1 (Bo1).</li>
+                            <li><strong>Semifinales:</strong> Partidas al Mejor de 3 (Bo3).</li>
+                            <li><strong>Gran Final:</strong> El encuentro definitivo por el campeonato se jugará al Mejor de 5 (Bo5).</li>
+                            <li><strong>Map Pool:</strong> Se utilizará la rotación de 7 mapas activa del circuito VCT.</li>
+                            <li><strong>Bolsa de Premios:</strong> $1500 USD garantizados.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">2. Inscripción y Roster</h4>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li>Cada equipo debe registrar a 5 jugadores titulares y un máximo de 2 suplentes.</li>
+                            <li>Solo se permite la participación de jugadores del roster oficial de BANE Esports.</li>
+                            <li>Uso exclusivo de cuentas principales. El <strong>smurfing</strong> es motivo de descalificación inmediata.</li>
+                            <li><strong>Puntualidad:</strong> 10 minutos de tolerancia. Si un equipo no tiene a los 5 jugadores, perderá por W.O.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col gap-6">
+                    <div>
+                        <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">3. Configuración y Vetos</h4>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li><strong>Lobby:</strong> Modo Torneo activado, Sin trucos. Servidor en Ciudad de México o Miami (por mutuo acuerdo o al azar por Admin). Win by Two activado.</li>
+                            <li><strong>Bo1:</strong> Ban alternado hasta quedar 1 mapa. El equipo que no baneó al final elige lado.</li>
+                            <li><strong>Bo3:</strong> Ban, Ban, Pick, Pick, Ban, Ban. El mapa sobrante es el decisivo.</li>
+                            <li><strong>Bo5:</strong> El equipo invicto (Winner Bracket) es el Equipo A. Bans iniciales y picks intercalados.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">4. Pausas y Conducta</h4>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li>Se permiten dos pausas tácticas (1 min cada una) por mapa.</li>
+                            <li>En desconexiones, pausar en la fase de compra. Máximo 10 min de pausa técnica acumulada por equipo. Si no regresan, se juega en desventaja.</li>
+                            <li><strong>Cero Toxicidad:</strong> Insultos, discriminación, uso de scripts o bug exploits resultará en veto permanente.</li>
+                            <li>El capitán ganador debe enviar una captura de pantalla del marcador al Discord oficial para el registro.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- LOGICA FRONTEND -->
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
         let esAdminLocal = false;
+        let logoBase64 = ''; // Variable para almacenar la imagen comprimida
 
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('idToken');
@@ -144,6 +200,40 @@
             return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('idToken')}` };
         }
 
+        // LÓGICA DE COMPRESIÓN DE IMAGEN EN CLIENTE
+        document.getElementById('eq_logo_file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const label = document.getElementById('file-label');
+            
+            if(!file) {
+                label.innerHTML = '<span class="truncate px-2">Haz clic para buscar imagen</span>';
+                logoBase64 = '';
+                return;
+            }
+            
+            label.innerHTML = `<span class="text-white truncate px-2">${file.name}</span>`;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    // Reducimos el tamaño de la imagen para que la acepte la base de datos sin explotar
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 250;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    // Se convierte a Base64 comprimida a calidad 0.8
+                    logoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
+
         const formTorneo = document.getElementById('form-torneo');
         if(formTorneo) {
             formTorneo.addEventListener('submit', async (e) => {
@@ -161,15 +251,19 @@
                     { riot: document.getElementById('eq_p5_riot').value, dc: document.getElementById('eq_p5_dc').value }
                 ];
                 
+                // Suplente 1
                 const p6_riot = document.getElementById('eq_p6_riot').value;
                 const p6_dc = document.getElementById('eq_p6_dc').value;
-                if(p6_riot || p6_dc) {
-                    jugadoresArr.push({ riot: p6_riot || 'Sin ID', dc: p6_dc || 'Sin DC' });
-                }
+                if(p6_riot || p6_dc) jugadoresArr.push({ riot: p6_riot || 'Sin ID', dc: p6_dc || 'Sin DC' });
+
+                // Suplente 2
+                const p7_riot = document.getElementById('eq_p7_riot').value;
+                const p7_dc = document.getElementById('eq_p7_dc').value;
+                if(p7_riot || p7_dc) jugadoresArr.push({ riot: p7_riot || 'Sin ID', dc: p7_dc || 'Sin DC' });
 
                 const nuevoEquipo = {
                     nombre: document.getElementById('eq_nombre').value,
-                    logo_url: document.getElementById('eq_logo').value,
+                    logo_url: logoBase64, // Ahora enviamos la imagen en formato de texto
                     rango: document.getElementById('eq_rango').value,
                     discord_capitan: document.getElementById('eq_discord').value,
                     jugadores: jugadoresArr
@@ -185,6 +279,8 @@
                     if (response.ok) {
                         alert("¡Escuadra registrada exitosamente para el Bane Invitational!");
                         e.target.reset();
+                        logoBase64 = '';
+                        document.getElementById('file-label').innerHTML = '<span class="truncate px-2">Haz clic para buscar imagen</span>';
                         cargarEquipos();
                     } else { alert("Hubo un error en el servidor. Intenta de nuevo."); }
                 } catch (error) { console.error(error); alert("Error crítico de conexión."); }
@@ -205,13 +301,20 @@
                     listaEquipos.innerHTML = '';
                     equipos.forEach(equipo => {
                         const imgHtml = equipo.logo_url 
-                            ? `<img src="${equipo.logo_url}" class="w-20 h-20 object-contain bg-black border border-white/10 rounded-sm p-1">`
+                            ? `<img src="${equipo.logo_url}" alt="${equipo.nombre}" class="w-20 h-20 object-contain bg-black border border-white/10 rounded-sm p-1">`
                             : `<div class="w-20 h-20 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-3xl text-gray-600">${equipo.nombre.charAt(0)}</div>`;
                         
                         const jugadoresHtml = equipo.jugadores.map((j, index) => {
-                            const rol = index === 5 ? 'Suplente' : `P${index + 1}`;
-                            const borderColor = index === 5 ? 'border-gray-800' : 'border-white/10';
-                            const textColor = index === 5 ? 'text-gray-500' : 'text-white';
+                            let rol = `P${index + 1}`;
+                            let borderColor = 'border-white/10';
+                            let textColor = 'text-white';
+                            
+                            if(index >= 5) {
+                                rol = `Suplente ${index - 4}`;
+                                borderColor = 'border-gray-800';
+                                textColor = 'text-gray-500';
+                            }
+                            
                             return `
                             <div class="bg-black/50 border ${borderColor} p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
                                 <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">${rol}</span>
