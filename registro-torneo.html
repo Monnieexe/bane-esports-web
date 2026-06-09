@@ -19,6 +19,8 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #000000; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="selection:bg-baneAccentLight selection:text-black antialiased">
@@ -126,57 +128,66 @@
 
         </div>
 
-        <div class="mt-16 bg-[#050505] border border-white/5 p-8 md:p-12 rounded-sm shadow-2xl">
-            <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-8 border-l-4 border-baneAccentLight pl-3">Reglamento Oficial</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 font-primary text-sm text-gray-400 leading-relaxed">
-                <div class="flex flex-col gap-6">
-                    <div>
-                        <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">1. Formato del Torneo</h4>
-                        <ul class="list-disc pl-4 space-y-1">
-                            <li><strong>Estructura:</strong> Doble Eliminación (Winner Bracket y Lower Bracket).</li>
-                            <li><strong>Fase de llaves:</strong> Todas las partidas regulares se jugarán al Mejor de 1 (Bo1).</li>
-                            <li><strong>Semifinales:</strong> Partidas al Mejor de 3 (Bo3).</li>
-                            <li><strong>Gran Final:</strong> El encuentro definitivo por el campeonato se jugará al Mejor de 5 (Bo5).</li>
-                            <li><strong>Map Pool:</strong> Se utilizará la rotación de 7 mapas activa del circuito VCT.</li>
-                            <li><strong>Bolsa de Premios:</strong> $1500 USD garantizados.</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">2. Inscripción y Roster</h4>
-                        <ul class="list-disc pl-4 space-y-1">
-                            <li>Cada equipo debe registrar a 5 jugadores titulares y un máximo de 2 suplentes.</li>
-                            <li>Solo se permite la participación de jugadores del roster oficial de BANE Esports.</li>
-                            <li>Uso exclusivo de cuentas principales. El <strong>smurfing</strong> es motivo de descalificación inmediata.</li>
-                            <li><strong>Puntualidad:</strong> 10 minutos de tolerancia. Si un equipo no tiene a los 5 jugadores, perderá por W.O.</li>
-                        </ul>
-                    </div>
+        <div class="mt-16 w-full mx-auto">
+            <button onclick="toggleReglamento()" class="w-full bg-[#050505] border border-white/5 p-6 flex items-center justify-between hover:border-baneAccentLight transition-all duration-300 group rounded-sm shadow-xl focus:outline-none">
+                <div class="flex items-center gap-4">
+                    <div class="w-1 h-8 bg-baneAccentLight"></div>
+                    <h3 class="font-heading text-xl md:text-2xl font-bold text-white uppercase tracking-widest">Desplegar Reglamento Oficial</h3>
                 </div>
-                
-                <div class="flex flex-col gap-6">
-                    <div>
-                        <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">3. Configuración y Vetos</h4>
-                        <ul class="list-disc pl-4 space-y-1">
-                            <li><strong>Lobby:</strong> Modo Torneo activado, Sin trucos. Servidor en Ciudad de México o Miami (por mutuo acuerdo o al azar por Admin). Win by Two activado.</li>
-                            <li><strong>Bo1:</strong> Ban alternado hasta quedar 1 mapa. El equipo que no baneó al final elige lado.</li>
-                            <li><strong>Bo3:</strong> Ban, Ban, Pick, Pick, Ban, Ban. El mapa sobrante es el decisivo.</li>
-                            <li><strong>Bo5:</strong> El equipo invicto (Winner Bracket) es el Equipo A. Bans iniciales y picks intercalados.</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">4. Pausas y Conducta</h4>
-                        <ul class="list-disc pl-4 space-y-1">
-                            <li>Se permiten dos pausas tácticas (1 min cada una) por mapa.</li>
-                            <li>En desconexiones, pausar en la fase de compra. Máximo 10 min de pausa técnica acumulada por equipo. Si no regresan, se juega en desventaja.</li>
-                            <li><strong>Cero Toxicidad:</strong> Insultos, discriminación, uso de scripts o bug exploits resultará en veto permanente.</li>
-                            <li>El capitán ganador debe enviar una captura de pantalla del marcador al Discord oficial para el registro.</li>
-                        </ul>
+                <svg id="icono-reglamento" class="w-8 h-8 text-gray-500 group-hover:text-baneAccentLight transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+
+            <div id="contenido-reglamento" class="hidden overflow-hidden mt-2">
+                <div class="bg-[#050505] border border-white/5 p-8 md:p-12 rounded-sm shadow-2xl">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 font-primary text-sm text-gray-400 leading-relaxed">
+                        <div class="flex flex-col gap-6">
+                            <div>
+                                <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">1. Formato del Torneo</h4>
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li><strong>Estructura:</strong> Doble Eliminación (Winner Bracket y Lower Bracket).</li>
+                                    <li><strong>Fase de llaves:</strong> Todas las partidas regulares se jugarán al Mejor de 1 (Bo1).</li>
+                                    <li><strong>Semifinales:</strong> Partidas al Mejor de 3 (Bo3).</li>
+                                    <li><strong>Gran Final:</strong> El encuentro definitivo por el campeonato se jugará al Mejor de 5 (Bo5).</li>
+                                    <li><strong>Map Pool:</strong> Se utilizará la rotación de 7 mapas activa del circuito VCT.</li>
+                                    <li><strong>Bolsa de Premios:</strong> $1500 USD garantizados.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">2. Inscripción y Roster</h4>
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li>Cada equipo debe registrar a 5 jugadores titulares y un máximo de 2 suplentes.</li>
+                                    <li>Solo se permite la participación de jugadores del roster oficial de BANE Esports.</li>
+                                    <li>Uso exclusivo de cuentas principales. El <strong>smurfing</strong> es motivo de descalificación inmediata.</li>
+                                    <li><strong>Puntualidad:</strong> 10 minutos de tolerancia. Si un equipo no tiene a los 5 jugadores, perderá por W.O.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col gap-6">
+                            <div>
+                                <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">3. Configuración y Vetos</h4>
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li><strong>Lobby:</strong> Modo Torneo activado, Sin trucos. Servidor en Ciudad de México o Miami (por mutuo acuerdo o al azar por Admin). Win by Two activado.</li>
+                                    <li><strong>Bo1:</strong> Ban alternado hasta quedar 1 mapa. El equipo que no baneó al final elige lado.</li>
+                                    <li><strong>Bo3:</strong> Ban, Ban, Pick, Pick, Ban, Ban. El mapa sobrante es el decisivo.</li>
+                                    <li><strong>Bo5:</strong> El equipo invicto (Winner Bracket) es el Equipo A. Bans iniciales y picks intercalados.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">4. Pausas y Conducta</h4>
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li>Se permiten dos pausas tácticas (1 min cada una) por mapa.</li>
+                                    <li>En desconexiones, pausar en la fase de compra. Máximo 10 min de pausa técnica acumulada por equipo. Si no regresan, se juega en desventaja.</li>
+                                    <li><strong>Cero Toxicidad:</strong> Insultos, discriminación, uso de scripts o bug exploits resultará en veto permanente.</li>
+                                    <li>El capitán ganador debe enviar una captura de pantalla del marcador al Discord oficial para el registro.</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-    </div>
+        </div>
 
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
@@ -198,6 +209,22 @@
 
         function getAuthHeaders() {
             return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('idToken')}` };
+        }
+
+        // Función para desplegar el reglamento
+        function toggleReglamento() {
+            const contenido = document.getElementById('contenido-reglamento');
+            const icono = document.getElementById('icono-reglamento');
+            
+            if (contenido.classList.contains('hidden')) {
+                contenido.classList.remove('hidden');
+                contenido.classList.add('fade-in');
+                icono.style.transform = 'rotate(180deg)'; // Gira la flechita
+            } else {
+                contenido.classList.add('hidden');
+                contenido.classList.remove('fade-in');
+                icono.style.transform = 'rotate(0deg)'; // Devuelve la flechita
+            }
         }
 
         // LÓGICA DE COMPRESIÓN DE IMAGEN EN CLIENTE
