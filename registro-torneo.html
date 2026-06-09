@@ -296,7 +296,6 @@
                     rango: document.getElementById('eq_rango').value,
                     discord_capitan: document.getElementById('eq_discord').value,
                     jugadores: jugadoresArr,
-                    // MAPEADO DE CAMPOS NUEVOS
                     coach: document.getElementById('eq_coach').value || '',
                     coach_asistente: document.getElementById('eq_coach_asist').value || '',
                     analista: document.getElementById('eq_analista').value || ''
@@ -337,34 +336,50 @@
                             ? `<img src="${equipo.logo_url}" alt="${equipo.nombre}" class="w-20 h-20 object-contain bg-black border border-white/10 rounded-sm p-1">`
                             : `<div class="w-20 h-20 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-3xl text-gray-600">${equipo.nombre.charAt(0)}</div>`;
                         
-                        const jugadoresHtml = equipo.jugadores.map((j, index) => {
-                            let rol = `P${index + 1}`;
-                            let borderColor = 'border-white/10';
-                            let textColor = 'text-white';
-                            
-                            if(index >= 5) {
-                                rol = `Suplente ${index - 4}`;
-                                borderColor = 'border-gray-800';
-                                textColor = 'text-gray-500';
-                            }
-                            
-                            return `
-                            <div class="bg-black/50 border ${borderColor} p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
-                                <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">${rol}</span>
-                                <p class="text-[10px] ${textColor} font-bold truncate" title="${j.riot}">${j.riot}</p>
-                                <p class="text-[9px] text-gray-500 truncate" title="${j.dc}"><i class="text-[8px]">DC:</i> ${j.dc}</p>
-                            </div>`;
-                        }).join('');
+                        let htmlRecuadros = '';
 
-                        // VISUALIZACIÓN ELEGANTE DEL STAFF TÉCNICO EN LA TARJETA
-                        let staffHtml = '';
-                        if (equipo.coach || equipo.coach_asistente || equipo.analista) {
-                            staffHtml = `
-                            <div class="mt-4 pt-3 border-t border-white/5 text-left text-[11px] text-gray-400 space-y-1">
-                                <span class="text-[8px] uppercase tracking-widest text-gray-500 font-bold block mb-1">Staff Técnico</span>
-                                ${equipo.coach ? `<p><b class="text-baneAccentLight">Coach:</b> ${equipo.coach}</p>` : ''}
-                                ${equipo.coach_asistente ? `<p><b class="text-baneAccentLight">Asistente:</b> ${equipo.coach_asistente}</p>` : ''}
-                                ${equipo.analista ? `<p><b class="text-baneAccentLight">Analista:</b> ${equipo.analista}</p>` : ''}
+                        // GENERAR RECUADROS DE JUGADORES Y SUPLENTES
+                        if(equipo.jugadores) {
+                            equipo.jugadores.forEach((j, index) => {
+                                let rol = `P${index + 1}`;
+                                let borderColor = 'border-white/10';
+                                let textColor = 'text-white';
+                                
+                                if(index >= 5) {
+                                    rol = `Suplente ${index - 4}`;
+                                    borderColor = 'border-gray-800';
+                                    textColor = 'text-gray-500';
+                                }
+                                
+                                htmlRecuadros += `
+                                <div class="bg-black/50 border ${borderColor} p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
+                                    <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">${rol}</span>
+                                    <p class="text-[10px] ${textColor} font-bold truncate" title="${j.riot}">${j.riot}</p>
+                                    <p class="text-[9px] text-gray-500 truncate" title="${j.dc}"><i class="text-[8px]">DC:</i> ${j.dc}</p>
+                                </div>`;
+                            });
+                        }
+
+                        // GENERAR RECUADROS VISUALES PARA STAFF TÉCNICO (IGUAL A LOS JUGADORES)
+                        if (equipo.coach) {
+                            htmlRecuadros += `
+                            <div class="bg-black/50 border border-white/10 p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
+                                <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">Coach</span>
+                                <p class="text-[10px] text-white font-bold truncate" title="${equipo.coach}">${equipo.coach}</p>
+                            </div>`;
+                        }
+                        if (equipo.coach_asistente) {
+                            htmlRecuadros += `
+                            <div class="bg-black/50 border border-white/10 p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
+                                <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">Coach Asistente</span>
+                                <p class="text-[10px] text-white font-bold truncate" title="${equipo.coach_asistente}">${equipo.coach_asistente}</p>
+                            </div>`;
+                        }
+                        if (equipo.analista) {
+                            htmlRecuadros += `
+                            <div class="bg-black/50 border border-white/10 p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
+                                <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">Analista</span>
+                                <p class="text-[10px] text-white font-bold truncate" title="${equipo.analista}">${equipo.analista}</p>
                             </div>`;
                         }
 
@@ -383,9 +398,8 @@
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                    ${jugadoresHtml}
+                                    ${htmlRecuadros}
                                 </div>
-                                ${staffHtml}
                             </div>
                         `;
                     });
