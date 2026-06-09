@@ -72,7 +72,6 @@
                                 </ul>
                             </div>
                         </div>
-                        
                         <div class="flex flex-col gap-6">
                             <div>
                                 <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">3. Configuración y Vetos</h4>
@@ -290,15 +289,21 @@
                 const p7_dc = document.getElementById('eq_p7_dc').value;
                 if(p7_riot || p7_dc) jugadoresArr.push({ riot: p7_riot || 'Sin ID', dc: p7_dc || 'Sin DC' });
 
+                // TRUCO NINJA: Disfrazamos al Staff como jugadores para que la Base de Datos no los borre
+                const coach = document.getElementById('eq_coach').value;
+                const coach_asist = document.getElementById('eq_coach_asist').value;
+                const analista = document.getElementById('eq_analista').value;
+
+                if (coach) jugadoresArr.push({ riot: coach, dc: 'STAFF_COACH' });
+                if (coach_asist) jugadoresArr.push({ riot: coach_asist, dc: 'STAFF_ASISTENTE' });
+                if (analista) jugadoresArr.push({ riot: analista, dc: 'STAFF_ANALISTA' });
+
                 const nuevoEquipo = {
                     nombre: document.getElementById('eq_nombre').value,
                     logo_url: logoBase64,
                     rango: document.getElementById('eq_rango').value,
                     discord_capitan: document.getElementById('eq_discord').value,
-                    jugadores: jugadoresArr,
-                    coach: document.getElementById('eq_coach').value || '',
-                    coach_asistente: document.getElementById('eq_coach_asist').value || '',
-                    analista: document.getElementById('eq_analista').value || ''
+                    jugadores: jugadoresArr
                 };
 
                 try {
@@ -336,52 +341,45 @@
                             ? `<img src="${equipo.logo_url}" alt="${equipo.nombre}" class="w-20 h-20 object-contain bg-black border border-white/10 rounded-sm p-1">`
                             : `<div class="w-20 h-20 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-3xl text-gray-600">${equipo.nombre.charAt(0)}</div>`;
                         
-                        let htmlRecuadros = '';
+                        const jugadoresHtml = equipo.jugadores.map((j, index) => {
+                            let rol = `P${index + 1}`;
+                            let borderColor = 'border-white/10';
+                            let textColor = 'text-white';
+                            let subtitulo = `<p class="text-[9px] text-gray-500 truncate" title="${j.dc}"><i class="text-[8px]">DC:</i> ${j.dc}</p>`;
+                            let tituloColor = 'text-baneAccentLight';
 
-                        // GENERAR RECUADROS DE JUGADORES Y SUPLENTES
-                        if(equipo.jugadores) {
-                            equipo.jugadores.forEach((j, index) => {
-                                let rol = `P${index + 1}`;
-                                let borderColor = 'border-white/10';
-                                let textColor = 'text-white';
-                                
-                                if(index >= 5) {
-                                    rol = `Suplente ${index - 4}`;
-                                    borderColor = 'border-gray-800';
-                                    textColor = 'text-gray-500';
-                                }
-                                
-                                htmlRecuadros += `
-                                <div class="bg-black/50 border ${borderColor} p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
-                                    <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">${rol}</span>
-                                    <p class="text-[10px] ${textColor} font-bold truncate" title="${j.riot}">${j.riot}</p>
-                                    <p class="text-[9px] text-gray-500 truncate" title="${j.dc}"><i class="text-[8px]">DC:</i> ${j.dc}</p>
-                                </div>`;
-                            });
-                        }
-
-                        // GENERAR RECUADROS VISUALES PARA STAFF TÉCNICO (IGUAL A LOS JUGADORES)
-                        if (equipo.coach) {
-                            htmlRecuadros += `
-                            <div class="bg-black/50 border border-white/10 p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
-                                <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">Coach</span>
-                                <p class="text-[10px] text-white font-bold truncate" title="${equipo.coach}">${equipo.coach}</p>
+                            // Detectar Staff oculto
+                            if (j.dc === 'STAFF_COACH') {
+                                rol = 'Coach';
+                                borderColor = 'border-baneAccentLight/30';
+                                tituloColor = 'text-gray-500';
+                                textColor = 'text-baneAccentLight';
+                                subtitulo = ''; 
+                            } else if (j.dc === 'STAFF_ASISTENTE') {
+                                rol = 'Coach Asistente';
+                                borderColor = 'border-baneAccentLight/30';
+                                tituloColor = 'text-gray-500';
+                                textColor = 'text-baneAccentLight';
+                                subtitulo = '';
+                            } else if (j.dc === 'STAFF_ANALISTA') {
+                                rol = 'Analista';
+                                borderColor = 'border-baneAccentLight/30';
+                                tituloColor = 'text-gray-500';
+                                textColor = 'text-baneAccentLight';
+                                subtitulo = '';
+                            } else if (index >= 5) {
+                                rol = `Suplente`;
+                                borderColor = 'border-gray-800';
+                                textColor = 'text-gray-500';
+                            }
+                            
+                            return `
+                            <div class="bg-black/50 border ${borderColor} p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden min-h-[50px]">
+                                <span class="text-[8px] uppercase tracking-widest ${tituloColor} mb-0.5">${rol}</span>
+                                <p class="text-[10px] ${textColor} font-bold truncate" title="${j.riot}">${j.riot}</p>
+                                ${subtitulo}
                             </div>`;
-                        }
-                        if (equipo.coach_asistente) {
-                            htmlRecuadros += `
-                            <div class="bg-black/50 border border-white/10 p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
-                                <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">Coach Asistente</span>
-                                <p class="text-[10px] text-white font-bold truncate" title="${equipo.coach_asistente}">${equipo.coach_asistente}</p>
-                            </div>`;
-                        }
-                        if (equipo.analista) {
-                            htmlRecuadros += `
-                            <div class="bg-black/50 border border-white/10 p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden">
-                                <span class="text-[8px] uppercase tracking-widest text-baneAccentLight mb-0.5">Analista</span>
-                                <p class="text-[10px] text-white font-bold truncate" title="${equipo.analista}">${equipo.analista}</p>
-                            </div>`;
-                        }
+                        }).join('');
 
                         const btnBorrar = esAdminLocal ? `<button onclick="borrarEquipo('${equipo.id}')" class="absolute top-4 right-4 text-gray-600 hover:text-[#ff4655] transition-colors bg-black p-1 rounded-sm z-10" title="Expulsar Equipo"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>` : '';
 
@@ -398,7 +396,7 @@
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                    ${htmlRecuadros}
+                                    ${jugadoresHtml}
                                 </div>
                             </div>
                         `;
