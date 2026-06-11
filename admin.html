@@ -96,7 +96,18 @@
                 const s1 = document.getElementById('sorteo_eq1');
                 const s2 = document.getElementById('sorteo_eq2');
                 let opts = '<option value="">-- Seleccionar Equipo --</option>';
-                equipos.forEach(e => opts += `<option value="${e.nombre}">${e.nombre}</option>`);
+                
+                // Listamos los equipos de la base de datos asegurándonos de no duplicar a Datasy o Pegasus si ya se registraron
+                equipos.forEach(e => {
+                    const nombreUpper = e.nombre.toUpperCase();
+                    if(nombreUpper !== 'DATASY' && nombreUpper !== 'PEGASUS') {
+                        opts += `<option value="${e.nombre}">${e.nombre}</option>`;
+                    }
+                });
+                
+                // Agregamos a Datasy y Pegasus manualmente al final de la lista
+                opts += `<option value="DATASY">DATASY (Invitado)</option>`;
+                opts += `<option value="PEGASUS">PEGASUS (Invitado)</option>`;
                 
                 s1.innerHTML = opts;
                 s2.innerHTML = opts + '<option value="BYE">-- PASE DIRECTO (BYE) --</option>';
