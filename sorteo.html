@@ -27,7 +27,11 @@
         <div class="font-heading text-2xl font-black tracking-widest text-white">
             <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2 hidden sm:inline">| SORTEO DE LLAVES</span>
         </div>
-        <a href="index.html" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Volver a la Web</a>
+        <ul class="hidden lg:flex justify-center gap-6 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 items-center">
+            <li><a href="index.html" class="hover:text-white transition-colors">Inicio</a></li>
+            <li><a href="#bracket-interactivo" class="text-baneAccentLight hover:text-white transition-colors">Ver Bracket</a></li>
+        </ul>
+        <a href="index.html" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Volver</a>
     </nav>
 
     <div class="max-w-7xl mx-auto px-6 py-20 relative z-10">
@@ -67,140 +71,33 @@
             </div>
         </div>
 
-        <div class="mb-20">
-            <h3 class="font-heading text-xl md:text-2xl font-bold text-white uppercase tracking-widest mb-8 border-l-4 border-baneAccentLight pl-4">Llave: Ascendente - Inmortal</h3>
-            
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div id="bracket-interactivo" class="mb-20 pt-10">
+            <div class="flex flex-col items-center mb-10 text-center">
+                <span class="font-primary text-baneAccentLight font-bold uppercase tracking-[0.4em] text-[10px] mb-3">Live Tracking</span>
+                <h3 class="font-heading text-3xl md:text-4xl font-bold text-white uppercase tracking-widest">Bracket Oficial en Vivo</h3>
+                <div class="h-[1px] w-12 bg-baneAccentLight mt-6"></div>
+                <p class="text-gray-400 text-sm mt-6 max-w-2xl font-primary">El progreso del torneo se actualiza en tiempo real. Sigue a tu equipo por el Winner Bracket o acompáñalo en su redención por el Lower Bracket.</p>
+            </div>
+
+            <div class="w-full bg-[#050505] border border-white/10 rounded-sm p-2 md:p-4 shadow-2xl relative overflow-hidden" style="height: 800px;">
+                <iframe 
+                    src="https://challonge.com/es/valorant_demo_bracket/module?theme=7575&show_standings=1&multiplier=1.0&match_width_multiplier=1.2" 
+                    width="100%" 
+                    height="100%" 
+                    frameborder="0" 
+                    scrolling="auto" 
+                    allowtransparency="true" 
+                    class="rounded-sm relative z-20">
+                </iframe>
                 
-                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">B</div>
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">BANE IGNITE</h4>
-                    </div>
-                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">GHOST ESPORTS</h4>
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">G</div>
-                    </div>
-                </div>
-
-                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">B</div>
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">BNE LEGACY</h4>
-                    </div>
-                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">ASTRAL LEGENDS</h4>
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">A</div>
-                    </div>
-                </div>
-
-                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">N</div>
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">NÖNSENSE</h4>
-                    </div>
-                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">NO MERCY 8</h4>
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">N</div>
-                    </div>
-                </div>
-
-                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">A</div>
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">ANCESTRAL E-SPORTS</h4>
-                    </div>
-                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">TEAM SCARLET</h4>
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">T</div>
-                    </div>
-                </div>
-
-                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">A</div>
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">ASTRYX ESPORTS</h4>
-                    </div>
-                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">QRO ESPORTS</h4>
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">Q</div>
-                    </div>
-                </div>
-
-                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">T</div>
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">TREEOAKS ESPORT</h4>
-                    </div>
-                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">ARCANUM ZERO</h4>
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">A</div>
-                    </div>
-                </div>
-
-                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">T</div>
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">THALYRA HYDRA</h4>
-                    </div>
-                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">SUAVECITOS</h4>
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">S</div>
-                    </div>
-                </div>
-
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.02)_0%,transparent_70%)] z-0 pointer-events-none"></div>
             </div>
         </div>
 
-        <div class="mb-16">
-            <h3 class="font-heading text-xl md:text-2xl font-bold text-white uppercase tracking-widest mb-8 border-l-4 border-white pl-4">Llave: Platino - Diamante</h3>
-            
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                
-                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">I</div>
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">INSOMNIO MORPHEUS</h4>
-                    </div>
-                    <div class="px-8 font-heading text-2xl text-white font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">B4NE GENESIS</h4>
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">B</div>
-                    </div>
-                </div>
-
-                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">S</div>
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">STORM OF THORNS</h4>
-                    </div>
-                    <div class="px-8 font-heading text-2xl text-white font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">THALYRA</h4>
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">T</div>
-                    </div>
-                </div>
-
-                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">I</div>
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">INSOMNIO NIGHT</h4>
-                    </div>
-                    <div class="px-8 font-heading text-2xl text-white font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
-                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
-                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">SILENCE PROTOCOL</h4>
-                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">S</div>
-                    </div>
-                </div>
-
-            </div>
+        <div class="text-center mt-10">
+            <a href="index.html" class="inline-block border border-white/20 text-gray-300 px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black transition-all rounded-sm">
+                Regresar al Inicio
+            </a>
         </div>
 
     </div>
