@@ -39,14 +39,25 @@
 
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
+        let diccionarioLogos = {};
 
-        document.addEventListener('DOMContentLoaded', cargarSorteo);
+        document.addEventListener('DOMContentLoaded', cargarSorteoYLogos);
 
-        async function cargarSorteo() {
+        async function cargarSorteoYLogos() {
             const contenedor = document.getElementById('contenedor-sorteo');
             try {
-                const res = await fetch(`${API_URL}/noticias`);
-                const noticias = await res.json();
+                // 1. Cargar equipos para extraer sus logos
+                const resEq = await fetch(`${API_URL}/equipos`);
+                if(resEq.ok) {
+                    const equipos = await resEq.json();
+                    equipos.forEach(e => {
+                        if (e.logo_url) diccionarioLogos[e.nombre] = e.logo_url;
+                    });
+                }
+
+                // 2. Cargar el Bracket
+                const resNot = await fetch(`${API_URL}/noticias`);
+                const noticias = await resNot.json();
                 
                 const bracketData = noticias.find(n => n.titulo === '[BRACKET_DATA]');
                 
@@ -55,8 +66,8 @@
                     renderizarCartelera(matches, contenedor);
                 } else {
                     contenedor.innerHTML = `
-                        <div class="text-center p-12 border border-[#ff4655]/20 bg-[#050505] rounded-sm">
-                            <p class="font-primary text-[#ff4655] text-sm uppercase tracking-widest">El Staff aún está configurando los enfrentamientos.</p>
+                        <div class="text-center p-12 border border-[#ff4655]/20 bg-[#050505] rounded-sm shadow-[0_0_20px_rgba(255,70,85,0.1)]">
+                            <p class="font-primary text-[#ff4655] text-sm uppercase tracking-widest font-bold">El Staff aún está configurando los enfrentamientos.</p>
                         </div>`;
                 }
             } catch (e) {
@@ -64,10 +75,16 @@
             }
         }
 
+        function getLogoHtml(nombreEquipo) {
+            if(diccionarioLogos[nombreEquipo]) {
+                return `<img src="${diccionarioLogos[nombreEquipo]}" class="w-12 h-12 md:w-16 md:h-16 object-contain bg-black border border-white/10 p-1 rounded-sm shadow-md">`;
+            }
+            return `<div class="w-12 h-12 md:w-16 md:h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-xl md:text-3xl text-gray-500 shadow-md">${nombreEquipo.charAt(0)}</div>`;
+        }
+
         function renderizarCartelera(matches, contenedor) {
             contenedor.innerHTML = '';
             
-            // Agrupar por fase
             const fases = {};
             matches.forEach(m => {
                 if(!fases[m.fase]) fases[m.fase] = [];
@@ -85,41 +102,49 @@
                     let col1 = 'text-white', col2 = 'text-white';
                     let op1 = 'opacity-100', op2 = 'opacity-100';
                     let badge1 = '', badge2 = '';
-                    let centro = '<span class="text-baneAccentLight font-black text-2xl">VS</span>';
+                    let centro = '<span class="text-baneAccentLight font-black text-2xl md:text-4xl drop-shadow-[0_0_10px_rgba(255,70,85,0.3)]">VS</span>';
+                    let cardBorder = 'border-white/5 hover:border-white/20';
 
                     if (m.status === 'eq1') {
-                        col1 = 'text-[#00ff88]'; badge1 = '<span class="bg-[#00ff88]/20 text-[#00ff88] px-2 py-1 text-[8px] uppercase tracking-widest ml-2 rounded-sm">AVANZA</span>';
-                        col2 = 'text-gray-600 line-through'; op2 = 'opacity-40';
-                        centro = '<span class="text-gray-700 font-bold text-lg">FINALIZADO</span>';
+                        col1 = 'text-[#00ff88]'; badge1 = '<span class="bg-[#00ff88]/10 border border-[#00ff88]/30 text-[#00ff88] px-2 py-1 text-[8px] uppercase tracking-widest ml-2 rounded-sm mt-1">Avanza</span>';
+                        col2 = 'text-gray-600 line-through'; op2 = 'opacity-40 grayscale';
+                        centro = '<span class="text-gray-700 font-bold text-xs uppercase tracking-widest text-center">Finalizado</span>';
+                        cardBorder = 'border-[#00ff88]/20 shadow-[0_0_15px_rgba(0,255,136,0.05)]';
                     } else if (m.status === 'eq2') {
-                        col2 = 'text-[#00ff88]'; badge2 = '<span class="bg-[#00ff88]/20 text-[#00ff88] px-2 py-1 text-[8px] uppercase tracking-widest mr-2 rounded-sm">AVANZA</span>';
-                        col1 = 'text-gray-600 line-through'; op1 = 'opacity-40';
-                        centro = '<span class="text-gray-700 font-bold text-lg">FINALIZADO</span>';
+                        col2 = 'text-[#00ff88]'; badge2 = '<span class="bg-[#00ff88]/10 border border-[#00ff88]/30 text-[#00ff88] px-2 py-1 text-[8px] uppercase tracking-widest mr-2 rounded-sm mt-1">Avanza</span>';
+                        col1 = 'text-gray-600 line-through'; op1 = 'opacity-40 grayscale';
+                        centro = '<span class="text-gray-700 font-bold text-xs uppercase tracking-widest text-center">Finalizado</span>';
+                        cardBorder = 'border-[#00ff88]/20 shadow-[0_0_15px_rgba(0,255,136,0.05)]';
                     }
 
-                    // Caso especial: PASE DIRECTO
                     if (m.eq2 === 'BYE') {
                         centro = '<span class="text-gray-700 font-bold text-xs uppercase tracking-widest text-center">Pase<br>Directo</span>';
-                        col2 = 'text-gray-700'; op2 = 'opacity-30';
-                        m.eq2 = 'Nadie';
+                        col2 = 'text-gray-800'; op2 = 'opacity-20 border-dashed';
+                        m.eq2 = 'VACANTE';
+                        cardBorder = 'border-white/5';
                     }
 
+                    const img1 = getLogoHtml(m.eq1);
+                    const img2 = m.eq2 === 'VACANTE' 
+                        ? `<div class="w-12 h-12 md:w-16 md:h-16 border border-gray-800 border-dashed rounded-sm flex items-center justify-center"><svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>` 
+                        : getLogoHtml(m.eq2);
+
                     html += `
-                        <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex items-center justify-between transition-all duration-300">
-                            <div class="flex items-center gap-3 flex-1 ${op1}">
-                                <div class="w-10 h-10 bg-black border border-white/10 flex items-center justify-center font-heading text-lg text-gray-500">${m.eq1.charAt(0)}</div>
+                        <div class="bg-[#050505] border ${cardBorder} p-6 md:p-8 rounded-sm shadow-lg flex items-center justify-between transition-all duration-300">
+                            <div class="flex items-center gap-4 flex-1 ${op1}">
+                                ${img1}
                                 <div class="flex flex-col items-start">
                                     <h4 class="font-heading text-sm md:text-lg ${col1} font-bold uppercase tracking-widest">${m.eq1}</h4>
                                     ${badge1}
                                 </div>
                             </div>
-                            <div class="px-4 font-heading flex flex-col items-center">${centro}</div>
-                            <div class="flex items-center gap-3 flex-1 justify-end text-right ${op2}">
+                            <div class="px-4 md:px-8 font-heading flex flex-col items-center">${centro}</div>
+                            <div class="flex items-center gap-4 flex-1 justify-end text-right ${op2}">
                                 <div class="flex flex-col items-end">
                                     <h4 class="font-heading text-sm md:text-lg ${col2} font-bold uppercase tracking-widest">${m.eq2}</h4>
                                     ${badge2}
                                 </div>
-                                <div class="w-10 h-10 bg-black border border-white/10 flex items-center justify-center font-heading text-lg text-gray-500">${m.eq2.charAt(0)}</div>
+                                ${img2}
                             </div>
                         </div>
                     `;
