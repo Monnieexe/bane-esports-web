@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteo Oficial | Bane Invitational</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { baneAccent: '#8b0000', baneAccentLight: '#ff4655' } }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #000; color: white; overflow-x: hidden; }
+        .font-heading { font-family: 'Cinzel', serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #000000; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    </style>
+</head>
+<body class="selection:bg-baneAccentLight selection:text-black antialiased">
+
+    <nav class="w-full bg-[#050505] border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between z-50 relative">
+        <div class="font-heading text-2xl font-black tracking-widest text-white">
+            <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2 hidden sm:inline">| SORTEO DE LLAVES</span>
+        </div>
+        <a href="index.html" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Volver a la Web</a>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-20 relative z-10">
+        <div class="text-center mb-16">
+            <h1 class="font-heading text-4xl md:text-6xl font-black text-white uppercase tracking-widest mb-4">Enfrentamientos</h1>
+            <p class="font-primary text-gray-400 text-sm tracking-widest uppercase">Fase 1: Sorteo Oficial por Rangos</p>
+        </div>
+
+        <div class="mb-24">
+            <div class="flex items-center gap-4 mb-8 justify-center">
+                <div class="w-12 h-[1px] bg-baneAccentLight"></div>
+                <h3 class="font-heading text-xl md:text-2xl font-bold text-white uppercase tracking-widest text-center">Match Pendiente de Confirmación</h3>
+                <div class="w-12 h-[1px] bg-baneAccentLight"></div>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-[#050505] border border-baneAccentLight/50 p-8 md:p-12 rounded-sm shadow-[0_0_30px_rgba(255,70,85,0.1)] relative overflow-hidden group hover:border-baneAccentLight transition-colors duration-500">
+                <div class="absolute top-0 right-0 bg-baneAccentLight text-black text-[8px] font-bold uppercase tracking-widest px-4 py-1">REQUIERE ATENCIÓN</div>
+                
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+                    <div class="flex-1 flex flex-col items-center md:items-end text-center md:text-right">
+                        <div class="w-24 h-24 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-4xl text-gray-600 mb-4 opacity-50">A</div>
+                        <h4 class="font-heading text-2xl md:text-3xl text-gray-400 font-bold uppercase tracking-widest">AETHERIS ESPORT</h4>
+                        <p class="font-primary text-[10px] text-[#ff4655] font-bold uppercase tracking-widest mt-2 border border-[#ff4655]/30 px-3 py-1 bg-[#ff4655]/5">Sin Respuesta</p>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center px-8 py-6 md:py-0">
+                        <span class="font-heading text-5xl md:text-6xl text-white font-black opacity-20 group-hover:opacity-100 group-hover:text-baneAccentLight transition-all duration-500 drop-shadow-[0_0_15px_rgba(255,70,85,0.5)]">VS</span>
+                        <span class="text-[10px] text-gray-500 uppercase tracking-widest mt-3 font-bold">Por Confirmar</span>
+                    </div>
+
+                    <div class="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
+                        <div class="w-24 h-24 bg-black border border-gray-800 border-dashed rounded-sm flex items-center justify-center font-heading text-4xl text-gray-800 mb-4">D</div>
+                        <h4 class="font-heading text-2xl md:text-3xl text-gray-600 font-bold uppercase tracking-widest">DATASY</h4>
+                        <p class="font-primary text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2 border border-gray-800 px-3 py-1">Registro Pendiente</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-20">
+            <h3 class="font-heading text-xl md:text-2xl font-bold text-white uppercase tracking-widest mb-8 border-l-4 border-baneAccentLight pl-4">Llave: Ascendente - Inmortal</h3>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                
+                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">B</div>
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">BANE IGNITE</h4>
+                    </div>
+                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">GHOST ESPORTS</h4>
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">G</div>
+                    </div>
+                </div>
+
+                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">B</div>
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">BNE LEGACY</h4>
+                    </div>
+                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">ASTRAL LEGENDS</h4>
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">A</div>
+                    </div>
+                </div>
+
+                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">N</div>
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">NÖNSENSE</h4>
+                    </div>
+                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">NO MERCY 8</h4>
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">N</div>
+                    </div>
+                </div>
+
+                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">A</div>
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">ANCESTRAL E-SPORTS</h4>
+                    </div>
+                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">TEAM SCARLET</h4>
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">T</div>
+                    </div>
+                </div>
+
+                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">A</div>
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">ASTRYX ESPORTS</h4>
+                    </div>
+                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">QRO ESPORTS</h4>
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">Q</div>
+                    </div>
+                </div>
+
+                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">T</div>
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">TREEOAKS ESPORT</h4>
+                    </div>
+                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">ARCANUM ZERO</h4>
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">A</div>
+                    </div>
+                </div>
+
+                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">T</div>
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">THALYRA HYDRA</h4>
+                    </div>
+                    <div class="px-8 font-heading text-2xl text-baneAccentLight font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">SUAVECITOS</h4>
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">S</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="mb-16">
+            <h3 class="font-heading text-xl md:text-2xl font-bold text-white uppercase tracking-widest mb-8 border-l-4 border-white pl-4">Llave: Platino - Diamante</h3>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                
+                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">I</div>
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">INSOMNIO MORPHEUS</h4>
+                    </div>
+                    <div class="px-8 font-heading text-2xl text-white font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">B4NE GENESIS</h4>
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">B</div>
+                    </div>
+                </div>
+
+                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">S</div>
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">STORM OF THORNS</h4>
+                    </div>
+                    <div class="px-8 font-heading text-2xl text-white font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">THALYRA</h4>
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">T</div>
+                    </div>
+                </div>
+
+                <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex flex-col sm:flex-row items-center justify-between group hover:border-white/20 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-start mb-4 sm:mb-0">
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">I</div>
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-left">INSOMNIO NIGHT</h4>
+                    </div>
+                    <div class="px-8 font-heading text-2xl text-white font-black opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all">VS</div>
+                    <div class="flex items-center gap-4 flex-1 w-full sm:w-auto justify-center sm:justify-end mt-4 sm:mt-0 text-right">
+                        <h4 class="font-heading text-lg md:text-xl text-white font-bold uppercase tracking-widest text-center sm:text-right">SILENCE PROTOCOL</h4>
+                        <div class="w-16 h-16 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-2xl text-gray-500">S</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
