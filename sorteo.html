@@ -6,101 +6,129 @@
     <title>Sorteo Oficial | Bane Invitational</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: { colors: { baneAccent: '#8b0000', baneAccentLight: '#ff4655' } }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { baneAccent: '#8b0000', baneAccentLight: '#ff4655' } } } }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #000; color: white; overflow-x: hidden; }
         .font-heading { font-family: 'Cinzel', serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #000000; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     </style>
 </head>
 <body class="selection:bg-baneAccentLight selection:text-black antialiased">
 
     <nav class="w-full bg-[#050505] border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between z-50 relative">
         <div class="font-heading text-2xl font-black tracking-widest text-white">
-            <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2 hidden sm:inline">| SORTEO DE LLAVES</span>
+            <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2 hidden sm:inline">| MATCHMAKING</span>
         </div>
-        <ul class="hidden lg:flex justify-center gap-6 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400 items-center">
-            <li><a href="index.html" class="hover:text-white transition-colors">Inicio</a></li>
-            <li><a href="#bracket-interactivo" class="text-baneAccentLight hover:text-white transition-colors">Ver Bracket</a></li>
-        </ul>
-        <a href="index.html" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Volver</a>
+        <a href="index.html" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Volver al Inicio</a>
     </nav>
 
     <div class="max-w-7xl mx-auto px-6 py-20 relative z-10">
         <div class="text-center mb-16">
-            <h1 class="font-heading text-4xl md:text-6xl font-black text-white uppercase tracking-widest mb-4">Enfrentamientos</h1>
-            <p class="font-primary text-gray-400 text-sm tracking-widest uppercase">Fase 1: Sorteo Oficial por Rangos</p>
+            <h1 class="font-heading text-4xl md:text-6xl font-black text-white uppercase tracking-widest mb-4">La Arena</h1>
+            <p class="font-primary text-gray-400 text-sm tracking-widest uppercase">Seguimiento Oficial del Torneo</p>
         </div>
 
-        <div class="mb-24">
-            <div class="flex items-center gap-4 mb-8 justify-center">
-                <div class="w-12 h-[1px] bg-baneAccentLight"></div>
-                <h3 class="font-heading text-xl md:text-2xl font-bold text-white uppercase tracking-widest text-center">Match Pendiente de Confirmación</h3>
-                <div class="w-12 h-[1px] bg-baneAccentLight"></div>
+        <div id="contenedor-sorteo" class="flex flex-col gap-16">
+            <div class="text-center p-12 border border-white/5 bg-[#050505] rounded-sm">
+                <p class="font-primary text-gray-500 text-sm uppercase tracking-widest animate-pulse">Desencriptando llaves del servidor...</p>
             </div>
-
-            <div class="max-w-4xl mx-auto bg-[#050505] border border-baneAccentLight/50 p-8 md:p-12 rounded-sm shadow-[0_0_30px_rgba(255,70,85,0.1)] relative overflow-hidden group hover:border-baneAccentLight transition-colors duration-500">
-                <div class="absolute top-0 right-0 bg-baneAccentLight text-black text-[8px] font-bold uppercase tracking-widest px-4 py-1">REQUIERE ATENCIÓN</div>
-                
-                <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-                    <div class="flex-1 flex flex-col items-center md:items-end text-center md:text-right">
-                        <div class="w-24 h-24 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-4xl text-gray-600 mb-4 opacity-50">A</div>
-                        <h4 class="font-heading text-2xl md:text-3xl text-gray-400 font-bold uppercase tracking-widest">AETHERIS ESPORT</h4>
-                        <p class="font-primary text-[10px] text-[#ff4655] font-bold uppercase tracking-widest mt-2 border border-[#ff4655]/30 px-3 py-1 bg-[#ff4655]/5">Sin Respuesta</p>
-                    </div>
-
-                    <div class="flex flex-col items-center justify-center px-8 py-6 md:py-0">
-                        <span class="font-heading text-5xl md:text-6xl text-white font-black opacity-20 group-hover:opacity-100 group-hover:text-baneAccentLight transition-all duration-500 drop-shadow-[0_0_15px_rgba(255,70,85,0.5)]">VS</span>
-                        <span class="text-[10px] text-gray-500 uppercase tracking-widest mt-3 font-bold">Por Confirmar</span>
-                    </div>
-
-                    <div class="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
-                        <div class="w-24 h-24 bg-black border border-gray-800 border-dashed rounded-sm flex items-center justify-center font-heading text-4xl text-gray-800 mb-4">D</div>
-                        <h4 class="font-heading text-2xl md:text-3xl text-gray-600 font-bold uppercase tracking-widest">DATASY</h4>
-                        <p class="font-primary text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2 border border-gray-800 px-3 py-1">Registro Pendiente</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="bracket-interactivo" class="mb-20 pt-10">
-            <div class="flex flex-col items-center mb-10 text-center">
-                <span class="font-primary text-baneAccentLight font-bold uppercase tracking-[0.4em] text-[10px] mb-3">Live Tracking</span>
-                <h3 class="font-heading text-3xl md:text-4xl font-bold text-white uppercase tracking-widest">Bracket Oficial en Vivo</h3>
-                <div class="h-[1px] w-12 bg-baneAccentLight mt-6"></div>
-                <p class="text-gray-400 text-sm mt-6 max-w-2xl font-primary">El progreso del torneo se actualiza en tiempo real. Sigue a tu equipo por el Winner Bracket o acompáñalo en su redención por el Lower Bracket.</p>
-            </div>
-
-            <div class="w-full bg-[#050505] border border-white/10 rounded-sm p-2 md:p-4 shadow-2xl relative overflow-hidden" style="height: 800px;">
-                <iframe 
-                    src="https://challonge.com/es/valorant_demo_bracket/module?theme=7575&show_standings=1&multiplier=1.0&match_width_multiplier=1.2" 
-                    width="100%" 
-                    height="100%" 
-                    frameborder="0" 
-                    scrolling="auto" 
-                    allowtransparency="true" 
-                    class="rounded-sm relative z-20">
-                </iframe>
-                
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,70,85,0.02)_0%,transparent_70%)] z-0 pointer-events-none"></div>
-            </div>
-        </div>
-
-        <div class="text-center mt-10">
-            <a href="index.html" class="inline-block border border-white/20 text-gray-300 px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] hover:border-baneAccentLight hover:bg-baneAccentLight hover:text-black transition-all rounded-sm">
-                Regresar al Inicio
-            </a>
         </div>
 
     </div>
 
+    <script>
+        const API_URL = 'https://bane-esports-web-1.onrender.com/api';
+
+        document.addEventListener('DOMContentLoaded', cargarSorteo);
+
+        async function cargarSorteo() {
+            const contenedor = document.getElementById('contenedor-sorteo');
+            try {
+                const res = await fetch(`${API_URL}/noticias`);
+                const noticias = await res.json();
+                
+                const bracketData = noticias.find(n => n.titulo === '[BRACKET_DATA]');
+                
+                if (bracketData && bracketData.descripcion !== '[]') {
+                    const matches = JSON.parse(bracketData.descripcion);
+                    renderizarCartelera(matches, contenedor);
+                } else {
+                    contenedor.innerHTML = `
+                        <div class="text-center p-12 border border-[#ff4655]/20 bg-[#050505] rounded-sm">
+                            <p class="font-primary text-[#ff4655] text-sm uppercase tracking-widest">El Staff aún está configurando los enfrentamientos.</p>
+                        </div>`;
+                }
+            } catch (e) {
+                contenedor.innerHTML = `<div class="text-center p-12 bg-[#050505]"><p class="text-gray-500 uppercase">Error de conexión.</p></div>`;
+            }
+        }
+
+        function renderizarCartelera(matches, contenedor) {
+            contenedor.innerHTML = '';
+            
+            // Agrupar por fase
+            const fases = {};
+            matches.forEach(m => {
+                if(!fases[m.fase]) fases[m.fase] = [];
+                fases[m.fase].push(m);
+            });
+
+            for (const fase in fases) {
+                let html = `
+                    <div class="mb-4">
+                        <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-8 border-l-4 border-baneAccentLight pl-4">${fase}</h3>
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                `;
+
+                fases[fase].forEach(m => {
+                    let col1 = 'text-white', col2 = 'text-white';
+                    let op1 = 'opacity-100', op2 = 'opacity-100';
+                    let badge1 = '', badge2 = '';
+                    let centro = '<span class="text-baneAccentLight font-black text-2xl">VS</span>';
+
+                    if (m.status === 'eq1') {
+                        col1 = 'text-[#00ff88]'; badge1 = '<span class="bg-[#00ff88]/20 text-[#00ff88] px-2 py-1 text-[8px] uppercase tracking-widest ml-2 rounded-sm">AVANZA</span>';
+                        col2 = 'text-gray-600 line-through'; op2 = 'opacity-40';
+                        centro = '<span class="text-gray-700 font-bold text-lg">FINALIZADO</span>';
+                    } else if (m.status === 'eq2') {
+                        col2 = 'text-[#00ff88]'; badge2 = '<span class="bg-[#00ff88]/20 text-[#00ff88] px-2 py-1 text-[8px] uppercase tracking-widest mr-2 rounded-sm">AVANZA</span>';
+                        col1 = 'text-gray-600 line-through'; op1 = 'opacity-40';
+                        centro = '<span class="text-gray-700 font-bold text-lg">FINALIZADO</span>';
+                    }
+
+                    // Caso especial: PASE DIRECTO
+                    if (m.eq2 === 'BYE') {
+                        centro = '<span class="text-gray-700 font-bold text-xs uppercase tracking-widest text-center">Pase<br>Directo</span>';
+                        col2 = 'text-gray-700'; op2 = 'opacity-30';
+                        m.eq2 = 'Nadie';
+                    }
+
+                    html += `
+                        <div class="bg-[#050505] border border-white/5 p-6 md:p-8 rounded-sm shadow-lg flex items-center justify-between transition-all duration-300">
+                            <div class="flex items-center gap-3 flex-1 ${op1}">
+                                <div class="w-10 h-10 bg-black border border-white/10 flex items-center justify-center font-heading text-lg text-gray-500">${m.eq1.charAt(0)}</div>
+                                <div class="flex flex-col items-start">
+                                    <h4 class="font-heading text-sm md:text-lg ${col1} font-bold uppercase tracking-widest">${m.eq1}</h4>
+                                    ${badge1}
+                                </div>
+                            </div>
+                            <div class="px-4 font-heading flex flex-col items-center">${centro}</div>
+                            <div class="flex items-center gap-3 flex-1 justify-end text-right ${op2}">
+                                <div class="flex flex-col items-end">
+                                    <h4 class="font-heading text-sm md:text-lg ${col2} font-bold uppercase tracking-widest">${m.eq2}</h4>
+                                    ${badge2}
+                                </div>
+                                <div class="w-10 h-10 bg-black border border-white/10 flex items-center justify-center font-heading text-lg text-gray-500">${m.eq2.charAt(0)}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+                contenedor.innerHTML += html;
+            }
+        }
+    </script>
 </body>
 </html>

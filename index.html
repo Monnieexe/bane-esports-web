@@ -1112,7 +1112,10 @@
             try {
                 const response = await fetch(`${API_URL}/noticias`);
                 if (!response.ok) return;
-                const noticias = await response.json();
+                const noticiasBrutas = await response.json();
+                
+                // EL FILTRO NINJA: Ignorar el Bracket Oculto
+                const noticias = noticiasBrutas.filter(n => n.titulo !== '[BRACKET_DATA]');
                 
                 if (noticias && noticias.length > 0) {
                     listaNoticias.innerHTML = '';
