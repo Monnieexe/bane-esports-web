@@ -12,21 +12,31 @@
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: white; }
         .font-heading { font-family: 'Cinzel', serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-btn.active { border-bottom: 2px solid #ff4655; color: #ff4655; }
     </style>
 </head>
 <body class="antialiased p-8">
 
     <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-end mb-10 border-b border-white/10 pb-6">
+        <div class="flex justify-between items-end mb-6 border-b border-white/10 pb-6">
             <div>
                 <h1 class="font-heading text-4xl text-white font-black tracking-widest"><span class="text-baneAccent">B</span> ADMIN <span class="text-gray-600">NEXUS</span></h1>
-                <p class="text-xs text-gray-500 uppercase tracking-widest mt-2">Centro de Control de Torneos y Contenido</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest mt-2">Centro de Control Oficial</p>
             </div>
             <button onclick="cerrarSesion()" class="text-xs font-bold text-gray-400 hover:text-baneAccent uppercase tracking-widest transition-colors">Cerrar Sesión</button>
         </div>
 
-        <div class="bg-black border border-baneAccent/50 p-8 rounded-sm mb-12 shadow-[0_0_20px_rgba(255,70,85,0.1)]">
-            <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-baneAccent pl-3">Gestor de Torneo (Bracket)</h2>
+        <div class="flex gap-6 mb-8 border-b border-white/5 pb-2">
+            <button onclick="switchTab('tab-bracket')" id="btn-tab-bracket" class="tab-btn active text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors">Sorteo (Bracket)</button>
+            <button onclick="switchTab('tab-matches')" id="btn-tab-matches" class="tab-btn text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors">Matches BANE</button>
+            <button onclick="switchTab('tab-noticias')" id="btn-tab-noticias" class="tab-btn text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors">Noticias</button>
+        </div>
+
+        <div id="tab-bracket" class="tab-content active bg-black border border-baneAccent/50 p-8 rounded-sm shadow-[0_0_20px_rgba(255,70,85,0.1)]">
+            <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-baneAccent pl-3">Gestor de Torneo</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div>
@@ -65,6 +75,72 @@
             </button>
         </div>
 
+        <div id="tab-matches" class="tab-content bg-black border border-white/10 p-8 rounded-sm">
+            <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-gray-500 pl-3">Subir Resultado BANE</h2>
+            
+            <form id="form-partidas" class="flex flex-col gap-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Nuestra Escuadra</label>
+                        <select id="partida_escuadra" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none" required>
+                            <option value="BANE VALORANT">BANE VALORANT</option>
+                            <option value="BANE IGNITE">BANE IGNITE</option>
+                            <option value="BANE BLAZE">BANE BLAZE</option>
+                            <option value="MOBILE LEGENDS">MOBILE LEGENDS</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Torneo / Liga</label>
+                        <input type="text" id="partida_torneo" placeholder="Ej: Premier S1" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div>
+                        <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Score BANE</label>
+                        <input type="number" id="partida_score_bane" placeholder="Ej: 13" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none text-center" required>
+                    </div>
+                    <div class="text-center font-heading text-2xl text-gray-600 font-bold mb-2">VS</div>
+                    <div>
+                        <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Score Rival</label>
+                        <input type="number" id="partida_score_rival" placeholder="Ej: 9" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none text-center" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Nombre del Equipo Rival</label>
+                    <input type="text" id="partida_rival" placeholder="Ej: KRÜ Esports" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none" required>
+                </div>
+
+                <button type="submit" class="mt-4 bg-white/10 hover:bg-white text-white hover:text-black font-bold text-xs uppercase tracking-[0.2em] p-4 transition-colors">
+                    Publicar Resultado
+                </button>
+            </form>
+        </div>
+
+        <div id="tab-noticias" class="tab-content bg-black border border-white/10 p-8 rounded-sm">
+            <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-gray-500 pl-3">Redactar Noticia</h2>
+            
+            <form id="form-noticias" class="flex flex-col gap-4">
+                <div>
+                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Titular</label>
+                    <input type="text" id="noticia_titulo" placeholder="Ej: ¡Campeones Regionales!" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none" required>
+                </div>
+                <div>
+                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Cuerpo de la noticia</label>
+                    <textarea id="noticia_desc" rows="4" placeholder="Escribe los detalles aquí..." class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none resize-none" required></textarea>
+                </div>
+                <div>
+                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">URL de Imagen (Opcional)</label>
+                    <input type="text" id="noticia_img" placeholder="https://ejemplo.com/foto.png" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none">
+                </div>
+
+                <button type="submit" class="mt-4 bg-white/10 hover:bg-white text-white hover:text-black font-bold text-xs uppercase tracking-[0.2em] p-4 transition-colors">
+                    Publicar Noticia
+                </button>
+            </form>
+        </div>
+
     </div>
 
     <script>
@@ -75,7 +151,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('idToken');
             if (!token) { window.location.href = 'login.html'; return; }
-            cargarDatos();
+            cargarDatosSorteo();
+            
+            // Listeners Formularios
+            document.getElementById('form-partidas').addEventListener('submit', subirPartida);
+            document.getElementById('form-noticias').addEventListener('submit', subirNoticia);
         });
 
         function getAuthHeaders() {
@@ -87,9 +167,50 @@
             window.location.href = 'login.html';
         }
 
-        async function cargarDatos() {
+        // SISTEMA DE PESTAÑAS
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        // --- LÓGICA DE PARTIDAS Y NOTICIAS ---
+        async function subirPartida(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.innerText = "SUBIENDO...";
+            const payload = {
+                escuadra: document.getElementById('partida_escuadra').value,
+                torneo: document.getElementById('partida_torneo').value,
+                score_bane: parseInt(document.getElementById('partida_score_bane').value),
+                score_rival: parseInt(document.getElementById('partida_score_rival').value),
+                rival: document.getElementById('partida_rival').value
+            };
             try {
-                // 1. Cargar equipos para el Sorteo
+                await fetch(`${API_URL}/partidas`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(payload) });
+                alert("¡Resultado publicado!"); e.target.reset();
+            } catch(err) { alert("Error"); }
+            btn.innerText = "Publicar Resultado";
+        }
+
+        async function subirNoticia(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.innerText = "SUBIENDO...";
+            const payload = {
+                titulo: document.getElementById('noticia_titulo').value,
+                descripcion: document.getElementById('noticia_desc').value,
+                imagen_url: document.getElementById('noticia_img').value
+            };
+            try {
+                await fetch(`${API_URL}/noticias`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(payload) });
+                alert("¡Noticia publicada!"); e.target.reset();
+            } catch(err) { alert("Error"); }
+            btn.innerText = "Publicar Noticia";
+        }
+
+        // --- LÓGICA DEL BRACKET ---
+        async function cargarDatosSorteo() {
+            try {
                 const resEq = await fetch(`${API_URL}/equipos`);
                 const equipos = await resEq.json();
                 
@@ -97,34 +218,27 @@
                 const s2 = document.getElementById('sorteo_eq2');
                 let opts = '<option value="">-- Seleccionar Equipo --</option>';
                 
-                // Listamos los equipos de la base de datos asegurándonos de no duplicar a Datasy o Pegasus si ya se registraron
                 equipos.forEach(e => {
                     const nombreUpper = e.nombre.toUpperCase();
                     if(nombreUpper !== 'DATASY' && nombreUpper !== 'PEGASUS') {
                         opts += `<option value="${e.nombre}">${e.nombre}</option>`;
                     }
                 });
-                
-                // Agregamos a Datasy y Pegasus manualmente al final de la lista
                 opts += `<option value="DATASY">DATASY (Invitado)</option>`;
                 opts += `<option value="PEGASUS">PEGASUS (Invitado)</option>`;
                 
                 s1.innerHTML = opts;
                 s2.innerHTML = opts + '<option value="BYE">-- PASE DIRECTO (BYE) --</option>';
 
-                // 2. Cargar Bracket oculto
                 const resNot = await fetch(`${API_URL}/noticias`);
                 const noticias = await resNot.json();
-                
                 const bracketData = noticias.find(n => n.titulo === '[BRACKET_DATA]');
                 if (bracketData) {
                     bracketNoticiaId = bracketData.id;
                     bracketMatches = JSON.parse(bracketData.descripcion);
-                } else {
-                    bracketMatches = [];
-                }
+                } else { bracketMatches = []; }
                 renderListaSorteo();
-            } catch (e) { console.error("Error cargando datos", e); }
+            } catch (e) { console.error("Error cargando Sorteo", e); }
         }
 
         function renderListaSorteo() {
@@ -156,7 +270,6 @@
             const status = document.getElementById('sorteo_status').value;
 
             if(!fase || !eq1 || !eq2) { alert("Llena la Fase y los dos equipos."); return; }
-
             bracketMatches.push({ fase, eq1, eq2, status });
             renderListaSorteo();
         }
@@ -168,25 +281,20 @@
 
         async function publicarSorteo() {
             try {
-                // Borrar el bracket viejo si existe
                 if (bracketNoticiaId) {
                     await fetch(`${API_URL}/noticias?id=${bracketNoticiaId}`, { method: 'DELETE', headers: getAuthHeaders() });
                 }
-                
-                // Guardar el nuevo como noticia oculta
                 const payload = {
                     titulo: '[BRACKET_DATA]',
                     descripcion: JSON.stringify(bracketMatches),
                     imagen_url: 'HIDDEN'
                 };
-
                 const res = await fetch(`${API_URL}/noticias`, {
                     method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(payload)
                 });
-
                 if(res.ok) {
                     alert('¡Sorteo y Resultados Publicados Exitosamente!');
-                    cargarDatos();
+                    cargarDatosSorteo();
                 }
             } catch(e) { alert("Error publicando sorteo"); }
         }
