@@ -38,18 +38,10 @@
         <div id="tab-bracket" class="tab-content active bg-black border border-baneAccent/50 p-8 rounded-sm shadow-[0_0_20px_rgba(255,70,85,0.1)]">
             <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-baneAccent pl-3">Gestor de Torneo</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Nombre de la Fase</label>
                     <input type="text" id="sorteo_fase" placeholder="Ej: Ronda 2 - Winner" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none">
-                </div>
-                <div>
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Equipo 1</label>
-                    <select id="sorteo_eq1" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none cursor-pointer"></select>
-                </div>
-                <div>
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Equipo 2</label>
-                    <select id="sorteo_eq2" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none cursor-pointer"></select>
                 </div>
                 <div>
                     <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Estado del Match</label>
@@ -58,6 +50,25 @@
                         <option value="eq1">Avanza Equipo 1</option>
                         <option value="eq2">Avanza Equipo 2</option>
                     </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6 items-end">
+                <div class="md:col-span-4">
+                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Equipo 1</label>
+                    <select id="sorteo_eq1" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none cursor-pointer"></select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block text-center">Pts Eq 1 (Opcional)</label>
+                    <input type="number" id="sorteo_score1" placeholder="13" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none text-center">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block text-center">Pts Eq 2 (Opcional)</label>
+                    <input type="number" id="sorteo_score2" placeholder="9" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none text-center">
+                </div>
+                <div class="md:col-span-4">
+                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Equipo 2</label>
+                    <select id="sorteo_eq2" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none cursor-pointer"></select>
                 </div>
             </div>
             
@@ -113,7 +124,7 @@
                 </div>
 
                 <button type="submit" class="mt-4 bg-white/10 hover:bg-white text-white hover:text-black font-bold text-xs uppercase tracking-[0.2em] p-4 transition-colors">
-                    Publicar Resultado
+                    Publicar Resultado Externo
                 </button>
             </form>
         </div>
@@ -153,7 +164,6 @@
             if (!token) { window.location.href = 'login.html'; return; }
             cargarDatosSorteo();
             
-            // Listeners Formularios
             document.getElementById('form-partidas').addEventListener('submit', subirPartida);
             document.getElementById('form-noticias').addEventListener('submit', subirNoticia);
         });
@@ -167,7 +177,6 @@
             window.location.href = 'login.html';
         }
 
-        // SISTEMA DE PESTAÑAS
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -190,7 +199,7 @@
                 await fetch(`${API_URL}/partidas`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(payload) });
                 alert("¡Resultado publicado!"); e.target.reset();
             } catch(err) { alert("Error"); }
-            btn.innerText = "Publicar Resultado";
+            btn.innerText = "Publicar Resultado Externo";
         }
 
         async function subirNoticia(e) {
@@ -251,11 +260,13 @@
 
             bracketMatches.forEach((m, idx) => {
                 let statusText = m.status === 'pending' ? 'VS' : (m.status === 'eq1' ? `Ganó ${m.eq1}` : `Ganó ${m.eq2}`);
+                let marcadorText = (m.score1 && m.score2) ? ` [${m.score1} - ${m.score2}] ` : ' ';
+
                 lista.innerHTML += `
                     <div class="flex items-center justify-between border border-white/10 bg-black p-3 text-xs text-gray-300">
-                        <div class="flex gap-4">
-                            <span class="font-bold text-white w-48 truncate">${m.fase}</span>
-                            <span>${m.eq1} <b class="text-baneAccent mx-2">${statusText}</b> ${m.eq2}</span>
+                        <div class="flex gap-4 items-center">
+                            <span class="font-bold text-white w-40 truncate">${m.fase}</span>
+                            <span>${m.eq1} <b class="text-baneAccent mx-1">${statusText}${marcadorText}</b> ${m.eq2}</span>
                         </div>
                         <button onclick="borrarMatch(${idx})" class="text-gray-600 hover:text-baneAccent font-bold">X</button>
                     </div>
@@ -267,10 +278,17 @@
             const fase = document.getElementById('sorteo_fase').value;
             const eq1 = document.getElementById('sorteo_eq1').value;
             const eq2 = document.getElementById('sorteo_eq2').value;
+            const score1 = document.getElementById('sorteo_score1').value;
+            const score2 = document.getElementById('sorteo_score2').value;
             const status = document.getElementById('sorteo_status').value;
 
             if(!fase || !eq1 || !eq2) { alert("Llena la Fase y los dos equipos."); return; }
-            bracketMatches.push({ fase, eq1, eq2, status });
+            bracketMatches.push({ fase, eq1, score1, eq2, score2, status });
+            
+            // Limpiar puntajes para el siguiente cruce
+            document.getElementById('sorteo_score1').value = '';
+            document.getElementById('sorteo_score2').value = '';
+            
             renderListaSorteo();
         }
 
@@ -293,7 +311,7 @@
                     method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(payload)
                 });
                 if(res.ok) {
-                    alert('¡Sorteo y Resultados Publicados Exitosamente!');
+                    alert('¡Sorteo y Puntuaciones Publicadas Exitosamente!');
                     cargarDatosSorteo();
                 }
             } catch(e) { alert("Error publicando sorteo"); }
