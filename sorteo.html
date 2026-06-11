@@ -12,13 +12,16 @@
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #000; color: white; overflow-x: hidden; }
         .font-heading { font-family: 'Cinzel', serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #000000; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     </style>
 </head>
 <body class="selection:bg-baneAccentLight selection:text-black antialiased">
 
     <nav class="w-full bg-[#050505] border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between z-50 relative">
         <div class="font-heading text-2xl font-black tracking-widest text-white">
-            <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2 hidden sm:inline">| MATCHMAKING</span>
+            <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2 hidden sm:inline">| ARENA ESTADÍSTICAS</span>
         </div>
         <a href="index.html" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Volver al Inicio</a>
     </nav>
@@ -26,53 +29,147 @@
     <div class="max-w-7xl mx-auto px-6 py-20 relative z-10">
         <div class="text-center mb-16">
             <h1 class="font-heading text-4xl md:text-6xl font-black text-white uppercase tracking-widest mb-4">La Arena</h1>
-            <p class="font-primary text-gray-400 text-sm tracking-widest uppercase">Seguimiento Oficial del Torneo</p>
+            <p class="font-primary text-gray-400 text-sm tracking-widest uppercase">Resultados y Tabla de Posiciones en Tiempo Real</p>
         </div>
 
-        <div id="contenedor-sorteo" class="flex flex-col gap-16">
-            <div class="text-center p-12 border border-white/5 bg-[#050505] rounded-sm">
-                <p class="font-primary text-gray-500 text-sm uppercase tracking-widest animate-pulse">Desencriptando llaves del servidor...</p>
+        <div class="mb-20">
+            <div class="flex items-center gap-4 mb-8 justify-center">
+                <div class="w-12 h-[1px] bg-baneAccentLight"></div>
+                <h3 class="font-heading text-xl md:text-2xl font-bold text-white uppercase tracking-widest text-center">Tabla de Clasificación</h3>
+                <div class="w-12 h-[1px] bg-baneAccentLight"></div>
+            </div>
+            
+            <div class="max-w-4xl mx-auto bg-[#050505] border border-white/5 rounded-sm p-6 md:p-8 shadow-2xl">
+                <div class="flex justify-between text-[10px] uppercase tracking-widest text-gray-500 font-bold border-b border-white/10 pb-3 mb-4 px-4">
+                    <span>Escuadra</span>
+                    <span>Partidas Ganadas</span>
+                </div>
+                <div id="tabla-posiciones" class="flex flex-col gap-2">
+                    <p class="text-xs text-gray-500 text-center py-4 uppercase tracking-widest">Calculando rendimiento de los equipos...</p>
+                </div>
             </div>
         </div>
+
+        <div class="mb-24">
+            <div class="flex items-center gap-4 mb-8 justify-center">
+                <div class="w-12 h-[1px] bg-baneAccentLight"></div>
+                <h3 class="font-heading text-xl md:text-2xl font-bold text-white uppercase tracking-widest text-center">Match Pendiente de Confirmación</h3>
+                <div class="w-12 h-[1px] bg-baneAccentLight"></div>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-[#050505] border border-baneAccentLight/50 p-8 md:p-12 rounded-sm shadow-[0_0_30px_rgba(255,70,85,0.1)] relative overflow-hidden group">
+                <div class="absolute top-0 right-0 bg-baneAccentLight text-black text-[8px] font-bold uppercase tracking-widest px-4 py-1">REQUIERE ATENCIÓN</div>
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+                    <div class="flex-1 flex flex-col items-center md:items-end text-center md:text-right">
+                        <div class="w-24 h-24 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-4xl text-gray-600 mb-4 opacity-50">A</div>
+                        <h4 class="font-heading text-2xl md:text-3xl text-gray-400 font-bold uppercase tracking-widest">AETHERIS ESPORT</h4>
+                        <p class="font-primary text-[10px] text-[#ff4655] font-bold uppercase tracking-widest mt-2 border border-[#ff4655]/30 px-3 py-1 bg-[#ff4655]/5">Sin Respuesta</p>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-8 py-6 md:py-0">
+                        <span class="font-heading text-5xl md:text-6xl text-white font-black opacity-20 group-hover:opacity-100 group-hover:text-baneAccentLight transition-all duration-500">VS</span>
+                        <span class="text-[10px] text-gray-500 uppercase tracking-widest mt-3 font-bold">Por Confirmar</span>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
+                        <div class="w-24 h-24 bg-black border border-gray-800 border-dashed rounded-sm flex items-center justify-center font-heading text-4xl text-gray-800 mb-4">D</div>
+                        <h4 class="font-heading text-2xl md:text-3xl text-gray-600 font-bold uppercase tracking-widest">DATASY</h4>
+                        <p class="font-primary text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2 border border-gray-800 px-3 py-1">Registro Pendiente</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="contenedor-sorteo" class="flex flex-col gap-16"></div>
 
     </div>
 
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
         let diccionarioLogos = {};
+        let contadorVictorias = {}; // Almacenará los puntos en vivo
 
-        document.addEventListener('DOMContentLoaded', cargarSorteoYLogos);
+        document.addEventListener('DOMContentLoaded', cargarSorteoCompleto);
 
-        async function cargarSorteoYLogos() {
+        async function cargarSorteoCompleto() {
             const contenedor = document.getElementById('contenedor-sorteo');
             try {
-                // 1. Cargar equipos para extraer sus logos
+                // 1. Mapear fotos guardadas desde registros
                 const resEq = await fetch(`${API_URL}/equipos`);
                 if(resEq.ok) {
                     const equipos = await resEq.json();
                     equipos.forEach(e => {
                         if (e.logo_url) diccionarioLogos[e.nombre] = e.logo_url;
+                        contadorVictorias[e.nombre] = 0; // Inicializar contador
                     });
                 }
 
-                // 2. Cargar el Bracket
+                // 2. Cargar datos del bracket
                 const resNot = await fetch(`${API_URL}/noticias`);
                 const noticias = await resNot.json();
-                
                 const bracketData = noticias.find(n => n.titulo === '[BRACKET_DATA]');
                 
                 if (bracketData && bracketData.descripcion !== '[]') {
                     const matches = JSON.parse(bracketData.descripcion);
+                    
+                    // Calcular victorias antes de pintar
+                    calcularEstadisticas(matches);
+                    renderizarLeaderboard();
                     renderizarCartelera(matches, contenedor);
                 } else {
-                    contenedor.innerHTML = `
-                        <div class="text-center p-12 border border-[#ff4655]/20 bg-[#050505] rounded-sm shadow-[0_0_20px_rgba(255,70,85,0.1)]">
-                            <p class="font-primary text-[#ff4655] text-sm uppercase tracking-widest font-bold">El Staff aún está configurando los enfrentamientos.</p>
-                        </div>`;
+                    contenedor.innerHTML = `<div class="text-center p-12 border border-white/5 bg-[#050505] rounded-sm"><p class="text-gray-500 uppercase tracking-widest">No hay llaves activas por el momento.</p></div>`;
                 }
-            } catch (e) {
-                contenedor.innerHTML = `<div class="text-center p-12 bg-[#050505]"><p class="text-gray-500 uppercase">Error de conexión.</p></div>`;
+            } catch (e) { console.error(e); }
+        }
+
+        function calcularEstadisticas(matches) {
+            matches.forEach(m => {
+                if(!contadorVictorias[m.eq1]) contadorVictorias[m.eq1] = 0;
+                if(m.eq2 !== 'BYE' && !contadorVictorias[m.eq2]) contadorVictorias[m.eq2] = 0;
+
+                if(m.status === 'eq1') contadorVictorias[m.eq1]++;
+                if(m.status === 'eq2' && m.eq2 !== 'BYE') contadorVictorias[m.eq2]++;
+            });
+        }
+
+        function renderizarLeaderboard() {
+            const tabla = document.getElementById('tabla-posiciones');
+            tabla.innerHTML = '';
+
+            // Ordenar de mayor a menor victorias
+            const listaOrdenada = Object.keys(contadorVictorias).map(nombre => ({
+                nombre: nombre,
+                wins: contadorVictorias[nombre]
+            })).sort((a, b) => b.wins - a.wins);
+
+            // Filtrar y mostrar solo los que tengan al menos 1 victoria para mantener la tabla limpia y competitiva
+            const ganadores = listaOrdenada.filter(item => item.wins > 0);
+
+            if(ganadores.length === 0) {
+                tabla.innerHTML = '<p class="text-xs text-gray-600 text-center py-2 uppercase tracking-widest">El torneo no ha comenzado. Las posiciones se alterarán con el primer mapa finalizado.</p>';
+                return;
             }
+
+            ganadores.forEach((item, index) => {
+                const logoHtml = diccionarioLogos[item.nombre] 
+                    ? `<img src="${diccionarioLogos[item.nombre]}" class="w-6 h-6 object-contain rounded-sm bg-black border border-white/10">`
+                    : `<div class="w-6 h-6 bg-black border border-white/10 rounded-sm flex items-center justify-center text-[10px] text-gray-500 font-bold">${item.nombre.charAt(0)}</div>`;
+
+                let medalla = `<span class="text-gray-500 text-xs font-bold w-6">#${index + 1}</span>`;
+                if(index === 0) medalla = `<span class="text-yellow-500 text-xs font-bold w-6">👑</span>`;
+
+                tabla.innerHTML += `
+                    <div class="flex items-center justify-between bg-black/40 border border-white/5 p-3 px-4 rounded-sm hover:border-baneAccentLight transition-colors">
+                        <div class="flex items-center gap-4">
+                            ${medalla}
+                            ${logoHtml}
+                            <span class="font-heading text-xs md:text-sm font-bold uppercase tracking-wider text-white">${item.nombre}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-baneAccentLight">🔥 ${item.wins}</span>
+                            <span class="text-[10px] text-gray-500 uppercase tracking-widest hidden sm:inline">${item.wins === 1 ? 'Victoria' : 'Victorias'}</span>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         function getLogoHtml(nombreEquipo) {
@@ -84,7 +181,6 @@
 
         function renderizarCartelera(matches, contenedor) {
             contenedor.innerHTML = '';
-            
             const fases = {};
             matches.forEach(m => {
                 if(!fases[m.fase]) fases[m.fase] = [];
@@ -105,13 +201,17 @@
                     let centro = '<span class="text-baneAccentLight font-black text-2xl md:text-4xl drop-shadow-[0_0_10px_rgba(255,70,85,0.3)]">VS</span>';
                     let cardBorder = 'border-white/5 hover:border-white/20';
 
+                    // Mostrar contador de victorias actual al lado del nombre en la carta si ya lleva acumuladas
+                    let winsE1 = contadorVictorias[m.eq1] > 0 ? `<span class="text-[9px] text-baneAccentLight font-bold uppercase tracking-widest mt-0.5">🔥 ${contadorVictorias[m.eq1]} Wins</span>` : '';
+                    let winsE2 = (m.eq2 !== 'BYE' && contadorVictorias[m.eq2] > 0) ? `<span class="text-[9px] text-baneAccentLight font-bold uppercase tracking-widest mt-0.5">🔥 ${contadorVictorias[m.eq2]} Wins</span>` : '';
+
                     if (m.status === 'eq1') {
-                        col1 = 'text-[#00ff88]'; badge1 = '<span class="bg-[#00ff88]/10 border border-[#00ff88]/30 text-[#00ff88] px-2 py-1 text-[8px] uppercase tracking-widest ml-2 rounded-sm mt-1">Avanza</span>';
+                        col1 = 'text-[#00ff88]'; badge1 = '<span class="bg-[#00ff88]/10 border border-[#00ff88]/30 text-[#00ff88] px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm mt-1 font-bold">Avanza</span>';
                         col2 = 'text-gray-600 line-through'; op2 = 'opacity-40 grayscale';
                         centro = '<span class="text-gray-700 font-bold text-xs uppercase tracking-widest text-center">Finalizado</span>';
                         cardBorder = 'border-[#00ff88]/20 shadow-[0_0_15px_rgba(0,255,136,0.05)]';
                     } else if (m.status === 'eq2') {
-                        col2 = 'text-[#00ff88]'; badge2 = '<span class="bg-[#00ff88]/10 border border-[#00ff88]/30 text-[#00ff88] px-2 py-1 text-[8px] uppercase tracking-widest mr-2 rounded-sm mt-1">Avanza</span>';
+                        col2 = 'text-[#00ff88]'; badge2 = '<span class="bg-[#00ff88]/10 border border-[#00ff88]/30 text-[#00ff88] px-2 py-0.5 text-[8px] uppercase tracking-widest rounded-sm mt-1 font-bold">Avanza</span>';
                         col1 = 'text-gray-600 line-through'; op1 = 'opacity-40 grayscale';
                         centro = '<span class="text-gray-700 font-bold text-xs uppercase tracking-widest text-center">Finalizado</span>';
                         cardBorder = 'border-[#00ff88]/20 shadow-[0_0_15px_rgba(0,255,136,0.05)]';
@@ -122,27 +222,34 @@
                         col2 = 'text-gray-800'; op2 = 'opacity-20 border-dashed';
                         m.eq2 = 'VACANTE';
                         cardBorder = 'border-white/5';
+                        winsE2 = '';
                     }
 
                     const img1 = getLogoHtml(m.eq1);
                     const img2 = m.eq2 === 'VACANTE' 
-                        ? `<div class="w-12 h-12 md:w-16 md:h-16 border border-gray-800 border-dashed rounded-sm flex items-center justify-center"><svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>` 
+                        ? `<div class="w-12 h-12 md:w-16 md:h-16 border border-gray-800 border-dashed rounded-sm flex items-center justify-center"><svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>` 
                         : getLogoHtml(m.eq2);
 
                     html += `
                         <div class="bg-[#050505] border ${cardBorder} p-6 md:p-8 rounded-sm shadow-lg flex items-center justify-between transition-all duration-300">
                             <div class="flex items-center gap-4 flex-1 ${op1}">
                                 ${img1}
-                                <div class="flex flex-col items-start">
-                                    <h4 class="font-heading text-sm md:text-lg ${col1} font-bold uppercase tracking-widest">${m.eq1}</h4>
-                                    ${badge1}
+                                <div class="flex flex-col items-start overflow-hidden">
+                                    <h4 class="font-heading text-sm md:text-lg ${col1} font-bold uppercase tracking-widest truncate max-w-full">${m.eq1}</h4>
+                                    <div class="flex gap-2 items-center">
+                                        ${winsE1}
+                                        ${badge1}
+                                    </div>
                                 </div>
                             </div>
                             <div class="px-4 md:px-8 font-heading flex flex-col items-center">${centro}</div>
                             <div class="flex items-center gap-4 flex-1 justify-end text-right ${op2}">
-                                <div class="flex flex-col items-end">
-                                    <h4 class="font-heading text-sm md:text-lg ${col2} font-bold uppercase tracking-widest">${m.eq2}</h4>
-                                    ${badge2}
+                                <div class="flex flex-col items-end overflow-hidden">
+                                    <h4 class="font-heading text-sm md:text-lg ${col2} font-bold uppercase tracking-widest truncate max-w-full">${m.eq2}</h4>
+                                    <div class="flex gap-2 items-center">
+                                        ${badge2}
+                                        ${winsE2}
+                                    </div>
                                 </div>
                                 ${img2}
                             </div>
