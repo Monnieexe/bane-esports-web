@@ -16,6 +16,9 @@
         .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .tab-btn.active { border-bottom: 2px solid #ff4655; color: #ff4655; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #000000; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     </style>
 </head>
 <body class="antialiased p-8">
@@ -29,13 +32,37 @@
             <button onclick="cerrarSesion()" class="text-xs font-bold text-gray-400 hover:text-baneAccent uppercase tracking-widest transition-colors">Cerrar Sesión</button>
         </div>
 
-        <div class="flex gap-6 mb-8 border-b border-white/5 pb-2">
-            <button onclick="switchTab('tab-bracket')" id="btn-tab-bracket" class="tab-btn active text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors">Sorteo (Bracket)</button>
-            <button onclick="switchTab('tab-matches')" id="btn-tab-matches" class="tab-btn text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors">Matches BANE</button>
-            <button onclick="switchTab('tab-noticias')" id="btn-tab-noticias" class="tab-btn text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors">Noticias</button>
+        <div class="flex gap-6 mb-8 border-b border-white/5 pb-2 overflow-x-auto custom-scrollbar">
+            <button onclick="switchTab('tab-equipos')" id="btn-tab-equipos" class="tab-btn active text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors whitespace-nowrap">Equipos Inscritos</button>
+            <button onclick="switchTab('tab-bracket')" id="btn-tab-bracket" class="tab-btn text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors whitespace-nowrap">Sorteo (Bracket)</button>
+            <button onclick="switchTab('tab-matches')" id="btn-tab-matches" class="tab-btn text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors whitespace-nowrap">Matches BANE</button>
+            <button onclick="switchTab('tab-noticias')" id="btn-tab-noticias" class="tab-btn text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors whitespace-nowrap">Noticias</button>
         </div>
 
-        <div id="tab-bracket" class="tab-content active bg-black border border-baneAccent/50 p-8 rounded-sm shadow-[0_0_20px_rgba(255,70,85,0.1)]">
+        <div id="tab-equipos" class="tab-content active bg-black border border-white/10 p-8 rounded-sm">
+            <div class="flex justify-between items-center mb-6 pb-2">
+                <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest border-l-4 border-baneAccent pl-3">Equipos Inscritos</h2>
+                <span id="contador-equipos" class="bg-baneAccent text-black text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest">0 EQUIPOS</span>
+            </div>
+            
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse min-w-[800px]">
+                    <thead>
+                        <tr class="text-[9px] text-gray-500 uppercase tracking-widest border-b border-white/10">
+                            <th class="p-4 font-normal w-20">Logo</th>
+                            <th class="p-4 font-normal">Escuadra</th>
+                            <th class="p-4 font-normal">Capitán (Discord)</th>
+                            <th class="p-4 font-normal">Rango Promedio</th>
+                            <th class="p-4 font-normal text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-equipos-admin" class="divide-y divide-white/5">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-bracket" class="tab-content bg-black border border-baneAccent/50 p-8 rounded-sm shadow-[0_0_20px_rgba(255,70,85,0.1)]">
             <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-baneAccent pl-3">Gestor de Torneo</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -162,7 +189,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('idToken');
             if (!token) { window.location.href = 'login.html'; return; }
-            cargarDatosSorteo();
+            
+            cargarEquiposInscritos(); // Cargar la lista completa de equipos
+            cargarDatosSorteo();      // Cargar configuración de Bracket
             
             document.getElementById('form-partidas').addEventListener('submit', subirPartida);
             document.getElementById('form-noticias').addEventListener('submit', subirNoticia);
@@ -184,7 +213,55 @@
             document.getElementById('btn-' + tabId).classList.add('active');
         }
 
-        // --- LÓGICA DE PARTIDAS Y NOTICIAS ---
+        // ==========================================
+        // LÓGICA DE EQUIPOS INSCRITOS (REGISTROS)
+        // ==========================================
+        async function cargarEquiposInscritos() {
+            try {
+                const resEq = await fetch(`${API_URL}/equipos`);
+                const equipos = await resEq.json();
+                
+                document.getElementById('contador-equipos').innerText = `${equipos.length} EQUIPOS`;
+                const lista = document.getElementById('lista-equipos-admin');
+                lista.innerHTML = '';
+                
+                equipos.forEach(equipo => {
+                    const imgHtml = equipo.logo_url 
+                        ? `<img src="${equipo.logo_url}" class="w-10 h-10 object-contain bg-black border border-white/10 p-1 rounded-sm">`
+                        : `<div class="w-10 h-10 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-lg text-gray-500">${equipo.nombre.charAt(0)}</div>`;
+                    
+                    const discordCapitan = equipo.discord_capitan || (equipo.jugadores && equipo.jugadores[0] ? equipo.jugadores[0].dc : 'N/A');
+
+                    lista.innerHTML += `
+                        <tr class="hover:bg-white/5 transition-colors group border-b border-white/5">
+                            <td class="p-4">${imgHtml}</td>
+                            <td class="p-4 font-heading text-sm text-white font-bold uppercase tracking-widest">${equipo.nombre}</td>
+                            <td class="p-4 font-primary text-xs text-baneAccent font-bold">${discordCapitan}</td>
+                            <td class="p-4 font-primary text-xs text-gray-400">${equipo.rango || 'N/A'}</td>
+                            <td class="p-4 text-right">
+                                <button onclick="borrarEquipoInscrito('${equipo.id}')" class="text-gray-600 hover:text-baneAccent transition-colors" title="Eliminar Registro">
+                                    <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) { console.error("Error cargando registros", error); }
+        }
+
+        async function borrarEquipoInscrito(id) {
+            if(confirm("¿Estás seguro de eliminar el registro de esta escuadra permanentemente?")) {
+                try {
+                    await fetch(`${API_URL}/equipos?id=${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+                    cargarEquiposInscritos();
+                    cargarDatosSorteo(); // Actualizar listas de Sorteo
+                } catch (error) { console.error(error); }
+            }
+        }
+
+        // ==========================================
+        // LÓGICA DE PARTIDAS Y NOTICIAS
+        // ==========================================
         async function subirPartida(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button'); btn.innerText = "SUBIENDO...";
@@ -217,7 +294,9 @@
             btn.innerText = "Publicar Noticia";
         }
 
-        // --- LÓGICA DEL BRACKET ---
+        // ==========================================
+        // LÓGICA DEL BRACKET
+        // ==========================================
         async function cargarDatosSorteo() {
             try {
                 const resEq = await fetch(`${API_URL}/equipos`);
@@ -285,7 +364,6 @@
             if(!fase || !eq1 || !eq2) { alert("Llena la Fase y los dos equipos."); return; }
             bracketMatches.push({ fase, eq1, score1, eq2, score2, status });
             
-            // Limpiar puntajes para el siguiente cruce
             document.getElementById('sorteo_score1').value = '';
             document.getElementById('sorteo_score2').value = '';
             
