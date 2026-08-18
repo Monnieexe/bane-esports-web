@@ -6,64 +6,91 @@
     <title>Inscripción Oficial | 5ever</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { 
-            theme: { extend: { colors: { everRed: '#E60000', everGold: '#D4AF37', everDark: '#0a0a0a' } } } 
-        }
+        tailwind.config = { theme: { extend: { colors: { everRed: '#E60000', everGold: '#D4AF37', everDark: '#050505' } } } }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #030303; color: white; }
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: #030303; 
+            color: white; 
+            background-image: linear-gradient(rgba(10,10,10,0.9), rgba(10,10,10,0.9)), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+        }
         .font-heading { font-family: 'Cinzel', serif; }
-        .input-ever { background: #080808; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
-        .input-ever:focus { border-color: #D4AF37; outline: none; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1); }
+        
+        .clip-box { clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); }
+        .clip-btn { clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
+
+        .input-ever { 
+            background: #080808; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            border-left: 3px solid #333;
+            transition: all 0.3s; 
+        }
+        .input-ever:focus { 
+            border-color: rgba(212, 175, 55, 0.5); 
+            border-left-color: #D4AF37;
+            outline: none; 
+            box-shadow: inset 10px 0 20px -10px rgba(212, 175, 55, 0.2); 
+            background: #0a0a0a;
+        }
+        
+        .glass-panel { background: rgba(5,5,5,0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col items-center justify-center p-6 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed">
+<body class="antialiased min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
 
-    <div class="w-full max-w-2xl bg-everDark border-t-4 border-everRed p-8 md:p-12 rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative">
-        
-        <a href="sorteo.html" class="absolute top-6 right-6 text-gray-500 hover:text-everGold text-[10px] uppercase tracking-widest font-bold transition-colors">
-            ← Volver a la Arena
-        </a>
+    <!-- Efecto luces de fondo -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-everRed/10 blur-[120px] rounded-full -z-10 pointer-events-none"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-everGold/10 blur-[120px] rounded-full -z-10 pointer-events-none"></div>
 
-        <div class="text-center mb-10">
-            <h1 class="font-heading text-4xl md:text-5xl font-black tracking-widest text-white mb-2"><span class="text-everRed">5</span>EVER</h1>
-            <p class="text-everGold text-[10px] uppercase tracking-[0.4em] font-bold">Portal de Inscripción de Escuadras</p>
+    <div class="w-full max-w-2xl clip-box glass-panel p-1 shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative">
+        <div class="bg-[#050505] clip-box p-8 md:p-14 w-full h-full relative">
+            
+            <a href="sorteo.html" class="absolute top-6 right-6 text-gray-500 hover:text-everGold text-[10px] uppercase tracking-[0.2em] font-bold transition-colors">
+                ← Return to Arena
+            </a>
+
+            <div class="text-center mb-12">
+                <div class="w-12 h-1 bg-everRed mx-auto mb-6"></div>
+                <h1 class="font-heading text-4xl md:text-6xl font-black tracking-widest text-white mb-2"><span class="text-everRed">5</span>EVER</h1>
+                <p class="text-everGold text-[9px] uppercase tracking-[0.5em] font-bold">Protocolo de Registro Oficial</p>
+            </div>
+
+            <form id="form-registro" class="flex flex-col gap-6">
+                <div>
+                    <label class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mb-2 block font-bold">Identificación de Escuadra</label>
+                    <input type="text" id="reg_nombre" required placeholder="Nombre del Equipo" class="input-ever w-full p-4 text-sm text-white font-bold tracking-wider">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mb-2 block font-bold">Contacto Capitán (Discord)</label>
+                        <input type="text" id="reg_discord" required placeholder="Usuario#0000" class="input-ever w-full p-4 text-sm text-white font-bold tracking-wider">
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mb-2 block font-bold">Nivel Promedio</label>
+                        <input type="text" id="reg_rango" required placeholder="Ej: Ascendente / Inmortal" class="input-ever w-full p-4 text-sm text-white font-bold tracking-wider">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mb-2 block font-bold">Insignia Oficial (URL Logo PNG/JPG)</label>
+                    <input type="url" id="reg_logo" placeholder="https://..." class="input-ever w-full p-4 text-sm text-white font-bold tracking-wider">
+                </div>
+
+                <button type="submit" id="btn-submit" class="mt-8 clip-btn bg-everRed text-white font-black text-sm uppercase tracking-[0.3em] py-5 hover:bg-everGold hover:text-black hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300">
+                    Asegurar Slot
+                </button>
+            </form>
         </div>
-
-        <form id="form-registro" class="flex flex-col gap-6">
-            <div>
-                <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">Nombre del Equipo</label>
-                <input type="text" id="reg_nombre" required placeholder="Ej: Sentinel Esports" class="input-ever w-full p-4 text-xs text-white">
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">Discord del Capitán</label>
-                    <input type="text" id="reg_discord" required placeholder="Usuario#0000" class="input-ever w-full p-4 text-xs text-white">
-                </div>
-                <div>
-                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">Rango Promedio</label>
-                    <input type="text" id="reg_rango" required placeholder="Ej: Platino / Diamante" class="input-ever w-full p-4 text-xs text-white">
-                </div>
-            </div>
-
-            <div>
-                <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">URL del Logo (Opcional - Formato PNG/JPG)</label>
-                <input type="url" id="reg_logo" placeholder="https://ejemplo.com/logo.png" class="input-ever w-full p-4 text-xs text-white">
-            </div>
-
-            <button type="submit" id="btn-submit" class="mt-6 bg-everRed text-white font-black text-xs md:text-sm uppercase tracking-[0.3em] py-5 hover:bg-everGold hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(230,0,0,0.3)]">
-                Confirmar Inscripción
-            </button>
-        </form>
     </div>
 
     <script>
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-submit');
-            btn.innerText = "PROCESANDO DATOS...";
+            btn.innerText = "Sincronizando con Nexus...";
             
             const payload = {
                 nombre: document.getElementById('reg_nombre').value,
@@ -80,7 +107,7 @@
                 });
                 
                 if(res.ok) {
-                    alert("¡Escuadra registrada con éxito en 5ever!");
+                    alert("¡Escuadra registrada exitosamente en los servidores de 5ever!");
                     window.location.href = 'sorteo.html';
                 } else {
                     alert("Error al registrar. Por favor, intenta de nuevo.");
@@ -88,7 +115,7 @@
             } catch (err) {
                 alert("Error de conexión. Revisa tu internet.");
             } finally {
-                btn.innerText = "CONFIRMAR INSCRIPCIÓN";
+                btn.innerText = "ASEGURAR SLOT";
             }
         });
     </script>

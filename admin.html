@@ -3,115 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5ever | Nexus Admin</title>
+    <title>5ever | Control Nexus</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { everRed: '#E60000', everGold: '#D4AF37', everDark: '#0a0a0a' } } } }
+        tailwind.config = { theme: { extend: { colors: { everRed: '#E60000', everGold: '#D4AF37', everDark: '#050505' } } } }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #030303; color: white; }
+        body { font-family: 'Montserrat', sans-serif; background-color: #030303; color: white; background-image: radial-gradient(circle at top right, rgba(230,0,0,0.05) 0%, transparent 50%); }
         .font-heading { font-family: 'Cinzel', serif; }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .tab-btn.active { border-bottom: 2px solid #E60000; color: #E60000; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        
+        .tab-btn { border-bottom: 2px solid transparent; }
+        .tab-btn.active { border-bottom-color: #E60000; color: white; text-shadow: 0 0 10px rgba(230,0,0,0.5); }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #030303; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #D4AF37; }
-        .input-admin { background: #080808; border: 1px solid rgba(255,255,255,0.1); }
-        .input-admin:focus { border-color: #D4AF37; outline: none; }
+        
+        .input-admin { background: #080808; border: 1px solid rgba(255,255,255,0.05); border-left: 2px solid #444; transition: all 0.3s; }
+        .input-admin:focus { border-color: rgba(212, 175, 55, 0.5); border-left-color: #D4AF37; outline: none; background: #0a0a0a; }
+        
+        .clip-box { clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
+        .clip-btn { clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
     </style>
 </head>
-<body class="antialiased p-4 md:p-8">
+<body class="antialiased p-4 md:p-8 min-h-screen">
 
     <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-end mb-8 border-b border-white/5 pb-6">
+        
+        <!-- HEADER NEXUS -->
+        <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-6 bg-[#050505] p-6 rounded-sm border border-white/5 shadow-lg">
             <div>
-                <h1 class="font-heading text-3xl md:text-4xl text-white font-black tracking-widest"><span class="text-everRed">5</span>EVER <span class="text-everGold">NEXUS</span></h1>
-                <p class="text-[10px] text-gray-500 uppercase tracking-[0.3em] mt-2 font-bold">Control Central del Torneo</p>
+                <h1 class="font-heading text-2xl md:text-4xl text-white font-black tracking-widest"><span class="text-everRed drop-shadow-[0_0_10px_rgba(230,0,0,0.5)]">5</span>EVER <span class="text-gray-600">NEXUS</span></h1>
+                <div class="flex items-center gap-2 mt-2">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <p class="text-[9px] text-green-500 uppercase tracking-[0.3em] font-bold">Servidor En Línea</p>
+                </div>
             </div>
-            <button onclick="cerrarSesion()" class="text-[10px] font-bold text-gray-500 hover:text-everRed uppercase tracking-widest transition-colors">Cerrar Sesión</button>
+            <button onclick="cerrarSesion()" class="clip-btn border border-gray-800 text-[9px] font-bold text-gray-500 hover:text-everRed hover:border-everRed uppercase tracking-widest transition-all px-4 py-2 bg-black">Desconectar</button>
         </div>
 
-        <div class="flex gap-6 mb-8 border-b border-white/5 pb-2 overflow-x-auto custom-scrollbar">
-            <button onclick="switchTab('tab-equipos')" id="btn-tab-equipos" class="tab-btn active text-[10px] font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-everGold transition-colors whitespace-nowrap">Equipos Inscritos</button>
-            <button onclick="switchTab('tab-bracket')" id="btn-tab-bracket" class="tab-btn text-[10px] font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-everGold transition-colors whitespace-nowrap">Sorteo (Bracket)</button>
-        </div>
-
-        <!-- PESTAÑA: EQUIPOS INSCRITOS -->
-        <div id="tab-equipos" class="tab-content active bg-everDark border border-white/5 p-6 md:p-8 rounded-sm">
-            <div class="flex justify-between items-center mb-6 pb-2">
-                <h2 class="font-heading text-xl md:text-2xl text-white font-bold uppercase tracking-widest border-l-4 border-everGold pl-3">Registros Oficiales</h2>
-                <span id="contador-equipos" class="bg-everGold text-black text-[9px] font-black px-3 py-1 rounded-sm uppercase tracking-widest">0 EQUIPOS</span>
-            </div>
-            
-            <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left border-collapse min-w-[700px]">
-                    <thead>
-                        <tr class="text-[9px] text-gray-500 uppercase tracking-widest border-b border-white/10 bg-black/40">
-                            <th class="p-4 font-bold w-16">Logo</th>
-                            <th class="p-4 font-bold">Escuadra</th>
-                            <th class="p-4 font-bold">Capitán (Discord)</th>
-                            <th class="p-4 font-bold">Rango Promedio</th>
-                            <th class="p-4 font-bold text-right">Borrar</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-equipos-admin" class="divide-y divide-white/5"></tbody>
-                </table>
-            </div>
+        <!-- TABS -->
+        <div class="flex gap-8 mb-8 border-b border-white/5 pb-0 overflow-x-auto custom-scrollbar">
+            <button onclick="switchTab('tab-bracket')" id="btn-tab-bracket" class="tab-btn active text-[10px] font-black uppercase tracking-[0.2em] pb-3 text-gray-500 transition-colors whitespace-nowrap">Gestor de Bracket</button>
+            <button onclick="switchTab('tab-equipos')" id="btn-tab-equipos" class="tab-btn text-[10px] font-black uppercase tracking-[0.2em] pb-3 text-gray-500 transition-colors whitespace-nowrap">Base de Datos: Equipos</button>
         </div>
 
         <!-- PESTAÑA: SORTEO / BRACKET -->
-        <div id="tab-bracket" class="tab-content bg-everDark border border-everRed/30 p-6 md:p-8 rounded-sm shadow-[0_0_20px_rgba(230,0,0,0.05)]">
-            <h2 class="font-heading text-xl md:text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-everRed pl-3">Gestor de Cruces</h2>
+        <div id="tab-bracket" class="tab-content active clip-box bg-[#050505] border border-white/5 p-6 md:p-10 shadow-xl relative">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-everRed to-transparent"></div>
+            <h2 class="font-heading text-xl md:text-2xl text-white font-bold uppercase tracking-[0.2em] mb-8">Protocolo de Combate</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold">Nombre de la Fase</label>
-                    <input type="text" id="sorteo_fase" placeholder="Ej: Octavos de Final" class="input-admin w-full p-3 text-xs text-white">
+                    <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-2 block font-bold">Nombre de la Fase</label>
+                    <input type="text" id="sorteo_fase" placeholder="Ej: Semifinales" class="input-admin w-full p-4 text-xs text-white font-bold tracking-wider">
                 </div>
                 <div>
-                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold">Estado del Match</label>
-                    <select id="sorteo_status" class="input-admin w-full p-3 text-xs text-everGold cursor-pointer font-bold">
-                        <option value="pending">Pendiente (VS)</option>
+                    <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-2 block font-bold">Resolución del Match</label>
+                    <select id="sorteo_status" class="input-admin w-full p-4 text-xs text-everGold cursor-pointer font-bold tracking-wider">
+                        <option value="pending">STANDBY (En espera)</option>
                         <option value="eq1">Victoria Equipo 1</option>
                         <option value="eq2">Victoria Equipo 2</option>
                     </select>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6 items-end bg-black/40 p-4 border border-white/5">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8 items-end bg-[#080808] p-6 border border-white/5">
                 <div class="md:col-span-4">
-                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold">Equipo 1</label>
-                    <select id="sorteo_eq1" class="input-admin w-full p-3 text-xs text-white cursor-pointer"></select>
+                    <label class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mb-2 block font-bold">Contendiente 1</label>
+                    <select id="sorteo_eq1" class="input-admin w-full p-4 text-xs text-white cursor-pointer font-bold"></select>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold text-center">Score Eq 1</label>
-                    <input type="number" id="sorteo_score1" placeholder="0" class="input-admin w-full p-3 text-xs text-white text-center font-bold">
+                    <label class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mb-2 block font-bold text-center">Score 1</label>
+                    <input type="number" id="sorteo_score1" placeholder="-" class="input-admin w-full p-4 text-xs text-white text-center font-black text-lg">
                 </div>
                 <div class="md:col-span-2">
-                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold text-center">Score Eq 2</label>
-                    <input type="number" id="sorteo_score2" placeholder="0" class="input-admin w-full p-3 text-xs text-white text-center font-bold">
+                    <label class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mb-2 block font-bold text-center">Score 2</label>
+                    <input type="number" id="sorteo_score2" placeholder="-" class="input-admin w-full p-4 text-xs text-white text-center font-black text-lg">
                 </div>
                 <div class="md:col-span-4">
-                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold">Equipo 2</label>
-                    <select id="sorteo_eq2" class="input-admin w-full p-3 text-xs text-white cursor-pointer"></select>
+                    <label class="text-[9px] text-gray-500 uppercase tracking-[0.2em] mb-2 block font-bold">Contendiente 2</label>
+                    <select id="sorteo_eq2" class="input-admin w-full p-4 text-xs text-white cursor-pointer font-bold"></select>
                 </div>
             </div>
             
-            <button onclick="agregarMatchSorteo()" class="w-full border border-everGold/50 text-everGold font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] p-4 mb-8 hover:bg-everGold hover:text-black transition-colors">
-                + Añadir Cruce al Borrador
+            <button onclick="agregarMatchSorteo()" class="w-full clip-btn border border-everGold/30 text-everGold font-black text-[10px] md:text-xs uppercase tracking-[0.3em] p-4 mb-10 hover:bg-everGold hover:text-black transition-all shadow-[0_0_15px_rgba(212,175,55,0.1)]">
+                INSERTAR AL BUFFER
             </button>
 
-            <div class="bg-[#050505] border border-white/5 p-6 min-h-[150px] mb-8">
-                <h3 class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-4">Cartelera en Borrador (Sin Publicar)</h3>
-                <div id="lista-sorteo-admin" class="flex flex-col gap-2"></div>
+            <div class="bg-[#030303] border border-white/5 p-6 min-h-[150px] mb-8 relative">
+                <h3 class="text-[9px] text-everRed font-bold uppercase tracking-[0.3em] mb-6 flex items-center gap-2"><div class="w-1 h-1 bg-everRed rounded-full animate-ping"></div> Memoria Cache (Sin Publicar)</h3>
+                <div id="lista-sorteo-admin" class="flex flex-col gap-3"></div>
             </div>
 
-            <button onclick="publicarSorteo()" class="w-full bg-everRed text-white font-black text-xs md:text-sm uppercase tracking-[0.3em] p-5 hover:bg-everGold hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(230,0,0,0.3)]">
-                GUARDAR Y PUBLICAR BRACKET
+            <button onclick="publicarSorteo()" class="w-full clip-btn bg-everRed text-white font-black text-sm uppercase tracking-[0.4em] p-6 hover:bg-white hover:text-everRed transition-all duration-300 shadow-[0_0_30px_rgba(230,0,0,0.4)]">
+                SINCRONIZAR ARENA PÚBLICA
             </button>
+        </div>
+
+        <!-- PESTAÑA: EQUIPOS INSCRITOS -->
+        <div id="tab-equipos" class="tab-content clip-box bg-[#050505] border border-white/5 p-6 md:p-10 shadow-xl relative">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-everGold to-transparent"></div>
+            <div class="flex justify-between items-center mb-8 pb-2">
+                <h2 class="font-heading text-xl md:text-2xl text-white font-bold uppercase tracking-[0.2em]">Registros en Base de Datos</h2>
+                <span id="contador-equipos" class="bg-everGold text-black text-[9px] font-black px-4 py-2 rounded-sm uppercase tracking-[0.2em]">0 ACTIVO(S)</span>
+            </div>
+            
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse min-w-[700px]">
+                    <thead>
+                        <tr class="text-[8px] text-gray-500 uppercase tracking-[0.3em] border-b border-white/10 bg-[#080808]">
+                            <th class="p-5 font-black w-16">Data</th>
+                            <th class="p-5 font-black">Escuadra</th>
+                            <th class="p-5 font-black">Enlace (DC)</th>
+                            <th class="p-5 font-black">Nivel</th>
+                            <th class="p-5 font-black text-right">Purgar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-equipos-admin" class="divide-y divide-white/5"></tbody>
+                </table>
+            </div>
         </div>
 
     </div>
@@ -142,21 +157,21 @@
             try {
                 const resEq = await fetch(`${API_URL}/equipos`);
                 const equipos = await resEq.json();
-                document.getElementById('contador-equipos').innerText = `${equipos.length} EQUIPOS`;
+                document.getElementById('contador-equipos').innerText = `${equipos.length} ACTIVO(S)`;
                 const lista = document.getElementById('lista-equipos-admin');
                 lista.innerHTML = '';
                 
                 equipos.forEach(equipo => {
-                    const imgHtml = equipo.logo_url ? `<img src="${equipo.logo_url}" class="w-8 h-8 object-contain">` : `<div class="text-gray-600 font-bold">${equipo.nombre.charAt(0)}</div>`;
+                    const imgHtml = equipo.logo_url ? `<img src="${equipo.logo_url}" class="w-8 h-8 object-contain">` : `<div class="text-everGold font-bold">${equipo.nombre.charAt(0)}</div>`;
                     const discordCapitan = equipo.discord_capitan || (equipo.jugadores && equipo.jugadores[0] ? equipo.jugadores[0].dc : 'N/A');
                     lista.innerHTML += `
-                        <tr class="hover:bg-white/5 border-b border-white/5 transition-colors">
+                        <tr class="hover:bg-[#080808] border-b border-white/5 transition-colors">
                             <td class="p-4">${imgHtml}</td>
-                            <td class="p-4 font-heading text-xs text-white font-bold uppercase tracking-widest">${equipo.nombre}</td>
-                            <td class="p-4 text-[10px] text-everGold font-bold tracking-widest">${discordCapitan}</td>
-                            <td class="p-4 text-[10px] text-gray-400 tracking-widest">${equipo.rango || 'N/A'}</td>
+                            <td class="p-4 font-heading text-xs text-white font-black uppercase tracking-[0.1em]">${equipo.nombre}</td>
+                            <td class="p-4 text-[10px] text-everRed font-bold tracking-widest">${discordCapitan}</td>
+                            <td class="p-4 text-[9px] text-gray-400 tracking-[0.2em] font-bold">${equipo.rango || 'N/A'}</td>
                             <td class="p-4 text-right">
-                                <button onclick="borrarEquipoInscrito('${equipo.id}')" class="text-gray-600 hover:text-everRed">✕</button>
+                                <button onclick="borrarEquipoInscrito('${equipo.id}')" class="text-gray-600 hover:text-everRed font-bold hover:scale-110 transition-transform">✕</button>
                             </td>
                         </tr>`;
                 });
@@ -164,7 +179,7 @@
         }
 
         async function borrarEquipoInscrito(id) {
-            if(confirm("¿Eliminar escuadra permanentemente?")) {
+            if(confirm("⚠ ADVERTENCIA: ¿Purgar escuadra de la base de datos permanentemente?")) {
                 try {
                     await fetch(`${API_URL}/equipos?id=${id}`, { method: 'DELETE', headers: getAuthHeaders() });
                     cargarEquiposInscritos(); cargarDatosSorteo();
@@ -178,7 +193,7 @@
                 const equipos = await resEq.json();
                 const s1 = document.getElementById('sorteo_eq1');
                 const s2 = document.getElementById('sorteo_eq2');
-                let opts = '<option value="">-- Seleccionar Equipo --</option>';
+                let opts = '<option value="">-- SELECCIONAR --</option>';
                 
                 equipos.forEach(e => { opts += `<option value="${e.nombre}">${e.nombre}</option>`; });
                 s1.innerHTML = opts; s2.innerHTML = opts + '<option value="BYE">-- PASE DIRECTO (BYE) --</option>';
@@ -195,21 +210,21 @@
         function renderListaSorteo() {
             const lista = document.getElementById('lista-sorteo-admin');
             lista.innerHTML = '';
-            if(bracketMatches.length === 0) { lista.innerHTML = '<p class="text-[10px] text-gray-600 uppercase tracking-widest">Lista vacía.</p>'; return; }
+            if(bracketMatches.length === 0) { lista.innerHTML = '<p class="text-[9px] text-gray-600 uppercase tracking-[0.2em] font-bold">Buffer vacío.</p>'; return; }
 
             bracketMatches.forEach((m, idx) => {
-                let statusText = m.status === 'pending' ? 'VS' : (m.status === 'eq1' ? `W:` : `W:`);
+                let statusText = m.status === 'pending' ? 'VS' : (m.status === 'eq1' ? `WIN:` : `WIN:`);
                 let ganador = m.status === 'eq1' ? m.eq1 : (m.status === 'eq2' ? m.eq2 : '');
-                let marcador = (m.score1 && m.score2) ? `[${m.score1}-${m.score2}]` : '';
+                let marcador = (m.score1 && m.score2) ? `[ ${m.score1} - ${m.score2} ]` : '';
 
                 lista.innerHTML += `
-                    <div class="flex items-center justify-between border-b border-white/5 py-3 text-[10px] uppercase tracking-widest text-gray-400">
-                        <div class="flex gap-4 items-center">
-                            <span class="font-bold text-white w-32 truncate">${m.fase}</span>
-                            <span>${m.eq1} <b class="text-everRed mx-2">VS</b> ${m.eq2}</span>
-                            <span class="text-everGold font-bold ml-4">${statusText} ${ganador} ${marcador}</span>
+                    <div class="flex items-center justify-between border border-white/5 bg-[#080808] p-3 pl-4 text-[9px] uppercase tracking-[0.2em] text-gray-400 font-bold clip-btn">
+                        <div class="flex gap-6 items-center">
+                            <span class="text-everGold w-32 truncate">${m.fase}</span>
+                            <span><span class="text-white">${m.eq1}</span> <b class="text-everRed mx-2">X</b> <span class="text-white">${m.eq2}</span></span>
+                            <span class="text-everRed ml-4">${statusText} <span class="text-white">${ganador}</span> ${marcador}</span>
                         </div>
-                        <button onclick="borrarMatch(${idx})" class="text-gray-600 hover:text-everRed font-bold text-sm">✕</button>
+                        <button onclick="borrarMatch(${idx})" class="text-gray-600 hover:text-everRed text-sm pr-2">✕</button>
                     </div>`;
             });
         }
@@ -222,7 +237,7 @@
             const score2 = document.getElementById('sorteo_score2').value;
             const status = document.getElementById('sorteo_status').value;
 
-            if(!fase || !eq1 || !eq2) { alert("Faltan datos obligatorios."); return; }
+            if(!fase || !eq1 || !eq2) { alert("⚠ Faltan datos críticos para insertar el match."); return; }
             bracketMatches.push({ fase, eq1, score1, eq2, score2, status });
             document.getElementById('sorteo_score1').value = ''; document.getElementById('sorteo_score2').value = '';
             renderListaSorteo();
@@ -232,14 +247,14 @@
 
         async function publicarSorteo() {
             const btn = document.querySelector('button[onclick="publicarSorteo()"]');
-            const txt = btn.innerText; btn.innerText = "PUBLICANDO...";
+            const txt = btn.innerText; btn.innerText = "TRANSMITIENDO DATOS...";
             try {
                 if (bracketNoticiaId) { await fetch(`${API_URL}/noticias?id=${bracketNoticiaId}`, { method: 'DELETE', headers: getAuthHeaders() }); }
                 const payload = { titulo: '[BRACKET_DATA]', descripcion: JSON.stringify(bracketMatches), imagen_url: 'HIDDEN' };
                 const res = await fetch(`${API_URL}/noticias`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(payload) });
-                if(res.ok) { alert('¡Bracket en vivo!'); cargarDatosSorteo(); }
-                else if (res.status === 401 || res.status === 403) { alert("Sesión expirada. Inicia sesión en otra pestaña y vuelve a intentarlo."); }
-            } catch(e) { alert("Error de conexión."); } finally { btn.innerText = txt; }
+                if(res.ok) { alert('Sincronización Exitosa: Bracket en vivo.'); cargarDatosSorteo(); }
+                else if (res.status === 401 || res.status === 403) { alert("⚠ Sesión expirada por seguridad. Re-autentica en una pestaña nueva."); }
+            } catch(e) { alert("⚠ Fallo de conexión con el Nexus."); } finally { btn.innerText = txt; }
         }
     </script>
 </body>
