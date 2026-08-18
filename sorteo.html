@@ -6,89 +6,64 @@
     <title>5ever | The Arena</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { 
-            theme: { extend: { colors: { everRed: '#E60000', everGold: '#D4AF37', everDark: '#050505', everGray: '#121212' } } } 
-        }
+        tailwind.config = { theme: { extend: { colors: { vctRed: '#ff4655', everGold: '#D4AF37', everDark: '#0f1923' } } } }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Montserrat', sans-serif; 
-            background-color: #030303; 
-            color: white; 
-            background-image: radial-gradient(circle at 50% 0%, rgba(230,0,0,0.05) 0%, transparent 70%), 
-                              linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px),
-                              linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
-        }
-        .font-heading { font-family: 'Cinzel', serif; }
-        
-        /* Cortes Diagonales estilo Esports */
-        .clip-esports { clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
-        .clip-btn { clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
-        
-        /* Animaciones y Efectos */
-        .glass-card { background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
-        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -10px rgba(212,175,55,0.15); border-color: rgba(212,175,55,0.3); }
-        .gold-glow-text { text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
-        .red-glow-text { text-shadow: 0 0 15px rgba(230, 0, 0, 0.5); }
-        
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; }
+        body { font-family: 'Montserrat', sans-serif; background-color: #000; color: #ece8e1; overflow-x: hidden; }
+        .font-vct { font-weight: 900; }
+        .clip-vct { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
+        .clip-btn { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
+        .card-hover:hover { border-color: #ff4655; transform: translateX(5px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #000; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #ff4655; }
     </style>
 </head>
-<body class="selection:bg-everRed selection:text-white antialiased min-h-screen">
+<body class="selection:bg-vctRed selection:text-white antialiased min-h-screen relative bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]">
 
-    <!-- NAV BAR PREMIUM -->
-    <nav class="w-full bg-[#030303]/90 backdrop-blur-md border-b border-white/10 py-5 px-6 md:px-12 flex items-center justify-between sticky top-0 z-50">
-        <div class="font-heading text-3xl font-black tracking-widest text-white flex items-center gap-2 drop-shadow-md">
-            <span class="text-everRed red-glow-text">5</span>EVER 
-            <div class="h-6 w-px bg-white/20 mx-3 hidden sm:block"></div>
-            <span class="text-everGold text-[10px] hidden sm:inline tracking-[0.4em] font-bold mt-1">ARENA GLOBAL</span>
+    <!-- NAVBAR -->
+    <nav class="w-full bg-[#111]/90 backdrop-blur-md border-b border-white/10 py-4 px-6 md:px-12 flex items-center justify-between sticky top-0 z-50">
+        <div class="font-vct text-2xl tracking-tighter text-white flex items-center gap-2">
+            <span class="text-vctRed">5</span>EVER 
+            <div class="h-4 w-px bg-white/20 mx-3 hidden sm:block"></div>
+            <span class="text-everGold text-[10px] hidden sm:inline tracking-[0.4em] font-bold">THE ARENA</span>
         </div>
-        <a href="registro-torneo.html" class="clip-btn bg-transparent border border-everGold text-everGold hover:bg-everGold hover:text-black hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 px-8 py-3">
+        <a href="registro-torneo.html" class="clip-btn bg-vctRed text-white hover:bg-white hover:text-vctRed text-[9px] font-black uppercase tracking-[0.2em] transition-all px-6 py-3">
             Inscribir Equipo
         </a>
     </nav>
 
-    <div class="max-w-7xl mx-auto px-6 py-20 relative z-10 animate-fade-up">
+    <div class="max-w-7xl mx-auto px-6 py-16 relative z-10">
         
-        <!-- HEADER HEADER -->
-        <div class="text-center mb-24 relative">
-            <div class="absolute inset-0 bg-everRed/20 blur-[100px] rounded-full w-64 h-64 mx-auto -top-10 -z-10"></div>
-            <h1 class="font-heading text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-gray-500 uppercase tracking-[0.1em] mb-4 drop-shadow-2xl">THE <span class="text-transparent bg-clip-text bg-gradient-to-r from-everGold to-yellow-600 gold-glow-text">ARENA</span></h1>
-            <p class="font-primary text-everGold text-[10px] tracking-[0.5em] uppercase font-bold">Temporada Competitiva Oficial</p>
+        <div class="text-center mb-24">
+            <h1 class="font-vct text-6xl md:text-8xl text-white uppercase tracking-tighter mb-2 drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">BATTLE<span class="text-transparent bg-clip-text bg-gradient-to-r from-everGold to-yellow-600">GROUND</span></h1>
+            <p class="text-gray-400 text-[10px] tracking-[0.5em] uppercase font-bold">Temporada Oficial</p>
         </div>
 
-        <!-- LEADERBOARD ELITE -->
+        <!-- LEADERBOARD Y ROSTERS -->
         <div class="mb-32">
-            <div class="flex items-center gap-6 mb-12 justify-center">
-                <div class="w-24 h-[2px] bg-gradient-to-l from-everRed to-transparent"></div>
-                <h3 class="font-heading text-2xl md:text-3xl font-black text-white uppercase tracking-[0.2em] text-center">Top Ranking</h3>
-                <div class="w-24 h-[2px] bg-gradient-to-r from-everRed to-transparent"></div>
-            </div>
+            <h3 class="font-vct text-2xl md:text-3xl text-white uppercase tracking-tight mb-8 flex items-center gap-4"><div class="w-3 h-3 bg-everGold clip-btn"></div> STANDINGS & ROSTERS</h3>
             
-            <div class="max-w-4xl mx-auto clip-esports glass-card p-1">
-                <div class="bg-[#050505] clip-esports p-8 w-full h-full">
-                    <div class="flex justify-between text-[9px] uppercase tracking-[0.3em] text-gray-500 font-black border-b border-white/10 pb-4 mb-4 px-4">
-                        <span>Escuadra Activa</span>
-                        <span>Victorias</span>
-                    </div>
-                    <div id="tabla-posiciones" class="flex flex-col gap-3">
-                        <p class="text-xs text-gray-600 text-center py-8 uppercase tracking-[0.2em]">Sincronizando Sistema...</p>
-                    </div>
+            <div class="bg-[#111] border border-white/5 clip-vct p-6 md:p-8">
+                <div class="flex justify-between text-[9px] uppercase tracking-[0.3em] text-gray-500 font-bold border-b border-white/10 pb-4 mb-4 px-2">
+                    <span>Escuadra</span>
+                    <span>Stats</span>
+                </div>
+                <div id="tabla-posiciones" class="flex flex-col gap-2">
+                    <p class="text-xs text-gray-600 py-8 uppercase tracking-widest text-center">Analizando Datos...</p>
                 </div>
             </div>
         </div>
 
         <!-- CARTELERA DE CRUCES -->
-        <div id="contenedor-sorteo" class="flex flex-col gap-24"></div>
+        <div id="contenedor-sorteo" class="flex flex-col gap-20"></div>
 
     </div>
 
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
-        let diccionarioLogos = {};
+        let dataEquipos = [];
         let contadorVictorias = {}; 
 
         document.addEventListener('DOMContentLoaded', cargarSorteoCompleto);
@@ -98,11 +73,8 @@
             try {
                 const resEq = await fetch(`${API_URL}/equipos`);
                 if(resEq.ok) {
-                    const equipos = await resEq.json();
-                    equipos.forEach(e => {
-                        if (e.logo_url) diccionarioLogos[e.nombre] = e.logo_url;
-                        contadorVictorias[e.nombre] = 0; 
-                    });
+                    dataEquipos = await resEq.json();
+                    dataEquipos.forEach(e => { contadorVictorias[e.nombre] = 0; });
                 }
 
                 const resNot = await fetch(`${API_URL}/noticias`);
@@ -115,16 +87,16 @@
                     renderizarLeaderboard();
                     renderizarCartelera(matches, contenedor);
                 } else {
-                    contenedor.innerHTML = `<div class="text-center p-12 glass-card clip-esports"><p class="text-everRed font-bold uppercase tracking-widest text-xs">Aún no hay cruces registrados en el servidor.</p></div>`;
+                    renderizarLeaderboard(); // Mostrar rosters aunque no haya bracket
+                    contenedor.innerHTML = `<div class="text-center p-12 bg-[#111] border border-white/5 clip-vct"><p class="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Aún no hay cruces registrados.</p></div>`;
                 }
             } catch (e) { console.error(e); }
         }
 
         function calcularEstadisticas(matches) {
             matches.forEach(m => {
-                if(!contadorVictorias[m.eq1]) contadorVictorias[m.eq1] = 0;
-                if(m.eq2 !== 'BYE' && !contadorVictorias[m.eq2]) contadorVictorias[m.eq2] = 0;
-
+                if(m.eq1 && !contadorVictorias[m.eq1]) contadorVictorias[m.eq1] = 0;
+                if(m.eq2 && m.eq2 !== 'BYE' && !contadorVictorias[m.eq2]) contadorVictorias[m.eq2] = 0;
                 if(m.status === 'eq1') contadorVictorias[m.eq1]++;
                 if(m.status === 'eq2' && m.eq2 !== 'BYE') contadorVictorias[m.eq2]++;
             });
@@ -133,128 +105,108 @@
         function renderizarLeaderboard() {
             const tabla = document.getElementById('tabla-posiciones');
             tabla.innerHTML = '';
-            const listaOrdenada = Object.keys(contadorVictorias).map(nombre => ({ nombre, wins: contadorVictorias[nombre] })).sort((a, b) => b.wins - a.wins);
-            const ganadores = listaOrdenada.filter(item => item.wins > 0);
+            
+            // Ordenar por victorias
+            const ganadores = dataEquipos.map(e => ({
+                ...e, wins: contadorVictorias[e.nombre] || 0
+            })).sort((a, b) => b.wins - a.wins);
 
             if(ganadores.length === 0) {
-                tabla.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-6 uppercase tracking-widest">Las posiciones se actualizarán al finalizar la primera batalla.</p>';
-                return;
+                tabla.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-6 uppercase tracking-widest">Registra equipos para ver la tabla.</p>'; return;
             }
 
             ganadores.forEach((item, index) => {
-                const logoHtml = diccionarioLogos[item.nombre] 
-                    ? `<img src="${diccionarioLogos[item.nombre]}" class="w-10 h-10 object-contain rounded-sm bg-black border border-white/5 p-1 shadow-md">`
-                    : `<div class="w-10 h-10 bg-everGray border border-white/5 rounded-sm flex items-center justify-center text-sm text-everGold font-heading shadow-md">${item.nombre.charAt(0)}</div>`;
+                const logoHtml = item.logo_url 
+                    ? `<img src="${item.logo_url}" class="w-10 h-10 object-contain bg-black p-1 shadow-md">`
+                    : `<div class="w-10 h-10 bg-black flex items-center justify-center text-sm text-white font-vct shadow-md">${item.nombre.charAt(0)}</div>`;
 
-                let medalla = `<span class="text-gray-600 text-[10px] font-bold w-8 text-center">#${index + 1}</span>`;
-                if(index === 0) medalla = `<span class="text-everGold text-lg font-black w-8 text-center gold-glow-text">I</span>`;
-                if(index === 1) medalla = `<span class="text-gray-300 text-lg font-black w-8 text-center drop-shadow-md">II</span>`;
-                if(index === 2) medalla = `<span class="text-everRed text-lg font-black w-8 text-center red-glow-text">III</span>`;
+                let rankStr = `<span class="text-gray-600 text-xs font-vct w-6">${index + 1}</span>`;
+                if(index === 0) rankStr = `<span class="text-everGold text-lg font-vct w-6 drop-shadow-[0_0_5px_rgba(212,175,55,0.8)]">1</span>`;
+
+                // Construir Roster Oculto
+                let rosterHtml = '';
+                if(item.jugadores && item.jugadores.length > 0) {
+                    rosterHtml = `<div id="roster-${index}" class="hidden mt-4 pt-4 border-t border-white/5 grid grid-cols-1 md:grid-cols-2 gap-2 pl-12">`;
+                    item.jugadores.forEach(j => {
+                        rosterHtml += `
+                            <div class="flex items-center justify-between bg-black p-2 px-4 border-l-2 border-vctRed">
+                                <span class="text-[10px] text-white font-bold tracking-wider uppercase">${j.riot_id}</span>
+                                <a href="${j.tracker_url}" target="_blank" class="text-[8px] bg-[#0f1923] text-gray-400 hover:text-white px-2 py-1 border border-white/10 uppercase tracking-widest hover:border-vctRed transition-colors">Ver Tracker</a>
+                            </div>`;
+                    });
+                    rosterHtml += `</div>`;
+                } else {
+                    rosterHtml = `<div id="roster-${index}" class="hidden mt-4 pt-4 border-t border-white/5 pl-12 text-[9px] text-gray-500 uppercase tracking-widest">Roster no proporcionado.</div>`;
+                }
 
                 tabla.innerHTML += `
-                    <div class="flex items-center justify-between bg-[#0a0a0a] hover:bg-[#111] border-l-2 border-transparent hover:border-everGold p-3 px-5 rounded-sm transition-all duration-300 transform hover:translate-x-2">
-                        <div class="flex items-center gap-6">
-                            ${medalla}
-                            ${logoHtml}
-                            <span class="font-heading text-sm md:text-base font-bold uppercase tracking-[0.1em] text-white">${item.nombre}</span>
+                    <div class="bg-[#0a0a0a] border border-transparent hover:border-white/10 p-4 rounded-sm transition-all duration-300 mb-2">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('roster-${index}').classList.toggle('hidden')">
+                            <div class="flex items-center gap-4">
+                                ${rankStr} ${logoHtml}
+                                <span class="font-vct text-sm md:text-base text-white uppercase tracking-wider">${item.nombre}</span>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <span class="text-xs font-vct text-white tracking-widest">${item.wins} <span class="text-vctRed ml-1">W</span></span>
+                                <span class="text-[8px] text-gray-500 uppercase tracking-widest border border-gray-700 px-2 py-1 hover:text-white transition-colors hidden sm:block">Desplegar Roster ▼</span>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-sm font-black text-white tracking-widest">${item.wins} <span class="text-everRed ml-1">W</span></span>
-                        </div>
+                        ${rosterHtml}
                     </div>
                 `;
             });
         }
 
-        function getLogoHtml(nombreEquipo) {
-            if(diccionarioLogos[nombreEquipo]) {
-                return `<img src="${diccionarioLogos[nombreEquipo]}" class="w-16 h-16 md:w-24 md:h-24 object-contain bg-[#030303] border border-white/10 p-2 shadow-2xl">`;
-            }
-            return `<div class="w-16 h-16 md:w-24 md:h-24 bg-[#030303] border border-white/10 flex items-center justify-center font-heading text-3xl text-gray-700 shadow-2xl">${nombreEquipo.charAt(0)}</div>`;
+        function getLogoSimple(nombre) {
+            const eq = dataEquipos.find(e => e.nombre === nombre);
+            if(eq && eq.logo_url) return `<img src="${eq.logo_url}" class="w-16 h-16 md:w-20 md:h-20 object-contain bg-black p-2">`;
+            return `<div class="w-16 h-16 md:w-20 md:h-20 bg-black border border-white/5 flex items-center justify-center font-vct text-2xl text-gray-700">${nombre.charAt(0)}</div>`;
         }
 
         function renderizarCartelera(matches, contenedor) {
             contenedor.innerHTML = '';
-            const fases = {};
-            matches.forEach(m => {
-                if(!fases[m.fase]) fases[m.fase] = [];
-                fases[m.fase].push(m);
-            });
+            const fases = {}; matches.forEach(m => { if(!fases[m.fase]) fases[m.fase] = []; fases[m.fase].push(m); });
 
             for (const fase in fases) {
-                let html = `
-                    <div class="mb-10 animate-fade-up">
-                        <div class="flex items-center gap-4 mb-10">
-                            <h3 class="font-heading text-2xl md:text-3xl font-black text-white uppercase tracking-[0.2em]">${fase}</h3>
-                            <div class="h-px bg-gradient-to-r from-everRed to-transparent flex-1"></div>
-                        </div>
-                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 md:gap-12">
-                `;
-
+                let html = `<div class="mb-12"><h3 class="font-vct text-xl md:text-2xl text-white uppercase tracking-tighter mb-6 flex items-center gap-3"><div class="w-2 h-8 bg-vctRed clip-btn"></div> ${fase}</h3><div class="grid grid-cols-1 xl:grid-cols-2 gap-6">`;
                 fases[fase].forEach(m => {
-                    let col1 = 'text-white', col2 = 'text-white';
-                    let op1 = 'opacity-100', op2 = 'opacity-100';
+                    let col1 = 'text-white', col2 = 'text-white', op1 = '', op2 = '';
                     let badge1 = '', badge2 = '';
-                    let cardStyle = 'border-white/10 hover:border-white/30';
-                    let centro = '<span class="text-everRed font-black text-3xl md:text-5xl drop-shadow-[0_0_20px_rgba(230,0,0,0.5)] italic">VS</span>';
+                    let bgStyle = 'bg-[#111] hover:bg-[#151515]';
+                    let centro = '<span class="text-vctRed font-vct text-2xl md:text-4xl opacity-50">VS</span>';
                     
                     if (m.score1 && m.score2) {
-                        centro = `
-                            <div class="flex flex-col items-center bg-[#050505] px-6 py-2 border-y border-white/10">
-                                <span class="text-everGold font-black text-4xl md:text-5xl drop-shadow-[0_0_15px_rgba(212,175,55,0.6)]">${m.score1} <span class="text-gray-600 mx-1 text-2xl">-</span> ${m.score2}</span>
-                                <span class="text-gray-500 text-[8px] uppercase tracking-[0.3em] mt-2 font-bold">Final</span>
-                            </div>
-                        `;
-                    } else if (m.status !== 'pending' && m.eq2 !== 'BYE') {
-                        centro = '<span class="text-gray-600 font-bold text-xs uppercase tracking-[0.2em] text-center bg-black/50 px-4 py-2 border border-white/5 clip-btn">CERRADO</span>';
-                    }
+                        centro = `<div class="flex flex-col items-center"><span class="text-everGold font-vct text-3xl md:text-4xl">${m.score1} <span class="text-gray-600">-</span> ${m.score2}</span></div>`;
+                    } else if (m.status !== 'pending' && m.eq2 !== 'BYE') { centro = '<span class="text-gray-600 font-bold text-[9px] uppercase tracking-widest text-center">FINALIZADO</span>'; }
 
                     if (m.status === 'eq1') {
-                        col1 = 'text-everGold gold-glow-text'; 
-                        badge1 = '<span class="bg-everGold/10 border-l-2 border-everGold text-everGold px-3 py-1 text-[8px] uppercase tracking-[0.2em] mt-2 font-black">Victoria</span>';
-                        col2 = 'text-gray-700 line-through'; op2 = 'opacity-40 grayscale';
-                        cardStyle = 'border-everGold/40 shadow-[0_0_30px_rgba(212,175,55,0.1)]';
+                        col1 = 'text-everGold'; badge1 = '<span class="text-everGold border border-everGold/30 px-2 py-0.5 text-[8px] uppercase tracking-widest mt-1 font-bold">WIN</span>';
+                        col2 = 'text-gray-600 line-through'; op2 = 'opacity-30 grayscale';
                     } else if (m.status === 'eq2') {
-                        col2 = 'text-everGold gold-glow-text'; 
-                        badge2 = '<span class="bg-everGold/10 border-r-2 border-everGold text-everGold px-3 py-1 text-[8px] uppercase tracking-[0.2em] mt-2 font-black">Victoria</span>';
-                        col1 = 'text-gray-700 line-through'; op1 = 'opacity-40 grayscale';
-                        cardStyle = 'border-everGold/40 shadow-[0_0_30px_rgba(212,175,55,0.1)]';
+                        col2 = 'text-everGold'; badge2 = '<span class="text-everGold border border-everGold/30 px-2 py-0.5 text-[8px] uppercase tracking-widest mt-1 font-bold">WIN</span>';
+                        col1 = 'text-gray-600 line-through'; op1 = 'opacity-30 grayscale';
                     }
 
-                    if (m.eq2 === 'BYE') {
-                        centro = '<span class="text-everRed font-bold text-[9px] uppercase tracking-widest text-center">PASE<br>DIRECTO</span>';
-                        col2 = 'text-gray-800'; op2 = 'opacity-10 border-dashed';
-                        m.eq2 = 'VACANTE';
-                        cardStyle = 'border-white/5';
-                    }
+                    if (m.eq2 === 'BYE') { centro = '<span class="text-gray-600 font-bold text-[8px] uppercase tracking-widest text-center">BYE</span>'; col2 = 'text-gray-800'; op2 = 'opacity-10'; m.eq2 = 'VACANTE'; bgStyle = 'bg-black'; }
 
-                    const img1 = getLogoHtml(m.eq1);
-                    const img2 = m.eq2 === 'VACANTE' 
-                        ? `<div class="w-16 h-16 md:w-24 md:h-24 border border-gray-800 border-dashed flex items-center justify-center"><svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></div>` 
-                        : getLogoHtml(m.eq2);
+                    const img1 = getLogoSimple(m.eq1);
+                    const img2 = m.eq2 === 'VACANTE' ? `<div class="w-16 h-16 md:w-20 md:h-20 border border-gray-800 border-dashed flex items-center justify-center"></div>` : getLogoSimple(m.eq2);
 
                     html += `
-                        <div class="clip-esports glass-card border ${cardStyle} p-6 md:p-10 flex items-center justify-between transition-all duration-500 card-hover">
-                            <div class="flex items-center gap-4 md:gap-6 flex-1 ${op1}">
+                        <div class="clip-vct ${bgStyle} border-l-4 border-transparent hover:border-vctRed p-6 flex items-center justify-between transition-all duration-300 card-hover">
+                            <div class="flex items-center gap-4 flex-1 ${op1}">
                                 ${img1}
-                                <div class="flex flex-col items-start overflow-hidden">
-                                    <h4 class="font-heading text-sm md:text-xl ${col1} font-black uppercase tracking-[0.1em] truncate max-w-[120px] md:max-w-[200px]">${m.eq1}</h4>
-                                    ${badge1}
-                                </div>
+                                <div class="flex flex-col items-start overflow-hidden"><h4 class="font-vct text-sm md:text-lg ${col1} uppercase tracking-wider truncate max-w-[120px] md:max-w-full">${m.eq1}</h4>${badge1}</div>
                             </div>
-                            <div class="px-2 md:px-6 font-heading flex flex-col items-center z-10">${centro}</div>
-                            <div class="flex items-center gap-4 md:gap-6 flex-1 justify-end text-right ${op2}">
-                                <div class="flex flex-col items-end overflow-hidden">
-                                    <h4 class="font-heading text-sm md:text-xl ${col2} font-black uppercase tracking-[0.1em] truncate max-w-[120px] md:max-w-[200px]">${m.eq2}</h4>
-                                    ${badge2}
-                                </div>
+                            <div class="px-2 md:px-6 font-vct flex flex-col items-center">${centro}</div>
+                            <div class="flex items-center gap-4 flex-1 justify-end text-right ${op2}">
+                                <div class="flex flex-col items-end overflow-hidden"><h4 class="font-vct text-sm md:text-lg ${col2} uppercase tracking-wider truncate max-w-[120px] md:max-w-full">${m.eq2}</h4>${badge2}</div>
                                 ${img2}
                             </div>
                         </div>
                     `;
                 });
-                html += `</div></div>`;
-                contenedor.innerHTML += html;
+                html += `</div></div>`; contenedor.innerHTML += html;
             }
         }
     </script>
