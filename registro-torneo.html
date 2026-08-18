@@ -3,124 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5ever | Reclutamiento</title>
+    <title>5ever | Admisión Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { everRed: '#ff2a3f', everGold: '#e5c05c', everDark: '#0a0a0c' } } } }
+        tailwind.config = { theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#050507' } } } }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: #fff; overflow-x: hidden; }
+        body { font-family: 'Montserrat', sans-serif; background-color: #020202; color: #fff; overflow-x: hidden; }
         
-        /* Fondo Animado de Cuadrícula Cyber */
-        .cyber-bg {
-            position: fixed; top: 0; left: 0; width: 200vw; height: 200vh; z-index: -1;
+        /* Grid Holográfico */
+        .holo-grid {
+            position: fixed; inset: 0; z-index: -1;
             background-image: 
-                linear-gradient(rgba(255, 42, 63, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 42, 63, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            animation: panGrid 20s linear infinite;
-            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 15s linear infinite;
         }
-        @keyframes panGrid { 0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); } 100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); } }
+        @keyframes gridMove { 0% { transform: translateY(0); } 100% { transform: translateY(50px); } }
 
-        .clip-form { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%); }
-        .input-vct { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid #333; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .input-vct:focus { border-color: #ff2a3f; border-left-color: #ff2a3f; box-shadow: inset 10px 0 20px -10px rgba(255,42,63,0.3); outline: none; transform: translateX(5px); }
+        .clip-panel { clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); }
+        .clip-input { clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
         
-        /* Toast Notification */
-        #toast { position: fixed; bottom: 20px; right: -300px; transition: right 0.4s ease-in-out; z-index: 100; }
-        #toast.show { right: 20px; }
+        .input-vct { 
+            background: rgba(10,10,12,0.8); border: 1px solid rgba(255,255,255,0.05); 
+            border-left: 2px solid rgba(255,255,255,0.2); transition: all 0.3s ease; 
+        }
+        .input-vct:focus { 
+            border-color: #ff2a3f; border-left-color: #ff2a3f; background: #000;
+            box-shadow: inset 15px 0 25px -15px rgba(255,42,63,0.4); outline: none; padding-left: 1.5rem;
+        }
+        
+        .module-header { position: relative; overflow: hidden; }
+        .module-header::after { content: ''; position: absolute; bottom: 0; left: -100%; width: 50%; height: 2px; background: #ff2a3f; animation: scanline 3s infinite; }
+        @keyframes scanline { to { left: 200%; } }
+
+        /* Efecto de carga inicial */
+        .boot-screen { animation: fadeOut 1s 1.5s forwards; }
+        @keyframes fadeOut { to { opacity: 0; pointer-events: none; visibility: hidden; } }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col items-center justify-center p-4 relative">
+<body class="antialiased min-h-screen flex flex-col items-center py-12 px-4 relative">
 
-    <div class="cyber-bg"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-[-1]"></div>
+    <!-- Animación de Arranque -->
+    <div class="boot-screen fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center">
+        <h1 class="text-4xl font-black text-white uppercase tracking-[0.5em] animate-pulse"><span class="text-vctRed">5</span>EVER</h1>
+        <p class="text-[10px] text-everGold mt-4 tracking-[0.4em]">Iniciando Protocolo de Registro...</p>
+        <div class="w-48 h-1 bg-white/10 mt-6 overflow-hidden"><div class="h-full bg-vctRed w-full animate-[slideRight_1.5s_ease-in-out]"></div></div>
+    </div>
 
-    <div class="w-full max-w-4xl backdrop-blur-xl bg-black/40 border border-white/10 p-8 md:p-12 clip-form relative shadow-[0_0_50px_rgba(255,42,63,0.1)] transition-transform duration-500 hover:shadow-[0_0_50px_rgba(255,42,63,0.2)]">
+    <div class="holo-grid"></div>
+    <div class="fixed inset-0 bg-gradient-to-b from-transparent via-[#020202]/80 to-[#020202] z-[-1]"></div>
+
+    <div class="w-full max-w-5xl relative z-10">
         
-        <a href="sorteo.html" class="absolute top-8 right-8 text-gray-500 hover:text-everRed text-[10px] uppercase tracking-widest font-black transition-all hover:tracking-[0.3em]">
-            ✕ ABORTAR
-        </a>
-
-        <div class="mb-12 border-b border-white/5 pb-8 relative overflow-hidden">
-            <div class="absolute left-0 bottom-0 w-full h-[2px] bg-gradient-to-r from-everRed via-everGold to-transparent"></div>
-            <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-2"><span class="text-everRed">5</span>EVER <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-600">PROTOCOL</span></h1>
-            <p class="text-everGold text-[10px] uppercase tracking-[0.4em] font-bold flex items-center gap-2"><span class="w-2 h-2 bg-everGold rounded-full animate-pulse"></span> Sistema de Admisión Activo</p>
+        <!-- HEADER -->
+        <div class="flex justify-between items-end mb-12">
+            <div>
+                <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white mb-2"><span class="text-vctRed">5</span>EVER <span class="text-transparent bg-clip-text bg-gradient-to-r from-everGold to-yellow-700">PORTAL</span></h1>
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 bg-vctRed rounded-full animate-ping"></div>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-[0.4em] font-bold">Inscripción Oficial de Escuadras</p>
+                </div>
+            </div>
+            <a href="sorteo.html" class="hidden md:block text-[10px] font-black text-gray-500 hover:text-white border border-white/10 hover:border-white px-6 py-3 uppercase tracking-widest transition-colors clip-input">
+                VOLVER A LA ARENA
+            </a>
         </div>
 
-        <form id="form-registro" class="flex flex-col gap-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="group">
-                    <label class="text-[9px] text-everRed uppercase tracking-[0.2em] mb-2 block font-black group-hover:text-white transition-colors">Designación del Equipo</label>
-                    <input type="text" id="reg_nombre" required placeholder="Nombre de la Escuadra" class="input-vct w-full p-4 text-sm font-bold tracking-wider text-white">
+        <form id="form-registro" class="flex flex-col gap-10">
+            
+            <!-- MÓDULO 01: IDENTIDAD -->
+            <div class="bg-black/60 backdrop-blur-md border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+                <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
+                    <span class="bg-white text-black px-2 py-1 text-xs">01</span> IDENTIDAD DEL EQUIPO
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-3 block font-black">Nombre de la Escuadra *</label>
+                        <input type="text" id="reg_nombre" required placeholder="Ej: BANE Ignite" class="input-vct clip-input w-full p-4 text-sm font-bold text-white">
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-3 block font-black">Discord del Capitán *</label>
+                        <input type="text" id="reg_discord" required placeholder="Usuario#0000" class="input-vct clip-input w-full p-4 text-sm font-bold text-white">
+                    </div>
                 </div>
-                <div class="group">
-                    <label class="text-[9px] text-everRed uppercase tracking-[0.2em] mb-2 block font-black group-hover:text-white transition-colors">Comandante (Discord)</label>
-                    <input type="text" id="reg_discord" required placeholder="Usuario#0000" class="input-vct w-full p-4 text-sm font-bold tracking-wider text-white">
+                <div>
+                    <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black">Emblema Oficial (URL de Logo PNG/JPG)</label>
+                    <input type="url" id="reg_logo" placeholder="https://..." class="input-vct clip-input w-full p-4 text-sm font-bold text-white">
                 </div>
             </div>
 
-            <div class="group">
-                <label class="text-[9px] text-everRed uppercase tracking-[0.2em] mb-2 block font-black group-hover:text-white transition-colors">URL del Emblema (Logo)</label>
-                <input type="url" id="reg_logo" placeholder="https://..." class="input-vct w-full p-4 text-sm font-bold tracking-wider text-white">
+            <!-- MÓDULO 02: ROSTER TITULAR -->
+            <div class="bg-black/60 backdrop-blur-md border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+                <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-2 pb-4 flex items-center gap-4">
+                    <span class="bg-everGold text-black px-2 py-1 text-xs">02</span> ROSTER TITULAR
+                </h2>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-8 font-bold border-l-2 border-everGold pl-3">Escribe el Riot ID exacto (Usuario#TAG). Se vinculará a Valorant Tracker automáticamente.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="contenedor-titulares">
+                    <!-- Se inyecta por JS -->
+                </div>
             </div>
 
-            <div class="mt-4">
-                <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-4 block font-black border-l-2 border-everGold pl-2">Unidad Táctica (Riot IDs para Tracker)</label>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="contenedor-jugadores"></div>
+            <!-- MÓDULO 03: STAFF Y RESERVAS -->
+            <div class="bg-black/60 backdrop-blur-md border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(255,42,63,0.05)] relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-vctRed text-white text-[8px] font-black uppercase tracking-widest px-6 py-2 origin-bottom-left transform rotate-45 translate-x-[25px] translate-y-[-15px]">OPCIONAL</div>
+                <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
+                    <span class="bg-vctRed text-white px-2 py-1 text-xs">03</span> STAFF TÁCTICO Y SUPLENTES
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black flex justify-between">6to Jugador (Suplente) <span class="text-everGold">OPT</span></label>
+                        <input type="text" id="jugador_6" placeholder="Jugador#TAG" class="input-vct clip-input w-full p-4 text-xs font-bold text-white border-white/5">
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black flex justify-between">Head Coach <span class="text-vctRed">OPT</span></label>
+                        <input type="text" id="coach" placeholder="Nombre / Alias" class="input-vct clip-input w-full p-4 text-xs font-bold text-white border-white/5">
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black flex justify-between">Asistente Coach <span class="text-vctRed">OPT</span></label>
+                        <input type="text" id="asistente" placeholder="Nombre / Alias" class="input-vct clip-input w-full p-4 text-xs font-bold text-white border-white/5">
+                    </div>
+                </div>
             </div>
 
-            <button type="submit" id="btn-submit" class="mt-8 bg-everRed text-white font-black text-sm uppercase tracking-[0.4em] py-6 relative overflow-hidden group">
-                <span class="relative z-10">INICIALIZAR REGISTRO</span>
-                <div class="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+            <button type="submit" id="btn-submit" class="w-full clip-input bg-vctRed text-white font-black text-lg uppercase tracking-[0.4em] py-8 hover:bg-white hover:text-vctRed transition-all duration-300 shadow-[0_0_30px_rgba(255,42,63,0.3)] relative group">
+                <span class="relative z-10">ENVIAR REGISTRO AL NEXUS</span>
+                <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             </button>
         </form>
     </div>
 
     <!-- Toast UI -->
-    <div id="toast" class="bg-black border-l-4 border-everRed p-4 shadow-2xl flex items-center gap-4">
-        <div class="w-8 h-8 bg-everRed/20 flex items-center justify-center rounded-full text-everRed">ℹ</div>
-        <div>
-            <h4 class="text-white text-xs font-black uppercase tracking-widest" id="toast-title">Alerta</h4>
-            <p class="text-gray-400 text-[10px] tracking-wider" id="toast-msg">Mensaje</p>
-        </div>
+    <div id="toast" class="fixed bottom-6 right-[-400px] z-50 bg-[#0a0a0a] border-l-4 p-4 shadow-2xl flex items-center gap-4 transition-all duration-500 clip-input">
+        <div><h4 class="text-white text-[10px] font-black uppercase tracking-widest" id="toast-title">Alerta</h4></div>
     </div>
 
     <script>
-        const contenedor = document.getElementById('contenedor-jugadores');
+        // Inyectar 5 Titulares
+        const contTitulares = document.getElementById('contenedor-titulares');
         for(let i=1; i<=5; i++) {
-            contenedor.innerHTML += `
-                <div class="flex items-center gap-0">
-                    <span class="bg-[#111] text-gray-500 font-black text-xs px-4 py-4 border border-white/10 border-r-0 h-full flex items-center">0${i}</span>
-                    <input type="text" id="jugador_${i}" required placeholder="Jugador#TAG" class="input-vct w-full p-4 text-xs font-bold tracking-wider text-white border border-white/10">
+            contTitulares.innerHTML += `
+                <div class="flex items-center">
+                    <span class="bg-[#111] text-gray-500 font-black text-xs px-4 py-4 border border-white/10 border-r-0 h-[50px] flex items-center clip-input rounded-l-none">T${i}</span>
+                    <input type="text" id="jugador_${i}" required placeholder="Titular ${i} (Riot ID#TAG)" class="input-vct clip-input w-full p-4 h-[50px] text-xs font-bold text-white border-l-0">
                 </div>`;
         }
 
-        function showToast(title, msg, isSuccess = false) {
+        function showToast(title, isError = false) {
             const t = document.getElementById('toast');
-            t.className = `fixed bottom-6 z-50 bg-[#0a0a0a] border-l-4 ${isSuccess ? 'border-everGold' : 'border-everRed'} p-4 shadow-[0_0_30px_rgba(0,0,0,0.8)] flex items-center gap-4 transition-all duration-500 clip-form right-[-400px]`;
+            t.classList.add(isError ? 'border-vctRed' : 'border-everGold');
             document.getElementById('toast-title').innerText = title;
-            document.getElementById('toast-msg').innerText = msg;
-            setTimeout(() => { t.style.right = '24px'; }, 100);
-            setTimeout(() => { t.style.right = '-400px'; }, 4000);
+            t.style.right = '24px'; setTimeout(() => { t.style.right = '-400px'; }, 3500);
         }
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
-            e.preventDefault(); const btn = document.getElementById('btn-submit').querySelector('span'); btn.innerText = "PROCESANDO...";
+            e.preventDefault(); 
+            const btn = document.getElementById('btn-submit').querySelector('span'); 
+            btn.innerText = "Sincronizando Base de Datos...";
+            
             let jugadores = [];
+            
+            // 1. Recolectar 5 Titulares
             for(let i=1; i<=5; i++) {
                 let id = document.getElementById(`jugador_${i}`).value.trim();
-                jugadores.push({ riot_id: id, tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview` });
+                jugadores.push({ riot_id: id, role: 'TITULAR', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview` });
             }
-            const payload = { nombre: document.getElementById('reg_nombre').value, discord_capitan: document.getElementById('reg_discord').value, rango: "Tracker Link", logo_url: document.getElementById('reg_logo').value, jugadores };
+            
+            // 2. Recolectar Sexto Jugador (Si existe)
+            let p6 = document.getElementById('jugador_6').value.trim();
+            if(p6) jugadores.push({ riot_id: p6, role: 'SUPLENTE', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(p6)}/overview` });
+            
+            // 3. Recolectar Staff (Si existe)
+            let coach = document.getElementById('coach').value.trim();
+            if(coach) jugadores.push({ riot_id: coach, role: 'COACH', tracker_url: '#' });
+            
+            let asis = document.getElementById('asistente').value.trim();
+            if(asis) jugadores.push({ riot_id: asis, role: 'ASISTENTE COACH', tracker_url: '#' });
+
+            const payload = {
+                nombre: document.getElementById('reg_nombre').value,
+                discord_capitan: document.getElementById('reg_discord').value,
+                rango: "Tracker Activo",
+                logo_url: document.getElementById('reg_logo').value,
+                jugadores: jugadores
+            };
 
             try {
-                const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if(res.ok) { showToast("SISTEMA", "Escuadra registrada. Redirigiendo...", true); setTimeout(() => window.location.href = 'sorteo.html', 2000); }
-                else showToast("ERROR", "Fallo en la sincronización.");
-            } catch (err) { showToast("ERROR CRÍTICO", "Sin conexión al servidor."); } finally { btn.innerText = "INICIALIZAR REGISTRO"; }
+                const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', { 
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) 
+                });
+                if(res.ok) { 
+                    showToast("¡ESCUADRA ACEPTADA! Redirigiendo...", false); 
+                    setTimeout(() => window.location.href = 'sorteo.html', 2000); 
+                } else showToast("ERROR DE SERVIDOR", true);
+            } catch (err) { showToast("SIN CONEXIÓN AL NEXUS", true); } 
+            finally { btn.innerText = "ENVIAR REGISTRO AL NEXUS"; }
         });
     </script>
 </body>

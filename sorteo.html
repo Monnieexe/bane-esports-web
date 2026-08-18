@@ -11,77 +11,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #050507; color: white; overflow-x: hidden; }
-        
-        /* Efecto de Fondo Dinámico */
-        .bg-rays { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 0%, rgba(255, 42, 63, 0.1) 0%, transparent 50%); }
-        .bg-rays::after { content: ''; position: absolute; inset: 0; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><rect width="1" height="1" fill="rgba(255,255,255,0.05)"/></svg>'); opacity: 0.5; }
-
+        .bg-rays { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 0%, rgba(255, 42, 63, 0.08) 0%, transparent 60%); }
         .clip-card { clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
-        .clip-nav { clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 0 100%); }
-        
-        /* Animaciones Staggered (Cascada) */
-        .animate-item { opacity: 0; transform: translateY(30px); animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .clip-btn { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
+        .animate-item { opacity: 0; transform: translateY(20px); animation: slideUp 0.6s forwards; }
         @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-        
-        /* Efecto Láser Hover en Cartas */
-        .match-card { position: relative; overflow: hidden; transition: all 0.4s; }
-        .match-card::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,42,63,0.2), transparent);
-            transform: skewX(-20deg); transition: 0.5s; z-index: 1; pointer-events: none;
-        }
-        .match-card:hover::before { left: 200%; }
-        .match-card:hover { border-color: #ff2a3f; transform: scale(1.02); box-shadow: 0 10px 30px -10px rgba(255,42,63,0.3); }
-
-        /* Smooth Accordion */
-        .roster-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease-out; }
+        .roster-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease-out; }
         .roster-panel.open { grid-template-rows: 1fr; }
         .roster-content { overflow: hidden; }
-
-        .custom-scrollbar::-webkit-scrollbar { width: 3px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #ff2a3f; }
     </style>
 </head>
 <body class="selection:bg-vctRed selection:text-white antialiased min-h-screen">
 
     <div class="bg-rays"></div>
 
-    <!-- NAVBAR DINÁMICO -->
-    <nav class="w-full bg-black/80 backdrop-blur-xl border-b border-white/5 sticky top-0 z-50 flex items-center justify-between">
-        <div class="bg-[#111] px-8 py-5 clip-nav flex items-center gap-3 border-b-2 border-vctRed">
-            <span class="text-3xl font-black tracking-tighter text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"><span class="text-vctRed">5</span>EVER</span>
-            <span class="text-[8px] text-gray-500 uppercase tracking-[0.4em] font-bold border-l border-white/20 pl-3">Live Feed</span>
+    <!-- NAVBAR -->
+    <nav class="w-full bg-[#020202]/90 backdrop-blur-md border-b border-white/5 sticky top-0 z-50 flex items-center justify-between">
+        <div class="px-6 md:px-10 py-5 flex items-center gap-3">
+            <span class="text-2xl md:text-3xl font-black tracking-tighter text-white"><span class="text-vctRed">5</span>EVER</span>
+            <span class="text-[8px] md:text-[10px] text-gray-500 uppercase tracking-[0.4em] font-bold border-l border-white/20 pl-3">ARENA</span>
         </div>
-        <div class="pr-6">
-            <a href="registro-torneo.html" class="relative group inline-block font-black text-[10px] uppercase tracking-[0.2em] text-white overflow-hidden bg-[#111] px-8 py-3 border border-white/10 hover:border-vctRed transition-colors">
-                <span class="relative z-10">Ingresar Equipo</span>
-                <div class="absolute inset-0 bg-vctRed transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+        <div class="pr-4 md:pr-8">
+            <a href="registro-torneo.html" class="clip-btn font-black text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white bg-vctRed hover:bg-white hover:text-vctRed px-6 py-3 transition-colors shadow-[0_0_15px_rgba(255,42,63,0.3)]">
+                Inscribir Escuadra
             </a>
         </div>
     </nav>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 relative z-10">
         
-        <div class="text-center mb-24 animate-item" style="animation-delay: 0.1s;">
+        <div class="text-center mb-24 animate-item">
             <h1 class="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-2 leading-none">THE <span class="text-transparent bg-clip-text bg-gradient-to-br from-everGold to-yellow-700">ARENA</span></h1>
-            <p class="text-vctRed text-[10px] tracking-[0.6em] uppercase font-bold bg-vctRed/10 inline-block px-4 py-1 border border-vctRed/30">Esports Championship</p>
+            <p class="text-gray-400 text-[10px] tracking-[0.6em] uppercase font-bold">Base de Datos Global</p>
         </div>
 
-        <!-- LEADERBOARD DINÁMICO -->
-        <div class="mb-32 animate-item" style="animation-delay: 0.2s;">
-            <h3 class="text-2xl font-black text-white uppercase tracking-tight mb-8 flex items-center gap-3"><span class="w-3 h-3 bg-everGold inline-block animate-pulse"></span> STANDINGS ELITE</h3>
+        <!-- LEADERBOARD Y ROSTERS AVANZADOS -->
+        <div class="mb-32 animate-item" style="animation-delay: 0.1s;">
+            <h3 class="text-2xl font-black text-white uppercase tracking-widest mb-8 flex items-center gap-3"><span class="w-2 h-6 bg-everGold inline-block"></span> CLASIFICACIÓN ÉLITE</h3>
             
-            <div class="bg-black/40 backdrop-blur-sm border border-white/5 p-4 clip-card">
-                <div class="flex justify-between text-[9px] uppercase tracking-[0.3em] text-gray-500 font-bold pb-3 mb-2 px-4">
-                    <span>División</span><span>Rendimiento</span>
+            <div class="bg-[#050505]/80 backdrop-blur-sm border border-white/5 p-4 md:p-6 clip-card shadow-2xl">
+                <div class="flex justify-between text-[9px] uppercase tracking-[0.3em] text-gray-500 font-bold pb-4 mb-2 px-2 border-b border-white/10">
+                    <span>Escuadra</span><span>Victorias</span>
                 </div>
                 <div id="tabla-posiciones" class="flex flex-col gap-2"></div>
             </div>
         </div>
 
-        <!-- BRACKET EN CASCADA -->
+        <!-- BRACKET -->
         <div id="contenedor-sorteo" class="flex flex-col gap-16"></div>
-
     </div>
 
     <script>
@@ -105,7 +82,7 @@
                     renderLeaderboard(); renderMatches(matches);
                 } else {
                     renderLeaderboard();
-                    document.getElementById('contenedor-sorteo').innerHTML = `<div class="text-center p-12 bg-black/40 border border-white/5 animate-item"><p class="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Esperando despliegue de llaves...</p></div>`;
+                    document.getElementById('contenedor-sorteo').innerHTML = `<div class="text-center p-12 bg-[#111] border border-white/5 clip-card animate-item"><p class="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Las llaves del torneo aún no han sido reveladas.</p></div>`;
                 }
             } catch (e) {}
         }
@@ -115,32 +92,42 @@
         function renderLeaderboard() {
             const t = document.getElementById('tabla-posiciones'); t.innerHTML = '';
             const sorted = dataEq.map(e => ({...e, w: wins[e.nombre]||0})).sort((a,b) => b.w - a.w);
-            if(sorted.length === 0) { t.innerHTML = '<p class="text-[10px] text-gray-600 text-center py-6">Sin datos.</p>'; return; }
+            if(sorted.length === 0) { t.innerHTML = '<p class="text-[10px] text-gray-600 text-center py-6 uppercase tracking-widest">Aún no hay escuadras registradas.</p>'; return; }
 
             sorted.forEach((item, idx) => {
-                let img = item.logo_url ? `<img src="${item.logo_url}" class="w-10 h-10 object-contain drop-shadow-md">` : `<div class="w-10 h-10 bg-[#111] flex items-center justify-center font-bold text-white">${item.nombre.charAt(0)}</div>`;
+                let img = item.logo_url ? `<img src="${item.logo_url}" class="w-12 h-12 object-contain bg-black p-1">` : `<div class="w-12 h-12 bg-[#111] flex items-center justify-center font-black text-white">${item.nombre.charAt(0)}</div>`;
                 let rank = `<span class="text-gray-600 text-sm font-black w-6">${idx + 1}</span>`;
-                if(idx===0) rank = `<span class="text-everGold text-xl font-black w-6">1</span>`;
+                if(idx===0) rank = `<span class="text-everGold text-xl font-black w-6 drop-shadow-[0_0_5px_rgba(229,192,92,0.8)]">1</span>`;
 
                 let rHtml = '';
                 if(item.jugadores && item.jugadores.length > 0) {
-                    rHtml = `<div class="roster-panel" id="rost-${idx}"><div class="roster-content pt-4 mt-2 border-t border-white/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">`;
+                    rHtml = `<div class="roster-panel" id="rost-${idx}"><div class="roster-content pt-4 mt-4 border-t border-white/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">`;
+                    
                     item.jugadores.forEach(j => {
-                        rHtml += `<a href="${j.tracker_url}" target="_blank" class="flex justify-between items-center bg-[#0a0a0c] p-3 border border-white/5 hover:border-vctRed transition-colors group">
-                            <span class="text-[10px] text-white font-bold uppercase tracking-wider">${j.riot_id}</span>
-                            <span class="text-[8px] text-gray-600 group-hover:text-vctRed font-bold uppercase">Tracker ↗</span>
-                        </a>`;
+                        // Colores por Roles
+                        let roleColor = j.role === 'TITULAR' ? 'text-gray-500' : (j.role === 'SUPLENTE' ? 'text-everGold' : 'text-vctRed');
+                        let borderColor = j.role === 'TITULAR' ? 'border-white/10' : (j.role === 'SUPLENTE' ? 'border-everGold/50' : 'border-vctRed/50');
+                        let trackerLink = j.tracker_url !== '#' ? `<a href="${j.tracker_url}" target="_blank" class="text-[8px] bg-white/5 px-2 py-1 text-gray-300 hover:text-white hover:bg-white/20 font-bold uppercase transition-colors rounded-sm">Tracker ↗</a>` : '';
+
+                        rHtml += `
+                            <div class="flex flex-col bg-[#0a0a0c] p-3 border-l-2 ${borderColor} hover:bg-[#111] transition-colors">
+                                <span class="text-[8px] ${roleColor} font-black uppercase tracking-widest mb-1">${j.role || 'JUGADOR'}</span>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] md:text-xs text-white font-bold uppercase tracking-wider truncate mr-2">${j.riot_id}</span>
+                                    ${trackerLink}
+                                </div>
+                            </div>`;
                     });
                     rHtml += `</div></div>`;
-                } else { rHtml = `<div class="roster-panel" id="rost-${idx}"><div class="roster-content pt-4 mt-2 text-[9px] text-gray-500 uppercase">Sin Roster.</div></div>`; }
+                } else { rHtml = `<div class="roster-panel" id="rost-${idx}"><div class="roster-content pt-4 mt-2 text-[9px] text-vctRed font-bold uppercase tracking-widest">Sin datos de Roster.</div></div>`; }
 
                 t.innerHTML += `
-                    <div class="bg-[#050505] hover:bg-[#0a0a0c] border border-white/5 p-4 transition-all duration-300 animate-item" style="animation-delay: ${idx * 0.1}s;">
+                    <div class="bg-[#0a0a0c] hover:bg-[#111] border border-white/5 p-4 transition-all duration-300 animate-item clip-card mb-2" style="animation-delay: ${idx * 0.1}s;">
                         <div class="flex items-center justify-between cursor-pointer" onclick="toggleRoster('rost-${idx}')">
-                            <div class="flex items-center gap-4">${rank} ${img} <span class="font-bold text-sm md:text-base text-white uppercase tracking-wider">${item.nombre}</span></div>
+                            <div class="flex items-center gap-4">${rank} ${img} <span class="font-bold text-sm md:text-lg text-white uppercase tracking-widest truncate w-32 md:w-full">${item.nombre}</span></div>
                             <div class="flex items-center gap-6">
-                                <span class="text-sm font-black text-white">${item.w} <span class="text-vctRed">W</span></span>
-                                <span class="text-[9px] text-vctRed uppercase font-bold border border-vctRed/30 px-3 py-1 hover:bg-vctRed hover:text-white transition-colors hidden sm:block">ROSTER</span>
+                                <span class="text-base font-black text-white">${item.w} <span class="text-vctRed">W</span></span>
+                                <span class="text-[9px] text-gray-400 uppercase font-bold border border-white/10 px-3 py-1 hover:border-white hover:text-white transition-colors hidden sm:block">ROSTER ▼</span>
                             </div>
                         </div>
                         ${rHtml}
@@ -150,8 +137,8 @@
 
         function getImg(name) {
             const eq = dataEq.find(e => e.nombre === name);
-            if(eq && eq.logo_url) return `<img src="${eq.logo_url}" class="w-16 h-16 md:w-20 md:h-20 object-contain z-10 relative">`;
-            return `<div class="w-16 h-16 md:w-20 md:h-20 bg-[#111] border border-white/5 flex items-center justify-center font-bold text-2xl text-gray-700 z-10 relative">${name.charAt(0)}</div>`;
+            if(eq && eq.logo_url) return `<img src="${eq.logo_url}" class="w-16 h-16 object-contain">`;
+            return `<div class="w-16 h-16 bg-[#111] border border-white/5 flex items-center justify-center font-bold text-2xl text-gray-700">${name.charAt(0)}</div>`;
         }
 
         function renderMatches(matches) {
@@ -160,26 +147,26 @@
 
             let delay = 0.3;
             for (const f in fases) {
-                let html = `<div class="mb-12"><h3 class="text-xl md:text-2xl font-black text-white uppercase tracking-widest mb-8 flex items-center gap-4 animate-item" style="animation-delay: ${delay}s;"><div class="h-px bg-vctRed w-8"></div> ${f}</h3><div class="grid grid-cols-1 xl:grid-cols-2 gap-6">`;
+                let html = `<div class="mb-12"><h3 class="text-xl md:text-2xl font-black text-white uppercase tracking-widest mb-8 flex items-center gap-4 animate-item" style="animation-delay: ${delay}s;"><div class="h-1 bg-vctRed w-8"></div> ${f}</h3><div class="grid grid-cols-1 xl:grid-cols-2 gap-6">`;
                 
                 fases[f].forEach(m => {
                     delay += 0.1;
                     let c1 = 'text-white', c2 = 'text-white', o1 = '', o2 = '';
-                    let mid = '<span class="text-gray-600 font-black text-2xl md:text-3xl italic opacity-50">VS</span>';
+                    let mid = '<span class="text-gray-600 font-black text-2xl italic opacity-30">VS</span>';
                     
-                    if (m.score1 && m.score2) mid = `<div class="flex flex-col items-center z-10"><span class="text-everGold font-black text-3xl md:text-5xl drop-shadow-[0_0_15px_rgba(229,192,92,0.4)]">${m.score1} <span class="text-white/30 text-2xl">-</span> ${m.score2}</span></div>`;
-                    else if (m.status !== 'pending' && m.eq2 !== 'BYE') mid = '<span class="text-vctRed font-bold text-[9px] uppercase tracking-widest text-center border border-vctRed px-2 py-1 bg-vctRed/10 z-10">CERRADO</span>';
+                    if (m.score1 && m.score2) mid = `<div class="flex flex-col items-center"><span class="text-everGold font-black text-4xl">${m.score1} <span class="text-white/20 text-2xl">-</span> ${m.score2}</span></div>`;
+                    else if (m.status !== 'pending' && m.eq2 !== 'BYE') mid = '<span class="text-vctRed font-bold text-[9px] uppercase tracking-widest text-center border border-vctRed px-2 py-1 bg-vctRed/10">CERRADO</span>';
 
                     if (m.status === 'eq1') { c1 = 'text-everGold'; c2 = 'text-gray-600 line-through'; o2 = 'opacity-30 grayscale'; } 
                     else if (m.status === 'eq2') { c2 = 'text-everGold'; c1 = 'text-gray-600 line-through'; o1 = 'opacity-30 grayscale'; }
 
-                    if (m.eq2 === 'BYE') { mid = '<span class="text-gray-600 font-bold text-[8px] uppercase tracking-widest text-center z-10">BYE</span>'; c2 = 'text-gray-800'; o2 = 'opacity-10'; m.eq2 = 'VACANTE'; }
+                    if (m.eq2 === 'BYE') { mid = '<span class="text-gray-600 font-bold text-[8px] uppercase tracking-widest text-center">BYE</span>'; c2 = 'text-gray-800'; o2 = 'opacity-10'; m.eq2 = 'VACANTE'; }
 
                     html += `
-                        <div class="match-card clip-card bg-[#0a0a0c] border border-white/5 p-6 flex items-center justify-between animate-item" style="animation-delay: ${delay}s;">
-                            <div class="flex items-center gap-4 flex-1 ${o1}">${getImg(m.eq1)}<h4 class="text-sm md:text-xl ${c1} font-black uppercase tracking-wider truncate z-10">${m.eq1}</h4></div>
-                            <div class="px-2 md:px-6 flex flex-col items-center">${mid}</div>
-                            <div class="flex items-center gap-4 flex-1 justify-end text-right ${o2}"><h4 class="text-sm md:text-xl ${c2} font-black uppercase tracking-wider truncate z-10">${m.eq2}</h4>${m.eq2==='VACANTE' ? '<div class="w-16 h-16"></div>' : getImg(m.eq2)}</div>
+                        <div class="clip-card bg-[#0a0a0c] border-l-2 border-transparent hover:border-vctRed p-6 flex items-center justify-between animate-item transition-all hover:bg-[#111]" style="animation-delay: ${delay}s;">
+                            <div class="flex items-center gap-4 flex-1 ${o1}">${getImg(m.eq1)}<h4 class="text-sm md:text-xl ${c1} font-black uppercase tracking-wider truncate max-w-[100px] md:max-w-[180px]">${m.eq1}</h4></div>
+                            <div class="px-2 flex flex-col items-center">${mid}</div>
+                            <div class="flex items-center gap-4 flex-1 justify-end text-right ${o2}"><h4 class="text-sm md:text-xl ${c2} font-black uppercase tracking-wider truncate max-w-[100px] md:max-w-[180px]">${m.eq2}</h4>${m.eq2==='VACANTE' ? '<div class="w-16 h-16"></div>' : getImg(m.eq2)}</div>
                         </div>`;
                 });
                 html += `</div></div>`; c.innerHTML += html;
