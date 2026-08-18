@@ -3,180 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Comando | Bane Esports</title>
+    <title>5ever | Nexus Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { baneAccent: '#ff4655' } } } }
+        tailwind.config = { theme: { extend: { colors: { everRed: '#E60000', everGold: '#D4AF37', everDark: '#0a0a0a' } } } }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: white; }
+        body { font-family: 'Montserrat', sans-serif; background-color: #030303; color: white; }
         .font-heading { font-family: 'Cinzel', serif; }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .tab-btn.active { border-bottom: 2px solid #ff4655; color: #ff4655; }
+        .tab-btn.active { border-bottom: 2px solid #E60000; color: #E60000; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #000000; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #030303; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #D4AF37; }
+        .input-admin { background: #080808; border: 1px solid rgba(255,255,255,0.1); }
+        .input-admin:focus { border-color: #D4AF37; outline: none; }
     </style>
 </head>
-<body class="antialiased p-8">
+<body class="antialiased p-4 md:p-8">
 
     <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-end mb-6 border-b border-white/10 pb-6">
+        <div class="flex justify-between items-end mb-8 border-b border-white/5 pb-6">
             <div>
-                <h1 class="font-heading text-4xl text-white font-black tracking-widest"><span class="text-baneAccent">B</span> ADMIN <span class="text-gray-600">NEXUS</span></h1>
-                <p class="text-xs text-gray-500 uppercase tracking-widest mt-2">Centro de Control Oficial</p>
+                <h1 class="font-heading text-3xl md:text-4xl text-white font-black tracking-widest"><span class="text-everRed">5</span>EVER <span class="text-everGold">NEXUS</span></h1>
+                <p class="text-[10px] text-gray-500 uppercase tracking-[0.3em] mt-2 font-bold">Control Central del Torneo</p>
             </div>
-            <button onclick="cerrarSesion()" class="text-xs font-bold text-gray-400 hover:text-baneAccent uppercase tracking-widest transition-colors">Cerrar Sesión</button>
+            <button onclick="cerrarSesion()" class="text-[10px] font-bold text-gray-500 hover:text-everRed uppercase tracking-widest transition-colors">Cerrar Sesión</button>
         </div>
 
         <div class="flex gap-6 mb-8 border-b border-white/5 pb-2 overflow-x-auto custom-scrollbar">
-            <button onclick="switchTab('tab-equipos')" id="btn-tab-equipos" class="tab-btn active text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors whitespace-nowrap">Equipos Inscritos</button>
-            <button onclick="switchTab('tab-bracket')" id="btn-tab-bracket" class="tab-btn text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors whitespace-nowrap">Sorteo (Bracket)</button>
-            <button onclick="switchTab('tab-matches')" id="btn-tab-matches" class="tab-btn text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors whitespace-nowrap">Matches BANE</button>
-            <button onclick="switchTab('tab-noticias')" id="btn-tab-noticias" class="tab-btn text-xs font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-white transition-colors whitespace-nowrap">Noticias</button>
+            <button onclick="switchTab('tab-equipos')" id="btn-tab-equipos" class="tab-btn active text-[10px] font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-everGold transition-colors whitespace-nowrap">Equipos Inscritos</button>
+            <button onclick="switchTab('tab-bracket')" id="btn-tab-bracket" class="tab-btn text-[10px] font-bold uppercase tracking-widest pb-2 text-gray-400 hover:text-everGold transition-colors whitespace-nowrap">Sorteo (Bracket)</button>
         </div>
 
-        <div id="tab-equipos" class="tab-content active bg-black border border-white/10 p-8 rounded-sm">
+        <!-- PESTAÑA: EQUIPOS INSCRITOS -->
+        <div id="tab-equipos" class="tab-content active bg-everDark border border-white/5 p-6 md:p-8 rounded-sm">
             <div class="flex justify-between items-center mb-6 pb-2">
-                <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest border-l-4 border-baneAccent pl-3">Equipos Inscritos</h2>
-                <span id="contador-equipos" class="bg-baneAccent text-black text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-widest">0 EQUIPOS</span>
+                <h2 class="font-heading text-xl md:text-2xl text-white font-bold uppercase tracking-widest border-l-4 border-everGold pl-3">Registros Oficiales</h2>
+                <span id="contador-equipos" class="bg-everGold text-black text-[9px] font-black px-3 py-1 rounded-sm uppercase tracking-widest">0 EQUIPOS</span>
             </div>
             
             <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left border-collapse min-w-[800px]">
+                <table class="w-full text-left border-collapse min-w-[700px]">
                     <thead>
-                        <tr class="text-[9px] text-gray-500 uppercase tracking-widest border-b border-white/10">
-                            <th class="p-4 font-normal w-20">Logo</th>
-                            <th class="p-4 font-normal">Escuadra</th>
-                            <th class="p-4 font-normal">Capitán (Discord)</th>
-                            <th class="p-4 font-normal">Rango Promedio</th>
-                            <th class="p-4 font-normal text-right">Acciones</th>
+                        <tr class="text-[9px] text-gray-500 uppercase tracking-widest border-b border-white/10 bg-black/40">
+                            <th class="p-4 font-bold w-16">Logo</th>
+                            <th class="p-4 font-bold">Escuadra</th>
+                            <th class="p-4 font-bold">Capitán (Discord)</th>
+                            <th class="p-4 font-bold">Rango Promedio</th>
+                            <th class="p-4 font-bold text-right">Borrar</th>
                         </tr>
                     </thead>
-                    <tbody id="lista-equipos-admin" class="divide-y divide-white/5">
-                        </tbody>
+                    <tbody id="lista-equipos-admin" class="divide-y divide-white/5"></tbody>
                 </table>
             </div>
         </div>
 
-        <div id="tab-bracket" class="tab-content bg-black border border-baneAccent/50 p-8 rounded-sm shadow-[0_0_20px_rgba(255,70,85,0.1)]">
-            <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-baneAccent pl-3">Gestor de Torneo</h2>
+        <!-- PESTAÑA: SORTEO / BRACKET -->
+        <div id="tab-bracket" class="tab-content bg-everDark border border-everRed/30 p-6 md:p-8 rounded-sm shadow-[0_0_20px_rgba(230,0,0,0.05)]">
+            <h2 class="font-heading text-xl md:text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-everRed pl-3">Gestor de Cruces</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Nombre de la Fase</label>
-                    <input type="text" id="sorteo_fase" placeholder="Ej: Ronda 2 - Winner" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none">
+                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold">Nombre de la Fase</label>
+                    <input type="text" id="sorteo_fase" placeholder="Ej: Octavos de Final" class="input-admin w-full p-3 text-xs text-white">
                 </div>
                 <div>
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Estado del Match</label>
-                    <select id="sorteo_status" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none cursor-pointer">
+                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold">Estado del Match</label>
+                    <select id="sorteo_status" class="input-admin w-full p-3 text-xs text-everGold cursor-pointer font-bold">
                         <option value="pending">Pendiente (VS)</option>
-                        <option value="eq1">Avanza Equipo 1</option>
-                        <option value="eq2">Avanza Equipo 2</option>
+                        <option value="eq1">Victoria Equipo 1</option>
+                        <option value="eq2">Victoria Equipo 2</option>
                     </select>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6 items-end">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6 items-end bg-black/40 p-4 border border-white/5">
                 <div class="md:col-span-4">
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Equipo 1</label>
-                    <select id="sorteo_eq1" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none cursor-pointer"></select>
+                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold">Equipo 1</label>
+                    <select id="sorteo_eq1" class="input-admin w-full p-3 text-xs text-white cursor-pointer"></select>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block text-center">Pts Eq 1 (Opcional)</label>
-                    <input type="number" id="sorteo_score1" placeholder="13" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none text-center">
+                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold text-center">Score Eq 1</label>
+                    <input type="number" id="sorteo_score1" placeholder="0" class="input-admin w-full p-3 text-xs text-white text-center font-bold">
                 </div>
                 <div class="md:col-span-2">
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block text-center">Pts Eq 2 (Opcional)</label>
-                    <input type="number" id="sorteo_score2" placeholder="9" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none text-center">
+                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold text-center">Score Eq 2</label>
+                    <input type="number" id="sorteo_score2" placeholder="0" class="input-admin w-full p-3 text-xs text-white text-center font-bold">
                 </div>
                 <div class="md:col-span-4">
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Equipo 2</label>
-                    <select id="sorteo_eq2" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none cursor-pointer"></select>
+                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-1 block font-bold">Equipo 2</label>
+                    <select id="sorteo_eq2" class="input-admin w-full p-3 text-xs text-white cursor-pointer"></select>
                 </div>
             </div>
             
-            <button onclick="agregarMatchSorteo()" class="w-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-[0.2em] p-4 mb-8 transition-colors">
-                + Añadir Cruce a la Cartelera
+            <button onclick="agregarMatchSorteo()" class="w-full border border-everGold/50 text-everGold font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] p-4 mb-8 hover:bg-everGold hover:text-black transition-colors">
+                + Añadir Cruce al Borrador
             </button>
 
-            <div class="bg-[#0a0a0a] border border-white/5 p-6 min-h-[150px] mb-6">
-                <h3 class="text-[10px] text-baneAccent font-bold uppercase tracking-widest mb-4">Cartelera Actual (Borrador)</h3>
+            <div class="bg-[#050505] border border-white/5 p-6 min-h-[150px] mb-8">
+                <h3 class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-4">Cartelera en Borrador (Sin Publicar)</h3>
                 <div id="lista-sorteo-admin" class="flex flex-col gap-2"></div>
             </div>
 
-            <button onclick="publicarSorteo()" class="w-full bg-baneAccent text-black font-black text-sm uppercase tracking-[0.3em] p-5 hover:bg-white transition-colors shadow-lg">
-                GUARDAR Y PUBLICAR BRACKET EN LA WEB
+            <button onclick="publicarSorteo()" class="w-full bg-everRed text-white font-black text-xs md:text-sm uppercase tracking-[0.3em] p-5 hover:bg-everGold hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(230,0,0,0.3)]">
+                GUARDAR Y PUBLICAR BRACKET
             </button>
-        </div>
-
-        <div id="tab-matches" class="tab-content bg-black border border-white/10 p-8 rounded-sm">
-            <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-gray-500 pl-3">Subir Resultado BANE</h2>
-            
-            <form id="form-partidas" class="flex flex-col gap-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Nuestra Escuadra</label>
-                        <select id="partida_escuadra" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none" required>
-                            <option value="BANE VALORANT">BANE VALORANT</option>
-                            <option value="BANE IGNITE">BANE IGNITE</option>
-                            <option value="BANE BLAZE">BANE BLAZE</option>
-                            <option value="MOBILE LEGENDS">MOBILE LEGENDS</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Torneo / Liga</label>
-                        <input type="text" id="partida_torneo" placeholder="Ej: Premier S1" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none" required>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                    <div>
-                        <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Score BANE</label>
-                        <input type="number" id="partida_score_bane" placeholder="Ej: 13" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none text-center" required>
-                    </div>
-                    <div class="text-center font-heading text-2xl text-gray-600 font-bold mb-2">VS</div>
-                    <div>
-                        <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Score Rival</label>
-                        <input type="number" id="partida_score_rival" placeholder="Ej: 9" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none text-center" required>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Nombre del Equipo Rival</label>
-                    <input type="text" id="partida_rival" placeholder="Ej: KRÜ Esports" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none" required>
-                </div>
-
-                <button type="submit" class="mt-4 bg-white/10 hover:bg-white text-white hover:text-black font-bold text-xs uppercase tracking-[0.2em] p-4 transition-colors">
-                    Publicar Resultado Externo
-                </button>
-            </form>
-        </div>
-
-        <div id="tab-noticias" class="tab-content bg-black border border-white/10 p-8 rounded-sm">
-            <h2 class="font-heading text-2xl text-white font-bold uppercase tracking-widest mb-6 border-l-4 border-gray-500 pl-3">Redactar Noticia</h2>
-            
-            <form id="form-noticias" class="flex flex-col gap-4">
-                <div>
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Titular</label>
-                    <input type="text" id="noticia_titulo" placeholder="Ej: ¡Campeones Regionales!" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none" required>
-                </div>
-                <div>
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">Cuerpo de la noticia</label>
-                    <textarea id="noticia_desc" rows="4" placeholder="Escribe los detalles aquí..." class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none resize-none" required></textarea>
-                </div>
-                <div>
-                    <label class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 block">URL de Imagen (Opcional)</label>
-                    <input type="text" id="noticia_img" placeholder="https://ejemplo.com/foto.png" class="w-full bg-[#111] border border-white/10 p-3 text-xs text-white focus:border-baneAccent outline-none">
-                </div>
-
-                <button type="submit" class="mt-4 bg-white/10 hover:bg-white text-white hover:text-black font-bold text-xs uppercase tracking-[0.2em] p-4 transition-colors">
-                    Publicar Noticia
-                </button>
-            </form>
         </div>
 
     </div>
@@ -189,22 +124,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('idToken');
             if (!token) { window.location.href = 'login.html'; return; }
-            
-            cargarEquiposInscritos(); // Cargar la lista completa de equipos
-            cargarDatosSorteo();      // Cargar configuración de Bracket
-            
-            document.getElementById('form-partidas').addEventListener('submit', subirPartida);
-            document.getElementById('form-noticias').addEventListener('submit', subirNoticia);
+            cargarEquiposInscritos();
+            cargarDatosSorteo();
         });
 
-        function getAuthHeaders() {
-            return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('idToken')}` };
-        }
-
-        function cerrarSesion() {
-            localStorage.removeItem('idToken');
-            window.location.href = 'login.html';
-        }
+        function getAuthHeaders() { return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('idToken')}` }; }
+        function cerrarSesion() { localStorage.removeItem('idToken'); window.location.href = 'login.html'; }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -213,143 +138,79 @@
             document.getElementById('btn-' + tabId).classList.add('active');
         }
 
-        // ==========================================
-        // LÓGICA DE EQUIPOS INSCRITOS (REGISTROS)
-        // ==========================================
         async function cargarEquiposInscritos() {
             try {
                 const resEq = await fetch(`${API_URL}/equipos`);
                 const equipos = await resEq.json();
-                
                 document.getElementById('contador-equipos').innerText = `${equipos.length} EQUIPOS`;
                 const lista = document.getElementById('lista-equipos-admin');
                 lista.innerHTML = '';
                 
                 equipos.forEach(equipo => {
-                    const imgHtml = equipo.logo_url 
-                        ? `<img src="${equipo.logo_url}" class="w-10 h-10 object-contain bg-black border border-white/10 p-1 rounded-sm">`
-                        : `<div class="w-10 h-10 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-lg text-gray-500">${equipo.nombre.charAt(0)}</div>`;
-                    
+                    const imgHtml = equipo.logo_url ? `<img src="${equipo.logo_url}" class="w-8 h-8 object-contain">` : `<div class="text-gray-600 font-bold">${equipo.nombre.charAt(0)}</div>`;
                     const discordCapitan = equipo.discord_capitan || (equipo.jugadores && equipo.jugadores[0] ? equipo.jugadores[0].dc : 'N/A');
-
                     lista.innerHTML += `
-                        <tr class="hover:bg-white/5 transition-colors group border-b border-white/5">
+                        <tr class="hover:bg-white/5 border-b border-white/5 transition-colors">
                             <td class="p-4">${imgHtml}</td>
-                            <td class="p-4 font-heading text-sm text-white font-bold uppercase tracking-widest">${equipo.nombre}</td>
-                            <td class="p-4 font-primary text-xs text-baneAccent font-bold">${discordCapitan}</td>
-                            <td class="p-4 font-primary text-xs text-gray-400">${equipo.rango || 'N/A'}</td>
+                            <td class="p-4 font-heading text-xs text-white font-bold uppercase tracking-widest">${equipo.nombre}</td>
+                            <td class="p-4 text-[10px] text-everGold font-bold tracking-widest">${discordCapitan}</td>
+                            <td class="p-4 text-[10px] text-gray-400 tracking-widest">${equipo.rango || 'N/A'}</td>
                             <td class="p-4 text-right">
-                                <button onclick="borrarEquipoInscrito('${equipo.id}')" class="text-gray-600 hover:text-baneAccent transition-colors" title="Eliminar Registro">
-                                    <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
+                                <button onclick="borrarEquipoInscrito('${equipo.id}')" class="text-gray-600 hover:text-everRed">✕</button>
                             </td>
-                        </tr>
-                    `;
+                        </tr>`;
                 });
-            } catch (error) { console.error("Error cargando registros", error); }
+            } catch (error) { console.error("Error", error); }
         }
 
         async function borrarEquipoInscrito(id) {
-            if(confirm("¿Estás seguro de eliminar el registro de esta escuadra permanentemente?")) {
+            if(confirm("¿Eliminar escuadra permanentemente?")) {
                 try {
                     await fetch(`${API_URL}/equipos?id=${id}`, { method: 'DELETE', headers: getAuthHeaders() });
-                    cargarEquiposInscritos();
-                    cargarDatosSorteo(); // Actualizar listas de Sorteo
+                    cargarEquiposInscritos(); cargarDatosSorteo();
                 } catch (error) { console.error(error); }
             }
         }
 
-        // ==========================================
-        // LÓGICA DE PARTIDAS Y NOTICIAS
-        // ==========================================
-        async function subirPartida(e) {
-            e.preventDefault();
-            const btn = e.target.querySelector('button'); btn.innerText = "SUBIENDO...";
-            const payload = {
-                escuadra: document.getElementById('partida_escuadra').value,
-                torneo: document.getElementById('partida_torneo').value,
-                score_bane: parseInt(document.getElementById('partida_score_bane').value),
-                score_rival: parseInt(document.getElementById('partida_score_rival').value),
-                rival: document.getElementById('partida_rival').value
-            };
-            try {
-                await fetch(`${API_URL}/partidas`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(payload) });
-                alert("¡Resultado publicado!"); e.target.reset();
-            } catch(err) { alert("Error"); }
-            btn.innerText = "Publicar Resultado Externo";
-        }
-
-        async function subirNoticia(e) {
-            e.preventDefault();
-            const btn = e.target.querySelector('button'); btn.innerText = "SUBIENDO...";
-            const payload = {
-                titulo: document.getElementById('noticia_titulo').value,
-                descripcion: document.getElementById('noticia_desc').value,
-                imagen_url: document.getElementById('noticia_img').value
-            };
-            try {
-                await fetch(`${API_URL}/noticias`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(payload) });
-                alert("¡Noticia publicada!"); e.target.reset();
-            } catch(err) { alert("Error"); }
-            btn.innerText = "Publicar Noticia";
-        }
-
-        // ==========================================
-        // LÓGICA DEL BRACKET
-        // ==========================================
         async function cargarDatosSorteo() {
             try {
                 const resEq = await fetch(`${API_URL}/equipos`);
                 const equipos = await resEq.json();
-                
                 const s1 = document.getElementById('sorteo_eq1');
                 const s2 = document.getElementById('sorteo_eq2');
                 let opts = '<option value="">-- Seleccionar Equipo --</option>';
                 
-                equipos.forEach(e => {
-                    const nombreUpper = e.nombre.toUpperCase();
-                    if(nombreUpper !== 'DATASY' && nombreUpper !== 'PEGASUS') {
-                        opts += `<option value="${e.nombre}">${e.nombre}</option>`;
-                    }
-                });
-                opts += `<option value="DATASY">DATASY (Invitado)</option>`;
-                opts += `<option value="PEGASUS">PEGASUS (Invitado)</option>`;
-                
-                s1.innerHTML = opts;
-                s2.innerHTML = opts + '<option value="BYE">-- PASE DIRECTO (BYE) --</option>';
+                equipos.forEach(e => { opts += `<option value="${e.nombre}">${e.nombre}</option>`; });
+                s1.innerHTML = opts; s2.innerHTML = opts + '<option value="BYE">-- PASE DIRECTO (BYE) --</option>';
 
                 const resNot = await fetch(`${API_URL}/noticias`);
                 const noticias = await resNot.json();
                 const bracketData = noticias.find(n => n.titulo === '[BRACKET_DATA]');
-                if (bracketData) {
-                    bracketNoticiaId = bracketData.id;
-                    bracketMatches = JSON.parse(bracketData.descripcion);
-                } else { bracketMatches = []; }
+                if (bracketData) { bracketNoticiaId = bracketData.id; bracketMatches = JSON.parse(bracketData.descripcion); } 
+                else { bracketMatches = []; }
                 renderListaSorteo();
-            } catch (e) { console.error("Error cargando Sorteo", e); }
+            } catch (e) { console.error(e); }
         }
 
         function renderListaSorteo() {
             const lista = document.getElementById('lista-sorteo-admin');
             lista.innerHTML = '';
-            if(bracketMatches.length === 0) {
-                lista.innerHTML = '<p class="text-xs text-gray-600">No hay cruces configurados.</p>';
-                return;
-            }
+            if(bracketMatches.length === 0) { lista.innerHTML = '<p class="text-[10px] text-gray-600 uppercase tracking-widest">Lista vacía.</p>'; return; }
 
             bracketMatches.forEach((m, idx) => {
-                let statusText = m.status === 'pending' ? 'VS' : (m.status === 'eq1' ? `Ganó ${m.eq1}` : `Ganó ${m.eq2}`);
-                let marcadorText = (m.score1 && m.score2) ? ` [${m.score1} - ${m.score2}] ` : ' ';
+                let statusText = m.status === 'pending' ? 'VS' : (m.status === 'eq1' ? `W:` : `W:`);
+                let ganador = m.status === 'eq1' ? m.eq1 : (m.status === 'eq2' ? m.eq2 : '');
+                let marcador = (m.score1 && m.score2) ? `[${m.score1}-${m.score2}]` : '';
 
                 lista.innerHTML += `
-                    <div class="flex items-center justify-between border border-white/10 bg-black p-3 text-xs text-gray-300">
+                    <div class="flex items-center justify-between border-b border-white/5 py-3 text-[10px] uppercase tracking-widest text-gray-400">
                         <div class="flex gap-4 items-center">
-                            <span class="font-bold text-white w-40 truncate">${m.fase}</span>
-                            <span>${m.eq1} <b class="text-baneAccent mx-1">${statusText}${marcadorText}</b> ${m.eq2}</span>
+                            <span class="font-bold text-white w-32 truncate">${m.fase}</span>
+                            <span>${m.eq1} <b class="text-everRed mx-2">VS</b> ${m.eq2}</span>
+                            <span class="text-everGold font-bold ml-4">${statusText} ${ganador} ${marcador}</span>
                         </div>
-                        <button onclick="borrarMatch(${idx})" class="text-gray-600 hover:text-baneAccent font-bold">X</button>
-                    </div>
-                `;
+                        <button onclick="borrarMatch(${idx})" class="text-gray-600 hover:text-everRed font-bold text-sm">✕</button>
+                    </div>`;
             });
         }
 
@@ -361,38 +222,24 @@
             const score2 = document.getElementById('sorteo_score2').value;
             const status = document.getElementById('sorteo_status').value;
 
-            if(!fase || !eq1 || !eq2) { alert("Llena la Fase y los dos equipos."); return; }
+            if(!fase || !eq1 || !eq2) { alert("Faltan datos obligatorios."); return; }
             bracketMatches.push({ fase, eq1, score1, eq2, score2, status });
-            
-            document.getElementById('sorteo_score1').value = '';
-            document.getElementById('sorteo_score2').value = '';
-            
+            document.getElementById('sorteo_score1').value = ''; document.getElementById('sorteo_score2').value = '';
             renderListaSorteo();
         }
 
-        function borrarMatch(idx) {
-            bracketMatches.splice(idx, 1);
-            renderListaSorteo();
-        }
+        function borrarMatch(idx) { bracketMatches.splice(idx, 1); renderListaSorteo(); }
 
         async function publicarSorteo() {
+            const btn = document.querySelector('button[onclick="publicarSorteo()"]');
+            const txt = btn.innerText; btn.innerText = "PUBLICANDO...";
             try {
-                if (bracketNoticiaId) {
-                    await fetch(`${API_URL}/noticias?id=${bracketNoticiaId}`, { method: 'DELETE', headers: getAuthHeaders() });
-                }
-                const payload = {
-                    titulo: '[BRACKET_DATA]',
-                    descripcion: JSON.stringify(bracketMatches),
-                    imagen_url: 'HIDDEN'
-                };
-                const res = await fetch(`${API_URL}/noticias`, {
-                    method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(payload)
-                });
-                if(res.ok) {
-                    alert('¡Sorteo y Puntuaciones Publicadas Exitosamente!');
-                    cargarDatosSorteo();
-                }
-            } catch(e) { alert("Error publicando sorteo"); }
+                if (bracketNoticiaId) { await fetch(`${API_URL}/noticias?id=${bracketNoticiaId}`, { method: 'DELETE', headers: getAuthHeaders() }); }
+                const payload = { titulo: '[BRACKET_DATA]', descripcion: JSON.stringify(bracketMatches), imagen_url: 'HIDDEN' };
+                const res = await fetch(`${API_URL}/noticias`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify(payload) });
+                if(res.ok) { alert('¡Bracket en vivo!'); cargarDatosSorteo(); }
+                else if (res.status === 401 || res.status === 403) { alert("Sesión expirada. Inicia sesión en otra pestaña y vuelve a intentarlo."); }
+            } catch(e) { alert("Error de conexión."); } finally { btn.innerText = txt; }
         }
     </script>
 </body>

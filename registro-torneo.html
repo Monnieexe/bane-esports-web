@@ -3,416 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro | Bane Invitational</title>
+    <title>Inscripción Oficial | 5ever</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: { colors: { baneAccent: '#8b0000', baneAccentLight: '#ff4655' } }
-            }
+        tailwind.config = { 
+            theme: { extend: { colors: { everRed: '#E60000', everGold: '#D4AF37', everDark: '#0a0a0a' } } } 
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #000; color: white; overflow-x: hidden; }
+        body { font-family: 'Montserrat', sans-serif; background-color: #030303; color: white; }
         .font-heading { font-family: 'Cinzel', serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #000000; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .input-ever { background: #080808; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
+        .input-ever:focus { border-color: #D4AF37; outline: none; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1); }
     </style>
 </head>
-<body class="selection:bg-baneAccentLight selection:text-black antialiased">
+<body class="antialiased min-h-screen flex flex-col items-center justify-center p-6 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-fixed">
 
-    <nav class="w-full bg-[#050505] border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between">
-        <div class="font-heading text-2xl font-black tracking-widest text-white">
-            <span class="text-baneAccentLight">B</span> BANE <span class="text-gray-600 text-sm ml-2 hidden sm:inline">| REGISTRO OFICIAL</span>
-        </div>
-        <a href="index.html" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all">Volver a la Web</a>
-    </nav>
+    <div class="w-full max-w-2xl bg-everDark border-t-4 border-everRed p-8 md:p-12 rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative">
+        
+        <a href="sorteo.html" class="absolute top-6 right-6 text-gray-500 hover:text-everGold text-[10px] uppercase tracking-widest font-bold transition-colors">
+            ← Volver a la Arena
+        </a>
 
-    <div class="max-w-7xl mx-auto px-6 py-20">
-        <div class="text-center mb-12">
-            <h1 class="font-heading text-4xl md:text-6xl font-black text-white uppercase tracking-widest mb-4">Bane Invitational</h1>
-            <p class="font-primary text-gray-400 text-sm tracking-widest uppercase">Inicio oficial: 12 de Junio de 2026</p>
+        <div class="text-center mb-10">
+            <h1 class="font-heading text-4xl md:text-5xl font-black tracking-widest text-white mb-2"><span class="text-everRed">5</span>EVER</h1>
+            <p class="text-everGold text-[10px] uppercase tracking-[0.4em] font-bold">Portal de Inscripción de Escuadras</p>
         </div>
 
-        <div class="mb-16 w-full mx-auto">
-            <button onclick="toggleReglamento()" class="w-full bg-[#050505] border border-white/5 p-6 flex items-center justify-between hover:border-baneAccentLight transition-all duration-300 group rounded-sm shadow-xl focus:outline-none">
-                <div class="flex items-center gap-4">
-                    <div class="w-1 h-8 bg-baneAccentLight"></div>
-                    <h3 class="font-heading text-xl md:text-2xl font-bold text-white uppercase tracking-widest">Desplegar Reglamento Oficial</h3>
+        <form id="form-registro" class="flex flex-col gap-6">
+            <div>
+                <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">Nombre del Equipo</label>
+                <input type="text" id="reg_nombre" required placeholder="Ej: Sentinel Esports" class="input-ever w-full p-4 text-xs text-white">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">Discord del Capitán</label>
+                    <input type="text" id="reg_discord" required placeholder="Usuario#0000" class="input-ever w-full p-4 text-xs text-white">
                 </div>
-                <svg id="icono-reglamento" class="w-8 h-8 text-gray-500 group-hover:text-baneAccentLight transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div>
+                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">Rango Promedio</label>
+                    <input type="text" id="reg_rango" required placeholder="Ej: Platino / Diamante" class="input-ever w-full p-4 text-xs text-white">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">URL del Logo (Opcional - Formato PNG/JPG)</label>
+                <input type="url" id="reg_logo" placeholder="https://ejemplo.com/logo.png" class="input-ever w-full p-4 text-xs text-white">
+            </div>
+
+            <button type="submit" id="btn-submit" class="mt-6 bg-everRed text-white font-black text-xs md:text-sm uppercase tracking-[0.3em] py-5 hover:bg-everGold hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(230,0,0,0.3)]">
+                Confirmar Inscripción
             </button>
-
-            <div id="contenido-reglamento" class="hidden overflow-hidden mt-2">
-                <div class="bg-[#050505] border border-white/5 p-8 md:p-12 rounded-sm shadow-2xl">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 font-primary text-sm text-gray-400 leading-relaxed">
-                        <div class="flex flex-col gap-6">
-                            <div>
-                                <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">1. Formato del Torneo</h4>
-                                <ul class="list-disc pl-4 space-y-1">
-                                    <li><strong>Estructura:</strong> Doble Eliminación (Winner Bracket y Lower Bracket).</li>
-                                    <li><strong>Fase de llaves:</strong> Todas las partidas regulares se jugarán al Mejor de 1 (Bo1).</li>
-                                    <li><strong>Semifinales:</strong> Partidas al Mejor de 3 (Bo3).</li>
-                                    <li><strong>Gran Final:</strong> El encuentro definitivo por el campeonato se jugará al Mejor de 5 (Bo5).</li>
-                                    <li><strong>Map Pool:</strong> Se utilizará la rotación de 7 mapas activa del circuito VCT.</li>
-                                    <li><strong>Bolsa de Premios:</strong> $1500 MXN garantizados.</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">2. Inscripción y Roster</h4>
-                                <ul class="list-disc pl-4 space-y-1">
-                                    <li>Cada equipo debe registrar a 5 jugadores titulares y un máximo de 2 suplentes.</li>
-                                    <li>Solo se permite la participación de jugadores del roster oficial de BANE Esports.</li>
-                                    <li>Uso exclusivo de cuentas principales. El <strong>smurfing</strong> es motivo de descalificación inmediata.</li>
-                                    <li><strong>Puntualidad:</strong> 10 minutos de tolerancia. Si un equipo no tiene a los 5 jugadores, perderá por W.O.</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-6">
-                            <div>
-                                <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">3. Configuración y Vetos</h4>
-                                <ul class="list-disc pl-4 space-y-1">
-                                    <li><strong>Lobby:</strong> Modo Torneo activado, Sin trucos. Servidor en Ciudad de México o Miami (por mutuo acuerdo o al azar por Admin). Win by Two activado.</li>
-                                    <li><strong>Bo1:</strong> Ban alternado hasta quedar 1 mapa. El equipo que no baneó al final elige lado.</li>
-                                    <li><strong>Bo3:</strong> Ban, Ban, Pick, Pick, Ban, Ban. El mapa sobrante es el decisivo.</li>
-                                    <li><strong>Bo5:</strong> El equipo invicto (Winner Bracket) es el Equipo A. Bans iniciales y picks intercalados.</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold uppercase tracking-widest text-[11px] mb-2 text-[#ff4655]">4. Pausas y Conducta</h4>
-                                <ul class="list-disc pl-4 space-y-1">
-                                    <li>Se permiten dos pausas tácticas (1 min cada una) por mapa.</li>
-                                    <li>En desconexiones, pausar en la fase de compra. Máximo 10 min de pausa técnica acumulada por equipo. Si no regresan, se juega en desventaja.</li>
-                                    <li><strong>Cero Toxicidad:</strong> Insultos, discriminación, uso de scripts o bug exploits resultará en veto permanente.</li>
-                                    <li>El capitán ganador debe enviar una captura de pantalla del marcador al Discord oficial para el registro.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            
-            <div class="bg-[#050505] border border-white/5 p-8 md:p-12 rounded-sm shadow-2xl h-fit">
-                <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Inscribe a tu Escuadra</h3>
-                <form id="form-torneo" class="flex flex-col gap-4 font-primary">
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[10px] uppercase tracking-widest text-gray-400">Nombre del Equipo</label>
-                            <input type="text" id="eq_nombre" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: Legacy" required>
-                        </div>
-                        <div>
-                            <label class="text-[10px] uppercase tracking-widest text-gray-400">Rango Promedio</label>
-                            <select id="eq_rango" class="w-full bg-black border border-white/10 text-gray-300 p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors cursor-pointer" required>
-                                <option value="" disabled selected>Selecciona un rango...</option>
-                                <option value="Hierro - Bronce">Hierro - Bronce</option>
-                                <option value="Plata - Oro">Plata - Oro</option>
-                                <option value="Platino - Diamante">Platino - Diamante</option>
-                                <option value="Ascendente - Inmortal">Ascendente - Inmortal</option>
-                                <option value="Radiante">Radiante</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[10px] uppercase tracking-widest text-gray-400">Discord del Capitán</label>
-                            <input type="text" id="eq_discord" class="w-full bg-black border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none mt-1 transition-colors" placeholder="Ej: usuario#1234" required>
-                        </div>
-                        <div>
-                            <label class="text-[10px] uppercase tracking-widest text-gray-400">Sube tu Logo (Opcional)</label>
-                            <div class="relative w-full mt-1">
-                                <input type="file" id="eq_logo_file" accept="image/png, image/jpeg, image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                                <div id="file-label" class="w-full bg-black border border-white/10 text-gray-500 p-3 text-sm focus:border-baneAccentLight transition-colors flex items-center justify-center border-dashed border-2 hover:border-white/30 truncate">
-                                    <span class="truncate px-2">Haz clic para buscar imagen</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t border-white/10 my-4"></div>
-                    <label class="text-[10px] uppercase tracking-widest text-baneAccentLight font-bold mb-2">Roster Activo (Riot ID y Discord)</label>
-                    
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="eq_p1_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P1 Riot ID (Capitán)" required>
-                        <input type="text" id="eq_p1_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P1 Discord" required>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="eq_p2_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P2 Riot ID (Main Reyna/Jett)" required>
-                        <input type="text" id="eq_p2_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P2 Discord" required>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="eq_p3_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P3 Riot ID" required>
-                        <input type="text" id="eq_p3_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P3 Discord" required>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="eq_p4_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P4 Riot ID" required>
-                        <input type="text" id="eq_p4_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P4 Discord" required>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="eq_p5_riot" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P5 Riot ID" required>
-                        <input type="text" id="eq_p5_dc" class="w-full bg-black border border-white/10 text-white p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="P5 Discord" required>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <input type="text" id="eq_p6_riot" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente 1 Riot ID (Opcional)">
-                        <input type="text" id="eq_p6_dc" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente 1 DC (Opcional)">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="eq_p7_riot" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente 2 Riot ID (Opcional)">
-                        <input type="text" id="eq_p7_dc" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Suplente 2 DC (Opcional)">
-                    </div>
-
-                    <div class="border-t border-white/10 my-4"></div>
-                    <label class="text-[10px] uppercase tracking-widest text-baneAccentLight font-bold mb-2">Staff Técnico (Opcional)</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <input type="text" id="eq_coach" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Coach (Nick / ID)">
-                        <input type="text" id="eq_coach_asist" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Coach Asistente">
-                        <input type="text" id="eq_analista" class="w-full bg-[#111] border border-white/5 text-gray-400 p-3 text-xs focus:border-baneAccentLight outline-none" placeholder="Analista">
-                    </div>
-
-                    <button type="submit" class="mt-6 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
-                        Enviar Registro
-                    </button>
-                    <p class="text-[8px] text-gray-500 text-center uppercase tracking-widest mt-2">¿Error en tu registro? Vuelve a llenar el formulario y el Staff borrará el viejo.</p>
-                </form>
-            </div>
-
-            <div class="flex flex-col">
-                <h3 class="font-heading text-2xl font-bold text-white uppercase tracking-widest mb-6 border-l-4 border-baneAccentLight pl-3">Contendientes Confirmados</h3>
-                <div id="lista-equipos" class="flex flex-col gap-4 max-h-[920px] overflow-y-auto custom-scrollbar pr-2">
-                    <div class="text-center p-12 border border-white/5 bg-[#050505] rounded-sm">
-                        <p class="font-primary text-gray-500 text-sm uppercase tracking-widest">Esperando a los primeros retadores...</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        </form>
     </div>
 
     <script>
-        const API_URL = 'https://bane-esports-web-1.onrender.com/api';
-        let esAdminLocal = false;
-        let logoBase64 = ''; 
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('idToken');
-            if (token) {
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    const correoUsuario = payload.email; 
-                    const CORREOS_ADMIN = ['ivonnesanchez057@gmail.com', 'luke@baneesports.com', 'mary@baneesports.com', 'vex@baneesports.com'];
-                    if (CORREOS_ADMIN.includes(correoUsuario)) esAdminLocal = true; 
-                } catch(e) {}
-            }
-            cargarEquipos();
-        });
-
-        function getAuthHeaders() {
-            return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('idToken')}` };
-        }
-
-        function toggleReglamento() {
-            const contenido = document.getElementById('contenido-reglamento');
-            const icono = document.getElementById('icono-reglamento');
+        document.getElementById('form-registro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            btn.innerText = "PROCESANDO DATOS...";
             
-            if (contenido.classList.contains('hidden')) {
-                contenido.classList.remove('hidden');
-                contenido.classList.add('fade-in');
-                icono.style.transform = 'rotate(180deg)'; 
-            } else {
-                contenido.classList.add('hidden');
-                contenido.classList.remove('fade-in');
-                icono.style.transform = 'rotate(0deg)'; 
-            }
-        }
-
-        document.getElementById('eq_logo_file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const label = document.getElementById('file-label');
-            
-            if(!file) {
-                label.innerHTML = '<span class="truncate px-2">Haz clic para buscar imagen</span>';
-                logoBase64 = '';
-                return;
-            }
-            
-            label.innerHTML = `<span class="text-white truncate px-2">${file.name}</span>`;
-
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 250;
-                    const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scaleSize;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    logoBase64 = canvas.toDataURL('image/jpeg', 0.8);
-                }
-                img.src = event.target.result;
-            }
-            reader.readAsDataURL(file);
-        });
-
-        const formTorneo = document.getElementById('form-torneo');
-        if(formTorneo) {
-            formTorneo.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const btnSubmit = e.target.querySelector('button[type="submit"]');
-                const textoOriginal = btnSubmit.innerText;
-                btnSubmit.innerText = 'REGISTRANDO...';
-                btnSubmit.disabled = true;
-
-                let jugadoresArr = [
-                    { riot: document.getElementById('eq_p1_riot').value, dc: document.getElementById('eq_p1_dc').value },
-                    { riot: document.getElementById('eq_p2_riot').value, dc: document.getElementById('eq_p2_dc').value },
-                    { riot: document.getElementById('eq_p3_riot').value, dc: document.getElementById('eq_p3_dc').value },
-                    { riot: document.getElementById('eq_p4_riot').value, dc: document.getElementById('eq_p4_dc').value },
-                    { riot: document.getElementById('eq_p5_riot').value, dc: document.getElementById('eq_p5_dc').value }
-                ];
-                
-                const p6_riot = document.getElementById('eq_p6_riot').value;
-                const p6_dc = document.getElementById('eq_p6_dc').value;
-                if(p6_riot || p6_dc) jugadoresArr.push({ riot: p6_riot || 'Sin ID', dc: p6_dc || 'Sin DC' });
-
-                const p7_riot = document.getElementById('eq_p7_riot').value;
-                const p7_dc = document.getElementById('eq_p7_dc').value;
-                if(p7_riot || p7_dc) jugadoresArr.push({ riot: p7_riot || 'Sin ID', dc: p7_dc || 'Sin DC' });
-
-                // TRUCO NINJA: Disfrazamos al Staff como jugadores para que la Base de Datos no los borre
-                const coach = document.getElementById('eq_coach').value;
-                const coach_asist = document.getElementById('eq_coach_asist').value;
-                const analista = document.getElementById('eq_analista').value;
-
-                if (coach) jugadoresArr.push({ riot: coach, dc: 'STAFF_COACH' });
-                if (coach_asist) jugadoresArr.push({ riot: coach_asist, dc: 'STAFF_ASISTENTE' });
-                if (analista) jugadoresArr.push({ riot: analista, dc: 'STAFF_ANALISTA' });
-
-                const nuevoEquipo = {
-                    nombre: document.getElementById('eq_nombre').value,
-                    logo_url: logoBase64,
-                    rango: document.getElementById('eq_rango').value,
-                    discord_capitan: document.getElementById('eq_discord').value,
-                    jugadores: jugadoresArr
-                };
-
-                try {
-                    const response = await fetch(`${API_URL}/equipos`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(nuevoEquipo)
-                    });
-
-                    if (response.ok) {
-                        alert("¡Escuadra registrada exitosamente para el Bane Invitational!");
-                        e.target.reset();
-                        logoBase64 = '';
-                        document.getElementById('file-label').innerHTML = '<span class="truncate px-2">Haz clic para buscar imagen</span>';
-                        cargarEquipos();
-                    } else { alert("Hubo un error en el servidor. Intenta de nuevo."); }
-                } catch (error) { console.error(error); alert("Error crítico de conexión."); }
-                finally { btnSubmit.innerText = textoOriginal; btnSubmit.disabled = false; }
-            });
-        }
-
-        async function cargarEquipos() {
-            const listaEquipos = document.getElementById('lista-equipos');
-            if(!listaEquipos) return;
+            const payload = {
+                nombre: document.getElementById('reg_nombre').value,
+                discord_capitan: document.getElementById('reg_discord').value,
+                rango: document.getElementById('reg_rango').value,
+                logo_url: document.getElementById('reg_logo').value || ''
+            };
 
             try {
-                const response = await fetch(`${API_URL}/equipos`);
-                if(!response.ok) return;
-                const equipos = await response.json();
-
-                if(equipos && equipos.length > 0) {
-                    listaEquipos.innerHTML = '';
-                    equipos.forEach(equipo => {
-                        const imgHtml = equipo.logo_url 
-                            ? `<img src="${equipo.logo_url}" alt="${equipo.nombre}" class="w-20 h-20 object-contain bg-black border border-white/10 rounded-sm p-1">`
-                            : `<div class="w-20 h-20 bg-black border border-white/10 rounded-sm flex items-center justify-center font-heading text-3xl text-gray-600">${equipo.nombre.charAt(0)}</div>`;
-                        
-                        const jugadoresHtml = equipo.jugadores.map((j, index) => {
-                            let rol = `P${index + 1}`;
-                            let borderColor = 'border-white/10';
-                            let textColor = 'text-white';
-                            let subtitulo = `<p class="text-[9px] text-gray-500 truncate" title="${j.dc}"><i class="text-[8px]">DC:</i> ${j.dc}</p>`;
-                            let tituloColor = 'text-baneAccentLight';
-
-                            // Detectar Staff oculto
-                            if (j.dc === 'STAFF_COACH') {
-                                rol = 'Coach';
-                                borderColor = 'border-baneAccentLight/30';
-                                tituloColor = 'text-gray-500';
-                                textColor = 'text-baneAccentLight';
-                                subtitulo = ''; 
-                            } else if (j.dc === 'STAFF_ASISTENTE') {
-                                rol = 'Coach Asistente';
-                                borderColor = 'border-baneAccentLight/30';
-                                tituloColor = 'text-gray-500';
-                                textColor = 'text-baneAccentLight';
-                                subtitulo = '';
-                            } else if (j.dc === 'STAFF_ANALISTA') {
-                                rol = 'Analista';
-                                borderColor = 'border-baneAccentLight/30';
-                                tituloColor = 'text-gray-500';
-                                textColor = 'text-baneAccentLight';
-                                subtitulo = '';
-                            } else if (index >= 5) {
-                                rol = `Suplente`;
-                                borderColor = 'border-gray-800';
-                                textColor = 'text-gray-500';
-                            }
-                            
-                            return `
-                            <div class="bg-black/50 border ${borderColor} p-2 rounded-sm text-left flex flex-col justify-center overflow-hidden min-h-[50px]">
-                                <span class="text-[8px] uppercase tracking-widest ${tituloColor} mb-0.5">${rol}</span>
-                                <p class="text-[10px] ${textColor} font-bold truncate" title="${j.riot}">${j.riot}</p>
-                                ${subtitulo}
-                            </div>`;
-                        }).join('');
-
-                        const btnBorrar = esAdminLocal ? `<button onclick="borrarEquipo('${equipo.id}')" class="absolute top-4 right-4 text-gray-600 hover:text-[#ff4655] transition-colors bg-black p-1 rounded-sm z-10" title="Expulsar Equipo"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>` : '';
-
-                        listaEquipos.innerHTML += `
-                            <div class="bg-[#050505] border border-white/5 hover:border-baneAccentLight transition-all duration-300 p-6 rounded-sm relative group flex flex-col shadow-lg">
-                                ${btnBorrar}
-                                <div class="flex items-center gap-6 mb-4">
-                                    ${imgHtml}
-                                    <div class="flex-1">
-                                        <h4 class="font-heading text-xl text-white font-bold uppercase tracking-widest mb-1">${equipo.nombre}</h4>
-                                        <div class="flex gap-4 items-center">
-                                            <p class="font-primary text-[#ff4655] text-[9px] uppercase tracking-[0.2em] font-bold">Rango: ${equipo.rango || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                    ${jugadoresHtml}
-                                </div>
-                            </div>
-                        `;
-                    });
+                const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if(res.ok) {
+                    alert("¡Escuadra registrada con éxito en 5ever!");
+                    window.location.href = 'sorteo.html';
+                } else {
+                    alert("Error al registrar. Por favor, intenta de nuevo.");
                 }
-            } catch(error) { console.error("Error cargando equipos", error); }
-        }
-
-        async function borrarEquipo(id) {
-            if(confirm("¿Estás seguro de eliminar a esta escuadra del torneo?")) {
-                try {
-                    await fetch(`${API_URL}/equipos?id=${id}`, { method: 'DELETE', headers: getAuthHeaders() });
-                    cargarEquipos();
-                } catch (error) { console.error(error); }
+            } catch (err) {
+                alert("Error de conexión. Revisa tu internet.");
+            } finally {
+                btn.innerText = "CONFIRMAR INSCRIPCIÓN";
             }
-        }
+        });
     </script>
 </body>
 </html>
