@@ -3,142 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscripción Oficial | 5ever</title>
+    <title>5ever | Reclutamiento</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { vctRed: '#ff4655', everGold: '#D4AF37', everDark: '#0f1923' } } } }
+        tailwind.config = { theme: { extend: { colors: { everRed: '#ff2a3f', everGold: '#e5c05c', everDark: '#0a0a0c' } } } }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Tungsten:wght@600&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #000; color: #ece8e1; }
-        .font-vct { font-family: 'Montserrat', sans-serif; font-weight: 900; }
-        .clip-vct { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
-        .clip-btn { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
-        .input-vct { background: rgba(15, 25, 35, 0.8); border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s; }
-        .input-vct:focus { border-color: #ff4655; outline: none; background: #0f1923; box-shadow: 4px 4px 0px rgba(255, 70, 85, 0.2); }
+        body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: #fff; overflow-x: hidden; }
+        
+        /* Fondo Animado de Cuadrícula Cyber */
+        .cyber-bg {
+            position: fixed; top: 0; left: 0; width: 200vw; height: 200vh; z-index: -1;
+            background-image: 
+                linear-gradient(rgba(255, 42, 63, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 42, 63, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: panGrid 20s linear infinite;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+        }
+        @keyframes panGrid { 0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); } 100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); } }
+
+        .clip-form { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%); }
+        .input-vct { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid #333; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .input-vct:focus { border-color: #ff2a3f; border-left-color: #ff2a3f; box-shadow: inset 10px 0 20px -10px rgba(255,42,63,0.3); outline: none; transform: translateX(5px); }
+        
+        /* Toast Notification */
+        #toast { position: fixed; bottom: 20px; right: -300px; transition: right 0.4s ease-in-out; z-index: 100; }
+        #toast.show { right: 20px; }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col items-center justify-center p-4 md:p-8 relative bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]">
+<body class="antialiased min-h-screen flex flex-col items-center justify-center p-4 relative">
 
-    <div class="w-full max-w-4xl clip-vct bg-[#111] p-1 shadow-[0_0_50px_rgba(255,70,85,0.15)] relative z-10">
-        <div class="bg-black clip-vct p-6 md:p-12 w-full h-full border border-white/5 relative">
-            
-            <a href="sorteo.html" class="absolute top-6 right-6 text-gray-500 hover:text-vctRed text-[10px] uppercase tracking-widest font-bold transition-colors">
-                ✕ CANCELAR
-            </a>
+    <div class="cyber-bg"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-[-1]"></div>
 
-            <div class="mb-10 border-b border-white/10 pb-6">
-                <h1 class="font-vct text-4xl md:text-6xl text-white uppercase tracking-tighter mb-1"><span class="text-vctRed">5</span>EVER <span class="text-transparent bg-clip-text bg-gradient-to-r from-everGold to-yellow-600">CHAMPIONSHIP</span></h1>
-                <p class="text-gray-400 text-[10px] uppercase tracking-[0.3em] font-bold">Formulario de Admisión V1.0</p>
+    <div class="w-full max-w-4xl backdrop-blur-xl bg-black/40 border border-white/10 p-8 md:p-12 clip-form relative shadow-[0_0_50px_rgba(255,42,63,0.1)] transition-transform duration-500 hover:shadow-[0_0_50px_rgba(255,42,63,0.2)]">
+        
+        <a href="sorteo.html" class="absolute top-8 right-8 text-gray-500 hover:text-everRed text-[10px] uppercase tracking-widest font-black transition-all hover:tracking-[0.3em]">
+            ✕ ABORTAR
+        </a>
+
+        <div class="mb-12 border-b border-white/5 pb-8 relative overflow-hidden">
+            <div class="absolute left-0 bottom-0 w-full h-[2px] bg-gradient-to-r from-everRed via-everGold to-transparent"></div>
+            <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-2"><span class="text-everRed">5</span>EVER <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-600">PROTOCOL</span></h1>
+            <p class="text-everGold text-[10px] uppercase tracking-[0.4em] font-bold flex items-center gap-2"><span class="w-2 h-2 bg-everGold rounded-full animate-pulse"></span> Sistema de Admisión Activo</p>
+        </div>
+
+        <form id="form-registro" class="flex flex-col gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="group">
+                    <label class="text-[9px] text-everRed uppercase tracking-[0.2em] mb-2 block font-black group-hover:text-white transition-colors">Designación del Equipo</label>
+                    <input type="text" id="reg_nombre" required placeholder="Nombre de la Escuadra" class="input-vct w-full p-4 text-sm font-bold tracking-wider text-white">
+                </div>
+                <div class="group">
+                    <label class="text-[9px] text-everRed uppercase tracking-[0.2em] mb-2 block font-black group-hover:text-white transition-colors">Comandante (Discord)</label>
+                    <input type="text" id="reg_discord" required placeholder="Usuario#0000" class="input-vct w-full p-4 text-sm font-bold tracking-wider text-white">
+                </div>
             </div>
 
-            <form id="form-registro" class="flex flex-col gap-10">
-                
-                <!-- DATOS DEL EQUIPO -->
-                <div>
-                    <h2 class="text-vctRed text-sm font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><div class="w-2 h-2 bg-vctRed"></div> 01 // INFO DE ESCUADRA</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">Nombre del Equipo</label>
-                            <input type="text" id="reg_nombre" required placeholder="Ej: BANE Ignite" class="input-vct clip-btn w-full p-4 text-sm text-white font-bold">
-                        </div>
-                        <div>
-                            <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">Discord del Capitán</label>
-                            <input type="text" id="reg_discord" required placeholder="Usuario#0000" class="input-vct clip-btn w-full p-4 text-sm text-white font-bold">
-                        </div>
-                    </div>
-                </div>
+            <div class="group">
+                <label class="text-[9px] text-everRed uppercase tracking-[0.2em] mb-2 block font-black group-hover:text-white transition-colors">URL del Emblema (Logo)</label>
+                <input type="url" id="reg_logo" placeholder="https://..." class="input-vct w-full p-4 text-sm font-bold tracking-wider text-white">
+            </div>
 
-                <!-- LOGO PREVIEW -->
-                <div class="bg-[#0f1923] p-6 border border-white/5 clip-vct">
-                    <label class="text-[9px] text-gray-400 uppercase tracking-widest mb-2 block font-bold">Escudo Oficial (URL de la Imagen)</label>
-                    <div class="flex flex-col md:flex-row gap-6 items-center">
-                        <div class="flex-1 w-full">
-                            <input type="url" id="reg_logo" placeholder="https://..." class="input-vct clip-btn w-full p-4 text-sm text-white font-bold" oninput="actualizarPreview()">
-                            <p class="text-[8px] text-gray-500 mt-2 uppercase tracking-widest">Sube tu imagen a Imgur o Discord y pega el enlace directo (.png/.jpg)</p>
-                        </div>
-                        <div class="w-24 h-24 bg-black border border-white/10 flex items-center justify-center p-2 shadow-lg">
-                            <img id="logo_preview" src="" alt="Preview" class="w-full h-full object-contain hidden">
-                            <span id="logo_placeholder" class="text-[10px] text-gray-600 font-bold uppercase">PREVIEW</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="mt-4">
+                <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-4 block font-black border-l-2 border-everGold pl-2">Unidad Táctica (Riot IDs para Tracker)</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="contenedor-jugadores"></div>
+            </div>
 
-                <!-- ROSTER Y VALORANT TRACKER -->
-                <div>
-                    <h2 class="text-vctRed text-sm font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><div class="w-2 h-2 bg-vctRed"></div> 02 // ROSTER TITULAR (RIOT IDs)</h2>
-                    <p class="text-[9px] text-everGold uppercase tracking-widest mb-6 font-bold">Escribe los Riot IDs exactos (Nombre#TAG) para vincularlos a Valorant Tracker.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="contenedor-jugadores">
-                        <!-- Inputs generados dinámicamente en JS -->
-                    </div>
-                </div>
+            <button type="submit" id="btn-submit" class="mt-8 bg-everRed text-white font-black text-sm uppercase tracking-[0.4em] py-6 relative overflow-hidden group">
+                <span class="relative z-10">INICIALIZAR REGISTRO</span>
+                <div class="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+            </button>
+        </form>
+    </div>
 
-                <button type="submit" id="btn-submit" class="mt-4 clip-btn bg-vctRed text-white font-black text-sm md:text-base uppercase tracking-[0.3em] py-6 hover:bg-white hover:text-vctRed transition-all duration-300 shadow-[0_0_20px_rgba(255,70,85,0.2)]">
-                    CONFIRMAR Y ENVIAR REGISTRO
-                </button>
-            </form>
+    <!-- Toast UI -->
+    <div id="toast" class="bg-black border-l-4 border-everRed p-4 shadow-2xl flex items-center gap-4">
+        <div class="w-8 h-8 bg-everRed/20 flex items-center justify-center rounded-full text-everRed">ℹ</div>
+        <div>
+            <h4 class="text-white text-xs font-black uppercase tracking-widest" id="toast-title">Alerta</h4>
+            <p class="text-gray-400 text-[10px] tracking-wider" id="toast-msg">Mensaje</p>
         </div>
     </div>
 
     <script>
-        // Generar inputs para 5 jugadores
         const contenedor = document.getElementById('contenedor-jugadores');
         for(let i=1; i<=5; i++) {
             contenedor.innerHTML += `
-                <div class="flex items-center gap-3">
-                    <span class="text-gray-600 font-black text-xl w-6">0${i}</span>
-                    <input type="text" id="jugador_${i}" required placeholder="Jugador#TAG" class="input-vct clip-btn w-full p-3 text-xs text-white font-bold tracking-wider">
-                </div>
-            `;
+                <div class="flex items-center gap-0">
+                    <span class="bg-[#111] text-gray-500 font-black text-xs px-4 py-4 border border-white/10 border-r-0 h-full flex items-center">0${i}</span>
+                    <input type="text" id="jugador_${i}" required placeholder="Jugador#TAG" class="input-vct w-full p-4 text-xs font-bold tracking-wider text-white border border-white/10">
+                </div>`;
         }
 
-        // Preview del logo en vivo
-        function actualizarPreview() {
-            const url = document.getElementById('reg_logo').value;
-            const img = document.getElementById('logo_preview');
-            const placeholder = document.getElementById('logo_placeholder');
-            if(url.match(/\.(jpeg|jpg|gif|png)/) != null || url.startsWith('http')) {
-                img.src = url; img.classList.remove('hidden'); placeholder.classList.add('hidden');
-            } else {
-                img.classList.add('hidden'); placeholder.classList.remove('hidden');
-            }
+        function showToast(title, msg, isSuccess = false) {
+            const t = document.getElementById('toast');
+            t.className = `fixed bottom-6 z-50 bg-[#0a0a0a] border-l-4 ${isSuccess ? 'border-everGold' : 'border-everRed'} p-4 shadow-[0_0_30px_rgba(0,0,0,0.8)] flex items-center gap-4 transition-all duration-500 clip-form right-[-400px]`;
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-msg').innerText = msg;
+            setTimeout(() => { t.style.right = '24px'; }, 100);
+            setTimeout(() => { t.style.right = '-400px'; }, 4000);
         }
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btn-submit');
-            btn.innerText = "Sincronizando Sistema...";
-            
-            // Construir Array de Jugadores con links a Tracker
+            e.preventDefault(); const btn = document.getElementById('btn-submit').querySelector('span'); btn.innerText = "PROCESANDO...";
             let jugadores = [];
             for(let i=1; i<=5; i++) {
-                let riotId = document.getElementById(`jugador_${i}`).value.trim();
-                let encodedId = encodeURIComponent(riotId);
-                jugadores.push({
-                    riot_id: riotId,
-                    tracker_url: `https://tracker.gg/valorant/profile/riot/${encodedId}/overview`
-                });
+                let id = document.getElementById(`jugador_${i}`).value.trim();
+                jugadores.push({ riot_id: id, tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview` });
             }
-
-            const payload = {
-                nombre: document.getElementById('reg_nombre').value,
-                discord_capitan: document.getElementById('reg_discord').value,
-                rango: "Calculado vía Tracker",
-                logo_url: document.getElementById('reg_logo').value || '',
-                jugadores: jugadores // Pasamos el array completo a la base de datos
-            };
+            const payload = { nombre: document.getElementById('reg_nombre').value, discord_capitan: document.getElementById('reg_discord').value, rango: "Tracker Link", logo_url: document.getElementById('reg_logo').value, jugadores };
 
             try {
-                const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-                });
-                
-                if(res.ok) {
-                    alert("¡Escuadra registrada exitosamente! Roster enlazado.");
-                    window.location.href = 'sorteo.html';
-                } else { alert("Error al registrar. Verifica tu conexión."); }
-            } catch (err) { alert("Error de conexión. Revisa tu internet."); } finally { btn.innerText = "CONFIRMAR Y ENVIAR REGISTRO"; }
+                const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if(res.ok) { showToast("SISTEMA", "Escuadra registrada. Redirigiendo...", true); setTimeout(() => window.location.href = 'sorteo.html', 2000); }
+                else showToast("ERROR", "Fallo en la sincronización.");
+            } catch (err) { showToast("ERROR CRÍTICO", "Sin conexión al servidor."); } finally { btn.innerText = "INICIALIZAR REGISTRO"; }
         });
     </script>
 </body>
