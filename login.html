@@ -3,124 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso - BANE Esports</title>
+    <title>5ever | Acceso Restringido</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: { colors: { baneAccent: '#8b0000', baneAccentLight: '#ff4655' } }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c' } } } }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: white; }
-        .font-heading { font-family: 'Cinzel', serif; }
+        body { font-family: 'Montserrat', sans-serif; background-color: #020202; color: white; }
+        .clip-input { clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
+        .input-vct { background: rgba(10,10,12,0.8); border: 1px solid rgba(255,255,255,0.05); border-left: 2px solid rgba(255,255,255,0.2); transition: all 0.3s ease; }
+        .input-vct:focus { border-color: #ff2a3f; border-left-color: #ff2a3f; background: #000; outline: none; padding-left: 1rem; }
     </style>
 </head>
-<body class="h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="antialiased min-h-screen flex items-center justify-center p-4 relative bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]">
 
-    <!-- Fondo decorativo -->
-    <div class="absolute inset-0 z-0 opacity-10 flex items-center justify-center">
-        <h1 class="font-heading text-[15rem] font-black text-white">BANE</h1>
-    </div>
-
-    <!-- Caja de Login -->
-    <div class="bg-black border border-white/10 p-10 rounded-sm shadow-2xl z-10 w-full max-w-md">
-        <div class="text-center mb-8">
-            <h2 class="font-heading text-3xl font-black tracking-widest text-white mb-2">BANE <span class="text-baneAccentLight">LOGIN</span></h2>
-            <p class="text-xs tracking-[0.2em] uppercase text-gray-500">Ingresa a tu cuenta</p>
-        </div>
+    <div class="w-full max-w-md bg-[#050505] p-8 md:p-10 border border-white/10 shadow-[0_0_50px_rgba(255,42,63,0.1)] clip-input relative">
         
+        <div class="absolute top-0 right-0 bg-vctRed text-white text-[8px] font-black uppercase tracking-widest px-6 py-2 origin-bottom-left transform rotate-45 translate-x-[25px] translate-y-[-15px]">NEXUS</div>
+
+        <div class="text-center mb-8 border-b border-white/10 pb-6">
+            <h1 class="text-4xl font-black uppercase tracking-tighter text-white mb-2"><span class="text-vctRed">5</span>EVER</h1>
+            <p class="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-bold">Identificación Requerida</p>
+        </div>
+
         <form id="form-login" class="flex flex-col gap-6">
             <div>
-                <label class="text-[10px] uppercase tracking-widest text-gray-400 block mb-2">Correo Electrónico</label>
-                <input type="email" id="email" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="tu@correo.com" required>
+                <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-2 block font-black">Correo Electrónico</label>
+                <input type="email" id="email" required placeholder="admin@ejemplo.com" class="input-vct clip-input w-full p-4 text-sm font-bold text-white">
             </div>
+
             <div>
-                <label class="text-[10px] uppercase tracking-widest text-gray-400 block mb-2">Contraseña</label>
-                <input type="password" id="password" class="w-full bg-[#0a0a0a] border border-white/10 text-white p-3 text-sm focus:border-baneAccentLight outline-none transition-colors" placeholder="••••••••" required>
+                <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-2 block font-black">Código de Acceso</label>
+                <input type="password" id="password" required placeholder="••••••••" class="input-vct clip-input w-full p-4 text-sm font-bold text-white">
             </div>
-            <p id="mensaje-error" class="text-baneAccentLight text-xs hidden text-center font-bold"></p>
-            <button type="submit" id="btn-submit" class="mt-2 border border-baneAccentLight bg-baneAccentLight/10 text-baneAccentLight hover:bg-baneAccentLight hover:text-black font-bold uppercase tracking-widest text-xs py-4 transition-all">
-                Iniciar Sesión
+
+            <button type="submit" id="btn-submit" class="mt-4 clip-input bg-vctRed text-white font-black text-sm uppercase tracking-[0.3em] py-5 hover:bg-white hover:text-vctRed transition-all duration-300 shadow-[0_0_20px_rgba(255,42,63,0.3)] relative group">
+                <span class="relative z-10" id="btn-text">INICIAR CONEXIÓN</span>
             </button>
         </form>
-        
-        <!-- ENLACES DE NAVEGACIÓN CORREGIDOS -->
-        <div class="mt-6 text-center flex flex-col gap-4">
-            <a href="registro.html" class="text-[10px] uppercase tracking-widest text-baneAccentLight hover:text-white transition-colors font-bold">¿No tienes cuenta? Regístrate aquí</a>
-            <div class="w-16 h-[1px] bg-white/10 mx-auto"></div>
-            <a href="index.html" class="text-[10px] uppercase tracking-widest text-gray-600 hover:text-white transition-colors">Volver al inicio</a>
+
+        <div id="error-msg" class="hidden mt-6 text-center text-vctRed text-xs font-bold uppercase tracking-widest bg-vctRed/10 border border-vctRed/30 p-3">
+            Credenciales denegadas.
         </div>
     </div>
 
-    <!-- SDK de AWS Cognito -->
-    <script src="https://unpkg.com/amazon-cognito-identity-js@6.3.1/dist/amazon-cognito-identity.min.js"></script>
-    
     <script>
-        // LA MISMA LISTA VIP PARA SABER A DÓNDE REDIRIGIR
-        const CORREOS_ADMIN = [
-            'ivonnesanchez057@gmail.com', 
-            'luke@baneesports.com',
-            'mary@baneesports.com',
-            'vex@baneesports.com'
-        ];
+        const API_URL = 'https://bane-esports-web-1.onrender.com/api';
 
-        document.getElementById('form-login').addEventListener('submit', function(e) {
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btnText = document.getElementById('btn-text');
+            const errorMsg = document.getElementById('error-msg');
             
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const mensajeError = document.getElementById('mensaje-error');
-            const btnSubmit = document.getElementById('btn-submit');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
             
-            btnSubmit.innerText = "AUTENTICANDO...";
-            mensajeError.classList.add('hidden');
+            btnText.innerText = "AUTENTICANDO...";
+            errorMsg.classList.add('hidden');
 
-            // 1. Configuración de tu AWS Cognito
-            const poolData = {
-                UserPoolId: 'us-east-2_87KXfmchF', 
-                ClientId: '75fqi9idnnkb3ebch9omr6jvbe' // ¡RECUERDA PONER TU CLIENT ID AQUÍ!
-            };
-            
-            const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-            
-            const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-                Username: email,
-                Password: password,
-            });
-            
-            const userData = {
-                Username: email,
-                Pool: userPool
-            };
-            
-            const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-            
-            // 2. Proceso de Login
-            cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: function (result) {
-                    const idToken = result.getIdToken().getJwtToken();
-                    localStorage.setItem('idToken', idToken);
-                    
-                    // Decodificamos el token para leer el correo
-                    const payload = JSON.parse(atob(idToken.split('.')[1]));
-                    const correoUsuario = payload.email;
-                    
-                    // LÓGICA INTELIGENTE: Si es admin, va al panel. Si es fan, va al inicio.
-                    if (CORREOS_ADMIN.includes(correoUsuario)) {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'index.html';
-                    }
-                },
-                onFailure: function(err) {
-                    mensajeError.innerText = "Acceso denegado: " + (err.message || "Credenciales inválidas");
-                    mensajeError.classList.remove('hidden');
-                    btnSubmit.innerText = "INICIAR SESIÓN";
+            try {
+                const res = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    // Guardamos el token que nos devuelve tu servidor en Render
+                    localStorage.setItem('idToken', data.token);
+                    btnText.innerText = "ACCESO PERMITIDO";
+                    setTimeout(() => window.location.href = 'admin.html', 500);
+                } else {
+                    errorMsg.innerText = "Error: Correo o contraseña incorrectos.";
+                    errorMsg.classList.remove('hidden');
+                    btnText.innerText = "INICIAR CONEXIÓN";
                 }
-            });
+            } catch (err) {
+                errorMsg.innerText = "Error de conexión con el servidor.";
+                errorMsg.classList.remove('hidden');
+                btnText.innerText = "INICIAR CONEXIÓN";
+            }
         });
     </script>
 </body>
