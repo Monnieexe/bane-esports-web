@@ -82,7 +82,7 @@
                     </div>
                 </div>
 
-                <!-- SELECTOR DE RANGOS MÚLTIPLES (ACTUALIZADO) -->
+                <!-- SELECTOR DE RANGOS MÚLTIPLES (CORREGIDO) -->
                 <div class="mb-8 border-t border-white/5 pt-8">
                     <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-l-2 border-everGold pl-3">Niveles Competitivos (Selecciona todos los que conformen tu equipo) *</label>
                     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -105,9 +105,9 @@
                             </div>
                         </label>
                         <label class="cursor-pointer relative">
-                            <input type="checkbox" value="Ascendente" class="rango-cb absolute opacity-0 w-0 h-0">
+                            <input type="checkbox" value="Ascendente/Inmortal" class="rango-cb absolute opacity-0 w-0 h-0">
                             <div class="bg-[#111] border border-white/5 p-4 text-center clip-input hover:border-gray-500 transition-colors h-full flex items-center justify-center">
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Ascendente</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Ascendente / Inmortal</span>
                             </div>
                         </label>
                         <label class="cursor-pointer relative">
@@ -198,6 +198,7 @@
         </form>
     </div>
 
+    <!-- Toast UI -->
     <div id="toast" class="fixed bottom-6 right-[-400px] z-50 bg-[#0a0a0a] border-l-4 p-4 flex items-center gap-4 transition-all duration-300 clip-input">
         <div><h4 class="text-white text-[10px] font-black uppercase tracking-widest" id="toast-title">Alerta</h4></div>
     </div>
@@ -260,8 +261,10 @@
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
+            // 0. Validaciones Previas
             if (!selectedFile) { showToast("Debes subir un emblema (logo).", true); return; }
             
+            // Revisar qué rangos seleccionaron
             let rangosSeleccionados = [];
             document.querySelectorAll('.rango-cb:checked').forEach(cb => rangosSeleccionados.push(cb.value));
             
@@ -273,6 +276,7 @@
             btnText.innerText = "Sincronizando Sistema...";
             let logoGenerado = "";
 
+            // 1. SUBIR LA IMAGEN A IMGBB
             btnText.innerText = "SUBIENDO EMBLEMA...";
             const formData = new FormData();
             formData.append('image', selectedFile);
@@ -295,12 +299,14 @@
             
             let jugadores = [];
             
+            // Titulares
             for(let i=1; i<=5; i++) {
                 let id = document.getElementById(`jugador_${i}`).value.trim();
                 let dc = document.getElementById(`jugador_${i}_dc`).value.trim();
                 jugadores.push({ riot_id: id, dc: dc, role: 'TITULAR', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview` });
             }
             
+            // Suplente y Staff
             let p6 = document.getElementById('jugador_6').value.trim(); let p6_dc = document.getElementById('jugador_6_dc').value.trim();
             if(p6) jugadores.push({ riot_id: p6, dc: p6_dc, role: 'SUPLENTE', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(p6)}/overview` });
             
@@ -321,6 +327,7 @@
                 jugadores: jugadores
             };
 
+            // 3. ENVIAR A LA BASE DE DATOS
             try {
                 btnText.innerText = "INSERTANDO DATOS...";
                 const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', { 
