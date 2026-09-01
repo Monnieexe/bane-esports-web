@@ -82,7 +82,7 @@
                     </div>
                 </div>
 
-                <!-- SELECTOR DE RANGOS MÚLTIPLES -->
+                <!-- SELECTOR DE RANGOS MÚLTIPLES (ACTUALIZADO) -->
                 <div class="mb-8 border-t border-white/5 pt-8">
                     <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-l-2 border-everGold pl-3">Niveles Competitivos (Selecciona todos los que conformen tu equipo) *</label>
                     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -105,15 +105,15 @@
                             </div>
                         </label>
                         <label class="cursor-pointer relative">
-                            <input type="checkbox" value="Ascendente/Inmortal" class="rango-cb absolute opacity-0 w-0 h-0">
+                            <input type="checkbox" value="Ascendente" class="rango-cb absolute opacity-0 w-0 h-0">
                             <div class="bg-[#111] border border-white/5 p-4 text-center clip-input hover:border-gray-500 transition-colors h-full flex items-center justify-center">
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Ascendente / Inmortal</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Ascendente</span>
                             </div>
                         </label>
                         <label class="cursor-pointer relative">
-                            <input type="checkbox" value="Radiante" class="rango-cb absolute opacity-0 w-0 h-0">
+                            <input type="checkbox" value="Inmortal/Radiante" class="rango-cb absolute opacity-0 w-0 h-0">
                             <div class="bg-[#111] border border-white/5 p-4 text-center clip-input hover:border-gray-500 transition-colors h-full flex items-center justify-center">
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Radiante</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Inmortal / Radiante</span>
                             </div>
                         </label>
                     </div>
@@ -148,14 +148,13 @@
                 </div>
             </div>
 
-            <!-- MÓDULO 03: STAFF Y RESERVAS (AHORA CON MANAGER) -->
+            <!-- MÓDULO 03: STAFF Y RESERVAS (MANAGER INCLUIDO) -->
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(255,42,63,0.05)] relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-vctRed text-white text-[8px] font-black uppercase tracking-widest px-6 py-2 origin-bottom-left transform rotate-45 translate-x-[25px] translate-y-[-15px]">OPCIONAL</div>
                 <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
                     <span class="bg-vctRed text-white px-2 py-1 text-xs">03</span> STAFF TÁCTICO Y SUPLENTES
                 </h2>
                 
-                <!-- Cuadrícula 2x2 para Suplente, Head Coach, Asistente y Manager -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     <div class="bg-black p-4 border border-white/5 clip-input">
@@ -199,7 +198,6 @@
         </form>
     </div>
 
-    <!-- Toast UI -->
     <div id="toast" class="fixed bottom-6 right-[-400px] z-50 bg-[#0a0a0a] border-l-4 p-4 flex items-center gap-4 transition-all duration-300 clip-input">
         <div><h4 class="text-white text-[10px] font-black uppercase tracking-widest" id="toast-title">Alerta</h4></div>
     </div>
@@ -262,10 +260,8 @@
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
-            // 0. Validaciones Previas
             if (!selectedFile) { showToast("Debes subir un emblema (logo).", true); return; }
             
-            // Revisar qué rangos seleccionaron
             let rangosSeleccionados = [];
             document.querySelectorAll('.rango-cb:checked').forEach(cb => rangosSeleccionados.push(cb.value));
             
@@ -277,7 +273,6 @@
             btnText.innerText = "Sincronizando Sistema...";
             let logoGenerado = "";
 
-            // 1. SUBIR LA IMAGEN A IMGBB
             btnText.innerText = "SUBIENDO EMBLEMA...";
             const formData = new FormData();
             formData.append('image', selectedFile);
@@ -300,14 +295,12 @@
             
             let jugadores = [];
             
-            // Titulares
             for(let i=1; i<=5; i++) {
                 let id = document.getElementById(`jugador_${i}`).value.trim();
                 let dc = document.getElementById(`jugador_${i}_dc`).value.trim();
                 jugadores.push({ riot_id: id, dc: dc, role: 'TITULAR', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview` });
             }
             
-            // Suplente y Staff
             let p6 = document.getElementById('jugador_6').value.trim(); let p6_dc = document.getElementById('jugador_6_dc').value.trim();
             if(p6) jugadores.push({ riot_id: p6, dc: p6_dc, role: 'SUPLENTE', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(p6)}/overview` });
             
@@ -323,12 +316,11 @@
             const payload = {
                 nombre: document.getElementById('reg_nombre').value,
                 discord_capitan: document.getElementById('reg_discord').value,
-                rango: rangosSeleccionados.join(' / '), // Concatena los rangos (Ej: Plata/Oro / Ascendente/Inmortal)
+                rango: rangosSeleccionados.join(' / '), 
                 logo_url: logoGenerado, 
                 jugadores: jugadores
             };
 
-            // 3. ENVIAR A LA BASE DE DATOS
             try {
                 btnText.innerText = "INSERTANDO DATOS...";
                 const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', { 
