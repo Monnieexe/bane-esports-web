@@ -57,7 +57,7 @@
 
         <form id="form-registro" class="flex flex-col gap-10">
             
-            <!-- MÓDULO 01: IDENTIDAD -->
+            <!-- MÓDULO 01 -->
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(0,0,0,0.5)]">
                 <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
                     <span class="bg-white text-black px-2 py-1 text-xs">01</span> IDENTIDAD DEL EQUIPO
@@ -79,19 +79,17 @@
                 </div>
             </div>
 
-            <!-- MÓDULO 02: ROSTER TITULAR CON DISCORD -->
+            <!-- MÓDULO 02 -->
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(0,0,0,0.5)]">
                 <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-2 pb-4 flex items-center gap-4">
                     <span class="bg-everGold text-black px-2 py-1 text-xs">02</span> ROSTER TITULAR
                 </h2>
                 <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-8 font-bold border-l-2 border-everGold pl-3">Escribe el Riot ID exacto y la etiqueta de Discord de los 5 titulares.</p>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="contenedor-titulares">
-                    <!-- JS inyecta los 5 inputs agrupados -->
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="contenedor-titulares"></div>
             </div>
 
-            <!-- MÓDULO 03: STAFF Y RESERVAS CON DISCORD -->
+            <!-- MÓDULO 03 -->
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(255,42,63,0.05)] relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-vctRed text-white text-[8px] font-black uppercase tracking-widest px-6 py-2 origin-bottom-left transform rotate-45 translate-x-[25px] translate-y-[-15px]">OPCIONAL</div>
                 <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
@@ -134,7 +132,6 @@
     </div>
 
     <script>
-        // Inyectar 5 Titulares agrupados con su Riot ID y Discord
         const contTitulares = document.getElementById('contenedor-titulares');
         for(let i=1; i<=5; i++) {
             contTitulares.innerHTML += `
@@ -166,34 +163,24 @@
             btnText.innerText = "Sincronizando Base de Datos...";
             
             let jugadores = [];
-            
-            // 1. Recolectar 5 Titulares
             for(let i=1; i<=5; i++) {
                 let id = document.getElementById(`jugador_${i}`).value.trim();
                 let dc = document.getElementById(`jugador_${i}_dc`).value.trim();
                 jugadores.push({ riot_id: id, dc: dc, role: 'TITULAR', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview` });
             }
             
-            // 2. Recolectar Sexto Jugador
-            let p6 = document.getElementById('jugador_6').value.trim();
-            let p6_dc = document.getElementById('jugador_6_dc').value.trim();
+            let p6 = document.getElementById('jugador_6').value.trim(); let p6_dc = document.getElementById('jugador_6_dc').value.trim();
             if(p6) jugadores.push({ riot_id: p6, dc: p6_dc, role: 'SUPLENTE', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(p6)}/overview` });
             
-            // 3. Recolectar Coaches
-            let coach = document.getElementById('coach').value.trim();
-            let coach_dc = document.getElementById('coach_dc').value.trim();
+            let coach = document.getElementById('coach').value.trim(); let coach_dc = document.getElementById('coach_dc').value.trim();
             if(coach) jugadores.push({ riot_id: coach, dc: coach_dc, role: 'COACH', tracker_url: '#' });
             
-            let asis = document.getElementById('asistente').value.trim();
-            let asis_dc = document.getElementById('asistente_dc').value.trim();
+            let asis = document.getElementById('asistente').value.trim(); let asis_dc = document.getElementById('asistente_dc').value.trim();
             if(asis) jugadores.push({ riot_id: asis, dc: asis_dc, role: 'ASISTENTE COACH', tracker_url: '#' });
 
             const payload = {
-                nombre: document.getElementById('reg_nombre').value,
-                discord_capitan: document.getElementById('reg_discord').value,
-                rango: "Tracker Activo",
-                logo_url: document.getElementById('reg_logo').value, 
-                jugadores: jugadores
+                nombre: document.getElementById('reg_nombre').value, discord_capitan: document.getElementById('reg_discord').value,
+                rango: "Tracker Activo", logo_url: document.getElementById('reg_logo').value, jugadores: jugadores
             };
 
             try {

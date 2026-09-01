@@ -25,7 +25,6 @@
 
     <div class="bg-rays"></div>
 
-    <!-- NAVBAR -->
     <nav class="w-full bg-[#020202]/90 backdrop-blur-md border-b border-white/5 sticky top-0 z-50 flex items-center justify-between">
         <div class="px-6 md:px-10 py-5 flex items-center gap-3">
             <span class="text-2xl md:text-3xl font-black tracking-tighter text-white"><span class="text-vctRed">5</span>EVER</span>
@@ -45,10 +44,8 @@
             <p class="text-gray-400 text-[10px] tracking-[0.6em] uppercase font-bold">Base de Datos Global</p>
         </div>
 
-        <!-- LEADERBOARD Y ROSTERS AVANZADOS -->
         <div class="mb-32 animate-item" style="animation-delay: 0.1s;">
             <h3 class="text-2xl font-black text-white uppercase tracking-widest mb-8 flex items-center gap-3"><span class="w-2 h-6 bg-everGold inline-block"></span> CLASIFICACIÓN ÉLITE</h3>
-            
             <div class="bg-[#050505]/80 backdrop-blur-sm border border-white/5 p-4 md:p-6 clip-card shadow-2xl">
                 <div class="flex justify-between text-[9px] uppercase tracking-[0.3em] text-gray-500 font-bold pb-4 mb-2 px-2 border-b border-white/10">
                     <span>Escuadra</span><span>Victorias</span>
@@ -57,7 +54,6 @@
             </div>
         </div>
 
-        <!-- BRACKET -->
         <div id="contenedor-sorteo" class="flex flex-col gap-16"></div>
     </div>
 
@@ -102,9 +98,7 @@
                 let rHtml = '';
                 if(item.jugadores && item.jugadores.length > 0) {
                     rHtml = `<div class="roster-panel" id="rost-${idx}"><div class="roster-content pt-4 mt-4 border-t border-white/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">`;
-                    
                     item.jugadores.forEach(j => {
-                        // Colores por Roles
                         let roleColor = j.role === 'TITULAR' ? 'text-gray-500' : (j.role === 'SUPLENTE' ? 'text-everGold' : 'text-vctRed');
                         let borderColor = j.role === 'TITULAR' ? 'border-white/10' : (j.role === 'SUPLENTE' ? 'border-everGold/50' : 'border-vctRed/50');
                         let trackerLink = j.tracker_url !== '#' ? `<a href="${j.tracker_url}" target="_blank" class="text-[8px] bg-white/5 px-2 py-1 text-gray-300 hover:text-white hover:bg-white/20 font-bold uppercase transition-colors rounded-sm">Tracker ↗</a>` : '';
