@@ -12,6 +12,7 @@
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: #fff; overflow-x: hidden; }
         
+        /* Fondo Estático Optimizado (Cero Lag) */
         .bg-pattern {
             position: fixed; inset: 0; z-index: -1;
             background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
@@ -33,6 +34,10 @@
         .module-header { position: relative; overflow: hidden; }
         .module-header::after { content: ''; position: absolute; bottom: 0; left: -100%; width: 50%; height: 2px; background: #ff2a3f; animation: scanline 3s infinite linear; }
         @keyframes scanline { to { left: 200%; } }
+
+        /* Estilos de la Zona Drag & Drop */
+        .drop-zone { border: 2px dashed rgba(255,255,255,0.2); transition: all 0.3s ease; }
+        .drop-zone:hover, .drop-zone.dragover { border-color: #ff2a3f; background: rgba(255,42,63,0.05); }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col items-center py-12 px-4 relative">
@@ -42,6 +47,7 @@
 
     <div class="w-full max-w-5xl relative z-10">
         
+        <!-- HEADER -->
         <div class="flex justify-between items-end mb-12">
             <div>
                 <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white mb-2"><span class="text-vctRed">5</span>EVER <span class="text-transparent bg-clip-text bg-gradient-to-r from-everGold to-yellow-700">PORTAL</span></h1>
@@ -57,7 +63,7 @@
 
         <form id="form-registro" class="flex flex-col gap-10">
             
-            <!-- MÓDULO 01 -->
+            <!-- MÓDULO 01: IDENTIDAD Y DRAG & DROP -->
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(0,0,0,0.5)]">
                 <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
                     <span class="bg-white text-black px-2 py-1 text-xs">01</span> IDENTIDAD DEL EQUIPO
@@ -73,23 +79,39 @@
                         <input type="text" id="reg_discord" required placeholder="Usuario#0000" class="input-vct clip-input w-full p-4 text-sm font-bold text-white">
                     </div>
                 </div>
+
+                <!-- ZONA DE ARRASTRAR IMAGEN -->
                 <div>
-                    <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black">Emblema Oficial (URL de Logo PNG/JPG)</label>
-                    <input type="url" id="reg_logo" placeholder="https://..." class="input-vct clip-input w-full p-4 text-sm font-bold text-white">
+                    <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black">Emblema Oficial (Arrastra tu imagen) *</label>
+                    <div id="drop-area" class="drop-zone bg-[#0a0a0c] clip-input p-10 text-center cursor-pointer relative group flex flex-col items-center justify-center min-h-[200px]">
+                        <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30">
+                        
+                        <!-- Texto por defecto -->
+                        <div id="upload-content" class="pointer-events-none flex flex-col items-center z-10 transition-opacity">
+                            <svg class="w-12 h-12 mb-4 text-gray-600 group-hover:text-vctRed transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            <p id="file-name" class="text-sm font-bold text-white uppercase tracking-widest">Arrastra tu logo aquí o haz clic</p>
+                            <p class="text-[9px] text-gray-500 mt-2 uppercase tracking-[0.2em]">Soporta PNG o JPG (Max 5MB)</p>
+                        </div>
+
+                        <!-- Previsualización de la imagen -->
+                        <img id="image-preview" src="" class="hidden absolute inset-0 w-full h-full object-contain bg-[#0a0a0c] p-4 z-20 pointer-events-none">
+                    </div>
                 </div>
             </div>
 
-            <!-- MÓDULO 02 -->
+            <!-- MÓDULO 02: ROSTER TITULAR CON DISCORD -->
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(0,0,0,0.5)]">
                 <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-2 pb-4 flex items-center gap-4">
                     <span class="bg-everGold text-black px-2 py-1 text-xs">02</span> ROSTER TITULAR
                 </h2>
                 <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-8 font-bold border-l-2 border-everGold pl-3">Escribe el Riot ID exacto y la etiqueta de Discord de los 5 titulares.</p>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="contenedor-titulares"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="contenedor-titulares">
+                    <!-- JS inyecta los 5 inputs agrupados -->
+                </div>
             </div>
 
-            <!-- MÓDULO 03 -->
+            <!-- MÓDULO 03: STAFF Y RESERVAS CON DISCORD -->
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(255,42,63,0.05)] relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-vctRed text-white text-[8px] font-black uppercase tracking-widest px-6 py-2 origin-bottom-left transform rotate-45 translate-x-[25px] translate-y-[-15px]">OPCIONAL</div>
                 <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
@@ -127,11 +149,13 @@
         </form>
     </div>
 
+    <!-- Toast UI -->
     <div id="toast" class="fixed bottom-6 right-[-400px] z-50 bg-[#0a0a0a] border-l-4 p-4 flex items-center gap-4 transition-all duration-300 clip-input">
         <div><h4 class="text-white text-[10px] font-black uppercase tracking-widest" id="toast-title">Alerta</h4></div>
     </div>
 
     <script>
+        // Inyectar 5 Titulares agrupados con su Riot ID y Discord
         const contTitulares = document.getElementById('contenedor-titulares');
         for(let i=1; i<=5; i++) {
             contTitulares.innerHTML += `
@@ -157,30 +181,105 @@
             t.style.right = '24px'; setTimeout(() => { t.style.right = '-400px'; }, 3500);
         }
 
+        // LÓGICA DE DRAG & DROP Y PREVIEW DE IMAGEN
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('file-input');
+        const preview = document.getElementById('image-preview');
+        const uploadContent = document.getElementById('upload-content');
+        let selectedFile = null;
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.add('dragover'), false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.remove('dragover'), false);
+        });
+
+        dropArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files), false);
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files), false);
+
+        function handleFiles(files) {
+            if (files.length && files[0].type.startsWith('image/')) {
+                selectedFile = files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    uploadContent.style.opacity = '0'; // Ocultar el texto detrás
+                }
+                reader.readAsDataURL(selectedFile);
+            } else {
+                showToast("Por favor, sube solo imágenes.", true);
+            }
+        }
+
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault(); 
+            
+            if (!selectedFile) { showToast("Debes subir un emblema (logo).", true); return; }
+
             const btnText = document.getElementById('btn-text'); 
             btnText.innerText = "Sincronizando Base de Datos...";
+            let logoGenerado = "";
+
+            // 1. SUBIR LA IMAGEN A IMGBB
+            btnText.innerText = "SUBIENDO EMBLEMA...";
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+            
+            try {
+                // ==========================================
+                // ⚠️ PON TU API KEY DE IMGBB AQUÍ ABAJO ⚠️
+                // ==========================================
+                const apiKey = 'TU_API_KEY_AQUI'; 
+                const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+                    method: 'POST', body: formData
+                });
+                const imgData = await imgRes.json();
+                if(imgData.success) {
+                    logoGenerado = imgData.data.url;
+                } else {
+                    showToast("Error al procesar la imagen.", true);
+                    btnText.innerText = "ENVIAR REGISTRO AL NEXUS";
+                    return;
+                }
+            } catch(err) {
+                showToast("Error de conexión con el servidor de imágenes.", true);
+                btnText.innerText = "ENVIAR REGISTRO AL NEXUS";
+                return;
+            }
             
             let jugadores = [];
+            
             for(let i=1; i<=5; i++) {
                 let id = document.getElementById(`jugador_${i}`).value.trim();
                 let dc = document.getElementById(`jugador_${i}_dc`).value.trim();
                 jugadores.push({ riot_id: id, dc: dc, role: 'TITULAR', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview` });
             }
             
-            let p6 = document.getElementById('jugador_6').value.trim(); let p6_dc = document.getElementById('jugador_6_dc').value.trim();
+            let p6 = document.getElementById('jugador_6').value.trim();
+            let p6_dc = document.getElementById('jugador_6_dc').value.trim();
             if(p6) jugadores.push({ riot_id: p6, dc: p6_dc, role: 'SUPLENTE', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(p6)}/overview` });
             
-            let coach = document.getElementById('coach').value.trim(); let coach_dc = document.getElementById('coach_dc').value.trim();
+            let coach = document.getElementById('coach').value.trim();
+            let coach_dc = document.getElementById('coach_dc').value.trim();
             if(coach) jugadores.push({ riot_id: coach, dc: coach_dc, role: 'COACH', tracker_url: '#' });
             
-            let asis = document.getElementById('asistente').value.trim(); let asis_dc = document.getElementById('asistente_dc').value.trim();
+            let asis = document.getElementById('asistente').value.trim();
+            let asis_dc = document.getElementById('asistente_dc').value.trim();
             if(asis) jugadores.push({ riot_id: asis, dc: asis_dc, role: 'ASISTENTE COACH', tracker_url: '#' });
 
             const payload = {
-                nombre: document.getElementById('reg_nombre').value, discord_capitan: document.getElementById('reg_discord').value,
-                rango: "Tracker Activo", logo_url: document.getElementById('reg_logo').value, jugadores: jugadores
+                nombre: document.getElementById('reg_nombre').value,
+                discord_capitan: document.getElementById('reg_discord').value,
+                rango: "Tracker Activo",
+                logo_url: logoGenerado, 
+                jugadores: jugadores
             };
 
             try {
