@@ -8,7 +8,10 @@ const { CognitoJwtVerifier } = require("aws-jwt-verify");
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+
+// Se amplió el límite a 10mb para aceptar los logos convertidos en Base64 sin error de servidor
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // 1. Conexión a DynamoDB
 const client = new DynamoDBClient({
@@ -159,7 +162,6 @@ app.delete('/api/noticias', esAdmin, async (req, res) => {
 
 // POST es PÚBLICO: Cualquier capitán puede registrar su equipo
 app.post('/api/equipos', async (req, res) => {
-    // RECIBIMOS LOS NUEVOS CAMPOS DESDE EL FORMULARIO
     const { nombre, logo_url, rango, discord_capitan, jugadores } = req.body;
 
     const nuevoEquipo = {
@@ -185,7 +187,6 @@ app.post('/api/equipos', async (req, res) => {
 app.get('/api/equipos', async (req, res) => {
     try {
         const resultado = await ddbDocClient.send(new ScanCommand({ TableName: 'BaneEquipos' }));
-        // Ordenamos del más viejo al más nuevo para que se formen como van llegando
         const equiposOrdenados = resultado.Items.sort((a, b) => new Date(a.fecha_registro) - new Date(b.fecha_registro));
         res.json(equiposOrdenados);
     } catch (error) {
