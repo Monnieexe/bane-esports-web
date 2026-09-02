@@ -82,7 +82,7 @@
                     </div>
                 </div>
 
-                <!-- SELECTOR DE RANGOS MÚLTIPLES (CORREGIDO) -->
+                <!-- SELECTOR DE RANGOS MÚLTIPLES -->
                 <div class="mb-8 border-t border-white/5 pt-8">
                     <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-l-2 border-everGold pl-3">Niveles Competitivos (Selecciona todos los que conformen tu equipo) *</label>
                     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -119,16 +119,23 @@
                     </div>
                 </div>
 
-                <!-- ZONA DE ARRASTRAR IMAGEN -->
+                <!-- ZONA DE ARRASTRAR / ABRIR GALERÍA -->
                 <div>
-                    <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black">Emblema Oficial (Arrastra tu imagen) *</label>
+                    <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black">Emblema Oficial (Logo del Equipo) *</label>
                     <div id="drop-area" class="drop-zone bg-[#0a0a0c] clip-input p-10 text-center cursor-pointer relative group flex flex-col items-center justify-center min-h-[200px]">
+                        <!-- Al poner accept="image/*", los celulares abrirán la cámara o galería automáticamente -->
                         <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30">
                         
                         <div id="upload-content" class="pointer-events-none flex flex-col items-center z-10 transition-opacity">
-                            <svg class="w-12 h-12 mb-4 text-gray-600 group-hover:text-vctRed transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                            <p id="file-name" class="text-sm font-bold text-white uppercase tracking-widest">Arrastra tu logo aquí o haz clic</p>
-                            <p class="text-[9px] text-gray-500 mt-2 uppercase tracking-[0.2em]">Soporta PNG o JPG (Max 5MB)</p>
+                            <svg class="w-12 h-12 mb-4 text-gray-600 group-hover:text-vctRed transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            <!-- Texto para PC -->
+                            <p id="file-name" class="text-sm font-bold text-white uppercase tracking-widest hidden md:block">Arrastra tu logo aquí o haz clic</p>
+                            <!-- Botón para Móvil -->
+                            <p class="text-xs font-black text-vctRed uppercase tracking-widest md:hidden border border-vctRed px-6 py-3 bg-vctRed/10">Toca para Abrir Galería</p>
+                            
+                            <p class="text-[9px] text-gray-500 mt-3 uppercase tracking-[0.2em]">Soporta PNG o JPG (Max 5MB)</p>
                         </div>
 
                         <img id="image-preview" src="" class="hidden absolute inset-0 w-full h-full object-contain bg-[#0a0a0c] p-4 z-20 pointer-events-none">
@@ -198,7 +205,6 @@
         </form>
     </div>
 
-    <!-- Toast UI -->
     <div id="toast" class="fixed bottom-6 right-[-400px] z-50 bg-[#0a0a0a] border-l-4 p-4 flex items-center gap-4 transition-all duration-300 clip-input">
         <div><h4 class="text-white text-[10px] font-black uppercase tracking-widest" id="toast-title">Alerta</h4></div>
     </div>
@@ -261,10 +267,8 @@
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
-            // 0. Validaciones Previas
             if (!selectedFile) { showToast("Debes subir un emblema (logo).", true); return; }
             
-            // Revisar qué rangos seleccionaron
             let rangosSeleccionados = [];
             document.querySelectorAll('.rango-cb:checked').forEach(cb => rangosSeleccionados.push(cb.value));
             
@@ -276,7 +280,6 @@
             btnText.innerText = "Sincronizando Sistema...";
             let logoGenerado = "";
 
-            // 1. SUBIR LA IMAGEN A IMGBB
             btnText.innerText = "SUBIENDO EMBLEMA...";
             const formData = new FormData();
             formData.append('image', selectedFile);
@@ -299,14 +302,12 @@
             
             let jugadores = [];
             
-            // Titulares
             for(let i=1; i<=5; i++) {
                 let id = document.getElementById(`jugador_${i}`).value.trim();
                 let dc = document.getElementById(`jugador_${i}_dc`).value.trim();
                 jugadores.push({ riot_id: id, dc: dc, role: 'TITULAR', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview` });
             }
             
-            // Suplente y Staff
             let p6 = document.getElementById('jugador_6').value.trim(); let p6_dc = document.getElementById('jugador_6_dc').value.trim();
             if(p6) jugadores.push({ riot_id: p6, dc: p6_dc, role: 'SUPLENTE', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(p6)}/overview` });
             
@@ -327,7 +328,6 @@
                 jugadores: jugadores
             };
 
-            // 3. ENVIAR A LA BASE DE DATOS
             try {
                 btnText.innerText = "INSERTANDO DATOS...";
                 const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', { 
