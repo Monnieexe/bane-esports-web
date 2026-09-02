@@ -30,7 +30,6 @@
             outline: none; padding-left: 1.5rem;
         }
         
-        /* Estilos de las casillas de rango */
         .rango-cb:checked + div { border-color: #ff2a3f; background: rgba(255,42,63,0.1); color: white; }
         .rango-cb:checked + div span { color: #ff2a3f; }
         
@@ -49,7 +48,6 @@
 
     <div class="w-full max-w-5xl relative z-10">
         
-        <!-- HEADER -->
         <div class="flex justify-between items-end mb-12">
             <div>
                 <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white mb-2"><span class="text-vctRed">5</span>EVER <span class="text-transparent bg-clip-text bg-gradient-to-r from-everGold to-yellow-700">PORTAL</span></h1>
@@ -65,7 +63,6 @@
 
         <form id="form-registro" class="flex flex-col gap-10">
             
-            <!-- MÓDULO 01: IDENTIDAD Y RANGOS -->
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(0,0,0,0.5)]">
                 <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
                     <span class="bg-white text-black px-2 py-1 text-xs">01</span> IDENTIDAD DEL EQUIPO
@@ -82,7 +79,6 @@
                     </div>
                 </div>
 
-                <!-- SELECTOR DE RANGOS MÚLTIPLES -->
                 <div class="mb-8 border-t border-white/5 pt-8">
                     <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-l-2 border-everGold pl-3">Niveles Competitivos (Selecciona todos los que conformen tu equipo) *</label>
                     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -119,23 +115,18 @@
                     </div>
                 </div>
 
-                <!-- ZONA DE ARRASTRAR / ABRIR GALERÍA -->
                 <div>
                     <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black">Emblema Oficial (Logo del Equipo) *</label>
                     <div id="drop-area" class="drop-zone bg-[#0a0a0c] clip-input p-10 text-center cursor-pointer relative group flex flex-col items-center justify-center min-h-[200px]">
-                        <!-- SE MODIFICÓ AQUÍ: Solo acepta extensiones limpias para evitar errores de iPhone -->
-                        <input type="file" id="file-input" accept=".jpg, .jpeg, .png" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30">
+                        <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30">
                         
                         <div id="upload-content" class="pointer-events-none flex flex-col items-center z-10 transition-opacity">
                             <svg class="w-12 h-12 mb-4 text-gray-600 group-hover:text-vctRed transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                             </svg>
-                            <!-- Texto para PC -->
                             <p id="file-name" class="text-sm font-bold text-white uppercase tracking-widest hidden md:block">Arrastra tu logo aquí o haz clic</p>
-                            <!-- Botón para Móvil -->
                             <p class="text-xs font-black text-vctRed uppercase tracking-widest md:hidden border border-vctRed px-6 py-3 bg-vctRed/10">Toca para Abrir Galería</p>
-                            
-                            <p class="text-[9px] text-gray-500 mt-3 uppercase tracking-[0.2em]">Soporta PNG o JPG (Max 5MB)</p>
+                            <p class="text-[9px] text-gray-500 mt-3 uppercase tracking-[0.2em]">Carga interna instantánea</p>
                         </div>
 
                         <img id="image-preview" src="" class="hidden absolute inset-0 w-full h-full object-contain bg-[#0a0a0c] p-4 z-20 pointer-events-none">
@@ -143,19 +134,15 @@
                 </div>
             </div>
 
-            <!-- MÓDULO 02: ROSTER TITULAR CON DISCORD -->
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(0,0,0,0.5)]">
                 <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-2 pb-4 flex items-center gap-4">
                     <span class="bg-everGold text-black px-2 py-1 text-xs">02</span> ROSTER TITULAR
                 </h2>
                 <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-8 font-bold border-l-2 border-everGold pl-3">Escribe el Riot ID exacto y la etiqueta de Discord de los 5 titulares.</p>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="contenedor-titulares">
-                    <!-- JS inyecta los 5 inputs agrupados -->
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="contenedor-titulares"></div>
             </div>
 
-            <!-- MÓDULO 03: STAFF Y RESERVAS (MANAGER INCLUIDO) -->
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(255,42,63,0.05)] relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-vctRed text-white text-[8px] font-black uppercase tracking-widest px-6 py-2 origin-bottom-left transform rotate-45 translate-x-[25px] translate-y-[-15px]">OPCIONAL</div>
                 <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
@@ -163,7 +150,6 @@
                 </h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    
                     <div class="bg-black p-4 border border-white/5 clip-input">
                         <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-b border-white/10 pb-2">6to Jugador (Suplente)</label>
                         <div class="flex flex-col gap-3">
@@ -171,7 +157,6 @@
                             <input type="text" id="jugador_6_dc" placeholder="Discord Suplente" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
                         </div>
                     </div>
-
                     <div class="bg-black p-4 border border-white/5 clip-input">
                         <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-b border-white/10 pb-2">Head Coach</label>
                         <div class="flex flex-col gap-3">
@@ -179,7 +164,6 @@
                             <input type="text" id="coach_dc" placeholder="Discord Coach" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
                         </div>
                     </div>
-
                     <div class="bg-black p-4 border border-white/5 clip-input">
                         <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-b border-white/10 pb-2">Asistente Coach</label>
                         <div class="flex flex-col gap-3">
@@ -187,7 +171,6 @@
                             <input type="text" id="asistente_dc" placeholder="Discord Asistente" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
                         </div>
                     </div>
-
                     <div class="bg-black p-4 border border-white/5 clip-input">
                         <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-b border-white/10 pb-2">Team Manager</label>
                         <div class="flex flex-col gap-3">
@@ -195,7 +178,6 @@
                             <input type="text" id="manager_dc" placeholder="Discord Manager" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -239,7 +221,7 @@
         const fileInput = document.getElementById('file-input');
         const preview = document.getElementById('image-preview');
         const uploadContent = document.getElementById('upload-content');
-        let selectedFile = null;
+        let imageBase64 = ""; // Aquí guardaremos la imagen convertida de forma interna
 
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropArea.addEventListener(eventName, preventDefaults, false); });
         function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
@@ -251,23 +233,23 @@
 
         function handleFiles(files) {
             if (files.length && files[0].type.startsWith('image/')) {
-                selectedFile = files[0];
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    preview.src = e.target.result;
+                    imageBase64 = e.target.result; // Convierte la imagen a formato interno sin APIs externas
+                    preview.src = imageBase64;
                     preview.classList.remove('hidden');
                     uploadContent.style.opacity = '0';
                 }
-                reader.readAsDataURL(selectedFile);
+                reader.readAsDataURL(files[0]);
             } else {
-                showToast("Por favor, sube solo imágenes.", true);
+                showToast("Por favor, selecciona una imagen válida.", true);
             }
         }
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
-            if (!selectedFile) { showToast("Debes subir un emblema (logo).", true); return; }
+            if (!imageBase64) { showToast("Debes seleccionar un emblema (logo).", true); return; }
             
             let rangosSeleccionados = [];
             document.querySelectorAll('.rango-cb:checked').forEach(cb => rangosSeleccionados.push(cb.value));
@@ -277,38 +259,9 @@
             }
 
             const btnText = document.getElementById('btn-text'); 
-            btnText.innerText = "Sincronizando Sistema...";
-            let logoGenerado = "";
-
-            // ==========================================
-            // ⚠️ AQUÍ DEBES PONER TU CLAVE DE IMGBB ⚠️
-            // ==========================================
-            const apiKey = 'https://api.imgbb.com/1/upload'; 
-
-            if (apiKey === 'https://api.imgbb.com/1/upload') {
-                showToast("Admin: Falta tu API Key de ImgBB en el código", true);
-                btnText.innerText = "ENVIAR REGISTRO AL NEXUS";
-                return;
-            }
-
-            btnText.innerText = "SUBIENDO EMBLEMA...";
-            const formData = new FormData();
-            formData.append('image', selectedFile);
-            
-            try {
-                const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-                    method: 'POST', body: formData
-                });
-                const imgData = await imgRes.json();
-                if(imgData.success) { logoGenerado = imgData.data.url; } 
-                else { showToast("Error al procesar la imagen con ImgBB.", true); btnText.innerText = "ENVIAR REGISTRO AL NEXUS"; return; }
-            } catch(err) {
-                showToast("Error de conexión con el servidor de imágenes.", true);
-                btnText.innerText = "ENVIAR REGISTRO AL NEXUS"; return;
-            }
+            btnText.innerText = "ENVIANDO AL NEXUS...";
             
             let jugadores = [];
-            
             for(let i=1; i<=5; i++) {
                 let id = document.getElementById(`jugador_${i}`).value.trim();
                 let dc = document.getElementById(`jugador_${i}_dc`).value.trim();
@@ -331,21 +284,25 @@
                 nombre: document.getElementById('reg_nombre').value,
                 discord_capitan: document.getElementById('reg_discord').value,
                 rango: rangosSeleccionados.join(' / '), 
-                logo_url: logoGenerado, 
+                logo_url: imageBase64, // Enviamos la imagen procesada internamente
                 jugadores: jugadores
             };
 
             try {
-                btnText.innerText = "INSERTANDO DATOS...";
                 const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', { 
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) 
                 });
                 if(res.ok) { 
                     showToast("¡ESCUADRA ACEPTADA! Redirigiendo...", false); 
                     setTimeout(() => window.location.href = 'sorteo.html', 2000); 
-                } else showToast("Error en el servidor de Render", true);
-            } catch (err) { showToast("Sin conexión al Nexus", true); } 
-            finally { if(btnText.innerText !== "¡ESCUADRA ACEPTADA! Redirigiendo...") btnText.innerText = "ENVIAR REGISTRO AL NEXUS"; }
+                } else {
+                    showToast("Error en el servidor de Render", true);
+                    btnText.innerText = "ENVIAR REGISTRO AL NEXUS";
+                }
+            } catch (err) { 
+                showToast("Sin conexión al Nexus", true); 
+                btnText.innerText = "ENVIAR REGISTRO AL NEXUS";
+            } 
         });
     </script>
 </body>
