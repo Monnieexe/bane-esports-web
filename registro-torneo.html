@@ -11,43 +11,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #050505; color: #fff; overflow-x: hidden; }
-        
         .bg-pattern {
             position: fixed; inset: 0; z-index: -1;
             background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
             background-size: 30px 30px;
         }
-
         .clip-panel { clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); }
         .clip-input { clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
-        
         .input-vct { 
             background: #0a0a0c; border: 1px solid rgba(255,255,255,0.05); 
             border-left: 2px solid rgba(255,255,255,0.2); transition: all 0.2s ease; 
         }
         .input-vct:focus { 
             border-color: #ff2a3f; border-left-color: #ff2a3f; background: #000;
-            outline: none; padding-left: 1.5rem;
+            outline: none; padding-left: 1.25rem;
         }
-        
         .rango-cb:checked + div { border-color: #ff2a3f; background: rgba(255,42,63,0.1); color: white; }
         .rango-cb:checked + div span { color: #ff2a3f; }
-        
-        .module-header { position: relative; overflow: hidden; }
-        .module-header::after { content: ''; position: absolute; bottom: 0; left: -100%; width: 50%; height: 2px; background: #ff2a3f; animation: scanline 3s infinite linear; }
-        @keyframes scanline { to { left: 200%; } }
-
         .drop-zone { border: 2px dashed rgba(255,255,255,0.2); transition: all 0.3s ease; }
         .drop-zone:hover, .drop-zone.dragover { border-color: #ff2a3f; background: rgba(255,42,63,0.05); }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col items-center py-12 px-4 relative">
-
     <div class="bg-pattern"></div>
     <div class="fixed inset-0 bg-gradient-to-b from-transparent via-[#050505]/80 to-[#050505] z-[-1]"></div>
 
     <div class="w-full max-w-5xl relative z-10">
-        
         <div class="flex justify-between items-end mb-12">
             <div>
                 <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white mb-2"><span class="text-vctRed">5</span>EVER <span class="text-transparent bg-clip-text bg-gradient-to-r from-everGold to-yellow-700">PORTAL</span></h1>
@@ -62,9 +51,8 @@
         </div>
 
         <form id="form-registro" class="flex flex-col gap-10">
-            
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(0,0,0,0.5)]">
-                <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
+                <h2 class="text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4 border-b border-white/5">
                     <span class="bg-white text-black px-2 py-1 text-xs">01</span> IDENTIDAD DEL EQUIPO
                 </h2>
                 
@@ -107,9 +95,9 @@
                             </div>
                         </label>
                         <label class="cursor-pointer relative">
-                            <input type="checkbox" value="Inmortal/Radiante" class="rango-cb absolute opacity-0 w-0 h-0">
+                            <input type="checkbox" value="Radiante" class="rango-cb absolute opacity-0 w-0 h-0">
                             <div class="bg-[#111] border border-white/5 p-4 text-center clip-input hover:border-gray-500 transition-colors h-full flex items-center justify-center">
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Inmortal / Radiante</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Radiante</span>
                             </div>
                         </label>
                     </div>
@@ -117,16 +105,16 @@
 
                 <div>
                     <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black">Emblema Oficial (Logo del Equipo) *</label>
-                    <div id="drop-area" class="drop-zone bg-[#0a0a0c] clip-input p-10 text-center cursor-pointer relative group flex flex-col items-center justify-center min-h-[200px]">
+                    <div id="drop-area" class="drop-zone bg-[#0a0a0c] clip-input p-8 text-center cursor-pointer relative group flex flex-col items-center justify-center min-h-[180px]">
                         <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30">
                         
-                        <div id="upload-content" class="pointer-events-none flex flex-col items-center z-10 transition-opacity">
-                            <svg class="w-12 h-12 mb-4 text-gray-600 group-hover:text-vctRed transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div id="upload-content" class="pointer-events-none flex flex-col items-center z-10">
+                            <svg class="w-10 h-10 mb-3 text-gray-600 group-hover:text-vctRed transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                             </svg>
-                            <p id="file-name" class="text-sm font-bold text-white uppercase tracking-widest hidden md:block">Arrastra tu logo aquí o haz clic</p>
-                            <p class="text-xs font-black text-vctRed uppercase tracking-widest md:hidden border border-vctRed px-6 py-3 bg-vctRed/10">Toca para Abrir Galería</p>
-                            <p class="text-[9px] text-gray-500 mt-3 uppercase tracking-[0.2em]">Carga interna instantánea</p>
+                            <p class="text-xs font-bold text-white uppercase tracking-widest hidden md:block">Arrastra tu logo aquí o haz clic para seleccionarlo</p>
+                            <p class="text-xs font-black text-vctRed uppercase tracking-widest md:hidden border border-vctRed px-5 py-2.5 bg-vctRed/10">Toca para abrir galería</p>
+                            <p class="text-[9px] text-gray-500 mt-2 uppercase tracking-widest">Optimización ultrarrápida automática</p>
                         </div>
 
                         <img id="image-preview" src="" class="hidden absolute inset-0 w-full h-full object-contain bg-[#0a0a0c] p-4 z-20 pointer-events-none">
@@ -135,54 +123,56 @@
             </div>
 
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(0,0,0,0.5)]">
-                <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-2 pb-4 flex items-center gap-4">
-                    <span class="bg-everGold text-black px-2 py-1 text-xs">02</span> ROSTER TITULAR
+                <h2 class="text-xl font-black text-white uppercase tracking-[0.2em] mb-2 pb-4 flex items-center gap-4 border-b border-white/5">
+                    <span class="bg-everGold text-black px-2 py-1 text-xs">02</span> ROSTER TITULAR (5 JUGADORES)
                 </h2>
-                <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-8 font-bold border-l-2 border-everGold pl-3">Escribe el Riot ID exacto y la etiqueta de Discord de los 5 titulares.</p>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-8 font-bold border-l-2 border-everGold pl-3">Escribe el Riot ID exacto y Discord de cada titular.</p>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="contenedor-titulares"></div>
             </div>
 
             <div class="bg-[#050507] border border-white/10 p-8 md:p-10 clip-panel shadow-[0_0_40px_rgba(255,42,63,0.05)] relative overflow-hidden">
                 <div class="absolute top-0 right-0 bg-vctRed text-white text-[8px] font-black uppercase tracking-widest px-6 py-2 origin-bottom-left transform rotate-45 translate-x-[25px] translate-y-[-15px]">OPCIONAL</div>
-                <h2 class="module-header text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4">
-                    <span class="bg-vctRed text-white px-2 py-1 text-xs">03</span> STAFF TÁCTICO Y SUPLENTES
+                <h2 class="text-xl font-black text-white uppercase tracking-[0.2em] mb-8 pb-4 flex items-center gap-4 border-b border-white/5">
+                    <span class="bg-vctRed text-white px-2 py-1 text-xs">03</span> SUPLENTES Y STAFF TÁCTICO
                 </h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-black p-4 border border-white/5 clip-input">
-                        <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-b border-white/10 pb-2">6to Jugador (Suplente)</label>
-                        <div class="flex flex-col gap-3">
-                            <input type="text" id="jugador_6" placeholder="Riot ID#TAG" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
-                            <input type="text" id="jugador_6_dc" placeholder="Discord Suplente" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
-                        </div>
+                        <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-3 block font-black">Suplente 01 (6to)</label>
+                        <input type="text" id="jugador_6" placeholder="Riot ID#TAG" class="input-vct w-full p-3 text-xs font-bold text-white mb-2">
+                        <input type="text" id="jugador_6_dc" placeholder="Discord" class="input-vct w-full p-3 text-xs font-bold text-white">
                     </div>
                     <div class="bg-black p-4 border border-white/5 clip-input">
-                        <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-b border-white/10 pb-2">Head Coach</label>
-                        <div class="flex flex-col gap-3">
-                            <input type="text" id="coach" placeholder="Nombre / Alias" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
-                            <input type="text" id="coach_dc" placeholder="Discord Coach" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
-                        </div>
+                        <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-3 block font-black">Suplente 02 (7mo)</label>
+                        <input type="text" id="jugador_7" placeholder="Riot ID#TAG" class="input-vct w-full p-3 text-xs font-bold text-white mb-2">
+                        <input type="text" id="jugador_7_dc" placeholder="Discord" class="input-vct w-full p-3 text-xs font-bold text-white">
                     </div>
                     <div class="bg-black p-4 border border-white/5 clip-input">
-                        <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-b border-white/10 pb-2">Asistente Coach</label>
-                        <div class="flex flex-col gap-3">
-                            <input type="text" id="asistente" placeholder="Nombre / Alias" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
-                            <input type="text" id="asistente_dc" placeholder="Discord Asistente" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
-                        </div>
+                        <label class="text-[9px] text-everGold uppercase tracking-[0.2em] mb-3 block font-black">Suplente 03 (8vo)</label>
+                        <input type="text" id="jugador_8" placeholder="Riot ID#TAG" class="input-vct w-full p-3 text-xs font-bold text-white mb-2">
+                        <input type="text" id="jugador_8_dc" placeholder="Discord" class="input-vct w-full p-3 text-xs font-bold text-white">
                     </div>
                     <div class="bg-black p-4 border border-white/5 clip-input">
-                        <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-4 block font-black border-b border-white/10 pb-2">Team Manager</label>
-                        <div class="flex flex-col gap-3">
-                            <input type="text" id="manager" placeholder="Nombre / Alias" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
-                            <input type="text" id="manager_dc" placeholder="Discord Manager" class="input-vct w-full p-3 text-xs font-bold text-white border-white/5">
-                        </div>
+                        <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black">Head Coach</label>
+                        <input type="text" id="coach" placeholder="Nombre / Alias" class="input-vct w-full p-3 text-xs font-bold text-white mb-2">
+                        <input type="text" id="coach_dc" placeholder="Discord Coach" class="input-vct w-full p-3 text-xs font-bold text-white">
+                    </div>
+                    <div class="bg-black p-4 border border-white/5 clip-input">
+                        <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black">Asistente Coach</label>
+                        <input type="text" id="asistente" placeholder="Nombre / Alias" class="input-vct w-full p-3 text-xs font-bold text-white mb-2">
+                        <input type="text" id="asistente_dc" placeholder="Discord Asistente" class="input-vct w-full p-3 text-xs font-bold text-white">
+                    </div>
+                    <div class="bg-black p-4 border border-white/5 clip-input">
+                        <label class="text-[9px] text-gray-400 uppercase tracking-[0.2em] mb-3 block font-black">Team Manager</label>
+                        <input type="text" id="manager" placeholder="Nombre / Alias" class="input-vct w-full p-3 text-xs font-bold text-white mb-2">
+                        <input type="text" id="manager_dc" placeholder="Discord Manager" class="input-vct w-full p-3 text-xs font-bold text-white">
                     </div>
                 </div>
             </div>
 
-            <button type="submit" id="btn-submit" class="w-full clip-input bg-vctRed text-white font-black text-lg uppercase tracking-[0.4em] py-8 hover:bg-white hover:text-vctRed transition-all duration-300 shadow-[0_0_30px_rgba(255,42,63,0.3)] relative group">
-                <span class="relative z-10" id="btn-text">ENVIAR REGISTRO AL NEXUS</span>
+            <button type="submit" id="btn-submit" class="w-full clip-input bg-vctRed text-white font-black text-lg uppercase tracking-[0.4em] py-7 hover:bg-white hover:text-vctRed transition-all duration-300 shadow-[0_0_30px_rgba(255,42,63,0.3)]">
+                <span id="btn-text">ENVIAR REGISTRO AL NEXUS</span>
             </button>
         </form>
     </div>
@@ -192,6 +182,7 @@
     </div>
 
     <script>
+        // Renderizar dinámicamente los 5 titulares
         const contTitulares = document.getElementById('contenedor-titulares');
         for(let i=1; i<=5; i++) {
             contTitulares.innerHTML += `
@@ -199,12 +190,12 @@
                     <span class="text-[10px] text-everGold font-black uppercase tracking-widest mb-4 block border-b border-white/10 pb-2">TITULAR 0${i}</span>
                     <div class="flex flex-col gap-3">
                         <div class="flex items-center">
-                            <span class="bg-[#111] text-gray-500 font-black text-xs px-3 py-3 border border-white/10 border-r-0 h-[40px] flex items-center clip-input rounded-l-none w-10 justify-center">ID</span>
-                            <input type="text" id="jugador_${i}" required placeholder="Riot ID#TAG" class="input-vct clip-input w-full p-3 h-[40px] text-xs font-bold text-white border-l-0">
+                            <span class="bg-[#111] text-gray-500 font-black text-xs px-3 h-[40px] flex items-center justify-center border border-white/10 border-r-0 w-10">ID</span>
+                            <input type="text" id="jugador_${i}" required placeholder="Riot ID#TAG" class="input-vct w-full p-3 h-[40px] text-xs font-bold text-white border-l-0">
                         </div>
                         <div class="flex items-center">
-                            <span class="bg-[#111] text-vctRed font-black text-xs px-3 py-3 border border-white/10 border-r-0 h-[40px] flex items-center clip-input rounded-l-none w-10 justify-center">DC</span>
-                            <input type="text" id="jugador_${i}_dc" required placeholder="Discord Usuario#0000" class="input-vct clip-input w-full p-3 h-[40px] text-xs font-bold text-white border-l-0">
+                            <span class="bg-[#111] text-vctRed font-black text-xs px-3 h-[40px] flex items-center justify-center border border-white/10 border-r-0 w-10">DC</span>
+                            <input type="text" id="jugador_${i}_dc" required placeholder="Discord Usuario#0000" class="input-vct w-full p-3 h-[40px] text-xs font-bold text-white border-l-0">
                         </div>
                     </div>
                 </div>`;
@@ -214,95 +205,140 @@
             const t = document.getElementById('toast');
             t.className = `fixed bottom-6 right-[-400px] z-50 bg-[#0a0a0a] border-l-4 p-4 flex items-center gap-4 transition-all duration-300 clip-input ${isError ? 'border-vctRed' : 'border-everGold'}`;
             document.getElementById('toast-title').innerText = title;
-            t.style.right = '24px'; setTimeout(() => { t.style.right = '-400px'; }, 3500);
+            t.style.right = '24px';
+            setTimeout(() => { t.style.right = '-400px'; }, 3500);
         }
 
         const dropArea = document.getElementById('drop-area');
         const fileInput = document.getElementById('file-input');
         const preview = document.getElementById('image-preview');
         const uploadContent = document.getElementById('upload-content');
-        let imageBase64 = ""; // Aquí guardaremos la imagen convertida de forma interna
+        let imageBase64 = "";
 
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropArea.addEventListener(eventName, preventDefaults, false); });
-        function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { dropArea.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false); });
         ['dragenter', 'dragover'].forEach(eventName => { dropArea.addEventListener(eventName, () => dropArea.classList.add('dragover'), false); });
         ['dragleave', 'drop'].forEach(eventName => { dropArea.addEventListener(eventName, () => dropArea.classList.remove('dragover'), false); });
 
-        dropArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files), false);
-        fileInput.addEventListener('change', (e) => handleFiles(e.target.files), false);
+        dropArea.addEventListener('drop', (e) => procesarImagen(e.dataTransfer.files[0]), false);
+        fileInput.addEventListener('change', (e) => procesarImagen(e.target.files[0]), false);
 
-        function handleFiles(files) {
-            if (files.length && files[0].type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    imageBase64 = e.target.result; // Convierte la imagen a formato interno sin APIs externas
+        // COMPRESIÓN AUTOMÁTICA EN CANVAS (Evita que el servidor y DynamoDB se congelen)
+        function procesarImagen(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showToast("Por favor, selecciona una imagen válida.", true);
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 450;
+                    const scale = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scale;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    // Comprime la imagen en JPEG a 65% de calidad (~40 KB)
+                    imageBase64 = canvas.toDataURL('image/jpeg', 0.65);
                     preview.src = imageBase64;
                     preview.classList.remove('hidden');
                     uploadContent.style.opacity = '0';
-                }
-                reader.readAsDataURL(files[0]);
-            } else {
-                showToast("Por favor, selecciona una imagen válida.", true);
-            }
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
+        // ENVÍO DE FORMULARIO
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            
-            if (!imageBase64) { showToast("Debes seleccionar un emblema (logo).", true); return; }
-            
+            e.preventDefault();
+
+            if (!imageBase64) {
+                showToast("Debes seleccionar un logo para el equipo.", true);
+                return;
+            }
+
             let rangosSeleccionados = [];
             document.querySelectorAll('.rango-cb:checked').forEach(cb => rangosSeleccionados.push(cb.value));
-            
-            if (rangosSeleccionados.length === 0) { 
-                showToast("Selecciona al menos un rango competitivo.", true); return; 
+
+            if (rangosSeleccionados.length === 0) {
+                showToast("Selecciona al menos un rango competitivo.", true);
+                return;
             }
 
-            const btnText = document.getElementById('btn-text'); 
-            btnText.innerText = "ENVIANDO AL NEXUS...";
-            
+            const btnText = document.getElementById('btn-text');
+            btnText.innerText = "REGISTRANDO EN EL NEXUS...";
+
             let jugadores = [];
-            for(let i=1; i<=5; i++) {
+
+            // 5 Titulares
+            for(let i = 1; i <= 5; i++) {
                 let id = document.getElementById(`jugador_${i}`).value.trim();
                 let dc = document.getElementById(`jugador_${i}_dc`).value.trim();
-                jugadores.push({ riot_id: id, dc: dc, role: 'TITULAR', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview` });
+                jugadores.push({
+                    riot_id: id,
+                    dc: dc,
+                    role: 'TITULAR',
+                    tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview`
+                });
             }
-            
-            let p6 = document.getElementById('jugador_6').value.trim(); let p6_dc = document.getElementById('jugador_6_dc').value.trim();
-            if(p6) jugadores.push({ riot_id: p6, dc: p6_dc, role: 'SUPLENTE', tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(p6)}/overview` });
-            
-            let coach = document.getElementById('coach').value.trim(); let coach_dc = document.getElementById('coach_dc').value.trim();
-            if(coach) jugadores.push({ riot_id: coach, dc: coach_dc, role: 'COACH', tracker_url: '#' });
-            
-            let asis = document.getElementById('asistente').value.trim(); let asis_dc = document.getElementById('asistente_dc').value.trim();
-            if(asis) jugadores.push({ riot_id: asis, dc: asis_dc, role: 'ASISTENTE COACH', tracker_url: '#' });
 
-            let manager = document.getElementById('manager').value.trim(); let manager_dc = document.getElementById('manager_dc').value.trim();
-            if(manager) jugadores.push({ riot_id: manager, dc: manager_dc, role: 'MANAGER', tracker_url: '#' });
+            // Suplentes 6, 7 y 8
+            [6, 7, 8].forEach(num => {
+                let sId = document.getElementById(`jugador_${num}`).value.trim();
+                let sDc = document.getElementById(`jugador_${num}_dc`).value.trim();
+                if (sId) {
+                    jugadores.push({
+                        riot_id: sId,
+                        dc: sDc,
+                        role: `SUPLENTE 0${num - 5}`,
+                        tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(sId)}/overview`
+                    });
+                }
+            });
+
+            // Staff
+            let coach = document.getElementById('coach').value.trim();
+            let coach_dc = document.getElementById('coach_dc').value.trim();
+            if (coach) jugadores.push({ riot_id: coach, dc: coach_dc, role: 'HEAD COACH', tracker_url: '#' });
+
+            let asis = document.getElementById('asistente').value.trim();
+            let asis_dc = document.getElementById('asistente_dc').value.trim();
+            if (asis) jugadores.push({ riot_id: asis, dc: asis_dc, role: 'ASISTENTE COACH', tracker_url: '#' });
+
+            let manager = document.getElementById('manager').value.trim();
+            let manager_dc = document.getElementById('manager_dc').value.trim();
+            if (manager) jugadores.push({ riot_id: manager, dc: manager_dc, role: 'TEAM MANAGER', tracker_url: '#' });
 
             const payload = {
-                nombre: document.getElementById('reg_nombre').value,
-                discord_capitan: document.getElementById('reg_discord').value,
-                rango: rangosSeleccionados.join(' / '), 
-                logo_url: imageBase64, // Enviamos la imagen procesada internamente
+                nombre: document.getElementById('reg_nombre').value.trim(),
+                discord_capitan: document.getElementById('reg_discord').value.trim(),
+                rango: rangosSeleccionados.join(' / '),
+                logo_url: imageBase64,
                 jugadores: jugadores
             };
 
             try {
-                const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', { 
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) 
+                const res = await fetch('https://bane-esports-web-1.onrender.com/api/equipos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
-                if(res.ok) { 
-                    showToast("¡ESCUADRA ACEPTADA! Redirigiendo...", false); 
-                    setTimeout(() => window.location.href = 'sorteo.html', 2000); 
+
+                if (res.ok) {
+                    showToast("¡ESCUADRA ACEPTADA! Redirigiendo...", false);
+                    setTimeout(() => window.location.href = 'sorteo.html', 2000);
                 } else {
                     showToast("Error en el servidor de Render", true);
                     btnText.innerText = "ENVIAR REGISTRO AL NEXUS";
                 }
-            } catch (err) { 
-                showToast("Sin conexión al Nexus", true); 
+            } catch (err) {
+                showToast("Fallo al conectar con el servidor", true);
                 btnText.innerText = "ENVIAR REGISTRO AL NEXUS";
-            } 
+            }
         });
     </script>
 </body>
