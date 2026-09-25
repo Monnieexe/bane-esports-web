@@ -15,22 +15,25 @@
         .tab-content.active { display: block; }
         .tab-btn { opacity: 0.5; transition: all 0.3s; } 
         .tab-btn.active { opacity: 1; border-bottom: 2px solid #ff2a3f; color: white; }
-        .input-admin { background: #0b0c10; border: 1px solid rgba(255,255,255,0.12); color: white; }
-        .input-admin:focus { border-color: #e5c05c; outline: none; }
+        .input-admin { background: #0b0c10; border: 1px solid rgba(255,255,255,0.12); color: white; transition: border-color 0.2s; }
+        .input-admin:focus { border-color: #e5c05c; outline: none; background: #000; }
         #toast { position: fixed; top: 20px; right: -400px; transition: right 0.35s ease; z-index: 100; }
     </style>
 </head>
 <body class="antialiased p-4 md:p-8 min-h-screen">
 
+    <!-- LISTA DESPLEGABLE AUTOMÁTICA DE EQUIPOS INSCRITOS PARA VINCULAR LOGOS -->
+    <datalist id="lista-equipos-dl"></datalist>
+
     <div class="max-w-7xl mx-auto">
         <!-- BARRA SUPERIOR -->
-        <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-5">
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-8 border-b border-white/10 pb-5">
             <div>
                 <h1 class="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">
                     <span class="text-vctRed">5</span>EVER <span class="text-gray-500">ADMIN • 24 EQUIPOS</span>
                 </h1>
-                <p class="text-[9px] text-everGold uppercase tracking-[0.3em] font-bold mt-1">
-                    📅 Formato Oficial 5 Fases • Lunes 8:00 PM CDMX
+                <p class="text-[9px] text-everGold uppercase tracking-[0.3em] font-bold mt-1 flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-vctRed rounded-full animate-ping"></span> Formato Oficial 5 Fases • Lunes 8:00 PM CDMX
                 </p>
             </div>
             <div class="flex gap-3">
@@ -73,21 +76,21 @@
             <!-- FASE 1: 4 GRUPOS DE 6 -->
             <div class="bg-[#090a0f] border border-red-500/30 p-6 mb-8">
                 <h3 class="text-sm font-black uppercase tracking-widest text-vctRed mb-1">FASE 1 • 4 GRUPOS DE 6 EQUIPOS (BO3 - Pasan 3 por grupo)</h3>
-                <p class="text-[10px] text-gray-400 mb-4">Escribe el nombre del equipo, su récord/puntos opcional (ej. 2-0) y su estado.</p>
+                <p class="text-[10px] text-gray-400 mb-4">Haz clic en cualquier casilla para elegir un equipo de la lista desplegable (así se mostrará su logo automáticamente).</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="admin-fase1"></div>
             </div>
 
             <!-- FASE 2: 2 GRUPOS DE 6 -->
             <div class="bg-[#090a0f] border border-blue-500/30 p-6 mb-8">
                 <h3 class="text-sm font-black uppercase tracking-widest text-blue-400 mb-1">FASE 2 • 2 GRUPOS DE 6 EQUIPOS (BO3 - Pasan 3 por grupo)</h3>
-                <p class="text-[10px] text-gray-400 mb-4">Aquí colocas a los 12 clasificados de la Fase 1 divididos en Grupo E y Grupo F.</p>
+                <p class="text-[10px] text-gray-400 mb-4">Coloca aquí a los 12 clasificados de la Fase 1 divididos en Grupo E y Grupo F.</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="admin-fase2"></div>
             </div>
 
             <!-- FASE 3: RANKING POR DESEMPEÑO (6 EQUIPOS) -->
             <div class="bg-[#090a0f] border border-purple-500/30 p-6 mb-8">
                 <h3 class="text-sm font-black uppercase tracking-widest text-purple-400 mb-1">FASE 3 • SELECCIÓN FINAL (RANKING POR DIFERENCIA DE RONDAS)</h3>
-                <p class="text-[10px] text-gray-400 mb-4">Ordena del 1 al 6. Los lugares 1 al 4 avanzan a Semifinales; 5 y 6 quedan eliminados.</p>
+                <p class="text-[10px] text-gray-400 mb-4">Ordena del 1 al 6. Los lugares 1 al 4 avanzan a Semifinales; los lugares 5 y 6 quedan eliminados.</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="admin-fase3"></div>
             </div>
 
@@ -99,20 +102,20 @@
                     <div class="mb-4 bg-black/50 p-4 border border-white/5">
                         <span class="text-[10px] text-everGold font-black uppercase block mb-2">SEMIFINAL 1</span>
                         <div class="grid grid-cols-12 gap-2">
-                            <input type="text" id="sf1_eq1" placeholder="Equipo 1" class="input-admin col-span-5 p-2 text-xs font-bold">
+                            <input type="text" id="sf1_eq1" list="lista-equipos-dl" placeholder="Equipo 1" class="input-admin col-span-5 p-2 text-xs font-bold">
                             <input type="text" id="sf1_s1" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
                             <input type="text" id="sf1_s2" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
-                            <input type="text" id="sf1_eq2" placeholder="Equipo 2" class="input-admin col-span-5 p-2 text-xs font-bold">
+                            <input type="text" id="sf1_eq2" list="lista-equipos-dl" placeholder="Equipo 2" class="input-admin col-span-5 p-2 text-xs font-bold">
                         </div>
                     </div>
 
                     <div class="bg-black/50 p-4 border border-white/5">
                         <span class="text-[10px] text-everGold font-black uppercase block mb-2">SEMIFINAL 2</span>
                         <div class="grid grid-cols-12 gap-2">
-                            <input type="text" id="sf2_eq1" placeholder="Equipo 3" class="input-admin col-span-5 p-2 text-xs font-bold">
+                            <input type="text" id="sf2_eq1" list="lista-equipos-dl" placeholder="Equipo 3" class="input-admin col-span-5 p-2 text-xs font-bold">
                             <input type="text" id="sf2_s1" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
                             <input type="text" id="sf2_s2" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
-                            <input type="text" id="sf2_eq2" placeholder="Equipo 4" class="input-admin col-span-5 p-2 text-xs font-bold">
+                            <input type="text" id="sf2_eq2" list="lista-equipos-dl" placeholder="Equipo 4" class="input-admin col-span-5 p-2 text-xs font-bold">
                         </div>
                     </div>
                 </div>
@@ -122,15 +125,15 @@
                     <div class="bg-black/50 p-4 border border-white/5 mb-4">
                         <span class="text-[10px] text-vctRed font-black uppercase block mb-2">DUELO FINAL BO5</span>
                         <div class="grid grid-cols-12 gap-2">
-                            <input type="text" id="fin_eq1" placeholder="Ganador SF1" class="input-admin col-span-5 p-2 text-xs font-bold">
+                            <input type="text" id="fin_eq1" list="lista-equipos-dl" placeholder="Ganador SF1" class="input-admin col-span-5 p-2 text-xs font-bold">
                             <input type="text" id="fin_s1" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
                             <input type="text" id="fin_s2" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
-                            <input type="text" id="fin_eq2" placeholder="Ganador SF2" class="input-admin col-span-5 p-2 text-xs font-bold">
+                            <input type="text" id="fin_eq2" list="lista-equipos-dl" placeholder="Ganador SF2" class="input-admin col-span-5 p-2 text-xs font-bold">
                         </div>
                     </div>
                     <div class="bg-black/50 p-4 border border-everGold/30">
                         <label class="text-[10px] text-everGold font-black uppercase block mb-2">🏆 NOMBRE DEL EQUIPO CAMPEÓN</label>
-                        <input type="text" id="fin_campeon" placeholder="CAMPEÓN" class="input-admin w-full p-3 text-sm font-black text-everGold">
+                        <input type="text" id="fin_campeon" list="lista-equipos-dl" placeholder="CAMPEÓN" class="input-admin w-full p-3 text-sm font-black text-everGold">
                     </div>
                 </div>
             </div>
@@ -224,6 +227,13 @@
                 const res = await fetch(`${API_URL}/equipos`);
                 listaEquipos = await res.json();
                 document.getElementById('contador-equipos').innerText = `${listaEquipos.length} EN SISTEMA`;
+                
+                // Llenar el autocompletado para que las casillas del bracket sugieran los nombres exactos
+                const dl = document.getElementById('lista-equipos-dl');
+                if (dl) {
+                    dl.innerHTML = listaEquipos.map(e => `<option value="${e.nombre.replace(/"/g, '&quot;')}">`).join('');
+                }
+
                 const lista = document.getElementById('lista-equipos-admin');
                 lista.innerHTML = '';
 
@@ -237,17 +247,22 @@
                         rosterHtml += `</div>`;
                     }
 
+                    const logoThumb = eq.logo_url 
+                        ? `<img src="${eq.logo_url}" class="w-10 h-10 object-contain bg-black p-1 border border-white/10 shrink-0">`
+                        : `<div class="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center text-xs font-black text-gray-500 shrink-0">?</div>`;
+
                     lista.innerHTML += `
                         <div class="bg-[#050507] border border-white/10 p-4 flex flex-col hover:border-white/25 transition-colors">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-4 cursor-pointer flex-1" onclick="document.getElementById('admin-roster-${idx}').classList.toggle('hidden')">
-                                    <div>
-                                        <span class="text-sm font-black text-white uppercase tracking-wider">${idx + 1}. ${eq.nombre}</span>
-                                        <span class="text-[9px] text-everGold block uppercase font-bold">Capitán: ${eq.discord || '-'} | Rangos: ${eq.rango || '-'}</span>
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3.5 cursor-pointer flex-1 truncate" onclick="document.getElementById('admin-roster-${idx}').classList.toggle('hidden')">
+                                    ${logoThumb}
+                                    <div class="truncate">
+                                        <span class="text-sm font-black text-white uppercase tracking-wider block truncate">${idx + 1}. ${eq.nombre}</span>
+                                        <span class="text-[9px] text-everGold block uppercase font-bold truncate">Capitán: ${eq.discord || '-'} | Rangos: ${eq.rango || '-'}</span>
                                     </div>
-                                    <span class="text-[9px] text-everGold border border-white/10 px-2 py-1 font-bold">ROSTER ▼</span>
+                                    <span class="text-[9px] text-everGold border border-white/10 px-2 py-1 font-bold shrink-0">ROSTER ▼</span>
                                 </div>
-                                <div class="flex gap-4 items-center">
+                                <div class="flex gap-4 items-center shrink-0">
                                     <button onclick='abrirModalEdicion(${JSON.stringify(eq).replace(/'/g, "&apos;")})' class="text-everGold hover:text-white text-xs font-black uppercase">✎ EDITAR</button>
                                     <button onclick="borrarEquipoInscrito('${eq.id}')" class="text-gray-500 hover:text-vctRed text-xs font-black uppercase">X PURGAR</button>
                                 </div>
@@ -264,10 +279,10 @@
             (equipoActualizando.jugadores || []).forEach(j => {
                 rosterInputsHTML += `
                     <div class="roster-row flex flex-col sm:flex-row items-center gap-2 mb-2 bg-[#111] p-2.5 border border-white/5">
-                        <input type="text" class="edit_role bg-black text-everGold p-2 text-xs w-full sm:w-32 border border-white/10 font-bold uppercase" value="${j.role || ''}">
-                        <input type="text" class="edit_id bg-black text-white p-2 text-xs flex-1 w-full border border-white/10 font-bold" value="${j.riot_id || ''}">
-                        <input type="text" class="edit_dc bg-black text-white p-2 text-xs w-full sm:w-36 border border-white/10 font-bold" value="${j.dc || ''}">
-                        <button onclick="this.parentElement.remove()" class="text-gray-500 hover:text-vctRed font-black px-2">X</button>
+                        <input type="text" class="edit_role bg-black text-everGold p-2 text-xs w-full sm:w-32 border border-white/10 font-bold uppercase" value="${j.role || ''}" placeholder="Rol">
+                        <input type="text" class="edit_id bg-black text-white p-2 text-xs flex-1 w-full border border-white/10 font-bold" value="${j.riot_id || ''}" placeholder="Riot ID#TAG">
+                        <input type="text" class="edit_dc bg-black text-white p-2 text-xs w-full sm:w-36 border border-white/10 font-bold" value="${j.dc || ''}" placeholder="Discord">
+                        <button onclick="this.parentElement.remove()" class="text-gray-500 hover:text-vctRed font-black px-2" title="Eliminar jugador">X</button>
                     </div>`;
             });
 
@@ -278,18 +293,27 @@
                 <div class="bg-[#07080c] border border-white/15 p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
                     <h3 class="text-vctRed font-black uppercase text-lg mb-4">Modificar Escuadra</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                        <input type="text" id="edit_nombre" value="${equipoActualizando.nombre}" class="input-admin p-2.5 text-xs font-bold" placeholder="Nombre">
-                        <input type="text" id="edit_capitan" value="${equipoActualizando.discord || ''}" class="input-admin p-2.5 text-xs font-bold" placeholder="Discord Capitán">
-                        <input type="text" id="edit_rango" value="${equipoActualizando.rango || ''}" class="input-admin p-2.5 text-xs font-bold" placeholder="Rangos">
+                        <div>
+                            <label class="text-[9px] text-gray-400 uppercase font-black block mb-1">Nombre del Equipo</label>
+                            <input type="text" id="edit_nombre" value="${equipoActualizando.nombre}" class="input-admin w-full p-2.5 text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="text-[9px] text-gray-400 uppercase font-black block mb-1">Discord Capitán</label>
+                            <input type="text" id="edit_capitan" value="${equipoActualizando.discord || ''}" class="input-admin w-full p-2.5 text-xs font-bold">
+                        </div>
+                        <div>
+                            <label class="text-[9px] text-gray-400 uppercase font-black block mb-1">Rangos</label>
+                            <input type="text" id="edit_rango" value="${equipoActualizando.rango || ''}" class="input-admin w-full p-2.5 text-xs font-bold">
+                        </div>
                     </div>
                     <div class="flex justify-between items-center mb-3">
-                        <h4 class="text-everGold text-xs font-black uppercase">Integrantes</h4>
-                        <button onclick="agregarFilaJugador()" class="text-[9px] bg-everGold text-black font-black px-3 py-1.5 uppercase">+ Añadir Suplente / Jugador</button>
+                        <h4 class="text-everGold text-xs font-black uppercase">Integrantes del Roster</h4>
+                        <button onclick="agregarFilaJugador()" class="text-[9px] bg-everGold text-black font-black px-3 py-1.5 uppercase hover:bg-white transition-colors">+ Añadir Suplente / Jugador</button>
                     </div>
                     <div id="contenedor-edicion-roster">${rosterInputsHTML}</div>
                     <div class="flex justify-end gap-4 mt-6 pt-4 border-t border-white/10">
-                        <button onclick="document.getElementById('modal-edicion').remove()" class="text-gray-400 text-xs font-bold uppercase px-4 py-2">Cancelar</button>
-                        <button onclick="guardarEdicionEquipo()" class="bg-vctRed text-white font-black text-xs uppercase px-6 py-2.5">Guardar Cambios</button>
+                        <button onclick="document.getElementById('modal-edicion').remove()" class="text-gray-400 hover:text-white text-xs font-bold uppercase px-4 py-2">Cancelar</button>
+                        <button onclick="guardarEdicionEquipo()" class="bg-vctRed hover:bg-white text-white hover:text-black font-black text-xs uppercase px-6 py-2.5 transition-colors">Guardar Cambios</button>
                     </div>
                 </div>`;
             document.body.appendChild(modal);
@@ -300,10 +324,10 @@
             const row = document.createElement('div');
             row.className = 'roster-row flex flex-col sm:flex-row items-center gap-2 mb-2 bg-[#111] p-2.5 border border-white/5';
             row.innerHTML = `
-                <input type="text" class="edit_role bg-black text-everGold p-2 text-xs w-full sm:w-32 border border-white/10 font-bold uppercase" value="SUPLENTE">
+                <input type="text" class="edit_role bg-black text-everGold p-2 text-xs w-full sm:w-32 border border-white/10 font-bold uppercase" value="SUPLENTE" placeholder="Rol">
                 <input type="text" class="edit_id bg-black text-white p-2 text-xs flex-1 w-full border border-white/10 font-bold" placeholder="Riot ID#TAG">
                 <input type="text" class="edit_dc bg-black text-white p-2 text-xs w-full sm:w-36 border border-white/10 font-bold" placeholder="Discord">
-                <button onclick="this.parentElement.remove()" class="text-gray-500 hover:text-vctRed font-black px-2">X</button>`;
+                <button onclick="this.parentElement.remove()" class="text-gray-500 hover:text-vctRed font-black px-2" title="Eliminar jugador">X</button>`;
             container.appendChild(row);
         }
 
@@ -329,11 +353,17 @@
             });
             equipoActualizando.jugadores = nuevos;
 
-            const res = await fetch(`${API_URL}/equipos`, { method: 'PUT', headers: getAuthHeaders(), body: JSON.stringify(equipoActualizando) });
-            if (res.ok) {
-                showToast("Roster actualizado");
-                document.getElementById('modal-edicion').remove();
-                cargarEquiposInscritos();
+            try {
+                const res = await fetch(`${API_URL}/equipos`, { method: 'PUT', headers: getAuthHeaders(), body: JSON.stringify(equipoActualizando) });
+                if (res.ok) {
+                    showToast("Roster actualizado correctamente");
+                    document.getElementById('modal-edicion').remove();
+                    cargarEquiposInscritos();
+                } else {
+                    showToast("Error al actualizar", true);
+                }
+            } catch (e) {
+                showToast("Error de conexión", true);
             }
         }
 
@@ -373,7 +403,7 @@
             slots.forEach((s, idx) => {
                 filas += `
                     <div class="grid grid-cols-12 gap-1 mb-1.5">
-                        <input type="text" id="${faseKey}_${letra}_nom_${idx}" value="${s.nombre}" class="input-admin col-span-6 p-1.5 text-[11px] font-bold" placeholder="Equipo">
+                        <input type="text" id="${faseKey}_${letra}_nom_${idx}" list="lista-equipos-dl" value="${s.nombre}" class="input-admin col-span-6 p-1.5 text-[11px] font-bold" placeholder="Equipo">
                         <input type="text" id="${faseKey}_${letra}_ext_${idx}" value="${s.extra || ''}" class="input-admin col-span-3 p-1.5 text-[10px] text-center text-everGold font-bold" placeholder="Pts/RD">
                         <select id="${faseKey}_${letra}_est_${idx}" class="input-admin col-span-3 p-1 text-[9px] font-bold">
                             <option value="normal" ${s.estado === 'normal' ? 'selected' : ''}>Normal</option>
@@ -390,11 +420,11 @@
         }
 
         function renderFormularioTablero() {
-            // Fase 1: A, B, C, D
+            // Fase 1: Grupos A, B, C, D
             const f1 = document.getElementById('admin-fase1');
             f1.innerHTML = ['A', 'B', 'C', 'D'].map(g => renderEditorGrupo('f1', g, boardData.fase1[g])).join('');
 
-            // Fase 2: E, F
+            // Fase 2: Grupos E, F
             const f2 = document.getElementById('admin-fase2');
             f2.innerHTML = ['E', 'F'].map(g => renderEditorGrupo('f2', g, boardData.fase2[g])).join('');
 
@@ -403,12 +433,12 @@
             f3.innerHTML = boardData.fase3.map((r, i) => `
                 <div class="flex items-center gap-2 bg-black/60 p-2.5 border ${i >= 4 ? 'border-red-500/40' : 'border-emerald-500/40'}">
                     <span class="w-6 h-6 flex items-center justify-center font-black text-xs ${i >= 4 ? 'bg-red-600' : 'bg-emerald-600'}">${i + 1}</span>
-                    <input type="text" id="f3_nom_${i}" value="${r.nombre}" class="input-admin flex-1 p-2 text-xs font-bold" placeholder="Nombre Equipo">
+                    <input type="text" id="f3_nom_${i}" list="lista-equipos-dl" value="${r.nombre}" class="input-admin flex-1 p-2 text-xs font-bold" placeholder="Nombre Equipo">
                     <input type="text" id="f3_rd_${i}" value="${r.rd || ''}" class="input-admin w-32 p-2 text-xs font-bold text-center" placeholder="Ej: +14 o (ELIMINADO)">
                 </div>
             `).join('');
 
-            // Fase 4 y Final
+            // Fase 4 y Gran Final
             document.getElementById('sf1_eq1').value = boardData.fase4.sf1.eq1;
             document.getElementById('sf1_eq2').value = boardData.fase4.sf1.eq2;
             document.getElementById('sf1_s1').value = boardData.fase4.sf1.score1;
@@ -482,7 +512,6 @@
             const letras = ['A', 'B', 'C', 'D'];
             let nombres = eqs.map(e => e.nombre);
 
-            // Mezclar con Fisher-Yates
             for (let i = nombres.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [nombres[i], nombres[j]] = [nombres[j], nombres[i]];
