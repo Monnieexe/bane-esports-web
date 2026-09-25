@@ -9,14 +9,10 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        vctRed: '#ff2a3f',
-                        everGold: '#e5c05c',
-                        bgDark: '#050507'
-                    }
+                    colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#050507' }
                 }
             }
-        }
+        };
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -45,19 +41,332 @@
         }
         .duel-card:hover {
             border-color: #ff2a3f;
-            background: rgba(255, 42, 63, 0.08);
+            background: rgba(255, 42, 63, 0.09);
             transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(255, 42, 63, 0.15);
-        }
-        .match-box { transition: all 0.25s ease; }
-        .match-box:hover {
-            border-color: #ff2a3f !important;
-            box-shadow: 0 0 25px rgba(255, 42, 63, 0.2);
-            transform: translateY(-2px);
         }
         .slot-qualified { border-left: 3px solid #22c55e !important; background: rgba(34, 197, 94, 0.08) !important; }
         .slot-eliminated { border-left: 3px solid #ef4444 !important; background: rgba(239, 68, 68, 0.08) !important; opacity: 0.55; }
     </style>
+
+    <!-- LÓGICA PRINCIPAL EN EL HEAD PARA QUE NUNCA SE CORTE AL COPIAR -->
+    <script>
+        const API_URL = 'https://bane-esports-web-1.onrender.com/api';
+        let equiposDB = [];
+
+        let datosTorneo = {
+            version: '24_grupos_v1',
+            fase1: {
+                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+            },
+            fase2: {
+                E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+            },
+            fase3: [
+                { pos: 1, nombre: 'Equipo', rd: '', eliminado: false },
+                { pos: 2, nombre: 'Equipo', rd: '', eliminado: false },
+                { pos: 3, nombre: 'Equipo', rd: '', eliminado: false },
+                { pos: 4, nombre: 'Equipo', rd: '', eliminado: false },
+                { pos: 5, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true },
+                { pos: 6, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true }
+            ],
+            fase4: {
+                sf1: { eq1: 'Equipo 1', eq2: 'Equipo 2', score1: '', score2: '' },
+                sf2: { eq1: 'Equipo 3', eq2: 'Equipo 4', score1: '', score2: '' }
+            },
+            final: { eq1: 'Ganador SF1', eq2: 'Ganador SF2', score1: '', score2: '', campeon: 'CAMPEÓN' }
+        };
+
+        function enc(s) { return encodeURIComponent(String(s || '')); }
+        function dec(s) { try { return decodeURIComponent(String(s || '')); } catch (e) { return String(s || ''); } }
+        function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, ''); }
+
+        function buscarEq(nombre) {
+            const n = norm(nombre);
+            if (!n || /^[a-f][1-6]$/.test(n) || n.startsWith('equipo') || n.startsWith('ganador') || n === 'campeon') return null;
+            return equiposDB.find(e => norm(e.nombre) === n)
+                || equiposDB.find(e => { const en = norm(e.nombre); return en && (en.includes(n) || n.includes(en)); })
+                || null;
+        }
+
+        function iconoEquipo(nombre, size = 'w-6 h-6') {
+            const eq = buscarEq(nombre);
+            if (eq && eq.logo_url) {
+                return `<img src="${eq.logo_url}" class="${size} object-contain bg-black p-0.5 rounded border border-white/25 shrink-0">`;
+            }
+            const ini = String(nombre || '?').substring(0, 2).toUpperCase();
+            return `<div class="${size} bg-white/5 border border-white/15 rounded flex items-center justify-center text-[8px] font-black text-everGold shrink-0">${ini}</div>`;
+        }
+
+        function crearGrupoConVS(letra, slots, colorHeader) {
+            const arr = slots || [];
+            let htmlDuelos = '';
+            for (let i = 0; i < arr.length; i += 2) {
+                const s1 = arr[i] || { nombre: `${letra}${i+1}`, extra: '', estado: 'normal' };
+                const s2 = arr[i+1] || { nombre: `${letra}${i+2}`, extra: '', estado: 'normal' };
+                const c1 = s1.estado === 'clasificado' ? 'slot-qualified' : (s1.estado === 'eliminado' ? 'slot-eliminated' : '');
+                const c2 = s2.estado === 'clasificado' ? 'slot-qualified' : (s2.estado === 'eliminado' ? 'slot-eliminated' : '');
+
+                htmlDuelos += `
+                    <div data-vs1="${enc(s1.nombre)}" data-vs2="${enc(s2.nombre)}" data-vstitle="${enc('GRUPO ' + letra + ' • BO3')}"
+                         class="btn-vs duel-card rounded-md p-2 cursor-pointer">
+                        <div class="flex items-center justify-between gap-1.5 px-1 py-1 rounded ${c1} pointer-events-none">
+                            <div class="flex items-center gap-2 truncate">
+                                ${iconoEquipo(s1.nombre, 'w-6 h-6')}
+                                <span class="text-[11px] font-bold text-white truncate">${s1.nombre}</span>
+                            </div>
+                            ${s1.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${s1.extra}</span>` : ''}
+                        </div>
+                        <div class="flex items-center gap-1.5 my-1 pointer-events-none">
+                            <div class="h-[1px] bg-white/10 flex-1"></div>
+                            <span class="text-[8px] font-black text-white bg-vctRed px-2 py-0.5 rounded tracking-widest">VS</span>
+                            <div class="h-[1px] bg-white/10 flex-1"></div>
+                        </div>
+                        <div class="flex items-center justify-between gap-1.5 px-1 py-1 rounded ${c2} pointer-events-none">
+                            <div class="flex items-center gap-2 truncate">
+                                ${iconoEquipo(s2.nombre, 'w-6 h-6')}
+                                <span class="text-[11px] font-bold text-white truncate">${s2.nombre}</span>
+                            </div>
+                            ${s2.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${s2.extra}</span>` : ''}
+                        </div>
+                    </div>`;
+            }
+            return `
+                <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden flex flex-col">
+                    <div class="${colorHeader} py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase text-white">
+                        <span>GRUPO ${letra}</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">DUELOS VS</span>
+                    </div>
+                    <div class="p-2 flex flex-col gap-2">${htmlDuelos}</div>
+                </div>`;
+        }
+
+        function pintarTodo() {
+            const f1 = document.getElementById('col-fase1-grupos');
+            if (f1) f1.innerHTML = ['A','B','C','D'].map(g => crearGrupoConVS(g, datosTorneo.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600')).join('');
+
+            const f2 = document.getElementById('col-fase2-grupos');
+            if (f2) f2.innerHTML = ['E','F'].map(g => crearGrupoConVS(g, datosTorneo.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600')).join('');
+
+            const f3 = document.getElementById('col-fase3-ranking');
+            if (f3) {
+                f3.innerHTML = (datosTorneo.fase3 || []).map((r, i) => {
+                    const elim = i >= 4 || r.eliminado;
+                    return `
+                        <div data-vs1="${enc(r.nombre)}" data-vs2="" data-vstitle="${enc('FASE 3 • RANKING')}"
+                             class="btn-vs flex items-center gap-2.5 p-1.5 rounded border ${elim ? 'border-red-500/30 bg-red-950/10' : 'border-emerald-500/30 bg-emerald-950/10'} cursor-pointer hover:border-white/40">
+                            <div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs text-white ${elim ? 'bg-red-600' : 'bg-emerald-600'} shrink-0 pointer-events-none">${i + 1}</div>
+                            <div class="flex items-center gap-2 flex-1 truncate pointer-events-none">
+                                ${iconoEquipo(r.nombre, 'w-6 h-6')}
+                                <span class="text-xs font-bold ${elim ? 'text-gray-400' : 'text-white'} truncate">${r.nombre}</span>
+                            </div>
+                            <span class="text-[9px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} uppercase pr-1 shrink-0 pointer-events-none">${r.rd || (elim ? '(ELIMINADO)' : '')}</span>
+                        </div>`;
+                }).join('');
+            }
+
+            const crearCardPlayoff = (titulo, m) => `
+                <div data-vs1="${enc(m.eq1)}" data-vs2="${enc(m.eq2)}" data-vstitle="${enc(titulo + ' • BO5')}" data-s1="${enc(m.score1)}" data-s2="${enc(m.score2)}"
+                     class="btn-vs duel-card bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6 cursor-pointer">
+                    <div class="flex justify-between items-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10 pointer-events-none">
+                        <span>${titulo}</span><span class="text-[8px] bg-everGold/15 px-1.5 py-0.5 rounded">VER VS ⚔️</span>
+                    </div>
+                    <div class="flex justify-between items-center gap-2 p-1.5 pointer-events-none">
+                        <div class="flex items-center gap-2 truncate">${iconoEquipo(m.eq1, 'w-6 h-6')}<span class="text-xs font-bold text-white truncate">${m.eq1}</span></div>
+                        <span class="text-xs font-black text-everGold">${m.score1 || '-'}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 my-1 pointer-events-none">
+                        <div class="h-[1px] bg-white/10 flex-1"></div>
+                        <span class="text-[8px] font-black text-white bg-vctRed px-2 py-0.5 rounded">VS</span>
+                        <div class="h-[1px] bg-white/10 flex-1"></div>
+                    </div>
+                    <div class="flex justify-between items-center gap-2 p-1.5 pointer-events-none">
+                        <div class="flex items-center gap-2 truncate">${iconoEquipo(m.eq2, 'w-6 h-6')}<span class="text-xs font-bold text-white truncate">${m.eq2}</span></div>
+                        <span class="text-xs font-black text-everGold">${m.score2 || '-'}</span>
+                    </div>
+                </div>`;
+
+            const f4 = document.getElementById('col-fase4-semis');
+            if (f4) f4.innerHTML = crearCardPlayoff('SEMIFINAL 1', datosTorneo.fase4.sf1) + crearCardPlayoff('SEMIFINAL 2', datosTorneo.fase4.sf2);
+
+            const f5 = document.getElementById('col-fase5-final');
+            if (f5) f5.innerHTML = crearCardPlayoff('GRAN FINAL', datosTorneo.final);
+
+            const campBox = document.getElementById('col-fase5-campeon');
+            if (campBox) {
+                const eqC = buscarEq(datosTorneo.final.campeon);
+                campBox.innerHTML = `
+                    <div data-vs1="${enc(datosTorneo.final.campeon)}" data-vs2="" data-vstitle="${enc('CAMPEÓN 5EVER')}" class="btn-vs cursor-pointer">
+                        <div class="text-4xl mb-2 pointer-events-none">🏆</div>
+                        ${eqC && eqC.logo_url ? `<img src="${eqC.logo_url}" class="w-16 h-16 mx-auto mb-2 object-contain bg-black p-1.5 rounded border border-everGold pointer-events-none">` : ''}
+                        <span class="text-[9px] text-everGold font-black uppercase tracking-[0.3em] block pointer-events-none">VICTORIA SUPREMA</span>
+                        <h3 class="text-base font-black uppercase tracking-wider text-white mt-1 truncate pointer-events-none">${datosTorneo.final.campeon || 'CAMPEÓN'}</h3>
+                    </div>`;
+            }
+
+            pintarGaleriaEquipos('');
+        }
+
+        function pintarGaleriaEquipos(filtro = '') {
+            const grid = document.getElementById('grid-equipos');
+            if (!grid) return;
+            const base = equiposDB.length > 0 ? equiposDB : [
+                ...datosTorneo.fase1.A, ...datosTorneo.fase1.B, ...datosTorneo.fase1.C, ...datosTorneo.fase1.D
+            ].map(s => ({ nombre: s.nombre, rango: 'Escuadra Confirmada', logo_url: '', jugadores: [] }));
+
+            const q = String(filtro || '').toLowerCase().trim();
+            const filtrados = base.filter(eq => {
+                if (!eq || !eq.nombre) return false;
+                const nom = String(eq.nombre).toLowerCase();
+                const jug = Array.isArray(eq.jugadores) && eq.jugadores.some(j => j && String(j.riot_id || '').toLowerCase().includes(q));
+                return !q || nom.includes(q) || jug;
+            });
+
+            grid.innerHTML = filtrados.map((eq, idx) => {
+                const n1 = eq.nombre;
+                const par = idx % 2 === 0 ? idx + 1 : idx - 1;
+                const n2 = filtrados[par] ? filtrados[par].nombre : (filtrados[0] ? filtrados[0].nombre : '');
+                return `
+                    <div data-vs1="${enc(n1)}" data-vs2="${enc(n2)}" data-vstitle="${enc('CARA A CARA • ESCUADRAS')}"
+                         class="btn-vs bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer transition-all flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3.5 truncate pointer-events-none">
+                            ${iconoEquipo(n1, 'w-12 h-12')}
+                            <div class="truncate">
+                                <span class="text-[8px] text-everGold font-black uppercase tracking-widest block">ESCUADRA #${idx + 1}</span>
+                                <h3 class="text-sm font-black text-white uppercase truncate">${n1}</h3>
+                                <span class="text-[9px] text-gray-400 uppercase font-bold block truncate">${eq.rango || 'Rango Oficial'}</span>
+                            </div>
+                        </div>
+                        <span class="text-[10px] text-vctRed font-black shrink-0 pointer-events-none">VS ➔</span>
+                    </div>`;
+            }).join('');
+        }
+
+        function abrirModalVS(n1, n2, titulo, s1 = '', s2 = '') {
+            const eq1 = buscarEq(n1);
+            const eq2 = buscarEq(n2);
+            const nombres = equiposDB.length > 0 ? equiposDB.map(e => e.nombre) : [...datosTorneo.fase1.A, ...datosTorneo.fase1.B, ...datosTorneo.fase1.C, ...datosTorneo.fase1.D].map(s => s.nombre);
+
+            let opts = `<option value="">-- Cambiar rival para comparar VS --</option>`;
+            nombres.forEach(nom => {
+                const sel = (n2 && norm(nom) === norm(n2)) ? 'selected' : '';
+                opts += `<option value="${enc(nom)}" ${sel}>${nom}</option>`;
+            });
+
+            const renderLado = (nomTxt, eqObj, colorBorde) => {
+                if (!eqObj) {
+                    return `
+                        <div class="bg-[#0c0e16] border border-white/10 rounded-lg p-5 text-center flex flex-col items-center justify-center min-h-[220px]">
+                            <div class="w-16 h-16 rounded bg-white/5 border border-white/10 flex items-center justify-center text-xl font-black text-everGold mb-3">${String(nomTxt || '?').substring(0, 2).toUpperCase()}</div>
+                            <h4 class="text-base font-black uppercase text-white">${nomTxt || 'POR DEFINIR'}</h4>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Cargando roster del servidor...</p>
+                        </div>`;
+                }
+                const jugHtml = (eqObj.jugadores || []).map(j => `
+                    <div class="bg-[#121520] border-l-2 ${colorBorde} p-2.5 rounded-r flex justify-between items-center gap-2 mb-2">
+                        <div class="truncate">
+                            <span class="text-[8px] text-everGold font-black uppercase block">${j.role || 'TITULAR'}</span>
+                            <span class="text-xs font-black text-white truncate block">${j.riot_id || ''}</span>
+                        </div>
+                        <a href="${j.tracker_url || '#'}" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded shrink-0">TRACKER ↗</a>
+                    </div>`).join('');
+
+                return `
+                    <div class="bg-[#0c0e16] border border-white/15 rounded-lg p-5">
+                        <div class="flex items-center gap-4 mb-4 pb-3 border-b border-white/10">
+                            ${eqObj.logo_url ? `<img src="${eqObj.logo_url}" class="w-16 h-16 object-contain bg-black p-1 rounded border border-white/20 shrink-0">` : ''}
+                            <div class="truncate">
+                                <span class="text-[9px] text-everGold font-black uppercase block">${eqObj.rango || 'Rango Oficial'}</span>
+                                <h4 class="text-lg font-black uppercase text-white truncate">${eqObj.nombre}</h4>
+                                <span class="text-[9px] text-gray-400 font-bold uppercase block">Capitán: ${eqObj.discord || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <div class="max-h-[260px] overflow-y-auto pr-1">${jugHtml}</div>
+                    </div>`;
+            };
+
+            document.getElementById('modal-vs-content').innerHTML = `
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6 pb-4 border-b border-white/10 pr-8">
+                    <div>
+                        <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">${titulo}</span>
+                        <h3 class="text-xl font-black uppercase text-white">⚔️ ${n1} <span class="text-vctRed mx-1">VS</span> ${n2 || 'RIVAL'}</h3>
+                    </div>
+                    <select id="sel-rival-vs" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-64 outline-none">${opts}</select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
+                    <div class="md:col-span-5">${renderLado(n1, eq1, 'border-vctRed')}</div>
+                    <div class="md:col-span-1 flex flex-col items-center justify-center">
+                        <div class="w-12 h-12 rounded-full bg-vctRed border-2 border-white flex items-center justify-center font-black text-xs text-white shadow-lg">VS</div>
+                        ${(s1 || s2) ? `<div class="mt-2 bg-black border border-white/15 px-2.5 py-1 rounded text-xs font-black text-everGold">${s1\vert{}\vert{}0}:${s2||0}</div>` : ''}
+                    </div>
+                    <div class="md:col-span-5">${renderLado(n2, eq2, 'border-everGold')}</div>
+                </div>`;
+
+            document.getElementById('sel-rival-vs').onchange = function() {
+                abrirModalVS(n1, dec(this.value), titulo, s1, s2);
+            };
+            document.getElementById('modal-vs').classList.remove('hidden');
+        }
+
+        async function conectarConRender() {
+            const badge = document.getElementById('estado-servidor');
+            try {
+                const resNot = await fetch(`${API_URL}/noticias`);
+                if (resNot.ok) {
+                    const noticias = await resNot.json();
+                    if (Array.isArray(noticias)) {
+                        noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+                        const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
+                        if (bd && bd.descripcion) {
+                            const parsed = JSON.parse(bd.descripcion);
+                            if (parsed && parsed.version === '24_grupos_v1') {
+                                datosTorneo = parsed;
+                                pintarTodo();
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+
+            try {
+                const resEq = await fetch(`${API_URL}/equipos`);
+                if (!resEq.ok) throw new Error('Render despertando');
+                const data = await resEq.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    equiposDB = data.filter(Boolean);
+                    document.getElementById('cupo-contador').innerText = `${equiposDB.length} / 24 EQUIPOS`;
+                    badge.innerText = `✔ ${equiposDB.length} FOTOS Y ROSTERS CONECTADOS`;
+                    badge.className = 'text-[10px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-950/40 border border-emerald-500/40 px-3 py-1 rounded';
+                    pintarTodo();
+                }
+            } catch (e) {
+                badge.innerText = `⏳ Despertando servidor para cargar fotos...`;
+                setTimeout(conectarConRender, 4000);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            pintarTodo();
+            conectarConRender();
+
+            document.addEventListener('click', (e) => {
+                const btn = e.target.closest('.btn-vs');
+                if (!btn) return;
+                abrirModalVS(
+                    dec(btn.getAttribute('data-vs1')),
+                    dec(btn.getAttribute('data-vs2')),
+                    dec(btn.getAttribute('data-vstitle')),
+                    dec(btn.getAttribute('data-s1')),
+                    dec(btn.getAttribute('data-s2'))
+                );
+            });
+
+            const buscador = document.getElementById('buscador-equipos');
+            if (buscador) buscador.addEventListener('input', (e) => pintarGaleriaEquipos(e.target.value));
+        });
+    </script>
 </head>
 <body class="antialiased min-h-screen pb-20">
 
@@ -67,22 +376,17 @@
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 bg-vctRed/10 border border-vctRed flex items-center justify-center font-black text-vctRed text-xl">V</div>
                 <div>
-                    <div class="flex items-center gap-3">
-                        <h1 class="text-xl md:text-2xl font-black uppercase tracking-wider leading-none">
-                            VALORANT TOURNAMENT <span class="text-vctRed">24 EQUIPOS</span>
-                        </h1>
-                        <span class="bg-emerald-500/20 border border-emerald-500 text-emerald-400 text-[9px] font-black px-2 py-0.5 rounded">LOGOS + VS ACTIVO</span>
-                    </div>
+                    <h1 class="text-xl md:text-2xl font-black uppercase tracking-wider leading-none">
+                        VALORANT TOURNAMENT <span class="text-vctRed">24 EQUIPOS</span>
+                    </h1>
                     <p class="text-[10px] text-everGold font-black uppercase tracking-[0.25em] mt-1">
                         📅 CADA LUNES • 8:00 PM (HORA CENTRO DE MÉXICO)
                     </p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <a href="registro-torneo.html" class="bg-vctRed hover:bg-white text-white hover:text-black font-black text-[10px] uppercase tracking-[0.2em] px-5 py-3 transition-all clip-card">
-                    + INSCRIBIR EQUIPO
-                </a>
-            </div>
+            <a href="registro-torneo.html" class="bg-vctRed hover:bg-white text-white hover:text-black font-black text-[10px] uppercase tracking-[0.2em] px-5 py-3 transition-all clip-card">
+                + INSCRIBIR EQUIPO
+            </a>
         </div>
     </header>
 
@@ -90,33 +394,29 @@
 
         <div class="mb-4 flex flex-wrap justify-between items-center gap-2">
             <span class="text-[10px] text-gray-300 font-bold uppercase tracking-[0.2em] bg-white/5 border border-white/10 px-3 py-1.5 rounded">
-                ⚔️ Haz clic en cualquier enfrentamiento <b class="text-vctRed">VS</b> para abrir el <b class="text-everGold">CARA A CARA</b> con logos y rosters
+                ⚔️ Haz clic en cualquier duelo <b class="text-vctRed">VS</b> para abrir el <b class="text-everGold">CARA A CARA</b> con fotos y rosters
             </span>
             <span id="estado-servidor" class="text-[10px] text-everGold font-black uppercase tracking-widest bg-everGold/10 border border-everGold/30 px-3 py-1 rounded">
-                ⚡ Descargando fotos de los equipos...
+                ⚡ Cargando fotos de los equipos...
             </span>
         </div>
 
-        <!-- TABLERO DE LAS 5 FASES CON DUELOS VS Y LOGOS -->
+        <!-- TABLERO DE LAS 5 FASES -->
         <div class="board-scroll overflow-x-auto pb-4">
             <div class="flex items-stretch gap-4 min-w-[1480px]" id="tournament-board">
 
-                <!-- COLUMNA 1: FASE 1 (24 EQUIPOS) -->
+                <!-- FASE 1 -->
                 <div class="phase-col w-[410px] shrink-0 p-4 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-3">
-                            <h2 class="text-lg font-black uppercase tracking-wider text-white">FASE 1</h2>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">FASE DE GRUPOS</p>
-                            <p class="text-xs font-black uppercase tracking-wider text-white">24 EQUIPOS</p>
+                            <h2 class="text-lg font-black uppercase text-white">FASE 1</h2>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">FASE DE GRUPOS • 24 EQUIPOS</p>
                         </div>
                         <div class="bg-gradient-to-r from-red-900/80 via-red-700/80 to-red-900/80 border border-red-500/40 rounded p-2 text-center mb-4">
-                            <div class="flex justify-center items-center gap-2 text-[10px] font-black uppercase tracking-wider">
-                                <span>4 GRUPOS DE 6</span>
-                                <span class="bg-black/50 px-2 py-0.5 rounded text-red-200">BO3</span>
+                            <div class="flex justify-center items-center gap-2 text-[10px] font-black uppercase">
+                                <span>4 GRUPOS DE 6</span><span class="bg-black/50 px-2 py-0.5 rounded text-red-200">BO3</span>
                             </div>
-                            <p class="text-[9px] font-bold uppercase tracking-widest text-gray-200 mt-1 border-t border-white/10 pt-1">
-                                AVANZAN 3 POR GRUPO (12 EQUIPOS)
-                            </p>
+                            <p class="text-[9px] font-bold uppercase text-gray-200 mt-1 border-t border-white/10 pt-1">AVANZAN 3 POR GRUPO (12 EQUIPOS)</p>
                         </div>
                         <div id="col-fase1-grupos" class="grid grid-cols-2 gap-3"></div>
                     </div>
@@ -128,22 +428,18 @@
 
                 <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
 
-                <!-- COLUMNA 2: FASE 2 (12 EQUIPOS) -->
+                <!-- FASE 2 -->
                 <div class="phase-col w-[260px] shrink-0 p-4 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-3">
-                            <h2 class="text-lg font-black uppercase tracking-wider text-white">FASE 2</h2>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">FASE DE GRUPOS</p>
-                            <p class="text-xs font-black uppercase tracking-wider text-white">12 EQUIPOS</p>
+                            <h2 class="text-lg font-black uppercase text-white">FASE 2</h2>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">FASE DE GRUPOS • 12 EQUIPOS</p>
                         </div>
                         <div class="bg-gradient-to-r from-blue-900/80 via-blue-700/80 to-blue-900/80 border border-blue-400/40 rounded p-2 text-center mb-4">
-                            <div class="flex justify-center items-center gap-2 text-[10px] font-black uppercase tracking-wider">
-                                <span>2 GRUPOS DE 6</span>
-                                <span class="bg-black/50 px-2 py-0.5 rounded text-blue-200">BO3</span>
+                            <div class="flex justify-center items-center gap-2 text-[10px] font-black uppercase">
+                                <span>2 GRUPOS DE 6</span><span class="bg-black/50 px-2 py-0.5 rounded text-blue-200">BO3</span>
                             </div>
-                            <p class="text-[9px] font-bold uppercase tracking-widest text-gray-200 mt-1 border-t border-white/10 pt-1">
-                                AVANZAN 3 POR GRUPO (6 EQUIPOS)
-                            </p>
+                            <p class="text-[9px] font-bold uppercase text-gray-200 mt-1 border-t border-white/10 pt-1">AVANZAN 3 POR GRUPO (6 EQUIPOS)</p>
                         </div>
                         <div id="col-fase2-grupos" class="flex flex-col gap-3"></div>
                     </div>
@@ -155,44 +451,36 @@
 
                 <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
 
-                <!-- COLUMNA 3: FASE 3 (SELECCIÓN FINAL 6 EQUIPOS) -->
+                <!-- FASE 3 -->
                 <div class="phase-col w-[255px] shrink-0 p-4 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-3">
-                            <h2 class="text-lg font-black uppercase tracking-wider text-white">FASE 3</h2>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">SELECCIÓN FINAL</p>
-                            <p class="text-xs font-black uppercase tracking-wider text-white">6 EQUIPOS</p>
+                            <h2 class="text-lg font-black uppercase text-white">FASE 3</h2>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">SELECCIÓN FINAL • 6 EQUIPOS</p>
                         </div>
                         <div class="bg-gradient-to-r from-indigo-900/80 via-purple-800/80 to-indigo-900/80 border border-purple-400/40 rounded p-2 text-center mb-4">
-                            <p class="text-[10px] font-black uppercase tracking-wider text-white">RANKING POR DESEMPEÑO</p>
-                            <p class="text-[9px] text-gray-200 mt-1 border-t border-white/10 pt-1">
-                                Se ordenan los 6 equipos por diferencia de rondas.
-                            </p>
+                            <p class="text-[10px] font-black uppercase text-white">RANKING POR DESEMPEÑO</p>
+                            <p class="text-[9px] text-gray-200 mt-1 border-t border-white/10 pt-1">Por diferencia de rondas</p>
                         </div>
                         <div id="col-fase3-ranking" class="flex flex-col gap-2.5 my-4"></div>
                     </div>
                     <div class="mt-4 bg-red-950/30 border border-red-500/30 rounded p-2.5 text-center">
-                        <p class="text-[10px] font-bold text-red-200">Se eliminan 2 equipos por diferencia de rondas.</p>
+                        <p class="text-[10px] font-bold text-red-200">Se eliminan 2 por diferencia de rondas.</p>
                     </div>
                 </div>
 
                 <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
 
-                <!-- COLUMNA 4: FASE 4 (SEMIFINALES 4 EQUIPOS) -->
+                <!-- FASE 4 -->
                 <div class="phase-col w-[250px] shrink-0 p-4 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-3">
-                            <h2 class="text-lg font-black uppercase tracking-wider text-white">FASE 4</h2>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">SEMIFINALES</p>
-                            <p class="text-xs font-black uppercase tracking-wider text-white">4 EQUIPOS</p>
+                            <h2 class="text-lg font-black uppercase text-white">FASE 4</h2>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">SEMIFINALES • 4 EQUIPOS</p>
                         </div>
                         <div class="bg-gradient-to-r from-amber-700/80 via-yellow-600/80 to-amber-700/80 border border-everGold/50 rounded p-2 text-center mb-6">
-                            <p class="text-[10px] font-black uppercase tracking-wider text-white">2 ENFRENTAMIENTOS</p>
-                            <div class="flex justify-center items-center gap-2 text-[9px] font-black uppercase mt-1 border-t border-white/15 pt-1">
-                                <span>2 GRUPOS DE 2</span>
-                                <span class="bg-black/60 px-2 py-0.5 rounded text-everGold">BO5</span>
-                            </div>
-                            <p class="text-[8px] font-bold uppercase tracking-widest text-white mt-1">PASA 1 POR GRUPO</p>
+                            <p class="text-[10px] font-black uppercase text-white">2 ENFRENTAMIENTOS BO5</p>
+                            <p class="text-[8px] font-bold uppercase text-white mt-1">PASA 1 POR GRUPO</p>
                         </div>
                         <div id="col-fase4-semis"></div>
                     </div>
@@ -201,14 +489,14 @@
 
                 <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
 
-                <!-- COLUMNA 5: GRAN FINAL (2 EQUIPOS) -->
+                <!-- GRAN FINAL -->
                 <div class="phase-col w-[250px] shrink-0 p-4 flex flex-col justify-between border-vctRed/40">
                     <div>
                         <div class="text-center mb-4">
-                            <h2 class="text-xl font-black uppercase tracking-wider text-vctRed">GRAN FINAL</h2>
-                            <p class="text-xs font-black uppercase tracking-wider text-white mt-1">2 EQUIPOS</p>
+                            <h2 class="text-xl font-black uppercase text-vctRed">GRAN FINAL</h2>
+                            <p class="text-xs font-black uppercase text-white mt-1">2 EQUIPOS</p>
                         </div>
-                        <div class="bg-gradient-to-r from-red-800 via-vctRed to-red-800 border border-red-400/40 rounded py-2 text-center font-black text-xs uppercase tracking-widest mb-6">
+                        <div class="bg-gradient-to-r from-red-800 via-vctRed to-red-800 border border-red-400/40 rounded py-2 text-center font-black text-xs uppercase mb-6">
                             BO5 • CARA A CARA
                         </div>
                         <div id="col-fase5-final"></div>
@@ -219,22 +507,22 @@
             </div>
         </div>
 
-        <!-- BARRA INFERIOR DE PROGRESIÓN: 24 > 12 > 6 > 4 > 2 > 1 -->
+        <!-- BARRA DE PROGRESIÓN -->
         <div class="mt-6 mb-14 bg-[#0a0c12] border border-white/10 rounded-lg py-4 px-6 flex flex-wrap justify-center items-center gap-4 md:gap-8 text-center">
-            <div><span class="text-xl md:text-2xl font-black text-white block">24</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Equipos Iniciales</span></div>
-            <span class="text-gray-600 font-black text-lg">&gt;</span>
-            <div><span class="text-xl md:text-2xl font-black text-white block">12</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Avanzan</span></div>
-            <span class="text-gray-600 font-black text-lg">&gt;</span>
-            <div><span class="text-xl md:text-2xl font-black text-white block">6</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Tras Fase 2</span></div>
-            <span class="text-gray-600 font-black text-lg">&gt;</span>
-            <div><span class="text-xl md:text-2xl font-black text-white block">4</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Tras Eliminación x Desempeño</span></div>
-            <span class="text-gray-600 font-black text-lg">&gt;</span>
-            <div><span class="text-xl md:text-2xl font-black text-white block">2</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Finalistas</span></div>
-            <span class="text-gray-600 font-black text-lg">&gt;</span>
-            <div><span class="text-xl md:text-2xl font-black text-everGold block">1</span><span class="text-[8px] text-everGold font-black uppercase tracking-widest">Campeón</span></div>
+            <div><span class="text-xl font-black text-white block">24</span><span class="text-[8px] text-gray-400 font-bold uppercase">Equipos Iniciales</span></div>
+            <span class="text-gray-600 font-black">&gt;</span>
+            <div><span class="text-xl font-black text-white block">12</span><span class="text-[8px] text-gray-400 font-bold uppercase">Avanzan</span></div>
+            <span class="text-gray-600 font-black">&gt;</span>
+            <div><span class="text-xl font-black text-white block">6</span><span class="text-[8px] text-gray-400 font-bold uppercase">Tras Fase 2</span></div>
+            <span class="text-gray-600 font-black">&gt;</span>
+            <div><span class="text-xl font-black text-white block">4</span><span class="text-[8px] text-gray-400 font-bold uppercase">Tras Desempeño</span></div>
+            <span class="text-gray-600 font-black">&gt;</span>
+            <div><span class="text-xl font-black text-white block">2</span><span class="text-[8px] text-gray-400 font-bold uppercase">Finalistas</span></div>
+            <span class="text-gray-600 font-black">&gt;</span>
+            <div><span class="text-xl font-black text-everGold block">1</span><span class="text-[8px] text-everGold font-bold uppercase">Campeón</span></div>
         </div>
 
-        <!-- GALERÍA DE ESCUADRAS REGISTRADAS -->
+        <!-- GALERÍA DE ESCUADRAS -->
         <div class="border-t border-white/10 pt-10">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
@@ -250,392 +538,13 @@
 
     </main>
 
-    <!-- MODAL CARA A CARA (VS) -->
+    <!-- MODAL CARA A CARA -->
     <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-[#08090f] border border-white/20 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[92vh] overflow-y-auto relative shadow-2xl">
-            <button onclick="cerrarModal()" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black">✕</button>
+            <button onclick="document.getElementById('modal-vs').classList.add('hidden')" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black">✕</button>
             <div id="modal-vs-content"></div>
         </div>
     </div>
 
-    <script>
-        // Detecta automáticamente tu servidor en Render (5ever-esports-web-1 o bane-esports-web-1)
-        const SERVIDORES_RENDER = [
-            'https://5ever-esports-web-1.onrender.com/api',
-            'https://bane-esports-web-1.onrender.com/api'
-        ];
-        let listaEquiposGlobal = [];
-
-        function crearEstructuraInicial() {
-            return {
-                version: '24_grupos_v1',
-                fase1: {
-                    A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
-                },
-                fase2: {
-                    E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
-                },
-                fase3: [
-                    { pos: 1, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 2, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 3, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 4, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 5, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true },
-                    { pos: 6, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true }
-                ],
-                fase4: {
-                    sf1: { eq1: 'Equipo 1', eq2: 'Equipo 2', score1: '', score2: '' },
-                    sf2: { eq1: 'Equipo 3', eq2: 'Equipo 4', score1: '', score2: '' }
-                },
-                final: { eq1: 'Ganador SF1', eq2: 'Ganador SF2', score1: '', score2: '', campeon: 'CAMPEÓN' }
-            };
-        }
-
-        let tournamentData = crearEstructuraInicial();
-
-        function escaparAttr(texto) { return encodeURIComponent(String(texto || '')); }
-        function desescaparAttr(texto) { try { return decodeURIComponent(String(texto || '')); } catch (e) { return String(texto || ''); } }
-
-        // Normalización inteligente para empatar nombres con acentos, mayúsculas o apóstrofes
-        function normalizarTexto(str) {
-            return String(str || '')
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .toLowerCase()
-                .replace(/[^a-z0-9]/g, '');
-        }
-
-        function buscarEquipo(nombre) {
-            if (!nombre) return null;
-            const nNorm = normalizarTexto(nombre);
-            if (!nNorm || /^[a-f][1-6]$/.test(nNorm) || nNorm.startsWith('equipo') || nNorm.startsWith('ganador') || nNorm === 'campeon') {
-                return null;
-            }
-            return listaEquiposGlobal.find(e => {
-                const dbNorm = normalizarTexto(e.nombre);
-                return dbNorm && (dbNorm === nNorm || dbNorm.includes(nNorm) || nNorm.includes(dbNorm));
-            }) || null;
-        }
-
-        function obtenerLogo(eq) {
-            if (!eq) return '';
-            return eq.logo_url || eq.logo || eq.imagen_url || eq.imagen || '';
-        }
-
-        function badgeLogo(nombre, cls = 'w-6 h-6') {
-            const eq = buscarEquipo(nombre);
-            const url = obtenerLogo(eq);
-            if (url) {
-                return `<img src="${url}" alt="${escaparAttr(nombre)}" class="${cls} object-contain bg-black p-0.5 rounded border border-white/25 shrink-0">`;
-            }
-            const ini = String(nombre || '?').substring(0, 2).toUpperCase();
-            return `<div class="${cls} bg-white/5 border border-white/10 rounded flex items-center justify-center text-[8px] font-black text-everGold shrink-0">${ini}</div>`;
-        }
-
-        // Dibuja cada Grupo agrupando a los 6 equipos en 3 ENFRENTAMIENTOS DIRECTOS (VS)
-        function htmlCajaGrupoConVS(letra, slots, headerClass) {
-            const lista = slots || [];
-            let duelosHtml = '';
-
-            for (let i = 0; i < lista.length; i += 2) {
-                const s1 = lista[i] || { nombre: `${letra}${i + 1}`, extra: '', estado: 'normal' };
-                const s2 = lista[i + 1] || { nombre: `${letra}${i + 2}`, extra: '', estado: 'normal' };
-
-                const est1 = s1.estado === 'clasificado' ? 'slot-qualified' : (s1.estado === 'eliminado' ? 'slot-eliminated' : '');
-                const est2 = s2.estado === 'clasificado' ? 'slot-qualified' : (s2.estado === 'eliminado' ? 'slot-eliminated' : '');
-
-                duelosHtml += `
-                    <div data-vs1="${escaparAttr(s1.nombre)}" data-vs2="${escaparAttr(s2.nombre)}" data-vstitle="${escaparAttr('GRUPO ' + letra + ' • DUELO BO3')}"
-                         class="btn-vs duel-card rounded-md p-2 cursor-pointer"
-                         title="Haz clic para abrir el Cara a Cara: ${s1.nombre} vs ${s2.nombre}">
-                        
-                        <!-- Equipo 1 del Duelo -->
-                        <div class="flex items-center justify-between gap-1.5 px-1.5 py-1 rounded ${est1} pointer-events-none">
-                            <div class="flex items-center gap-2 truncate">
-                                ${badgeLogo(s1.nombre, 'w-6 h-6')}
-                                <span class="text-[11px] font-bold text-white truncate">${s1.nombre}</span>
-                            </div>
-                            ${s1.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${s1.extra}</span>` : ''}
-                        </div>
-
-                        <!-- Separador VS -->
-                        <div class="flex items-center gap-1.5 my-1 pointer-events-none">
-                            <div class="h-[1px] bg-white/10 flex-1"></div>
-                            <span class="text-[8px] font-black text-white bg-vctRed px-2 py-0.5 rounded uppercase tracking-widest shadow">VS</span>
-                            <div class="h-[1px] bg-white/10 flex-1"></div>
-                        </div>
-
-                        <!-- Equipo 2 del Duelo -->
-                        <div class="flex items-center justify-between gap-1.5 px-1.5 py-1 rounded ${est2} pointer-events-none">
-                            <div class="flex items-center gap-2 truncate">
-                                ${badgeLogo(s2.nombre, 'w-6 h-6')}
-                                <span class="text-[11px] font-bold text-white truncate">${s2.nombre}</span>
-                            </div>
-                            ${s2.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${s2.extra}</span>` : ''}
-                        </div>
-                    </div>`;
-            }
-
-            return `
-                <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden flex flex-col">
-                    <div class="${headerClass} py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase text-white">
-                        <span>GRUPO ${letra}</span>
-                        <span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">3 DUELOS VS</span>
-                    </div>
-                    <div class="p-2 flex flex-col gap-2">
-                        ${duelosHtml}
-                    </div>
-                </div>`;
-        }
-
-        function actualizarTableroVisual(d) {
-            // Fase 1: 4 Grupos con 3 Duelos VS cada uno
-            document.getElementById('col-fase1-grupos').innerHTML = ['A','B','C','D']
-                .map(g => htmlCajaGrupoConVS(g, d.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600')).join('');
-
-            // Fase 2: 2 Grupos con 3 Duelos VS cada uno
-            document.getElementById('col-fase2-grupos').innerHTML = ['E','F']
-                .map(g => htmlCajaGrupoConVS(g, d.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600')).join('');
-
-            // Fase 3: Ranking por desempeño con logos
-            document.getElementById('col-fase3-ranking').innerHTML = (d.fase3 || []).map((r, i) => {
-                const elim = i >= 4 || r.eliminado;
-                return `
-                    <div data-vs1="${escaparAttr(r.nombre)}" data-vs2="" data-vstitle="${escaparAttr('FASE 3 • RANKING DESEMPEÑO')}"
-                         class="btn-vs flex items-center gap-2.5 p-1.5 rounded border ${elim ? 'border-red-500/30 bg-red-950/10' : 'border-emerald-500/30 bg-emerald-950/10'} cursor-pointer hover:border-white/40">
-                        <div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs text-white ${elim ? 'bg-red-600' : 'bg-emerald-600'} shrink-0 pointer-events-none">${i + 1}</div>
-                        <div class="flex items-center gap-2 flex-1 truncate pointer-events-none">
-                            ${badgeLogo(r.nombre, 'w-6 h-6')}
-                            <span class="text-xs font-bold ${elim ? 'text-gray-400' : 'text-white'} truncate">${r.nombre}</span>
-                        </div>
-                        <span class="text-[9px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} uppercase pr-1 shrink-0 pointer-events-none">${r.rd || (elim ? '(ELIMINADO)' : '')}</span>
-                    </div>`;
-            }).join('');
-
-            // Fase 4: Semifinales con logos y VS
-            const sfCard = (titulo, m) => `
-                <div data-vs1="${escaparAttr(m.eq1)}" data-vs2="${escaparAttr(m.eq2)}" data-vstitle="${escaparAttr(titulo + ' • BO5')}" data-s1="${escaparAttr(m.score1)}" data-s2="${escaparAttr(m.score2)}"
-                     class="btn-vs match-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6 cursor-pointer">
-                    <div class="flex justify-between items-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10 pointer-events-none">
-                        <span>${titulo}</span><span class="text-[8px] bg-everGold/15 px-1.5 py-0.5 rounded">VER VS ⚔️</span>
-                    </div>
-                    <div class="duel-card p-2 rounded flex justify-between items-center gap-2 mb-1.5 pointer-events-none">
-                        <div class="flex items-center gap-2 truncate">${badgeLogo(m.eq1, 'w-6 h-6')}<span class="text-xs font-bold text-white truncate">${m.eq1}</span></div>
-                        <span class="text-xs font-black text-everGold">${m.score1 || '-'}</span>
-                    </div>
-                    <div class="flex items-center gap-1.5 my-1 pointer-events-none">
-                        <div class="h-[1px] bg-white/10 flex-1"></div>
-                        <span class="text-[8px] font-black text-white bg-vctRed px-2 py-0.5 rounded">VS</span>
-                        <div class="h-[1px] bg-white/10 flex-1"></div>
-                    </div>
-                    <div class="duel-card p-2 rounded flex justify-between items-center gap-2 pointer-events-none">
-                        <div class="flex items-center gap-2 truncate">${badgeLogo(m.eq2, 'w-6 h-6')}<span class="text-xs font-bold text-white truncate">${m.eq2}</span></div>
-                        <span class="text-xs font-black text-everGold">${m.score2 || '-'}</span>
-                    </div>
-                </div>`;
-
-            document.getElementById('col-fase4-semis').innerHTML = sfCard('SEMIFINAL 1', d.fase4.sf1) + sfCard('SEMIFINAL 2', d.fase4.sf2);
-
-            // Fase 5: Gran Final y Campeón
-            const fin = d.final;
-            document.getElementById('col-fase5-final').innerHTML = sfCard('GRAN FINAL', fin);
-            const eqCamp = buscarEquipo(fin.campeon);
-            const logoCamp = obtenerLogo(eqCamp);
-            document.getElementById('col-fase5-campeon').innerHTML = `
-                <div data-vs1="${escaparAttr(fin.campeon)}" data-vs2="" data-vstitle="${escaparAttr('CAMPEÓN OFICIAL 5EVER')}" class="btn-vs cursor-pointer">
-                    <div class="text-4xl mb-2 pointer-events-none">🏆</div>
-                    ${logoCamp ? `<img src="${logoCamp}" class="w-16 h-16 mx-auto mb-2 object-contain bg-black p-1.5 rounded border border-everGold pointer-events-none">` : ''}
-                    <span class="text-[9px] text-everGold font-black uppercase tracking-[0.3em] block pointer-events-none">VICTORIA SUPREMA</span>
-                    <h3 class="text-base font-black uppercase tracking-wider text-white mt-1 truncate pointer-events-none">${fin.campeon || 'CAMPEÓN'}</h3>
-                </div>`;
-        }
-
-        function renderEquipos(filtro = '') {
-            const grid = document.getElementById('grid-equipos');
-            if (!grid) return;
-
-            let baseLista = listaEquiposGlobal.length > 0 ? listaEquiposGlobal : [
-                ...tournamentData.fase1.A, ...tournamentData.fase1.B, ...tournamentData.fase1.C, ...tournamentData.fase1.D
-            ].map(s => ({ nombre: s.nombre, rango: 'Escuadra Confirmada', logo_url: '', jugadores: [] }));
-
-            const q = String(filtro || '').toLowerCase().trim();
-            const filtrados = baseLista.filter(eq => {
-                if (!eq || !eq.nombre) return false;
-                const nom = String(eq.nombre).toLowerCase();
-                const jug = Array.isArray(eq.jugadores) && eq.jugadores.some(j => j && String(j.riot_id || '').toLowerCase().includes(q));
-                return !q || nom.includes(q) || jug;
-            });
-
-            grid.innerHTML = filtrados.map((eq, idx) => {
-                const n1 = eq.nombre || 'Escuadra';
-                const parIdx = idx % 2 === 0 ? idx + 1 : idx - 1;
-                const n2 = filtrados[parIdx] ? filtrados[parIdx].nombre : (filtrados[0] ? filtrados[0].nombre : '');
-                const urlLogo = obtenerLogo(eq) || obtenerLogo(buscarEquipo(n1));
-
-                const badge = urlLogo
-                    ? `<img src="${urlLogo}" class="w-12 h-12 object-contain bg-black p-1 rounded border border-white/20 shrink-0 pointer-events-none">`
-                    : `<div class="w-12 h-12 bg-white/5 border border-white/10 rounded flex items-center justify-center text-sm font-black text-everGold shrink-0 pointer-events-none">${n1.substring(0, 2).toUpperCase()}</div>`;
-
-                return `
-                    <div data-vs1="${escaparAttr(n1)}" data-vs2="${escaparAttr(n2)}" data-vstitle="${escaparAttr('CARA A CARA • ESCUADRAS')}"
-                         class="btn-vs bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer transition-all group flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-3.5 truncate pointer-events-none">
-                            ${badge}
-                            <div class="truncate">
-                                <span class="text-[8px] text-everGold font-black uppercase tracking-widest block">ESCUADRA #${idx + 1}</span>
-                                <h3 class="text-sm font-black text-white uppercase truncate">${n1}</h3>
-                                <span class="text-[9px] text-gray-400 uppercase font-bold block truncate">${eq.rango || 'Rango Oficial'}</span>
-                            </div>
-                        </div>
-                        <span class="text-[10px] text-vctRed font-black shrink-0 pointer-events-none">VS ➔</span>
-                    </div>`;
-            }).join('');
-        }
-
-        document.addEventListener('click', (e) => {
-            const card = e.target.closest('.btn-vs');
-            if (!card) return;
-            const n1 = desescaparAttr(card.getAttribute('data-vs1'));
-            const n2 = desescaparAttr(card.getAttribute('data-vs2'));
-            const tit = desescaparAttr(card.getAttribute('data-vstitle'));
-            const s1 = desescaparAttr(card.getAttribute('data-s1'));
-            const s2 = desescaparAttr(card.getAttribute('data-s2'));
-            abrirModalCaraACara(n1, n2, tit, s1, s2);
-        });
-
-        function abrirModalCaraACara(nombre1, nombre2, tituloFase, score1 = '', score2 = '') {
-            const eq1 = buscarEquipo(nombre1);
-            const eq2 = buscarEquipo(nombre2);
-
-            let listaNombres = listaEquiposGlobal.length > 0
-                ? listaEquiposGlobal.map(e => e.nombre)
-                : [...tournamentData.fase1.A, ...tournamentData.fase1.B, ...tournamentData.fase1.C, ...tournamentData.fase1.D].map(s => s.nombre);
-
-            let opciones = `<option value="">-- Cambiar rival para comparar VS --</option>`;
-            listaNombres.forEach(nom => {
-                const sel = (nombre2 && normalizarTexto(nom) === normalizarTexto(nombre2)) ? 'selected' : '';
-                opciones += `<option value="${escaparAttr(nom)}" ${sel}>${nom}</option>`;
-            });
-
-            const colHtml = (nomTxt, eqObj, colorBorde) => {
-                const urlLogo = obtenerLogo(eqObj);
-                if (!eqObj) {
-                    return `
-                        <div class="bg-[#0c0e16] border border-white/10 rounded-lg p-5 text-center flex flex-col items-center justify-center min-h-[240px]">
-                            <div class="w-16 h-16 rounded bg-white/5 border border-white/10 flex items-center justify-center text-xl font-black text-everGold mb-3">${String(nomTxt || '?').substring(0, 2).toUpperCase()}</div>
-                            <h4 class="text-base font-black uppercase text-white">${nomTxt || 'POR DEFINIR'}</h4>
-                            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Sincronizando datos del equipo...</p>
-                        </div>`;
-                }
-                const jugHtml = (eqObj.jugadores || []).map(j => `
-                    <div class="bg-[#121520] border-l-2 ${colorBorde} p-2.5 rounded-r flex justify-between items-center gap-2 mb-2">
-                        <div class="truncate">
-                            <span class="text-[8px] text-everGold font-black uppercase block">${j.role || 'TITULAR'}</span>
-                            <span class="text-xs font-black text-white truncate block">${j.riot_id || ''}</span>
-                        </div>
-                        <a href="${j.tracker_url || '#'}" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded shrink-0">TRACKER ↗</a>
-                    </div>`).join('');
-
-                return `
-                    <div class="bg-[#0c0e16] border border-white/15 rounded-lg p-5">
-                        <div class="flex items-center gap-4 mb-4 pb-3 border-b border-white/10">
-                            ${urlLogo ? `<img src="${urlLogo}" class="w-16 h-16 object-contain bg-black p-1 rounded border border-white/20 shrink-0">` : ''}
-                            <div class="truncate">
-                                <span class="text-[9px] text-everGold font-black uppercase block">${eqObj.rango || 'Rango Oficial'}</span>
-                                <h4 class="text-lg font-black uppercase text-white truncate">${eqObj.nombre}</h4>
-                                <span class="text-[9px] text-gray-400 font-bold uppercase block">Capitán: ${eqObj.discord || 'N/A'}</span>
-                            </div>
-                        </div>
-                        <div class="max-h-[280px] overflow-y-auto pr-1">${jugHtml}</div>
-                    </div>`;
-            };
-
-            document.getElementById('modal-vs-content').innerHTML = `
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6 pb-4 border-b border-white/10 pr-8">
-                    <div>
-                        <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">${tituloFase}</span>
-                        <h3 class="text-xl font-black uppercase text-white">⚔️ ${nombre1} <span class="text-vctRed mx-1">VS</span> ${nombre2 || 'RIVAL'}</h3>
-                    </div>
-                    <select id="selector-rival-vs" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-64 outline-none">
-                        ${opciones}
-                    </select>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
-                    <div class="md:col-span-5">${colHtml(nombre1, eq1, 'border-vctRed')}</div>
-                    <div class="md:col-span-1 flex flex-col items-center justify-center">
-                        <div class="w-12 h-12 rounded-full bg-vctRed border-2 border-white flex items-center justify-center font-black text-xs text-white shadow-[0_0_20px_rgba(255,42,63,0.6)]">VS</div>
-                        ${(score1 || score2) ? `<div class="mt-2 bg-black border border-white/15 px-2.5 py-1 rounded text-xs font-black text-everGold">${score1\vert{}\vert{}0}:${score2||0}</div>` : ''}
-                    </div>
-                    <div class="md:col-span-5">${colHtml(nombre2, eq2, 'border-everGold')}</div>
-                </div>`;
-
-            document.getElementById('selector-rival-vs').addEventListener('change', function() {
-                abrirModalCaraACara(nombre1, desescaparAttr(this.value), tituloFase, score1, score2);
-            });
-
-            document.getElementById('modal-vs').classList.remove('hidden');
-        }
-
-        function cerrarModal() { document.getElementById('modal-vs').classList.add('hidden'); }
-
-        // Consulta en paralelo ambos servidores de Render (5ever-esports-web-1 y bane-esports-web-1)
-        async function sincronizarDatosServidor() {
-            const statusEl = document.getElementById('estado-servidor');
-
-            for (const apiBase of SERVIDORES_RENDER) {
-                try {
-                    const [resEq, resNot] = await Promise.all([
-                        fetch(`${apiBase}/equipos`),
-                        fetch(`${apiBase}/noticias`).catch(() => null)
-                    ]);
-
-                    if (resNot && resNot.ok) {
-                        const noticias = await resNot.json();
-                        if (Array.isArray(noticias)) {
-                            noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
-                            const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
-                            if (bd && bd.descripcion) {
-                                const parsed = JSON.parse(bd.descripcion);
-                                if (parsed && parsed.version === '24_grupos_v1') {
-                                    tournamentData = parsed;
-                                }
-                            }
-                        }
-                    }
-
-                    if (resEq && resEq.ok) {
-                        const eqs = await resEq.json();
-                        if (Array.isArray(eqs) && eqs.length > 0) {
-                            listaEquiposGlobal = eqs.filter(Boolean);
-                            document.getElementById('cupo-contador').innerText = `${listaEquiposGlobal.length} / 24 EQUIPOS`;
-                            statusEl.innerText = `✔ ${listaEquiposGlobal.length} EQUIPOS Y FOTOS CARGADAS`;
-                            statusEl.className = 'text-[10px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-950/40 border border-emerald-500/40 px-3 py-1 rounded';
-                            actualizarTableroVisual(tournamentData);
-                            renderEquipos('');
-                            return; // Éxito total, dejamos de buscar
-                        }
-                    }
-                } catch (e) {}
-            }
-
-            statusEl.innerText = `⏳ Despertando servidor en Render... reintentando`;
-            setTimeout(sincronizarDatosServidor, 4000);
-        }
-
-        // 1. Pintar de inmediato los duelos VS (ej. 7z Esports VS Abismus)
-        actualizarTableroVisual(tournamentData);
-        renderEquipos('');
-
-        // 2. Descargar las fotos y rosters desde tu servidor en Render
-        sincronizarDatosServidor();
-
-        document.getElementById('buscador-equipos').addEventListener('input', (e) => {
-            renderEquipos(e.target.value);
-        });
-    </script>
 </body>
 </html>
