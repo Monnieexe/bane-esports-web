@@ -29,11 +29,9 @@
                               radial-gradient(circle at 85% 20%, rgba(229, 192, 92, 0.06) 0%, transparent 40%);
         }
         .clip-card { clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px); }
-        
         .board-scroll::-webkit-scrollbar { height: 8px; }
         .board-scroll::-webkit-scrollbar-track { background: #0a0b10; border: 1px solid rgba(255,255,255,0.05); }
         .board-scroll::-webkit-scrollbar-thumb { background: #ff2a3f; border-radius: 4px; }
-
         .phase-col {
             background: linear-gradient(180deg, rgba(16, 18, 26, 0.95) 0%, rgba(9, 10, 15, 0.98) 100%);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -48,7 +46,6 @@
         .slot-item:hover {
             border-color: #ff2a3f;
             background: rgba(255, 42, 63, 0.08);
-            transform: translateX(2px);
         }
         .match-box { transition: all 0.25s ease; }
         .match-box:hover {
@@ -56,15 +53,8 @@
             box-shadow: 0 0 25px rgba(255, 42, 63, 0.2);
             transform: translateY(-2px);
         }
-        .slot-qualified {
-            border-left: 3px solid #22c55e !important;
-            background: rgba(34, 197, 94, 0.08) !important;
-        }
-        .slot-eliminated {
-            border-left: 3px solid #ef4444 !important;
-            background: rgba(239, 68, 68, 0.08) !important;
-            opacity: 0.55;
-        }
+        .slot-qualified { border-left: 3px solid #22c55e !important; background: rgba(34, 197, 94, 0.08) !important; }
+        .slot-eliminated { border-left: 3px solid #ef4444 !important; background: rgba(239, 68, 68, 0.08) !important; opacity: 0.55; }
     </style>
 </head>
 <body class="antialiased min-h-screen pb-20">
@@ -83,7 +73,6 @@
                     </p>
                 </div>
             </div>
-
             <div class="flex items-center gap-3">
                 <a href="registro-torneo.html" class="bg-vctRed hover:bg-white text-white hover:text-black font-black text-[10px] uppercase tracking-[0.2em] px-5 py-3 transition-all clip-card">
                     + INSCRIBIR EQUIPO
@@ -98,208 +87,15 @@
             <span class="text-[10px] text-gray-300 font-bold uppercase tracking-[0.2em] bg-white/5 border border-white/10 px-3 py-1.5 rounded">
                 ⚔️ Haz clic en cualquier equipo o partida del bracket para abrir el <b class="text-everGold">CARA A CARA (VS)</b> y ver sus rosters
             </span>
-            <span id="estado-sincronizacion" class="text-[9px] text-everGold font-black uppercase tracking-widest">
-                ⚡ Sincronizando datos en vivo...
+            <span id="estado-servidor" class="text-[9px] text-everGold font-black uppercase tracking-widest">
+                ⚡ Conectando con el servidor...
             </span>
         </div>
 
-        <!-- TABLERO DE LAS 5 FASES -->
+        <!-- TABLERO DE LAS 5 FASES PRE-RENDERIZADO EN HTML FIJO (NUNCA QUEDA EN BLANCO) -->
         <div class="board-scroll overflow-x-auto pb-4">
-            <div class="flex items-stretch gap-4 min-w-[1420px]" id="tournament-board"></div>
-        </div>
+            <div class="flex items-stretch gap-4 min-w-[1420px]" id="tournament-board">
 
-        <!-- BARRA INFERIOR DE PROGRESIÓN: 24 > 12 > 6 > 4 > 2 > 1 -->
-        <div class="mt-6 mb-14 bg-[#0a0c12] border border-white/10 rounded-lg py-4 px-6 flex flex-wrap justify-center items-center gap-4 md:gap-8 text-center">
-            <div>
-                <span class="text-xl md:text-2xl font-black text-white block">24</span>
-                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Equipos Iniciales</span>
-            </div>
-            <span class="text-gray-600 font-black text-lg">&gt;</span>
-            <div>
-                <span class="text-xl md:text-2xl font-black text-white block">12</span>
-                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Avanzan</span>
-            </div>
-            <span class="text-gray-600 font-black text-lg">&gt;</span>
-            <div>
-                <span class="text-xl md:text-2xl font-black text-white block">6</span>
-                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Tras Fase 2</span>
-            </div>
-            <span class="text-gray-600 font-black text-lg">&gt;</span>
-            <div>
-                <span class="text-xl md:text-2xl font-black text-white block">4</span>
-                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Tras Eliminación x Desempeño</span>
-            </div>
-            <span class="text-gray-600 font-black text-lg">&gt;</span>
-            <div>
-                <span class="text-xl md:text-2xl font-black text-white block">2</span>
-                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Finalistas</span>
-            </div>
-            <span class="text-gray-600 font-black text-lg">&gt;</span>
-            <div>
-                <span class="text-xl md:text-2xl font-black text-everGold block">1</span>
-                <span class="text-[8px] text-everGold font-black uppercase tracking-widest">Campeón</span>
-            </div>
-        </div>
-
-        <!-- GALERÍA DE ESCUADRAS REGISTRADAS -->
-        <div class="border-t border-white/10 pt-10">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                <div>
-                    <h2 class="text-2xl font-black uppercase tracking-wider">ESCUADRAS CONFIRMADAS</h2>
-                    <p class="text-[10px] text-gray-400 uppercase tracking-[0.25em] font-bold mt-1">
-                        Inscritos en el sistema: <span id="cupo-contador" class="text-everGold">CARGANDO SERVIDOR...</span>
-                    </p>
-                </div>
-                <input type="text" id="buscador-equipos" placeholder="🔍 Buscar escuadra o Riot ID..." class="bg-[#0b0c10] border border-white/15 focus:border-vctRed px-4 py-3 text-xs font-bold text-white w-full md:w-72 outline-none rounded">
-            </div>
-
-            <div id="grid-equipos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
-        </div>
-
-    </main>
-
-    <!-- MODAL CARA A CARA (VS) INTERACTIVO -->
-    <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-[#08090f] border border-white/20 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[92vh] overflow-y-auto relative shadow-[0_0_50px_rgba(0,0,0,0.9)]">
-            <button onclick="cerrarModal()" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black">✕</button>
-            <div id="modal-vs-content"></div>
-        </div>
-    </div>
-
-    <script>
-        const API_URL = 'https://bane-esports-web-1.onrender.com/api';
-        let listaEquiposGlobal = [];
-
-        function crearEstructuraPorDefecto() {
-            return {
-                version: '24_grupos_v1',
-                horario: 'Cada Lunes • 8:00 PM (Hora Centro de México)',
-                fase1: {
-                    A: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    B: ['B1', 'B2', 'B3', 'B4', 'B5', 'B6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    C: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    D: ['D1', 'D2', 'D3', 'D4', 'D5', 'D6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
-                },
-                fase2: {
-                    E: ['E1', 'E2', 'E3', 'E4', 'E5', 'E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    F: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
-                },
-                fase3: [
-                    { pos: 1, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 2, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 3, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 4, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 5, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true },
-                    { pos: 6, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true }
-                ],
-                fase4: {
-                    sf1: { eq1: 'Equipo 1', eq2: 'Equipo 2', score1: '', score2: '' },
-                    sf2: { eq1: 'Equipo 3', eq2: 'Equipo 4', score1: '', score2: '' }
-                },
-                final: {
-                    eq1: 'Ganador SF1',
-                    eq2: 'Ganador SF2',
-                    score1: '',
-                    score2: '',
-                    campeon: 'CAMPEÓN'
-                }
-            };
-        }
-
-        let tournamentData = crearEstructuraPorDefecto();
-
-        function limpiarTexto(txt) {
-            return String(txt || '').replace(/['"\\]/g, '');
-        }
-
-        function buscarEquipoPorNombre(nombre) {
-            if (!nombre) return null;
-            const limpio = String(nombre).trim().toLowerCase();
-            if (/^[a-f][1-6]$/.test(limpio) || limpio.startsWith('equipo') || limpio.startsWith('ganador') || limpio === 'campeón') {
-                return null;
-            }
-            return listaEquiposGlobal.find(e => String(e.nombre || '').trim().toLowerCase() === limpio) || null;
-        }
-
-        function obtenerBadgeLogo(nombre, sizeClass = 'w-5 h-5') {
-            const eq = buscarEquipoPorNombre(nombre);
-            if (eq && eq.logo_url) {
-                return `<img src="${eq.logo_url}" class="${sizeClass} object-contain bg-black p-0.5 rounded border border-white/15 shrink-0">`;
-            }
-            const iniciales = String(nombre || '?').substring(0, 2).toUpperCase();
-            return `<div class="${sizeClass} bg-white/5 border border-white/10 rounded flex items-center justify-center text-[8px] font-black text-gray-400 shrink-0">${iniciales}</div>`;
-        }
-
-        function renderSlotGrupo(slot, letraGrupo, idxSlot) {
-            const claseEstado = slot.estado === 'clasificado' ? 'slot-qualified' : (slot.estado === 'eliminado' ? 'slot-eliminated' : '');
-            const nombreSeguro = limpiarTexto(slot.nombre);
-
-            return `
-                <div onclick="abrirCaraACaraDesdeGrupo('${nombreSeguro}', '${letraGrupo}', ${idxSlot})" 
-                     class="slot-item ${claseEstado} px-2 py-1.5 rounded flex items-center justify-between gap-2 cursor-pointer"
-                     title="Haz clic para ver el Cara a Cara (VS) y Roster">
-                    <div class="flex items-center gap-2 truncate">
-                        ${obtenerBadgeLogo(slot.nombre, 'w-5 h-5')}
-                        <span class="text-[11px] font-bold text-gray-100 truncate">${slot.nombre}</span>
-                    </div>
-                    ${slot.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${slot.extra}</span>` : ''}
-                </div>
-            `;
-        }
-
-        function renderCajaGrupo(letra, listaSlots, colorHeader) {
-            const filas = (listaSlots || []).map((s, idx) => renderSlotGrupo(s, letra, idx)).join('');
-            return `
-                <div class="bg-[#0b0d14] border border-white/10 rounded overflow-hidden flex flex-col">
-                    <div class="${colorHeader} py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase tracking-widest text-white">
-                        <span>GRUPO ${letra}</span>
-                        <span class="text-[8px] opacity-80">VS ↗</span>
-                    </div>
-                    <div class="p-2 flex flex-col gap-1">
-                        ${filas}
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderBoard(d) {
-            const board = document.getElementById('tournament-board');
-            if (!board) return;
-
-            const eqCampeon = buscarEquipoPorNombre(d.final.campeon);
-
-            const rankingHtml = (d.fase3 || []).map((r, idx) => {
-                const esElim = idx >= 4 || r.eliminado;
-                const badgeColor = esElim ? 'bg-gradient-to-b from-red-600 to-red-800 border-red-400/40' : 'bg-gradient-to-b from-emerald-500 to-emerald-700 border-emerald-300/40';
-                const rowBorder = esElim ? 'border-red-500/30 bg-red-950/10' : 'border-emerald-500/30 bg-emerald-950/10';
-                const nomSeguro = limpiarTexto(r.nombre);
-
-                return `
-                    <div onclick="abrirModalCaraACara('${nomSeguro}', '', 'FASE 3 • RANKING DESEMPEÑO', '', '')" 
-                         class="flex items-center gap-2.5 p-1.5 rounded border ${rowBorder} cursor-pointer hover:border-white/40 transition-all">
-                        <div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs text-white border ${badgeColor} shrink-0">
-                            ${idx + 1}
-                        </div>
-                        <div class="flex items-center gap-2 flex-1 truncate">
-                            ${obtenerBadgeLogo(r.nombre, 'w-5 h-5')}
-                            <span class="text-xs font-bold ${esElim ? 'text-gray-400' : 'text-white'} truncate">${r.nombre}</span>
-                        </div>
-                        <span class="text-[9px] font-black ${esElim ? 'text-red-400' : 'text-emerald-400'} uppercase pr-1 shrink-0">
-                            ${r.rd || (esElim ? '(ELIMINADO)' : '')}
-                        </span>
-                    </div>
-                `;
-            }).join('');
-
-            const sf1_eq1 = limpiarTexto(d.fase4.sf1.eq1);
-            const sf1_eq2 = limpiarTexto(d.fase4.sf1.eq2);
-            const sf2_eq1 = limpiarTexto(d.fase4.sf2.eq1);
-            const sf2_eq2 = limpiarTexto(d.fase4.sf2.eq2);
-            const fin_eq1 = limpiarTexto(d.final.eq1);
-            const fin_eq2 = limpiarTexto(d.final.eq2);
-            const camp = limpiarTexto(d.final.campeon);
-
-            board.innerHTML = `
                 <!-- COLUMNA 1: FASE 1 (24 EQUIPOS) -->
                 <div class="phase-col w-[350px] shrink-0 p-4 flex flex-col justify-between">
                     <div>
@@ -308,7 +104,6 @@
                             <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">FASE DE GRUPOS</p>
                             <p class="text-xs font-black uppercase tracking-wider text-white">24 EQUIPOS</p>
                         </div>
-
                         <div class="bg-gradient-to-r from-red-900/80 via-red-700/80 to-red-900/80 border border-red-500/40 rounded p-2 text-center mb-4">
                             <div class="flex justify-center items-center gap-2 text-[10px] font-black uppercase tracking-wider">
                                 <span>4 GRUPOS DE 6</span>
@@ -318,15 +113,14 @@
                                 AVANZAN 3 POR GRUPO (12 EQUIPOS)
                             </p>
                         </div>
-
-                        <div class="grid grid-cols-2 gap-2.5">
-                            ${renderCajaGrupo('A', d.fase1.A, 'bg-gradient-to-r from-red-800 to-red-600')}
-                            ${renderCajaGrupo('B', d.fase1.B, 'bg-gradient-to-r from-red-800 to-red-600')}
-                            ${renderCajaGrupo('C', d.fase1.C, 'bg-gradient-to-r from-red-800 to-red-600')}
-                            ${renderCajaGrupo('D', d.fase1.D, 'bg-gradient-to-r from-red-800 to-red-600')}
+                        <!-- Contenedor de Grupos A, B, C, D -->
+                        <div id="col-fase1-grupos" class="grid grid-cols-2 gap-2.5">
+                            <div class="bg-[#0b0d14] border border-white/10 rounded overflow-hidden"><div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 text-center font-black text-[10px]">GRUPO A</div><div class="p-2 flex flex-col gap-1 text-[11px] font-bold text-gray-300"><div class="slot-item px-2 py-1.5 rounded">A1</div><div class="slot-item px-2 py-1.5 rounded">A2</div><div class="slot-item px-2 py-1.5 rounded">A3</div><div class="slot-item px-2 py-1.5 rounded">A4</div><div class="slot-item px-2 py-1.5 rounded">A5</div><div class="slot-item px-2 py-1.5 rounded">A6</div></div></div>
+                            <div class="bg-[#0b0d14] border border-white/10 rounded overflow-hidden"><div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 text-center font-black text-[10px]">GRUPO B</div><div class="p-2 flex flex-col gap-1 text-[11px] font-bold text-gray-300"><div class="slot-item px-2 py-1.5 rounded">B1</div><div class="slot-item px-2 py-1.5 rounded">B2</div><div class="slot-item px-2 py-1.5 rounded">B3</div><div class="slot-item px-2 py-1.5 rounded">B4</div><div class="slot-item px-2 py-1.5 rounded">B5</div><div class="slot-item px-2 py-1.5 rounded">B6</div></div></div>
+                            <div class="bg-[#0b0d14] border border-white/10 rounded overflow-hidden"><div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 text-center font-black text-[10px]">GRUPO C</div><div class="p-2 flex flex-col gap-1 text-[11px] font-bold text-gray-300"><div class="slot-item px-2 py-1.5 rounded">C1</div><div class="slot-item px-2 py-1.5 rounded">C2</div><div class="slot-item px-2 py-1.5 rounded">C3</div><div class="slot-item px-2 py-1.5 rounded">C4</div><div class="slot-item px-2 py-1.5 rounded">C5</div><div class="slot-item px-2 py-1.5 rounded">C6</div></div></div>
+                            <div class="bg-[#0b0d14] border border-white/10 rounded overflow-hidden"><div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 text-center font-black text-[10px]">GRUPO D</div><div class="p-2 flex flex-col gap-1 text-[11px] font-bold text-gray-300"><div class="slot-item px-2 py-1.5 rounded">D1</div><div class="slot-item px-2 py-1.5 rounded">D2</div><div class="slot-item px-2 py-1.5 rounded">D3</div><div class="slot-item px-2 py-1.5 rounded">D4</div><div class="slot-item px-2 py-1.5 rounded">D5</div><div class="slot-item px-2 py-1.5 rounded">D6</div></div></div>
                         </div>
                     </div>
-
                     <div class="mt-4 bg-red-950/30 border border-red-500/30 rounded p-2.5 text-center">
                         <p class="text-[10px] font-black uppercase text-red-200">12 EQUIPOS ELIMINADOS</p>
                         <p class="text-[9px] text-gray-400">(Últimos 3 de cada grupo)</p>
@@ -343,7 +137,6 @@
                             <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">FASE DE GRUPOS</p>
                             <p class="text-xs font-black uppercase tracking-wider text-white">12 EQUIPOS</p>
                         </div>
-
                         <div class="bg-gradient-to-r from-blue-900/80 via-blue-700/80 to-blue-900/80 border border-blue-400/40 rounded p-2 text-center mb-4">
                             <div class="flex justify-center items-center gap-2 text-[10px] font-black uppercase tracking-wider">
                                 <span>2 GRUPOS DE 6</span>
@@ -353,13 +146,11 @@
                                 AVANZAN 3 POR GRUPO (6 EQUIPOS)
                             </p>
                         </div>
-
-                        <div class="flex flex-col gap-3">
-                            ${renderCajaGrupo('E', d.fase2.E, 'bg-gradient-to-r from-blue-800 to-blue-600')}
-                            ${renderCajaGrupo('F', d.fase2.F, 'bg-gradient-to-r from-blue-800 to-blue-600')}
+                        <div id="col-fase2-grupos" class="flex flex-col gap-3">
+                            <div class="bg-[#0b0d14] border border-white/10 rounded overflow-hidden"><div class="bg-gradient-to-r from-blue-800 to-blue-600 py-1.5 px-3 text-center font-black text-[10px]">GRUPO E</div><div class="p-2 flex flex-col gap-1 text-[11px] font-bold text-gray-300"><div class="slot-item px-2 py-1.5 rounded">E1</div><div class="slot-item px-2 py-1.5 rounded">E2</div><div class="slot-item px-2 py-1.5 rounded">E3</div><div class="slot-item px-2 py-1.5 rounded">E4</div><div class="slot-item px-2 py-1.5 rounded">E5</div><div class="slot-item px-2 py-1.5 rounded">E6</div></div></div>
+                            <div class="bg-[#0b0d14] border border-white/10 rounded overflow-hidden"><div class="bg-gradient-to-r from-blue-800 to-blue-600 py-1.5 px-3 text-center font-black text-[10px]">GRUPO F</div><div class="p-2 flex flex-col gap-1 text-[11px] font-bold text-gray-300"><div class="slot-item px-2 py-1.5 rounded">F1</div><div class="slot-item px-2 py-1.5 rounded">F2</div><div class="slot-item px-2 py-1.5 rounded">F3</div><div class="slot-item px-2 py-1.5 rounded">F4</div><div class="slot-item px-2 py-1.5 rounded">F5</div><div class="slot-item px-2 py-1.5 rounded">F6</div></div></div>
                         </div>
                     </div>
-
                     <div class="mt-4 bg-blue-950/30 border border-blue-500/30 rounded p-2.5 text-center">
                         <p class="text-[10px] font-black uppercase text-blue-200">6 EQUIPOS ELIMINADOS</p>
                         <p class="text-[9px] text-gray-400">(Últimos 3 de cada grupo)</p>
@@ -376,19 +167,21 @@
                             <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">SELECCIÓN FINAL</p>
                             <p class="text-xs font-black uppercase tracking-wider text-white">6 EQUIPOS</p>
                         </div>
-
                         <div class="bg-gradient-to-r from-indigo-900/80 via-purple-800/80 to-indigo-900/80 border border-purple-400/40 rounded p-2 text-center mb-4">
                             <p class="text-[10px] font-black uppercase tracking-wider text-white">RANKING POR DESEMPEÑO</p>
                             <p class="text-[9px] text-gray-200 mt-1 border-t border-white/10 pt-1">
                                 Se ordenan los 6 equipos por diferencia de rondas.
                             </p>
                         </div>
-
-                        <div class="flex flex-col gap-2.5 my-4">
-                            ${rankingHtml}
+                        <div id="col-fase3-ranking" class="flex flex-col gap-2.5 my-4">
+                            <div class="flex items-center gap-2.5 p-1.5 rounded border border-emerald-500/30 bg-emerald-950/10"><div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs bg-emerald-600">1</div><span class="text-xs font-bold text-white">Equipo</span></div>
+                            <div class="flex items-center gap-2.5 p-1.5 rounded border border-emerald-500/30 bg-emerald-950/10"><div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs bg-emerald-600">2</div><span class="text-xs font-bold text-white">Equipo</span></div>
+                            <div class="flex items-center gap-2.5 p-1.5 rounded border border-emerald-500/30 bg-emerald-950/10"><div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs bg-emerald-600">3</div><span class="text-xs font-bold text-white">Equipo</span></div>
+                            <div class="flex items-center gap-2.5 p-1.5 rounded border border-emerald-500/30 bg-emerald-950/10"><div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs bg-emerald-600">4</div><span class="text-xs font-bold text-white">Equipo</span></div>
+                            <div class="flex items-center justify-between gap-2.5 p-1.5 rounded border border-red-500/30 bg-red-950/10"><div class="flex items-center gap-2.5"><div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs bg-red-600">5</div><span class="text-xs font-bold text-gray-400">Equipo</span></div><span class="text-[9px] font-black text-red-400 pr-1">(ELIMINADO)</span></div>
+                            <div class="flex items-center justify-between gap-2.5 p-1.5 rounded border border-red-500/30 bg-red-950/10"><div class="flex items-center gap-2.5"><div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs bg-red-600">6</div><span class="text-xs font-bold text-gray-400">Equipo</span></div><span class="text-[9px] font-black text-red-400 pr-1">(ELIMINADO)</span></div>
                         </div>
                     </div>
-
                     <div class="mt-4 bg-red-950/30 border border-red-500/30 rounded p-2.5 text-center">
                         <p class="text-[10px] font-bold text-red-200">Se eliminan 2 equipos por diferencia de rondas.</p>
                     </div>
@@ -404,7 +197,6 @@
                             <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">SEMIFINALES</p>
                             <p class="text-xs font-black uppercase tracking-wider text-white">4 EQUIPOS</p>
                         </div>
-
                         <div class="bg-gradient-to-r from-amber-700/80 via-yellow-600/80 to-amber-700/80 border border-everGold/50 rounded p-2 text-center mb-6">
                             <p class="text-[10px] font-black uppercase tracking-wider text-white">2 ENFRENTAMIENTOS</p>
                             <div class="flex justify-center items-center gap-2 text-[9px] font-black uppercase mt-1 border-t border-white/15 pt-1">
@@ -413,52 +205,18 @@
                             </div>
                             <p class="text-[8px] font-bold uppercase tracking-widest text-white mt-1">PASA 1 POR GRUPO</p>
                         </div>
-
-                        <!-- SEMIFINAL 1 -->
-                        <div onclick="abrirModalCaraACara('${sf1_eq1}', '${sf1_eq2}', 'SEMIFINAL 1 • BO5', '${limpiarTexto(d.fase4.sf1.score1)}', '${limpiarTexto(d.fase4.sf1.score2)}')" 
-                             class="match-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6 cursor-pointer">
-                            <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-everGold mb-2 pb-1 border-b border-white/10">
-                                <span>SEMIFINAL 1</span>
-                                <span class="text-[8px] bg-everGold/15 px-1.5 py-0.5 rounded">VER VS ⚔️</span>
+                        <div id="col-fase4-semis">
+                            <div class="match-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6">
+                                <div class="text-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 1</div>
+                                <div class="slot-item p-2 rounded text-xs font-bold text-white mb-1.5">Equipo 1</div>
+                                <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
+                                <div class="slot-item p-2 rounded text-xs font-bold text-white">Equipo 2</div>
                             </div>
-                            <div class="slot-item p-2 rounded flex justify-between items-center gap-2 mb-1.5">
-                                <div class="flex items-center gap-2 truncate">
-                                    ${obtenerBadgeLogo(d.fase4.sf1.eq1, 'w-6 h-6')}
-                                    <span class="text-xs font-bold text-white truncate">${d.fase4.sf1.eq1}</span>
-                                </div>
-                                <span class="text-xs font-black text-everGold shrink-0">${d.fase4.sf1.score1 || '-'}</span>
-                            </div>
-                            <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
-                            <div class="slot-item p-2 rounded flex justify-between items-center gap-2">
-                                <div class="flex items-center gap-2 truncate">
-                                    ${obtenerBadgeLogo(d.fase4.sf1.eq2, 'w-6 h-6')}
-                                    <span class="text-xs font-bold text-white truncate">${d.fase4.sf1.eq2}</span>
-                                </div>
-                                <span class="text-xs font-black text-everGold shrink-0">${d.fase4.sf1.score2 || '-'}</span>
-                            </div>
-                        </div>
-
-                        <!-- SEMIFINAL 2 -->
-                        <div onclick="abrirModalCaraACara('${sf2_eq1}', '${sf2_eq2}', 'SEMIFINAL 2 • BO5', '${limpiarTexto(d.fase4.sf2.score1)}', '${limpiarTexto(d.fase4.sf2.score2)}')" 
-                             class="match-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 cursor-pointer">
-                            <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-everGold mb-2 pb-1 border-b border-white/10">
-                                <span>SEMIFINAL 2</span>
-                                <span class="text-[8px] bg-everGold/15 px-1.5 py-0.5 rounded">VER VS ⚔️</span>
-                            </div>
-                            <div class="slot-item p-2 rounded flex justify-between items-center gap-2 mb-1.5">
-                                <div class="flex items-center gap-2 truncate">
-                                    ${obtenerBadgeLogo(d.fase4.sf2.eq1, 'w-6 h-6')}
-                                    <span class="text-xs font-bold text-white truncate">${d.fase4.sf2.eq1}</span>
-                                </div>
-                                <span class="text-xs font-black text-everGold shrink-0">${d.fase4.sf2.score1 || '-'}</span>
-                            </div>
-                            <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
-                            <div class="slot-item p-2 rounded flex justify-between items-center gap-2">
-                                <div class="flex items-center gap-2 truncate">
-                                    ${obtenerBadgeLogo(d.fase4.sf2.eq2, 'w-6 h-6')}
-                                    <span class="text-xs font-bold text-white truncate">${d.fase4.sf2.eq2}</span>
-                                </div>
-                                <span class="text-xs font-black text-everGold shrink-0">${d.fase4.sf2.score2 || '-'}</span>
+                            <div class="match-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3">
+                                <div class="text-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 2</div>
+                                <div class="slot-item p-2 rounded text-xs font-bold text-white mb-1.5">Equipo 3</div>
+                                <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
+                                <div class="slot-item p-2 rounded text-xs font-bold text-white">Equipo 4</div>
                             </div>
                         </div>
                     </div>
@@ -467,237 +225,336 @@
 
                 <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
 
-                <!-- COLUMNA 5: GRAN FINAL -->
+                <!-- COLUMNA 5: GRAN FINAL (2 EQUIPOS) -->
                 <div class="phase-col w-[250px] shrink-0 p-4 flex flex-col justify-between border-vctRed/40">
                     <div>
                         <div class="text-center mb-4">
                             <h2 class="text-xl font-black uppercase tracking-wider text-vctRed">GRAN FINAL</h2>
                             <p class="text-xs font-black uppercase tracking-wider text-white mt-1">2 EQUIPOS</p>
                         </div>
-
                         <div class="bg-gradient-to-r from-red-800 via-vctRed to-red-800 border border-red-400/40 rounded py-2 text-center font-black text-xs uppercase tracking-widest mb-6">
                             BO5 • CARA A CARA
                         </div>
-
-                        <div onclick="abrirModalCaraACara('${fin_eq1}', '${fin_eq2}', 'GRAN FINAL • BO5', '${limpiarTexto(d.final.score1)}', '${limpiarTexto(d.final.score2)}')" 
-                             class="match-box bg-[#0b0d14] border border-white/20 rounded-lg p-3.5 mb-6 cursor-pointer">
-                            <div class="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-vctRed mb-2 pb-1 border-b border-white/10">
-                                <span>DUELO POR EL TÍTULO</span>
-                                <span>VER VS ⚔️</span>
-                            </div>
-                            <div class="slot-item p-2.5 rounded flex justify-between items-center gap-2 mb-2">
-                                <div class="flex items-center gap-2 truncate">
-                                    ${obtenerBadgeLogo(d.final.eq1, 'w-7 h-7')}
-                                    <span class="text-xs font-bold text-white truncate">${d.final.eq1}</span>
-                                </div>
-                                <span class="text-xs font-black text-everGold shrink-0">${d.final.score1 || '-'}</span>
-                            </div>
-                            <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
-                            <div class="slot-item p-2.5 rounded flex justify-between items-center gap-2">
-                                <div class="flex items-center gap-2 truncate">
-                                    ${obtenerBadgeLogo(d.final.eq2, 'w-7 h-7')}
-                                    <span class="text-xs font-bold text-white truncate">${d.final.eq2}</span>
-                                </div>
-                                <span class="text-xs font-black text-everGold shrink-0">${d.final.score2 || '-'}</span>
+                        <div id="col-fase5-final">
+                            <div class="match-box bg-[#0b0d14] border border-white/20 rounded-lg p-3.5 mb-6">
+                                <div class="slot-item p-2.5 rounded text-xs font-bold text-white mb-2">Ganador SF1</div>
+                                <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
+                                <div class="slot-item p-2.5 rounded text-xs font-bold text-white">Ganador SF2</div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- TROFEO Y CAMPEÓN -->
-                    <div onclick="abrirModalCaraACara('${camp}', '', 'CAMPEÓN OFICIAL 5EVER', '', '')" 
-                         class="bg-gradient-to-b from-everGold/15 to-transparent border border-everGold/50 rounded-lg p-4 text-center cursor-pointer hover:border-everGold transition-all">
-                        <div class="text-4xl mb-2 drop-shadow-[0_0_15px_rgba(229,192,92,0.5)]">🏆</div>
-                        ${eqCampeon && eqCampeon.logo_url ? `<img src="${eqCampeon.logo_url}" class="w-16 h-16 mx-auto mb-2 object-contain bg-black p-1.5 rounded border border-everGold shadow-lg">` : ''}
-                        <span class="text-[9px] text-everGold font-black uppercase tracking-[0.3em] block">CAMPEÓN</span>
-                        <h3 class="text-base font-black uppercase tracking-wider text-white mt-1 truncate">${d.final.campeon || 'CAMPEÓN'}</h3>
+                    <div id="col-fase5-campeon" class="bg-gradient-to-b from-everGold/15 to-transparent border border-everGold/50 rounded-lg p-4 text-center">
+                        <div class="text-4xl mb-2">🏆</div>
+                        <span class="text-[9px] text-everGold font-black uppercase tracking-[0.3em] block">VICTORIA SUPREMA</span>
+                        <h3 class="text-base font-black uppercase tracking-wider text-white mt-1">CAMPEÓN</h3>
                     </div>
                 </div>
-            `;
+
+            </div>
+        </div>
+
+        <!-- BARRA INFERIOR DE PROGRESIÓN: 24 > 12 > 6 > 4 > 2 > 1 -->
+        <div class="mt-6 mb-14 bg-[#0a0c12] border border-white/10 rounded-lg py-4 px-6 flex flex-wrap justify-center items-center gap-4 md:gap-8 text-center">
+            <div><span class="text-xl md:text-2xl font-black text-white block">24</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Equipos Iniciales</span></div>
+            <span class="text-gray-600 font-black text-lg">&gt;</span>
+            <div><span class="text-xl md:text-2xl font-black text-white block">12</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Avanzan</span></div>
+            <span class="text-gray-600 font-black text-lg">&gt;</span>
+            <div><span class="text-xl md:text-2xl font-black text-white block">6</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Tras Fase 2</span></div>
+            <span class="text-gray-600 font-black text-lg">&gt;</span>
+            <div><span class="text-xl md:text-2xl font-black text-white block">4</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Tras Eliminación x Desempeño</span></div>
+            <span class="text-gray-600 font-black text-lg">&gt;</span>
+            <div><span class="text-xl md:text-2xl font-black text-white block">2</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Finalistas</span></div>
+            <span class="text-gray-600 font-black text-lg">&gt;</span>
+            <div><span class="text-xl md:text-2xl font-black text-everGold block">1</span><span class="text-[8px] text-everGold font-black uppercase tracking-widest">Campeón</span></div>
+        </div>
+
+        <!-- GALERÍA DE ESCUADRAS REGISTRADAS -->
+        <div class="border-t border-white/10 pt-10">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div>
+                    <h2 class="text-2xl font-black uppercase tracking-wider">ESCUADRAS CONFIRMADAS</h2>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-[0.25em] font-bold mt-1">
+                        Inscritos en el sistema: <span id="cupo-contador" class="text-everGold">CONECTANDO CON BASE DE DATOS...</span>
+                    </p>
+                </div>
+                <input type="text" id="buscador-equipos" placeholder="🔍 Buscar escuadra o Riot ID..." class="bg-[#0b0c10] border border-white/15 focus:border-vctRed px-4 py-3 text-xs font-bold text-white w-full md:w-72 outline-none rounded">
+            </div>
+            <div id="grid-equipos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </div>
+
+    </main>
+
+    <!-- MODAL CARA A CARA (VS) -->
+    <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-[#08090f] border border-white/20 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[92vh] overflow-y-auto relative shadow-2xl">
+            <button onclick="cerrarModal()" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black">✕</button>
+            <div id="modal-vs-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://bane-esports-web-1.onrender.com/api';
+        let listaEquiposGlobal = [];
+
+        function crearEstructuraPorDefecto() {
+            return {
+                version: '24_grupos_v1',
+                fase1: {
+                    A: ['A1','A2','A3','A4','A5','A6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    B: ['B1','B2','B3','B4','B5','B6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    C: ['C1','C2','C3','C4','C5','C6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    D: ['D1','D2','D3','D4','D5','D6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+                },
+                fase2: {
+                    E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+                },
+                fase3: [
+                    { pos: 1, nombre: 'Equipo', rd: '', eliminado: false },
+                    { pos: 2, nombre: 'Equipo', rd: '', eliminado: false },
+                    { pos: 3, nombre: 'Equipo', rd: '', eliminado: false },
+                    { pos: 4, nombre: 'Equipo', rd: '', eliminado: false },
+                    { pos: 5, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true },
+                    { pos: 6, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true }
+                ],
+                fase4: {
+                    sf1: { eq1: 'Equipo 1', eq2: 'Equipo 2', score1: '', score2: '' },
+                    sf2: { eq1: 'Equipo 3', eq2: 'Equipo 4', score1: '', score2: '' }
+                },
+                final: { eq1: 'Ganador SF1', eq2: 'Ganador SF2', score1: '', score2: '', campeon: 'CAMPEÓN' }
+            };
         }
 
-        // 1. DIBUJAR EL BRACKET INSTANTÁNEAMENTE AL ABRIR LA PÁGINA (SIN ESPERAR A RENDER)
-        renderBoard(tournamentData);
+        let tournamentData = crearEstructuraPorDefecto();
 
-        // 2. CARGAR DATOS EN SEGUNDO PLANO DE FORMA INDEPENDIENTE
-        document.addEventListener('DOMContentLoaded', () => {
-            cargarBracketEnSegundoPlano();
-            cargarEquiposEnSegundoPlano();
+        function limpiar(t) { return String(t || '').replace(/['"\\]/g, ''); }
 
-            document.getElementById('buscador-equipos').addEventListener('input', (e) => {
-                renderEquipos(e.target.value.toLowerCase());
-            });
-        });
+        function buscarEquipo(nombre) {
+            if (!nombre) return null;
+            const n = String(nombre).trim().toLowerCase();
+            if (/^[a-f][1-6]$/.test(n) || n.startsWith('equipo') || n.startsWith('ganador') || n === 'campeón') return null;
+            return listaEquiposGlobal.find(e => String(e.nombre || '').trim().toLowerCase() === n) || null;
+        }
 
-        async function cargarBracketEnSegundoPlano() {
+        function badgeLogo(nombre, cls = 'w-5 h-5') {
+            const eq = buscarEquipo(nombre);
+            if (eq && eq.logo_url) return `<img src="${eq.logo_url}" class="${cls} object-contain bg-black p-0.5 rounded border border-white/15 shrink-0">`;
+            const ini = String(nombre || '?').substring(0, 2).toUpperCase();
+            return `<div class="${cls} bg-white/5 border border-white/10 rounded flex items-center justify-center text-[8px] font-black text-gray-400 shrink-0">${ini}</div>`;
+        }
+
+        function htmlCajaGrupo(letra, slots, headerClass) {
+            const filas = (slots || []).map((s, idx) => {
+                const est = s.estado === 'clasificado' ? 'slot-qualified' : (s.estado === 'eliminado' ? 'slot-eliminated' : '');
+                const otroIdx = idx % 2 === 0 ? idx + 1 : idx - 1;
+                const rival = slots[otroIdx] ? limpiar(slots[otroIdx].nombre) : '';
+                return `
+                    <div onclick="abrirModalCaraACara('${limpiar(s.nombre)}', '${rival}', 'GRUPO ${letra} • BO3', '', '')" 
+                         class="slot-item ${est} px-2 py-1.5 rounded flex items-center justify-between gap-2 cursor-pointer">
+                        <div class="flex items-center gap-2 truncate">
+                            ${badgeLogo(s.nombre, 'w-5 h-5')}
+                            <span class="text-[11px] font-bold text-gray-100 truncate">${s.nombre}</span>
+                        </div>
+                        ${s.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${s.extra}</span>` : ''}
+                    </div>`;
+            }).join('');
+            return `
+                <div class="bg-[#0b0d14] border border-white/10 rounded overflow-hidden flex flex-col">
+                    <div class="${headerClass} py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase text-white">
+                        <span>GRUPO ${letra}</span><span class="text-[8px] opacity-80">VS ↗</span>
+                    </div>
+                    <div class="p-2 flex flex-col gap-1">${filas}</div>
+                </div>`;
+        }
+
+        function actualizarTableroVisual(d) {
+            // Fase 1
+            document.getElementById('col-fase1-grupos').innerHTML = ['A','B','C','D']
+                .map(g => htmlCajaGrupo(g, d.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600')).join('');
+
+            // Fase 2
+            document.getElementById('col-fase2-grupos').innerHTML = ['E','F']
+                .map(g => htmlCajaGrupo(g, d.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600')).join('');
+
+            // Fase 3
+            document.getElementById('col-fase3-ranking').innerHTML = (d.fase3 || []).map((r, i) => {
+                const elim = i >= 4 || r.eliminado;
+                return `
+                    <div onclick="abrirModalCaraACara('${limpiar(r.nombre)}', '', 'FASE 3 • RANKING DESEMPEÑO', '', '')" 
+                         class="flex items-center gap-2.5 p-1.5 rounded border ${elim ? 'border-red-500/30 bg-red-950/10' : 'border-emerald-500/30 bg-emerald-950/10'} cursor-pointer hover:border-white/40">
+                        <div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs text-white ${elim ? 'bg-red-600' : 'bg-emerald-600'} shrink-0">${i + 1}</div>
+                        <div class="flex items-center gap-2 flex-1 truncate">
+                            ${badgeLogo(r.nombre, 'w-5 h-5')}
+                            <span class="text-xs font-bold ${elim ? 'text-gray-400' : 'text-white'} truncate">${r.nombre}</span>
+                        </div>
+                        <span class="text-[9px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} uppercase pr-1 shrink-0">${r.rd || (elim ? '(ELIMINADO)' : '')}</span>
+                    </div>`;
+            }).join('');
+
+            // Fase 4 (Semifinales)
+            const sfCard = (titulo, m) => `
+                <div onclick="abrirModalCaraACara('${limpiar(m.eq1)}', '${limpiar(m.eq2)}', '${titulo} • BO5', '${limpiar(m.score1)}', '${limpiar(m.score2)}')" 
+                     class="match-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6 cursor-pointer">
+                    <div class="flex justify-between items-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">
+                        <span>${titulo}</span><span class="text-[8px] bg-everGold/15 px-1.5 py-0.5 rounded">VER VS ⚔️</span>
+                    </div>
+                    <div class="slot-item p-2 rounded flex justify-between items-center gap-2 mb-1.5">
+                        <div class="flex items-center gap-2 truncate">${badgeLogo(m.eq1, 'w-6 h-6')}<span class="text-xs font-bold text-white truncate">${m.eq1}</span></div>
+                        <span class="text-xs font-black text-everGold">${m.score1 || '-'}</span>
+                    </div>
+                    <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
+                    <div class="slot-item p-2 rounded flex justify-between items-center gap-2">
+                        <div class="flex items-center gap-2 truncate">${badgeLogo(m.eq2, 'w-6 h-6')}<span class="text-xs font-bold text-white truncate">${m.eq2}</span></div>
+                        <span class="text-xs font-black text-everGold">${m.score2 || '-'}</span>
+                    </div>
+                </div>`;
+            document.getElementById('col-fase4-semis').innerHTML = sfCard('SEMIFINAL 1', d.fase4.sf1) + sfCard('SEMIFINAL 2', d.fase4.sf2);
+
+            // Gran Final y Campeón
+            const fin = d.final;
+            document.getElementById('col-fase5-final').innerHTML = sfCard('GRAN FINAL', fin);
+            const eqCamp = buscarEquipo(fin.campeon);
+            document.getElementById('col-fase5-campeon').innerHTML = `
+                <div onclick="abrirModalCaraACara('${limpiar(fin.campeon)}', '', 'CAMPEÓN OFICIAL 5EVER', '', '')" class="cursor-pointer">
+                    <div class="text-4xl mb-2">🏆</div>
+                    ${eqCamp && eqCamp.logo_url ? `<img src="${eqCamp.logo_url}" class="w-16 h-16 mx-auto mb-2 object-contain bg-black p-1.5 rounded border border-everGold">` : ''}
+                    <span class="text-[9px] text-everGold font-black uppercase tracking-[0.3em] block">CAMPEÓN</span>
+                    <h3 class="text-base font-black uppercase tracking-wider text-white mt-1 truncate">${fin.campeon || 'CAMPEÓN'}</h3>
+                </div>`;
+        }
+
+        // Inicializar eventos interactivos inmediatamente
+        actualizarTableroVisual(tournamentData);
+
+        async function sincronizarServidor() {
             try {
                 const resNot = await fetch(`${API_URL}/noticias`);
                 const noticias = await resNot.json();
-                const bd = (noticias || []).find(n => n.titulo === '[BRACKET_DATA]');
-                if (bd && bd.descripcion) {
-                    const parsed = JSON.parse(bd.descripcion);
-                    if (parsed && parsed.version === '24_grupos_v1') {
-                        tournamentData = parsed;
-                        renderBoard(tournamentData);
+                if (Array.isArray(noticias)) {
+                    noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+                    const bd = noticias.find(n => n.titulo === '[BRACKET_DATA]');
+                    if (bd && bd.descripcion) {
+                        const parsed = JSON.parse(bd.descripcion);
+                        if (parsed && parsed.version === '24_grupos_v1') {
+                            tournamentData = parsed;
+                            actualizarTableroVisual(tournamentData);
+                        }
                     }
                 }
-            } catch (e) {
-                console.warn("Usando plantilla local mientras responde el servidor:", e);
-            }
-        }
+            } catch (e) {}
 
-        async function cargarEquiposEnSegundoPlano() {
             try {
                 const resEq = await fetch(`${API_URL}/equipos`);
-                const data = await resEq.json();
-                if (Array.isArray(data)) {
-                    listaEquiposGlobal = data;
+                const eqs = await resEq.json();
+                if (Array.isArray(eqs)) {
+                    listaEquiposGlobal = eqs;
+                    document.getElementById('cupo-contador').innerText = `${listaEquiposGlobal.length} / 24 EQUIPOS`;
+                    document.getElementById('estado-servidor').innerText = `✔ En línea (${listaEquiposGlobal.length} escuadras)`;
+                    renderEquipos('');
+                    actualizarTableroVisual(tournamentData);
                 }
-                document.getElementById('cupo-contador').innerText = `${listaEquiposGlobal.length} / 24 EQUIPOS`;
-                document.getElementById('estado-sincronizacion').innerText = `✔ Arena conectada (${listaEquiposGlobal.length} equipos)`;
-                renderEquipos('');
-                // Redibujar el bracket para inyectar los logos de los equipos recién descargados
-                renderBoard(tournamentData);
             } catch (e) {
-                console.error("Error al cargar equipos:", e);
-                document.getElementById('cupo-contador').innerText = `SERVIDOR DESPERTANDO... RECARGA EN 15s`;
+                document.getElementById('estado-servidor').innerText = `⏳ Despertando servidor de Render... reintentando`;
+                setTimeout(sincronizarServidor, 5000);
             }
         }
 
-        function abrirCaraACaraDesdeGrupo(nombreEq1, letraGrupo, idxSlot) {
-            const listaGrupo = (tournamentData.fase1[letraGrupo] || tournamentData.fase2[letraGrupo] || []);
-            const otroIdx = idxSlot % 2 === 0 ? idxSlot + 1 : idxSlot - 1;
-            const nombreEq2 = listaGrupo[otroIdx] ? listaGrupo[otroIdx].nombre : '';
-            abrirModalCaraACara(nombreEq1, nombreEq2, `GRUPO ${letraGrupo} • FASE DE GRUPOS (BO3)`, '', '');
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            sincronizarServidor();
+            document.getElementById('buscador-equipos').addEventListener('input', (e) => renderEquipos(e.target.value.toLowerCase()));
+        });
 
         function abrirModalCaraACara(nombre1, nombre2, tituloFase, score1 = '', score2 = '') {
-            const eq1 = buscarEquipoPorNombre(nombre1);
-            const eq2 = buscarEquipoPorNombre(nombre2);
+            const eq1 = buscarEquipo(nombre1);
+            const eq2 = buscarEquipo(nombre2);
 
-            let opcionesRival = `<option value="">-- Seleccionar otro rival para comparar --</option>`;
+            let opciones = `<option value="">-- Seleccionar otro rival para comparar --</option>`;
             listaEquiposGlobal.forEach(e => {
                 const nom = String(e.nombre || '');
                 const sel = (nombre2 && nom.toLowerCase() === String(nombre2).toLowerCase()) ? 'selected' : '';
-                opcionesRival += `<option value="${limpiarTexto(nom)}" ${sel}>${nom} (${e.rango || 'Sin rango'})</option>`;
+                opciones += `<option value="${limpiar(nom)}" ${sel}>${nom} (${e.rango || 'Sin rango'})</option>`;
             });
 
-            const renderColumnaEquipo = (nombreTexto, eqObj, ladoColor) => {
+            const colHtml = (nomTxt, eqObj, colorBorde) => {
                 if (!eqObj) {
                     return `
-                        <div class="bg-[#0c0e16] border border-white/10 rounded-lg p-5 text-center flex flex-col items-center justify-center min-h-[260px]">
-                            <div class="w-16 h-16 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-xl font-black text-gray-500 mb-3">?</div>
-                            <h4 class="text-base font-black uppercase text-white tracking-wider">${nombreTexto || 'POR DEFINIR'}</h4>
-                            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-2">Escuadra pendiente de asignar en esta casilla</p>
-                        </div>
-                    `;
+                        <div class="bg-[#0c0e16] border border-white/10 rounded-lg p-5 text-center flex flex-col items-center justify-center min-h-[240px]">
+                            <div class="w-14 h-14 rounded bg-white/5 border border-white/10 flex items-center justify-center text-xl font-black text-gray-500 mb-3">?</div>
+                            <h4 class="text-base font-black uppercase text-white">${nomTxt || 'POR DEFINIR'}</h4>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Casilla pendiente de sorteo</p>
+                        </div>`;
                 }
-
-                let rosterHtml = '';
-                (eqObj.jugadores || []).forEach(j => {
-                    rosterHtml += `
-                        <div class="bg-[#121520] border-l-2 ${ladoColor} p-2.5 rounded-r flex justify-between items-center gap-2 mb-2">
-                            <div class="truncate">
-                                <span class="text-[8px] text-everGold font-black uppercase tracking-widest block">${j.role || 'TITULAR'}</span>
-                                <span class="text-xs font-black text-white truncate block">${j.riot_id || ''}</span>
-                            </div>
-                            <a href="${j.tracker_url || '#'}" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded shrink-0 transition-colors">
-                                TRACKER ↗
-                            </a>
+                const jugHtml = (eqObj.jugadores || []).map(j => `
+                    <div class="bg-[#121520] border-l-2 ${colorBorde} p-2.5 rounded-r flex justify-between items-center gap-2 mb-2">
+                        <div class="truncate">
+                            <span class="text-[8px] text-everGold font-black uppercase block">${j.role || 'TITULAR'}</span>
+                            <span class="text-xs font-black text-white truncate block">${j.riot_id || ''}</span>
                         </div>
-                    `;
-                });
+                        <a href="${j.tracker_url || '#'}" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded shrink-0">TRACKER ↗</a>
+                    </div>`).join('');
 
                 return `
                     <div class="bg-[#0c0e16] border border-white/15 rounded-lg p-5">
-                        <div class="flex items-center gap-4 mb-5 pb-4 border-b border-white/10">
-                            <img src="${eqObj.logo_url || ''}" class="w-16 h-16 object-contain bg-black p-1.5 rounded border border-white/15 shrink-0">
+                        <div class="flex items-center gap-4 mb-4 pb-3 border-b border-white/10">
+                            <img src="${eqObj.logo_url || ''}" class="w-14 h-14 object-contain bg-black p-1 rounded border border-white/15 shrink-0">
                             <div class="truncate">
-                                <span class="text-[9px] text-everGold font-black uppercase tracking-widest block">${eqObj.rango || 'Rango Oficial'}</span>
+                                <span class="text-[9px] text-everGold font-black uppercase block">${eqObj.rango || 'Rango Oficial'}</span>
                                 <h4 class="text-lg font-black uppercase text-white truncate">${eqObj.nombre}</h4>
-                                <span class="text-[9px] text-gray-400 font-bold uppercase block">Capitán DC: ${eqObj.discord || 'N/A'}</span>
                             </div>
                         </div>
-                        <div class="max-h-[300px] overflow-y-auto pr-1">
-                            ${rosterHtml}
-                        </div>
-                    </div>
-                `;
+                        <div class="max-h-[280px] overflow-y-auto pr-1">${jugHtml}</div>
+                    </div>`;
             };
-
-            const nom1Seguro = limpiarTexto(nombre1);
-            const faseSegura = limpiarTexto(tituloFase);
 
             document.getElementById('modal-vs-content').innerHTML = `
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6 pb-4 border-b border-white/10 pr-8">
                     <div>
-                        <span class="text-[10px] text-vctRed font-black uppercase tracking-[0.25em] block">${tituloFase || 'DUELO OFICIAL'}</span>
-                        <h3 class="text-xl md:text-2xl font-black uppercase tracking-wider text-white">⚔️ CARA A CARA • COMPARADOR DE ROSTERS</h3>
+                        <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">${tituloFase}</span>
+                        <h3 class="text-xl font-black uppercase text-white">⚔️ CARA A CARA • ROSTERS</h3>
                     </div>
-                    <div class="w-full md:w-64">
-                        <label class="text-[8px] text-gray-400 font-black uppercase tracking-widest block mb-1">Cambiar rival para comparar VS:</label>
-                        <select onchange="abrirModalCaraACara('${nom1Seguro}', this.value, '${faseSegura}', '', '')" class="bg-black border border-everGold/50 text-white text-[11px] font-bold p-2 rounded w-full outline-none">
-                            ${opcionesRival}
-                        </select>
-                    </div>
+                    <select onchange="abrirModalCaraACara('${limpiar(nombre1)}', this.value, '${limpiar(tituloFase)}', '', '')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-64 outline-none">
+                        ${opciones}
+                    </select>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
-                    <div class="md:col-span-5">
-                        ${renderColumnaEquipo(nombre1, eq1, 'border-vctRed')}
+                    <div class="md:col-span-5">${colHtml(nombre1, eq1, 'border-vctRed')}</div>
+                    <div class="md:col-span-1 flex flex-col items-center justify-center">
+                        <div class="w-11 h-11 rounded-full bg-vctRed/20 border-2 border-vctRed flex items-center justify-center font-black text-xs">VS</div>
+                        ${(score1 || score2) ? `<div class="mt-2 bg-black border border-white/15 px-2.5 py-1 rounded text-xs font-black text-everGold">${score1\vert{}\vert{}0}:${score2||0}</div>` : ''}
                     </div>
-
-                    <div class="md:col-span-1 flex flex-col items-center justify-center py-2">
-                        <div class="w-12 h-12 rounded-full bg-vctRed/20 border-2 border-vctRed flex items-center justify-center font-black text-sm text-white shadow-[0_0_20px_rgba(255,42,63,0.4)]">
-                            VS
-                        </div>
-                        ${(score1 || score2) ? `<div class="mt-2 bg-black border border-white/15 px-3 py-1 rounded text-xs font-black text-everGold">${score1 \vert{}\vert{} 0} :${score2 || 0}</div>` : ''}
-                    </div>
-
-                    <div class="md:col-span-5">
-                        ${renderColumnaEquipo(nombre2, eq2, 'border-everGold')}
-                    </div>
-                </div>
-            `;
-
+                    <div class="md:col-span-5">${colHtml(nombre2, eq2, 'border-everGold')}</div>
+                </div>`;
             document.getElementById('modal-vs').classList.remove('hidden');
         }
 
         function renderEquipos(filtro) {
             const grid = document.getElementById('grid-equipos');
-            if (!grid) return;
             grid.innerHTML = '';
-
             const filtrados = listaEquiposGlobal.filter(eq => {
                 const nom = String(eq.nombre || '').toLowerCase();
-                const matchNombre = nom.includes(filtro);
-                const matchJug = Array.isArray(eq.jugadores) && eq.jugadores.some(j => String(j.riot_id || '').toLowerCase().includes(filtro));
-                return matchNombre || matchJug;
+                const jug = Array.isArray(eq.jugadores) && eq.jugadores.some(j => String(j.riot_id || '').toLowerCase().includes(filtro));
+                return nom.includes(filtro) || jug;
             });
-
             filtrados.forEach((eq, idx) => {
-                const logo = eq.logo_url || 'https://via.placeholder.com/100/0a0a0c/ff2a3f?text=5EVER';
-                const nomEsc = limpiarTexto(eq.nombre);
-                const sigEq = filtrados[idx + 1] ? limpiarTexto(filtrados[idx + 1].nombre) : (filtrados[0] ? limpiarTexto(filtrados[0].nombre) : '');
-
+                const logo = eq.logo_url || 'https://via.placeholder.com/100/0a0a0c/ff2a3f?text=5E';
+                const n1 = limpiar(eq.nombre);
+                const n2 = filtrados[idx + 1] ? limpiar(filtrados[idx + 1].nombre) : (filtrados[0] ? limpiar(filtrados[0].nombre) : '');
                 grid.innerHTML += `
-                    <div onclick="abrirModalCaraACara('${nomEsc}', '${sigEq}', 'INSPECCIÓN DE ESCUADRA • CARA A CARA')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer transition-all group flex items-center justify-between gap-3">
+                    <div onclick="abrirModalCaraACara('${n1}', '${n2}', 'CARA A CARA • ESCUADRAS')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer transition-all group flex items-center justify-between gap-3">
                         <div class="flex items-center gap-3.5 truncate">
-                            <img src="${logo}" class="w-12 h-12 object-contain bg-black p-1 rounded border border-white/10 group-hover:border-vctRed shrink-0">
+                            <img src="${logo}" class="w-12 h-12 object-contain bg-black p-1 rounded border border-white/10 shrink-0">
                             <div class="truncate">
                                 <span class="text-[8px] text-everGold font-black uppercase tracking-widest block">ESCUADRA #${idx + 1}</span>
                                 <h3 class="text-sm font-black text-white uppercase truncate">${eq.nombre || 'Sin Nombre'}</h3>
                                 <span class="text-[9px] text-gray-400 uppercase font-bold block truncate">${eq.rango || 'Rango Oficial'}</span>
                             </div>
                         </div>
-                        <span class="text-[10px] text-vctRed font-black shrink-0 uppercase">VS ➔</span>
-                    </div>
-                `;
+                        <span class="text-[10px] text-vctRed font-black shrink-0">VS ➔</span>
+                    </div>`;
             });
         }
 
-        function cerrarModal() {
-            document.getElementById('modal-vs').classList.add('hidden');
-        }
+        function cerrarModal() { document.getElementById('modal-vs').classList.add('hidden'); }
     </script>
 </body>
 </html>
