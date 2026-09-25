@@ -70,9 +70,6 @@
             <span class="text-[10px] text-gray-300 font-bold uppercase tracking-[0.2em] bg-white/5 border border-white/10 px-3 py-1.5 rounded">
                 ⚔️ Haz clic en cualquier enfrentamiento <b class="text-vctRed">VS</b> para abrir el <b class="text-everGold">CARA A CARA</b> con fotos y rosters
             </span>
-            <span id="estado-logos" class="text-[10px] text-everGold font-black uppercase tracking-widest bg-everGold/10 border border-everGold/30 px-3 py-1 rounded">
-                ⚡ Sincronizando fotos de los equipos...
-            </span>
         </div>
 
         <!-- TABLERO DE LAS 5 FASES FIJO EN HTML (CON VS Y LOGOS) -->
@@ -415,7 +412,6 @@
         }
 
         async function cargarFotosDeEquipos() {
-            const aviso = document.getElementById('estado-logos');
             try {
                 const res = await fetch(API_URL + '/equipos');
                 const data = await res.json();
@@ -427,8 +423,6 @@
                             img.src = eq.logo_url;
                         }
                     });
-                    aviso.innerText = '✔ ' + data.length + ' FOTOS Y ROSTERS ACTIVOS';
-                    aviso.className = 'text-[10px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-950/40 border border-emerald-500/40 px-3 py-1 rounded';
                 }
             } catch (err) {
                 setTimeout(cargarFotosDeEquipos, 4000);
