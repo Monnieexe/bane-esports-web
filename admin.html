@@ -24,6 +24,7 @@
 <body class="antialiased p-4 md:p-8 min-h-screen">
 
     <div class="max-w-6xl mx-auto">
+        <!-- BARRA SUPERIOR -->
         <div class="flex justify-between items-center mb-8 border-b border-white/5 pb-6">
             <div>
                 <h1 class="text-3xl font-black uppercase tracking-tighter text-white"><span class="text-vctRed">5</span>EVER <span class="text-gray-700">SYS_ADMIN</span></h1>
@@ -34,11 +35,13 @@
             <button onclick="cerrarSesion()" class="text-[9px] font-bold text-gray-500 hover:text-white border border-white/10 hover:border-vctRed hover:bg-vctRed px-4 py-2 transition-all">SALIR</button>
         </div>
 
+        <!-- PESTAÑAS -->
         <div class="flex gap-8 mb-8 border-b border-white/5 pb-0">
             <button onclick="switchTab('tab-equipos')" id="btn-tab-equipos" class="tab-btn active text-[10px] font-black uppercase tracking-[0.2em] pb-3 text-white">Data: Equipos</button>
             <button onclick="switchTab('tab-bracket')" id="btn-tab-bracket" class="tab-btn text-[10px] font-black uppercase tracking-[0.2em] pb-3 text-white">Consola de Cruces</button>
         </div>
 
+        <!-- PESTAÑA: GESTIÓN DE EQUIPOS INSCRITOS -->
         <div id="tab-equipos" class="tab-content active bg-black/60 border border-white/5 p-6 shadow-2xl backdrop-blur-sm">
             <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/5">
                 <h2 class="text-xl font-black text-white uppercase tracking-widest">Base de Datos de Equipos</h2>
@@ -47,6 +50,7 @@
             <div class="flex flex-col gap-3" id="lista-equipos-admin"></div>
         </div>
 
+        <!-- PESTAÑA: CONSOLA DE CRUCES (BRACKET) -->
         <div id="tab-bracket" class="tab-content">
             <div class="bg-black/60 border border-white/5 p-6 md:p-8 mb-6 shadow-2xl backdrop-blur-sm">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -97,6 +101,7 @@
         </div>
     </div>
 
+    <!-- TOAST DE NOTIFICACIONES -->
     <div id="toast" class="bg-[#0a0a0a] border-l-4 border-everGold p-4 shadow-2xl flex items-center gap-4">
         <div class="text-everGold font-black">!</div>
         <div><h4 class="text-white text-[10px] font-black uppercase tracking-widest" id="toast-title">Alerta</h4></div>
@@ -188,17 +193,18 @@
             }
         }
 
-        // VENTANA MODAL PARA EDITAR EL ROSTER
+        // VENTANA MODAL PARA EDITAR EL ROSTER (CON OPCIÓN DE AÑADIR/ELIMINAR JUGADORES)
         function abrirModalEdicion(equipo) {
             equipoActualizando = JSON.parse(JSON.stringify(equipo));
             let rosterInputsHTML = '';
 
-            equipoActualizando.jugadores.forEach((j, i) => {
+            equipoActualizando.jugadores.forEach((j) => {
                 rosterInputsHTML += `
-                    <div class="flex flex-col sm:flex-row gap-2 mb-3 bg-[#111] p-3 border border-white/5">
-                        <input type="text" id="edit_role_${i}" value="${j.role || ''}" placeholder="Rol" class="bg-black text-everGold p-2 text-xs w-full sm:w-32 border border-white/10 font-bold uppercase">
-                        <input type="text" id="edit_id_${i}" value="${j.riot_id || ''}" placeholder="Riot ID#TAG" class="bg-black text-white p-2 text-xs flex-1 border border-white/10 font-bold">
-                        <input type="text" id="edit_dc_${i}" value="${j.dc || ''}" placeholder="Discord" class="bg-black text-white p-2 text-xs w-full sm:w-36 border border-white/10 font-bold">
+                    <div class="roster-row flex flex-col sm:flex-row items-center gap-2 mb-3 bg-[#111] p-3 border border-white/5">
+                        <input type="text" class="edit_role bg-black text-everGold p-2 text-xs w-full sm:w-32 border border-white/10 font-bold uppercase" value="${j.role || ''}" placeholder="Rol">
+                        <input type="text" class="edit_id bg-black text-white p-2 text-xs flex-1 w-full border border-white/10 font-bold" value="${j.riot_id || ''}" placeholder="Riot ID#TAG">
+                        <input type="text" class="edit_dc bg-black text-white p-2 text-xs w-full sm:w-36 border border-white/10 font-bold" value="${j.dc || ''}" placeholder="Discord">
+                        <button onclick="this.parentElement.remove()" class="text-gray-600 hover:text-vctRed font-black px-2 mt-2 sm:mt-0" title="Eliminar Jugador">X</button>
                     </div>`;
             });
 
@@ -225,8 +231,14 @@
                         <input type="text" id="edit_rango" value="${equipoActualizando.rango || ''}" class="input-admin w-full p-3 text-xs text-white font-bold">
                     </div>
 
-                    <h4 class="text-everGold text-xs font-black uppercase tracking-widest mb-3">Integrantes del Roster</h4>
-                    ${rosterInputsHTML}
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-everGold text-xs font-black uppercase tracking-widest">Integrantes del Roster</h4>
+                        <button onclick="agregarFilaJugador()" class="text-[9px] bg-white/10 hover:bg-everGold hover:text-black text-white font-black px-3 py-1 uppercase tracking-widest transition-colors">+ Añadir Jugador</button>
+                    </div>
+                    
+                    <div id="contenedor-edicion-roster">
+                        ${rosterInputsHTML}
+                    </div>
 
                     <div class="flex justify-end gap-4 mt-8 pt-4 border-t border-white/5">
                         <button onclick="document.getElementById('modal-edicion').remove()" class="text-gray-500 hover:text-white text-xs font-bold uppercase tracking-widest px-4 py-2">CANCELAR</button>
@@ -236,19 +248,48 @@
             document.body.appendChild(modal);
         }
 
+        function agregarFilaJugador() {
+            const container = document.getElementById('contenedor-edicion-roster');
+            const row = document.createElement('div');
+            row.className = 'roster-row flex flex-col sm:flex-row items-center gap-2 mb-3 bg-[#111] p-3 border border-white/5';
+            row.innerHTML = `
+                <input type="text" class="edit_role bg-black text-everGold p-2 text-xs w-full sm:w-32 border border-white/10 font-bold uppercase" value="SUPLENTE" placeholder="Rol">
+                <input type="text" class="edit_id bg-black text-white p-2 text-xs flex-1 w-full border border-white/10 font-bold" value="" placeholder="Riot ID#TAG">
+                <input type="text" class="edit_dc bg-black text-white p-2 text-xs w-full sm:w-36 border border-white/10 font-bold" value="" placeholder="Discord">
+                <button onclick="this.parentElement.remove()" class="text-gray-600 hover:text-vctRed font-black px-2 mt-2 sm:mt-0" title="Eliminar Jugador">X</button>
+            `;
+            container.appendChild(row);
+        }
+
         async function guardarEdicionEquipo() {
             equipoActualizando.nombre = document.getElementById('edit_nombre').value.trim();
             equipoActualizando.discord = document.getElementById('edit_capitan').value.trim();
             equipoActualizando.rango = document.getElementById('edit_rango').value.trim();
 
-            equipoActualizando.jugadores.forEach((j, i) => {
-                j.role = document.getElementById(`edit_role_${i}`).value.trim();
-                j.riot_id = document.getElementById(`edit_id_${i}`).value.trim();
-                j.dc = document.getElementById(`edit_dc_${i}`).value.trim();
-                if(j.role !== 'HEAD COACH' && j.role !== 'ASISTENTE COACH' && j.role !== 'TEAM MANAGER') {
-                    j.tracker_url = `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(j.riot_id)}/overview`;
+            const rows = document.querySelectorAll('.roster-row');
+            let nuevosJugadores = [];
+
+            // Leer todos los campos de la ventana y agregarlos al arreglo
+            rows.forEach(row => {
+                let rRole = row.querySelector('.edit_role').value.trim();
+                let rId = row.querySelector('.edit_id').value.trim();
+                let rDc = row.querySelector('.edit_dc').value.trim();
+                
+                // Solo guarda al jugador si tiene escrito el Riot ID (Evita filas vacías)
+                if (rId) { 
+                    nuevosJugadores.push({
+                        role: rRole || 'SUPLENTE',
+                        riot_id: rId,
+                        dc: rDc,
+                        tracker_url: (rRole !== 'HEAD COACH' && rRole !== 'ASISTENTE COACH' && rRole !== 'TEAM MANAGER') 
+                                        ? `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(rId)}/overview` 
+                                        : '#'
+                    });
                 }
             });
+            
+            // Reemplazamos los jugadores viejos con los nuevos
+            equipoActualizando.jugadores = nuevosJugadores;
 
             try {
                 const res = await fetch(`${API_URL}/equipos`, {
