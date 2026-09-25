@@ -88,7 +88,7 @@
                 ⚔️ Haz clic en cualquier equipo o partida del bracket para abrir el <b class="text-everGold">CARA A CARA (VS)</b> y ver sus rosters
             </span>
             <span id="estado-servidor" class="text-[10px] text-everGold font-black uppercase tracking-widest bg-everGold/10 border border-everGold/30 px-3 py-1 rounded">
-                ⏳ Cargando equipos desde el servidor...
+                ⚡ Sincronizando logos y rosters...
             </span>
         </div>
 
@@ -235,7 +235,7 @@
                 <div>
                     <h2 class="text-2xl font-black uppercase tracking-wider">ESCUADRAS CONFIRMADAS</h2>
                     <p class="text-[10px] text-gray-400 uppercase tracking-[0.25em] font-bold mt-1">
-                        Inscritos en el sistema: <span id="cupo-contador" class="text-everGold">CARGANDO...</span>
+                        Inscritos en el sistema: <span id="cupo-contador" class="text-everGold">24 / 24 EQUIPOS</span>
                     </p>
                 </div>
                 <input type="text" id="buscador-equipos" placeholder="🔍 Buscar escuadra o Riot ID..." class="bg-[#0b0c10] border border-white/15 focus:border-vctRed px-4 py-3 text-xs font-bold text-white w-full md:w-72 outline-none rounded">
@@ -256,16 +256,16 @@
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
         let listaEquiposGlobal = [];
-        let tieneBracketGuardadoEnBD = false;
 
-        function crearEstructuraPorDefecto() {
+        // Estructura inicial con tus 24 equipos ya sorteados en tu Admin
+        function crearEstructuraInicial() {
             return {
                 version: '24_grupos_v1',
                 fase1: {
-                    A: ['A1','A2','A3','A4','A5','A6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    B: ['B1','B2','B3','B4','B5','B6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    C: ['C1','C2','C3','C4','C5','C6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    D: ['D1','D2','D3','D4','D5','D6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+                    A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
                 },
                 fase2: {
                     E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
@@ -287,45 +287,24 @@
             };
         }
 
-        let tournamentData = crearEstructuraPorDefecto();
+        let tournamentData = crearEstructuraInicial();
 
-        function limpiar(t) {
-            return String(t || '').replace(/['"\\]/g, '');
+        function escaparAttr(texto) {
+            return encodeURIComponent(String(texto || ''));
         }
 
-        function esPlaceholder(nombre) {
-            const n = String(nombre || '').trim().toLowerCase();
-            return !n || /^[a-f][1-6]$/.test(n) || n.startsWith('equipo') || n.startsWith('ganador') || n === 'campeón';
+        function desescaparAttr(texto) {
+            try { return decodeURIComponent(String(texto || '')); } catch (e) { return String(texto || ''); }
         }
 
         function buscarEquipo(nombre) {
-            if (esPlaceholder(nombre)) return null;
+            if (!nombre) return null;
             const n = String(nombre).trim().toLowerCase();
-            return listaEquiposGlobal.find(e => String(e.nombre || '').trim().toLowerCase() === n) || null;
-        }
-
-        // Si las casillas de Fase 1 aún dicen A1..D6, las llena automáticamente con los equipos inscritos
-        function inyectarEquiposInscritosEnGrupos() {
-            if (!listaEquiposGlobal.length) return;
-            const letras = ['A', 'B', 'C', 'D'];
-            // Verificar si los grupos siguen con los placeholders A1, A2, B1...
-            const siguePorDefecto = letras.every(g =>
-                tournamentData.fase1[g].every(slot => /^[a-d][1-6]$/i.test(String(slot.nombre || '').trim()))
-            );
-
-            if (siguePorDefecto) {
-                let cursor = 0;
-                letras.forEach(g => {
-                    for (let i = 0; i < 6; i++) {
-                        if (listaEquiposGlobal[cursor] && listaEquiposGlobal[cursor].nombre) {
-                            tournamentData.fase1[g][i].nombre = listaEquiposGlobal[cursor].nombre;
-                        } else {
-                            tournamentData.fase1[g][i].nombre = `${g}${i + 1}`;
-                        }
-                        cursor++;
-                    }
-                });
-            }
+            if (!n || n.length <= 2 || n.startsWith('equipo') || n.startsWith('ganador') || n === 'campeón') return null;
+            return listaEquiposGlobal.find(e => {
+                const nomBD = String(e.nombre || '').trim().toLowerCase();
+                return nomBD === n || nomBD.startsWith(n) || n.startsWith(nomBD);
+            }) || null;
         }
 
         function badgeLogo(nombre, cls = 'w-5 h-5') {
@@ -341,16 +320,16 @@
             const filas = (slots || []).map((s, idx) => {
                 const est = s.estado === 'clasificado' ? 'slot-qualified' : (s.estado === 'eliminado' ? 'slot-eliminated' : '');
                 const otroIdx = idx % 2 === 0 ? idx + 1 : idx - 1;
-                const rival = slots[otroIdx] ? limpiar(slots[otroIdx].nombre) : '';
+                const rival = slots[otroIdx] ? slots[otroIdx].nombre : '';
                 return `
-                    <div onclick="abrirModalCaraACara('${limpiar(s.nombre)}', '${rival}', 'GRUPO ${letra} • BO3', '', '')" 
-                         class="slot-item ${est} px-2 py-1.5 rounded flex items-center justify-between gap-2 cursor-pointer"
+                    <div data-vs1="${escaparAttr(s.nombre)}" data-vs2="${escaparAttr(rival)}" data-vstitle="${escaparAttr('GRUPO ' + letra + ' • BO3')}"
+                         class="btn-vs slot-item ${est} px-2 py-1.5 rounded flex items-center justify-between gap-2 cursor-pointer"
                          title="Clic para ver Cara a Cara (VS)">
-                        <div class="flex items-center gap-2 truncate">
+                        <div class="flex items-center gap-2 truncate pointer-events-none">
                             ${badgeLogo(s.nombre, 'w-5 h-5')}
                             <span class="text-[11px] font-bold text-gray-100 truncate">${s.nombre}</span>
                         </div>
-                        ${s.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${s.extra}</span>` : ''}
+                        ${s.extra ? `<span class="text-[9px] font-black text-everGold shrink-0 pointer-events-none">${s.extra}</span>` : ''}
                     </div>`;
             }).join('');
             return `
@@ -372,44 +351,45 @@
             document.getElementById('col-fase3-ranking').innerHTML = (d.fase3 || []).map((r, i) => {
                 const elim = i >= 4 || r.eliminado;
                 return `
-                    <div onclick="abrirModalCaraACara('${limpiar(r.nombre)}', '', 'FASE 3 • RANKING DESEMPEÑO', '', '')" 
-                         class="flex items-center gap-2.5 p-1.5 rounded border ${elim ? 'border-red-500/30 bg-red-950/10' : 'border-emerald-500/30 bg-emerald-950/10'} cursor-pointer hover:border-white/40">
-                        <div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs text-white ${elim ? 'bg-red-600' : 'bg-emerald-600'} shrink-0">${i + 1}</div>
-                        <div class="flex items-center gap-2 flex-1 truncate">
+                    <div data-vs1="${escaparAttr(r.nombre)}" data-vs2="" data-vstitle="${escaparAttr('FASE 3 • RANKING DESEMPEÑO')}"
+                         class="btn-vs flex items-center gap-2.5 p-1.5 rounded border ${elim ? 'border-red-500/30 bg-red-950/10' : 'border-emerald-500/30 bg-emerald-950/10'} cursor-pointer hover:border-white/40">
+                        <div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs text-white ${elim ? 'bg-red-600' : 'bg-emerald-600'} shrink-0 pointer-events-none">${i + 1}</div>
+                        <div class="flex items-center gap-2 flex-1 truncate pointer-events-none">
                             ${badgeLogo(r.nombre, 'w-5 h-5')}
                             <span class="text-xs font-bold ${elim ? 'text-gray-400' : 'text-white'} truncate">${r.nombre}</span>
                         </div>
-                        <span class="text-[9px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} uppercase pr-1 shrink-0">${r.rd || (elim ? '(ELIMINADO)' : '')}</span>
+                        <span class="text-[9px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} uppercase pr-1 shrink-0 pointer-events-none">${r.rd || (elim ? '(ELIMINADO)' : '')}</span>
                     </div>`;
             }).join('');
 
             const sfCard = (titulo, m) => `
-                <div onclick="abrirModalCaraACara('${limpiar(m.eq1)}', '${limpiar(m.eq2)}', '${titulo} • BO5', '${limpiar(m.score1)}', '${limpiar(m.score2)}')" 
-                     class="match-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6 cursor-pointer">
-                    <div class="flex justify-between items-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">
+                <div data-vs1="${escaparAttr(m.eq1)}" data-vs2="${escaparAttr(m.eq2)}" data-vstitle="${escaparAttr(titulo + ' • BO5')}" data-s1="${escaparAttr(m.score1)}" data-s2="${escaparAttr(m.score2)}"
+                     class="btn-vs match-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6 cursor-pointer">
+                    <div class="flex justify-between items-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10 pointer-events-none">
                         <span>${titulo}</span><span class="text-[8px] bg-everGold/15 px-1.5 py-0.5 rounded">VER VS ⚔️</span>
                     </div>
-                    <div class="slot-item p-2 rounded flex justify-between items-center gap-2 mb-1.5">
+                    <div class="slot-item p-2 rounded flex justify-between items-center gap-2 mb-1.5 pointer-events-none">
                         <div class="flex items-center gap-2 truncate">${badgeLogo(m.eq1, 'w-6 h-6')}<span class="text-xs font-bold text-white truncate">${m.eq1}</span></div>
                         <span class="text-xs font-black text-everGold">${m.score1 || '-'}</span>
                     </div>
-                    <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
-                    <div class="slot-item p-2 rounded flex justify-between items-center gap-2">
+                    <div class="text-center text-[9px] font-black text-gray-500 my-1 pointer-events-none">VS</div>
+                    <div class="slot-item p-2 rounded flex justify-between items-center gap-2 pointer-events-none">
                         <div class="flex items-center gap-2 truncate">${badgeLogo(m.eq2, 'w-6 h-6')}<span class="text-xs font-bold text-white truncate">${m.eq2}</span></div>
                         <span class="text-xs font-black text-everGold">${m.score2 || '-'}</span>
                     </div>
                 </div>`;
+
             document.getElementById('col-fase4-semis').innerHTML = sfCard('SEMIFINAL 1', d.fase4.sf1) + sfCard('SEMIFINAL 2', d.fase4.sf2);
 
             const fin = d.final;
             document.getElementById('col-fase5-final').innerHTML = sfCard('GRAN FINAL', fin);
             const eqCamp = buscarEquipo(fin.campeon);
             document.getElementById('col-fase5-campeon').innerHTML = `
-                <div onclick="abrirModalCaraACara('${limpiar(fin.campeon)}', '', 'CAMPEÓN OFICIAL 5EVER', '', '')" class="cursor-pointer">
-                    <div class="text-4xl mb-2">🏆</div>
-                    ${eqCamp && eqCamp.logo_url ? `<img src="${eqCamp.logo_url}" class="w-16 h-16 mx-auto mb-2 object-contain bg-black p-1.5 rounded border border-everGold">` : ''}
-                    <span class="text-[9px] text-everGold font-black uppercase tracking-[0.3em] block">VICTORIA SUPREMA</span>
-                    <h3 class="text-base font-black uppercase tracking-wider text-white mt-1 truncate">${fin.campeon || 'CAMPEÓN'}</h3>
+                <div data-vs1="${escaparAttr(fin.campeon)}" data-vs2="" data-vstitle="${escaparAttr('CAMPEÓN OFICIAL 5EVER')}" class="btn-vs cursor-pointer">
+                    <div class="text-4xl mb-2 pointer-events-none">🏆</div>
+                    ${eqCamp && eqCamp.logo_url ? `<img src="${eqCamp.logo_url}" class="w-16 h-16 mx-auto mb-2 object-contain bg-black p-1.5 rounded border border-everGold pointer-events-none">` : ''}
+                    <span class="text-[9px] text-everGold font-black uppercase tracking-[0.3em] block pointer-events-none">VICTORIA SUPREMA</span>
+                    <h3 class="text-base font-black uppercase tracking-wider text-white mt-1 truncate pointer-events-none">${fin.campeon || 'CAMPEÓN'}</h3>
                 </div>`;
         }
 
@@ -418,99 +398,75 @@
             if (!grid) return;
             grid.innerHTML = '';
 
+            // Si el servidor aún está cargando, muestra las 24 tarjetas preliminares de los grupos
+            let baseLista = listaEquiposGlobal.length > 0 ? listaEquiposGlobal : [
+                ...tournamentData.fase1.A, ...tournamentData.fase1.B, ...tournamentData.fase1.C, ...tournamentData.fase1.D
+            ].map(s => ({ nombre: s.nombre, rango: 'Escuadra Confirmada', logo_url: '', jugadores: [] }));
+
             const q = String(filtro || '').toLowerCase().trim();
-            const filtrados = listaEquiposGlobal.filter(eq => {
-                if (!eq) return false;
-                const nom = String(eq.nombre || '').toLowerCase();
+            const filtrados = baseLista.filter(eq => {
+                if (!eq || !eq.nombre) return false;
+                const nom = String(eq.nombre).toLowerCase();
                 const jug = Array.isArray(eq.jugadores) && eq.jugadores.some(j => j && String(j.riot_id || '').toLowerCase().includes(q));
                 return !q || nom.includes(q) || jug;
             });
 
             filtrados.forEach((eq, idx) => {
-                const logo = eq.logo_url || 'https://via.placeholder.com/100/0a0a0c/ff2a3f?text=5E';
-                const n1 = limpiar(eq.nombre || 'Escuadra');
-                const n2 = filtrados[idx + 1] ? limpiar(filtrados[idx + 1].nombre) : (filtrados[0] ? limpiar(filtrados[0].nombre) : '');
+                const n1 = eq.nombre || 'Escuadra';
+                const n2 = filtrados[idx + 1] ? filtrados[idx + 1].nombre : (filtrados[0] ? filtrados[0].nombre : '');
+                const badge = eq.logo_url
+                    ? `<img src="${eq.logo_url}" class="w-12 h-12 object-contain bg-black p-1 rounded border border-white/15 shrink-0 pointer-events-none">`
+                    : `<div class="w-12 h-12 bg-white/5 border border-white/10 rounded flex items-center justify-center text-sm font-black text-everGold shrink-0 pointer-events-none">${n1.substring(0, 2).toUpperCase()}</div>`;
+
                 grid.innerHTML += `
-                    <div onclick="abrirModalCaraACara('${n1}', '${n2}', 'CARA A CARA • ESCUADRAS')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer transition-all group flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-3.5 truncate">
-                            <img src="${logo}" class="w-12 h-12 object-contain bg-black p-1 rounded border border-white/10 shrink-0">
+                    <div data-vs1="${escaparAttr(n1)}" data-vs2="${escaparAttr(n2)}" data-vstitle="${escaparAttr('CARA A CARA • ESCUADRAS')}"
+                         class="btn-vs bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer transition-all group flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3.5 truncate pointer-events-none">
+                            ${badge}
                             <div class="truncate">
                                 <span class="text-[8px] text-everGold font-black uppercase tracking-widest block">ESCUADRA #${idx + 1}</span>
-                                <h3 class="text-sm font-black text-white uppercase truncate">${eq.nombre || 'Sin Nombre'}</h3>
+                                <h3 class="text-sm font-black text-white uppercase truncate">${n1}</h3>
                                 <span class="text-[9px] text-gray-400 uppercase font-bold block truncate">${eq.rango || 'Rango Oficial'}</span>
                             </div>
                         </div>
-                        <span class="text-[10px] text-vctRed font-black shrink-0">VS ➔</span>
+                        <span class="text-[10px] text-vctRed font-black shrink-0 pointer-events-none">VS ➔</span>
                     </div>`;
             });
         }
 
-        async function cargarEquipos() {
-            const statusEl = document.getElementById('estado-servidor');
-            try {
-                const resEq = await fetch(`${API_URL}/equipos`);
-                if (!resEq.ok) throw new Error('Respuesta no OK');
-                const eqs = await resEq.json();
-
-                if (Array.isArray(eqs)) {
-                    listaEquiposGlobal = eqs.filter(Boolean);
-                    document.getElementById('cupo-contador').innerText = `${listaEquiposGlobal.length} / 24 EQUIPOS`;
-                    statusEl.innerText = `✔ ${listaEquiposGlobal.length} EQUIPOS CARGADOS EN VIVO`;
-                    statusEl.className = 'text-[10px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-950/40 border border-emerald-500/40 px-3 py-1 rounded';
-
-                    // Coloca los equipos automáticamente en los Grupos A, B, C y D si aún dicen A1..D6
-                    inyectarEquiposInscritosEnGrupos();
-                    actualizarTableroVisual(tournamentData);
-                    renderEquipos('');
-                }
-            } catch (e) {
-                console.warn("Reintentando conexión con Render...", e);
-                statusEl.innerText = `⏳ Despertando servidor Render... reintentando en 4s`;
-                setTimeout(cargarEquipos, 4000);
-            }
-        }
-
-        async function cargarBracketGuardado() {
-            try {
-                const resNot = await fetch(`${API_URL}/noticias`);
-                if (!resNot.ok) return;
-                const noticias = await resNot.json();
-                if (Array.isArray(noticias)) {
-                    noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
-                    const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
-                    if (bd && bd.descripcion) {
-                        const parsed = JSON.parse(bd.descripcion);
-                        if (parsed && parsed.version === '24_grupos_v1') {
-                            tournamentData = parsed;
-                            tieneBracketGuardadoEnBD = true;
-                            inyectarEquiposInscritosEnGrupos();
-                            actualizarTableroVisual(tournamentData);
-                        }
-                    }
-                }
-            } catch (e) {
-                console.warn("No se pudo leer noticia de bracket:", e);
-            }
-        }
+        // Delegación segura de clics para abrir el Cara a Cara (soporta apostrofes como King's Aztek)
+        document.addEventListener('click', (e) => {
+            const card = e.target.closest('.btn-vs');
+            if (!card) return;
+            const n1 = desescaparAttr(card.getAttribute('data-vs1'));
+            const n2 = desescaparAttr(card.getAttribute('data-vs2'));
+            const tit = desescaparAttr(card.getAttribute('data-vstitle'));
+            const s1 = desescaparAttr(card.getAttribute('data-s1'));
+            const s2 = desescaparAttr(card.getAttribute('data-s2'));
+            abrirModalCaraACara(n1, n2, tit, s1, s2);
+        });
 
         function abrirModalCaraACara(nombre1, nombre2, tituloFase, score1 = '', score2 = '') {
             const eq1 = buscarEquipo(nombre1);
             const eq2 = buscarEquipo(nombre2);
 
-            let opciones = `<option value="">-- Seleccionar otro rival para comparar --</option>`;
-            listaEquiposGlobal.forEach(e => {
-                const nom = String(e.nombre || '');
-                const sel = (nombre2 && nom.toLowerCase() === String(nombre2).toLowerCase()) ? 'selected' : '';
-                opciones += `<option value="${limpiar(nom)}" ${sel}>${nom} (${e.rango || 'Sin rango'})</option>`;
+            let listaNombres = listaEquiposGlobal.length > 0
+                ? listaEquiposGlobal.map(e => e.nombre)
+                : [...tournamentData.fase1.A, ...tournamentData.fase1.B, ...tournamentData.fase1.C, ...tournamentData.fase1.D].map(s => s.nombre);
+
+            let opciones = `<option value="">-- Cambiar rival para comparar VS --</option>`;
+            listaNombres.forEach(nom => {
+                const sel = (nombre2 && String(nom).toLowerCase() === String(nombre2).toLowerCase()) ? 'selected' : '';
+                opciones += `<option value="${escaparAttr(nom)}" ${sel}>${nom}</option>`;
             });
 
             const colHtml = (nomTxt, eqObj, colorBorde) => {
                 if (!eqObj) {
                     return `
                         <div class="bg-[#0c0e16] border border-white/10 rounded-lg p-5 text-center flex flex-col items-center justify-center min-h-[240px]">
-                            <div class="w-14 h-14 rounded bg-white/5 border border-white/10 flex items-center justify-center text-xl font-black text-gray-500 mb-3">?</div>
+                            <div class="w-14 h-14 rounded bg-white/5 border border-white/10 flex items-center justify-center text-xl font-black text-everGold mb-3">${String(nomTxt || '?').substring(0, 2).toUpperCase()}</div>
                             <h4 class="text-base font-black uppercase text-white">${nomTxt || 'POR DEFINIR'}</h4>
-                            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Casilla pendiente de sorteo</p>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Sincronizando roster desde el servidor...</p>
                         </div>`;
                 }
                 const jugHtml = (eqObj.jugadores || []).map(j => `
@@ -541,7 +497,7 @@
                         <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">${tituloFase}</span>
                         <h3 class="text-xl font-black uppercase text-white">⚔️ CARA A CARA • ROSTERS</h3>
                     </div>
-                    <select onchange="abrirModalCaraACara('${limpiar(nombre1)}', this.value, '${limpiar(tituloFase)}', '', '')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-64 outline-none">
+                    <select id="selector-rival-vs" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-64 outline-none">
                         ${opciones}
                     </select>
                 </div>
@@ -553,6 +509,11 @@
                     </div>
                     <div class="md:col-span-5">${colHtml(nombre2, eq2, 'border-everGold')}</div>
                 </div>`;
+
+            document.getElementById('selector-rival-vs').addEventListener('change', function() {
+                abrirModalCaraACara(nombre1, desescaparAttr(this.value), tituloFase, score1, score2);
+            });
+
             document.getElementById('modal-vs').classList.remove('hidden');
         }
 
@@ -560,10 +521,50 @@
             document.getElementById('modal-vs').classList.add('hidden');
         }
 
-        // Inicialización inmediata
+        async function sincronizarDatosServidor() {
+            const statusEl = document.getElementById('estado-servidor');
+            try {
+                const resNot = await fetch(`${API_URL}/noticias`);
+                if (resNot.ok) {
+                    const noticias = await resNot.json();
+                    if (Array.isArray(noticias)) {
+                        noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+                        const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
+                        if (bd && bd.descripcion) {
+                            const parsed = JSON.parse(bd.descripcion);
+                            if (parsed && parsed.version === '24_grupos_v1') {
+                                tournamentData = parsed;
+                                actualizarTableroVisual(tournamentData);
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+
+            try {
+                const resEq = await fetch(`${API_URL}/equipos`);
+                if (!resEq.ok) throw new Error('Error HTTP');
+                const eqs = await resEq.json();
+                if (Array.isArray(eqs) && eqs.length > 0) {
+                    listaEquiposGlobal = eqs.filter(Boolean);
+                    document.getElementById('cupo-contador').innerText = `${listaEquiposGlobal.length} / 24 EQUIPOS`;
+                    statusEl.innerText = `✔ ${listaEquiposGlobal.length} EQUIPOS Y LOGOS SINCRONIZADOS`;
+                    statusEl.className = 'text-[10px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-950/40 border border-emerald-500/40 px-3 py-1 rounded';
+                    actualizarTableroVisual(tournamentData);
+                    renderEquipos('');
+                }
+            } catch (e) {
+                statusEl.innerText = `⏳ Conectando con Render... reintentando`;
+                setTimeout(sincronizarDatosServidor, 4000);
+            }
+        }
+
+        // 1. Pintar de inmediato tus 24 equipos en el bracket y abajo en Escuadras Confirmadas
         actualizarTableroVisual(tournamentData);
-        cargarEquipos();
-        cargarBracketGuardado();
+        renderEquipos('');
+
+        // 2. Descargar logos y rosters desde Render
+        sincronizarDatosServidor();
 
         document.getElementById('buscador-equipos').addEventListener('input', (e) => {
             renderEquipos(e.target.value);
