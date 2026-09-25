@@ -7,11 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#050507' }
-                }
-            }
+            theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#050507' } } }
         };
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -34,18 +30,16 @@
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
-        .duel-card {
+        .duel-box {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.09);
             transition: all 0.2s ease;
         }
-        .duel-card:hover {
+        .duel-box:hover {
             border-color: #ff2a3f;
-            background: rgba(255, 42, 63, 0.09);
+            background: rgba(255, 42, 63, 0.1);
             transform: translateY(-1px);
         }
-        .slot-qualified { border-left: 3px solid #22c55e !important; background: rgba(34, 197, 94, 0.08) !important; }
-        .slot-eliminated { border-left: 3px solid #ef4444 !important; background: rgba(239, 68, 68, 0.08) !important; opacity: 0.55; }
     </style>
 </head>
 <body class="antialiased min-h-screen pb-20">
@@ -76,17 +70,17 @@
             <span class="text-[10px] text-gray-300 font-bold uppercase tracking-[0.2em] bg-white/5 border border-white/10 px-3 py-1.5 rounded">
                 ⚔️ Haz clic en cualquier enfrentamiento <b class="text-vctRed">VS</b> para abrir el <b class="text-everGold">CARA A CARA</b> con fotos y rosters
             </span>
-            <span id="estado-servidor" class="text-[10px] text-everGold font-black uppercase tracking-widest bg-everGold/10 border border-everGold/30 px-3 py-1 rounded">
-                ⚡ Sincronizando datos...
+            <span id="estado-logos" class="text-[10px] text-everGold font-black uppercase tracking-widest bg-everGold/10 border border-everGold/30 px-3 py-1 rounded">
+                ⚡ Sincronizando fotos de los equipos...
             </span>
         </div>
 
-        <!-- TABLERO DE LAS 5 FASES -->
+        <!-- TABLERO DE LAS 5 FASES FIJO EN HTML (CON VS Y LOGOS) -->
         <div class="board-scroll overflow-x-auto pb-4">
-            <div class="flex items-stretch gap-4 min-w-[1480px]" id="tournament-board">
+            <div class="flex items-stretch gap-4 min-w-[1500px]">
 
-                <!-- FASE 1 -->
-                <div class="phase-col w-[410px] shrink-0 p-4 flex flex-col justify-between">
+                <!-- ================= COLUMNA 1: FASE 1 (24 EQUIPOS CON VS FIJOS) ================= -->
+                <div class="phase-col w-[430px] shrink-0 p-4 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-3">
                             <h2 class="text-lg font-black uppercase text-white">FASE 1</h2>
@@ -98,7 +92,116 @@
                             </div>
                             <p class="text-[9px] font-bold uppercase text-gray-200 mt-1 border-t border-white/10 pt-1">AVANZAN 3 POR GRUPO (12 EQUIPOS)</p>
                         </div>
-                        <div id="col-fase1-grupos" class="grid grid-cols-2 gap-3"></div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <!-- GRUPO A -->
+                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase">
+                                    <span>GRUPO A</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">BO3</span>
+                                </div>
+                                <div class="p-2 flex flex-col gap-2">
+                                    <!-- Duelo A1 vs A2 -->
+                                    <div onclick="verVS('7z Esports','Abismus','GRUPO A • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">7z Esports</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Abismus</span></div>
+                                    </div>
+                                    <!-- Duelo A3 vs A4 -->
+                                    <div onclick="verVS('Nönsense by Bear','Thalyra','GRUPO A • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Nönsense by Bear</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Thalyra</span></div>
+                                    </div>
+                                    <!-- Duelo A5 vs A6 -->
+                                    <div onclick="verVS('Xiao Shīzi 北','Akari esports','GRUPO A • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Xiao Shīzi 北</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Akari esports</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GRUPO B -->
+                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase">
+                                    <span>GRUPO B</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">BO3</span>
+                                </div>
+                                <div class="p-2 flex flex-col gap-2">
+                                    <!-- Duelo B1 vs B2 -->
+                                    <div onclick="verVS('ULTRADIFF ESPORTS','Clarity Velvet','GRUPO B • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">ULTRADIFF ESPORTS</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Clarity Velvet</span></div>
+                                    </div>
+                                    <!-- Duelo B3 vs B4 -->
+                                    <div onclick="verVS('Ancestral E-Sports','RYUJINN','GRUPO B • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Ancestral E-Sports</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">RYUJINN</span></div>
+                                    </div>
+                                    <!-- Duelo B5 vs B6 -->
+                                    <div onclick="verVS('5EverMad','Storm of Thorns','GRUPO B • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">5EverMad</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Storm of Thorns</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GRUPO C -->
+                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase">
+                                    <span>GRUPO C</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">BO3</span>
+                                </div>
+                                <div class="p-2 flex flex-col gap-2">
+                                    <!-- Duelo C1 vs C2 -->
+                                    <div onclick="verVS('Cruel Karma','AERION ACADEMY','GRUPO C • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Cruel Karma</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">AERION ACADEMY</span></div>
+                                    </div>
+                                    <!-- Duelo C3 vs C4 -->
+                                    <div onclick="verVS('Kaizen Esports','Ryujinn Lotus','GRUPO C • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Kaizen Esports</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Ryujinn Lotus</span></div>
+                                    </div>
+                                    <!-- Duelo C5 vs C6 -->
+                                    <div onclick="verVS('YOSORA ESPORTS','Howlers BLX','GRUPO C • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">YOSORA ESPORTS</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Howlers BLX</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GRUPO D -->
+                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase">
+                                    <span>GRUPO D</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">BO3</span>
+                                </div>
+                                <div class="p-2 flex flex-col gap-2">
+                                    <!-- Duelo D1 vs D2 -->
+                                    <div onclick="verVS('Platano Power Esports','Kings Aztek','GRUPO D • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Platano Power Esports</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">King's Aztek</span></div>
+                                    </div>
+                                    <!-- Duelo D3 vs D4 -->
+                                    <div onclick="verVS('Black Roses Esports','Howlers Esports','GRUPO D • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Black Roses Esports</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Howlers Esports</span></div>
+                                    </div>
+                                    <!-- Duelo D5 vs D6 -->
+                                    <div onclick="verVS('MOONRISE ESPORTS','Hydra','GRUPO D • BO3')" class="duel-box rounded p-2 cursor-pointer">
+                                        <div class="flex items-center gap-2"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">MOONRISE ESPORTS</span></div>
+                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
+                                        <div class="flex items-center gap-2"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Hydra</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="mt-4 bg-red-950/30 border border-red-500/30 rounded p-2.5 text-center">
                         <p class="text-[10px] font-black uppercase text-red-200">12 EQUIPOS ELIMINADOS</p>
@@ -108,8 +211,8 @@
 
                 <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
 
-                <!-- FASE 2 -->
-                <div class="phase-col w-[260px] shrink-0 p-4 flex flex-col justify-between">
+                <!-- ================= COLUMNA 2: FASE 2 (12 EQUIPOS CON VS) ================= -->
+                <div class="phase-col w-[245px] shrink-0 p-4 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-3">
                             <h2 class="text-lg font-black uppercase text-white">FASE 2</h2>
@@ -121,7 +224,24 @@
                             </div>
                             <p class="text-[9px] font-bold uppercase text-gray-200 mt-1 border-t border-white/10 pt-1">AVANZAN 3 POR GRUPO (6 EQUIPOS)</p>
                         </div>
-                        <div id="col-fase2-grupos" class="flex flex-col gap-3"></div>
+                        <div class="flex flex-col gap-3">
+                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-800 to-blue-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px]"><span>GRUPO E</span><span>BO3</span></div>
+                                <div class="p-2 flex flex-col gap-2 text-[11px] font-bold">
+                                    <div class="duel-box rounded p-2"><div class="truncate">E1</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">E2</div></div>
+                                    <div class="duel-box rounded p-2"><div class="truncate">E3</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">E4</div></div>
+                                    <div class="duel-box rounded p-2"><div class="truncate">E5</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">E6</div></div>
+                                </div>
+                            </div>
+                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-800 to-blue-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px]"><span>GRUPO F</span><span>BO3</span></div>
+                                <div class="p-2 flex flex-col gap-2 text-[11px] font-bold">
+                                    <div class="duel-box rounded p-2"><div class="truncate">F1</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">F2</div></div>
+                                    <div class="duel-box rounded p-2"><div class="truncate">F3</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">F4</div></div>
+                                    <div class="duel-box rounded p-2"><div class="truncate">F5</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">F6</div></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="mt-4 bg-blue-950/30 border border-blue-500/30 rounded p-2.5 text-center">
                         <p class="text-[10px] font-black uppercase text-blue-200">6 EQUIPOS ELIMINADOS</p>
@@ -131,8 +251,8 @@
 
                 <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
 
-                <!-- FASE 3 -->
-                <div class="phase-col w-[255px] shrink-0 p-4 flex flex-col justify-between">
+                <!-- ================= COLUMNA 3: FASE 3 (SELECCIÓN FINAL 6 EQUIPOS) ================= -->
+                <div class="phase-col w-[250px] shrink-0 p-4 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-3">
                             <h2 class="text-lg font-black uppercase text-white">FASE 3</h2>
@@ -142,7 +262,14 @@
                             <p class="text-[10px] font-black uppercase text-white">RANKING POR DESEMPEÑO</p>
                             <p class="text-[9px] text-gray-200 mt-1 border-t border-white/10 pt-1">Por diferencia de rondas</p>
                         </div>
-                        <div id="col-fase3-ranking" class="flex flex-col gap-2.5 my-4"></div>
+                        <div class="flex flex-col gap-2.5 my-4">
+                            <div class="flex items-center gap-2.5 p-2 rounded border border-emerald-500/30 bg-emerald-950/10"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-emerald-600">1</span><span class="text-xs font-bold">Clasificado #1</span></div>
+                            <div class="flex items-center gap-2.5 p-2 rounded border border-emerald-500/30 bg-emerald-950/10"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-emerald-600">2</span><span class="text-xs font-bold">Clasificado #2</span></div>
+                            <div class="flex items-center gap-2.5 p-2 rounded border border-emerald-500/30 bg-emerald-950/10"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-emerald-600">3</span><span class="text-xs font-bold">Clasificado #3</span></div>
+                            <div class="flex items-center gap-2.5 p-2 rounded border border-emerald-500/30 bg-emerald-950/10"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-emerald-600">4</span><span class="text-xs font-bold">Clasificado #4</span></div>
+                            <div class="flex items-center justify-between p-2 rounded border border-red-500/30 bg-red-950/10"><div class="flex items-center gap-2.5"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-red-600">5</span><span class="text-xs font-bold text-gray-400">Puesto #5</span></div><span class="text-[8px] font-black text-red-400">(ELIMINADO)</span></div>
+                            <div class="flex items-center justify-between p-2 rounded border border-red-500/30 bg-red-950/10"><div class="flex items-center gap-2.5"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-red-600">6</span><span class="text-xs font-bold text-gray-400">Puesto #6</span></div><span class="text-[8px] font-black text-red-400">(ELIMINADO)</span></div>
+                        </div>
                     </div>
                     <div class="mt-4 bg-red-950/30 border border-red-500/30 rounded p-2.5 text-center">
                         <p class="text-[10px] font-bold text-red-200">Se eliminan 2 por diferencia de rondas.</p>
@@ -151,8 +278,8 @@
 
                 <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
 
-                <!-- FASE 4 -->
-                <div class="phase-col w-[250px] shrink-0 p-4 flex flex-col justify-between">
+                <!-- ================= COLUMNA 4: FASE 4 (SEMIFINALES BO5) ================= -->
+                <div class="phase-col w-[245px] shrink-0 p-4 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-3">
                             <h2 class="text-lg font-black uppercase text-white">FASE 4</h2>
@@ -162,26 +289,45 @@
                             <p class="text-[10px] font-black uppercase text-white">2 ENFRENTAMIENTOS BO5</p>
                             <p class="text-[8px] font-bold uppercase text-white mt-1">PASA 1 POR GRUPO</p>
                         </div>
-                        <div id="col-fase4-semis"></div>
+                        <div class="duel-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6">
+                            <div class="text-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 1 • BO5</div>
+                            <div class="p-2 rounded bg-white/5 text-xs font-bold text-white">Equipo 1</div>
+                            <div class="text-center text-[9px] font-black text-vctRed my-1.5">VS</div>
+                            <div class="p-2 rounded bg-white/5 text-xs font-bold text-white">Equipo 2</div>
+                        </div>
+                        <div class="duel-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3">
+                            <div class="text-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 2 • BO5</div>
+                            <div class="p-2 rounded bg-white/5 text-xs font-bold text-white">Equipo 3</div>
+                            <div class="text-center text-[9px] font-black text-vctRed my-1.5">VS</div>
+                            <div class="p-2 rounded bg-white/5 text-xs font-bold text-white">Equipo 4</div>
+                        </div>
                     </div>
                     <div></div>
                 </div>
 
                 <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
 
-                <!-- GRAN FINAL -->
-                <div class="phase-col w-[250px] shrink-0 p-4 flex flex-col justify-between border-vctRed/40">
+                <!-- ================= COLUMNA 5: GRAN FINAL (BO5) ================= -->
+                <div class="phase-col w-[245px] shrink-0 p-4 flex flex-col justify-between border-vctRed/40">
                     <div>
                         <div class="text-center mb-4">
                             <h2 class="text-xl font-black uppercase text-vctRed">GRAN FINAL</h2>
                             <p class="text-xs font-black uppercase text-white mt-1">2 EQUIPOS</p>
                         </div>
                         <div class="bg-gradient-to-r from-red-800 via-vctRed to-red-800 border border-red-400/40 rounded py-2 text-center font-black text-xs uppercase mb-6">
-                            BO5 • CARA A CARA
+                            BO5 • DUELO FINAL
                         </div>
-                        <div id="col-fase5-final"></div>
+                        <div class="duel-box bg-[#0b0d14] border border-white/20 rounded-lg p-3.5 mb-6">
+                            <div class="p-2.5 rounded bg-white/5 text-xs font-bold text-white">Ganador SF1</div>
+                            <div class="text-center text-[9px] font-black text-vctRed my-2">VS</div>
+                            <div class="p-2.5 rounded bg-white/5 text-xs font-bold text-white">Ganador SF2</div>
+                        </div>
                     </div>
-                    <div id="col-fase5-campeon" class="bg-gradient-to-b from-everGold/15 to-transparent border border-everGold/50 rounded-lg p-4 text-center"></div>
+                    <div class="bg-gradient-to-b from-everGold/15 to-transparent border border-everGold/50 rounded-lg p-4 text-center">
+                        <div class="text-4xl mb-2">🏆</div>
+                        <span class="text-[9px] text-everGold font-black uppercase tracking-[0.3em] block">VICTORIA SUPREMA</span>
+                        <h3 class="text-base font-black uppercase tracking-wider text-white mt-1">CAMPEÓN</h3>
+                    </div>
                 </div>
 
             </div>
@@ -202,7 +348,7 @@
             <div><span class="text-xl font-black text-everGold block">1</span><span class="text-[8px] text-everGold font-bold uppercase">Campeón</span></div>
         </div>
 
-        <!-- GALERÍA DE ESCUADRAS -->
+        <!-- GALERÍA DE ESCUADRAS CONFIRMADAS (FIJAS EN HTML CON FOTOS AUTOMÁTICAS) -->
         <div class="border-t border-white/10 pt-10">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
@@ -211,14 +357,38 @@
                         Inscritos en el sistema: <span id="cupo-contador" class="text-everGold">24 / 24 EQUIPOS</span>
                     </p>
                 </div>
-                <input type="text" id="buscador-equipos" placeholder="🔍 Buscar escuadra o Riot ID..." class="bg-[#0b0c10] border border-white/15 focus:border-vctRed px-4 py-3 text-xs font-bold text-white w-full md:w-72 outline-none rounded">
             </div>
-            <div id="grid-equipos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+            <div id="grid-equipos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div onclick="verVS('7z Esports','Abismus','GRUPO A')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">7z Esports</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Abismus','7z Esports','GRUPO A')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">Abismus</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Nönsense by Bear','Thalyra','GRUPO A')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">Nönsense by Bear</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Thalyra','Nönsense by Bear','GRUPO A')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">Thalyra</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Xiao Shīzi 北','Akari esports','GRUPO A')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">Xiao Shīzi 北</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Akari esports','Xiao Shīzi 北','GRUPO A')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">Akari esports</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('ULTRADIFF ESPORTS','Clarity Velvet','GRUPO B')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">ULTRADIFF ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Clarity Velvet','ULTRADIFF ESPORTS','GRUPO B')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">Clarity Velvet</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Ancestral E-Sports','RYUJINN','GRUPO B')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">Ancestral E-Sports</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('RYUJINN','Ancestral E-Sports','GRUPO B')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">RYUJINN</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('5EverMad','Storm of Thorns','GRUPO B')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">5EverMad</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Storm of Thorns','5EverMad','GRUPO B')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">Storm of Thorns</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Cruel Karma','AERION ACADEMY','GRUPO C')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">Cruel Karma</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('AERION ACADEMY','Cruel Karma','GRUPO C')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">AERION ACADEMY</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Kaizen Esports','Ryujinn Lotus','GRUPO C')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">Kaizen Esports</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Ryujinn Lotus','Kaizen Esports','GRUPO C')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">Ryujinn Lotus</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('YOSORA ESPORTS','Howlers BLX','GRUPO C')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">YOSORA ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Howlers BLX','YOSORA ESPORTS','GRUPO C')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">Howlers BLX</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Platano Power Esports','Kings Aztek','GRUPO D')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">Platano Power Esports</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Kings Aztek','Platano Power Esports','GRUPO D')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">King's Aztek</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Black Roses Esports','Howlers Esports','GRUPO D')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">Black Roses Esports</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Howlers Esports','Black Roses Esports','GRUPO D')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">Howlers Esports</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('MOONRISE ESPORTS','Hydra','GRUPO D')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">MOONRISE ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+                <div onclick="verVS('Hydra','MOONRISE ESPORTS','GRUPO D')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><div class="flex items-center gap-3"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black border border-white/15"><div><span class="text-[8px] text-everGold font-black block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">Hydra</h3></div></div><span class="text-[10px] text-vctRed font-black">VS ➔</span></div>
+            </div>
         </div>
 
     </main>
 
-    <!-- MODAL CARA A CARA -->
+    <!-- MODAL CARA A CARA (VS) -->
     <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-[#08090f] border border-white/20 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[92vh] overflow-y-auto relative shadow-2xl">
             <button onclick="document.getElementById('modal-vs').classList.add('hidden')" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black">✕</button>
@@ -226,314 +396,95 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE RENDERIZADO INMEDIATO -->
+    <!-- SCRIPT LIGERO: INYECTA LAS FOTOS REALES (logo_url) Y ABRE EL CARA A CARA -->
     <script>
-        let equiposDB = [];
+        const API_URL = 'https://bane-esports-web-1.onrender.com/api';
+        let equiposCargados = [];
 
-        let datosTorneo = {
-            version: '24_grupos_v1',
-            fase1: {
-                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
-            },
-            fase2: {
-                E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
-            },
-            fase3: [
-                { pos: 1, nombre: 'Equipo', rd: '', eliminado: false },
-                { pos: 2, nombre: 'Equipo', rd: '', eliminado: false },
-                { pos: 3, nombre: 'Equipo', rd: '', eliminado: false },
-                { pos: 4, nombre: 'Equipo', rd: '', eliminado: false },
-                { pos: 5, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true },
-                { pos: 6, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true }
-            ],
-            fase4: {
-                sf1: { eq1: 'Equipo 1', eq2: 'Equipo 2', score1: '', score2: '' },
-                sf2: { eq1: 'Equipo 3', eq2: 'Equipo 4', score1: '', score2: '' }
-            },
-            final: { eq1: 'Ganador SF1', eq2: 'Ganador SF2', score1: '', score2: '', campeon: 'CAMPEÓN' }
-        };
-
-        function enc(s) { return encodeURIComponent(String(s || '')); }
-        function dec(s) { try { return decodeURIComponent(String(s || '')); } catch (e) { return String(s || ''); } }
-        function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, ''); }
-
-        function buscarEq(nombre) {
-            const n = norm(nombre);
-            if (!n || /^[a-f][1-6]$/.test(n) || n.startsWith('equipo') || n.startsWith('ganador') || n === 'campeon') return null;
-            return equiposDB.find(e => norm(e.nombre) === n)
-                || equiposDB.find(e => { const en = norm(e.nombre); return en && (en.includes(n) || n.includes(en)); })
-                || null;
+        function limpiarNombre(txt) {
+            return String(txt || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         }
 
-        function iconoEquipo(nombre, size = 'w-6 h-6') {
-            const eq = buscarEq(nombre);
-            const logo = eq ? (eq.logo_url || eq.logo || '') : '';
-            if (logo) {
-                return `<img src="${logo}" class="${size} object-contain bg-black p-0.5 rounded border border-white/25 shrink-0">`;
-            }
-            const ini = String(nombre || '?').substring(0, 2).toUpperCase();
-            return `<div class="${size} bg-white/5 border border-white/15 rounded flex items-center justify-center text-[8px] font-black text-everGold shrink-0">${ini}</div>`;
+        function encontrarEquipo(nombre) {
+            const buscado = limpiarNombre(nombre);
+            if (!buscado) return null;
+            return equiposCargados.find(e => {
+                const actual = limpiarNombre(e.nombre);
+                return actual === buscado || actual.includes(buscado) || buscado.includes(actual);
+            }) || null;
         }
 
-        function crearGrupoConVS(letra, slots, colorHeader) {
-            const arr = slots || [];
-            let htmlDuelos = '';
-            for (let i = 0; i < arr.length; i += 2) {
-                const s1 = arr[i] || { nombre: `${letra}${i+1}`, extra: '', estado: 'normal' };
-                const s2 = arr[i+1] || { nombre: `${letra}${i+2}`, extra: '', estado: 'normal' };
-                const c1 = s1.estado === 'clasificado' ? 'slot-qualified' : (s1.estado === 'eliminado' ? 'slot-eliminated' : '');
-                const c2 = s2.estado === 'clasificado' ? 'slot-qualified' : (s2.estado === 'eliminado' ? 'slot-eliminated' : '');
-
-                htmlDuelos += `
-                    <div data-vs1="${enc(s1.nombre)}" data-vs2="${enc(s2.nombre)}" data-vstitle="${enc('GRUPO ' + letra + ' • BO3')}"
-                         class="btn-vs duel-card rounded-md p-2 cursor-pointer">
-                        <div class="flex items-center justify-between gap-1.5 px-1 py-1 rounded ${c1} pointer-events-none">
-                            <div class="flex items-center gap-2 truncate">
-                                ${iconoEquipo(s1.nombre, 'w-6 h-6')}
-                                <span class="text-[11px] font-bold text-white truncate">${s1.nombre}</span>
-                            </div>
-                            ${s1.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${s1.extra}</span>` : ''}
-                        </div>
-                        <div class="flex items-center gap-1.5 my-1 pointer-events-none">
-                            <div class="h-[1px] bg-white/10 flex-1"></div>
-                            <span class="text-[8px] font-black text-white bg-vctRed px-2 py-0.5 rounded tracking-widest">VS</span>
-                            <div class="h-[1px] bg-white/10 flex-1"></div>
-                        </div>
-                        <div class="flex items-center justify-between gap-1.5 px-1 py-1 rounded ${c2} pointer-events-none">
-                            <div class="flex items-center gap-2 truncate">
-                                ${iconoEquipo(s2.nombre, 'w-6 h-6')}
-                                <span class="text-[11px] font-bold text-white truncate">${s2.nombre}</span>
-                            </div>
-                            ${s2.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${s2.extra}</span>` : ''}
-                        </div>
-                    </div>`;
-            }
-            return `
-                <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden flex flex-col">
-                    <div class="${colorHeader} py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase text-white">
-                        <span>GRUPO ${letra}</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">DUELOS VS</span>
-                    </div>
-                    <div class="p-2 flex flex-col gap-2">${htmlDuelos}</div>
-                </div>`;
-        }
-
-        function pintarTodo() {
-            const f1 = document.getElementById('col-fase1-grupos');
-            if (f1) f1.innerHTML = ['A','B','C','D'].map(g => crearGrupoConVS(g, datosTorneo.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600')).join('');
-
-            const f2 = document.getElementById('col-fase2-grupos');
-            if (f2) f2.innerHTML = ['E','F'].map(g => crearGrupoConVS(g, datosTorneo.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600')).join('');
-
-            const f3 = document.getElementById('col-fase3-ranking');
-            if (f3) {
-                f3.innerHTML = (datosTorneo.fase3 || []).map((r, i) => {
-                    const elim = i >= 4 || r.eliminado;
-                    return `
-                        <div data-vs1="${enc(r.nombre)}" data-vs2="" data-vstitle="${enc('FASE 3 • RANKING')}"
-                             class="btn-vs flex items-center gap-2.5 p-1.5 rounded border ${elim ? 'border-red-500/30 bg-red-950/10' : 'border-emerald-500/30 bg-emerald-950/10'} cursor-pointer hover:border-white/40">
-                            <div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs text-white ${elim ? 'bg-red-600' : 'bg-emerald-600'} shrink-0 pointer-events-none">${i + 1}</div>
-                            <div class="flex items-center gap-2 flex-1 truncate pointer-events-none">
-                                ${iconoEquipo(r.nombre, 'w-6 h-6')}
-                                <span class="text-xs font-bold ${elim ? 'text-gray-400' : 'text-white'} truncate">${r.nombre}</span>
-                            </div>
-                            <span class="text-[9px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} uppercase pr-1 shrink-0 pointer-events-none">${r.rd || (elim ? '(ELIMINADO)' : '')}</span>
-                        </div>`;
-                }).join('');
-            }
-
-            const crearCardPlayoff = (titulo, m) => `
-                <div data-vs1="${enc(m.eq1)}" data-vs2="${enc(m.eq2)}" data-vstitle="${enc(titulo + ' • BO5')}" data-s1="${enc(m.score1)}" data-s2="${enc(m.score2)}"
-                     class="btn-vs duel-card bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6 cursor-pointer">
-                    <div class="flex justify-between items-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10 pointer-events-none">
-                        <span>${titulo}</span><span class="text-[8px] bg-everGold/15 px-1.5 py-0.5 rounded">VER VS ⚔️</span>
-                    </div>
-                    <div class="flex justify-between items-center gap-2 p-1.5 pointer-events-none">
-                        <div class="flex items-center gap-2 truncate">${iconoEquipo(m.eq1, 'w-6 h-6')}<span class="text-xs font-bold text-white truncate">${m.eq1}</span></div>
-                        <span class="text-xs font-black text-everGold">${m.score1 || '-'}</span>
-                    </div>
-                    <div class="flex items-center gap-1.5 my-1 pointer-events-none">
-                        <div class="h-[1px] bg-white/10 flex-1"></div>
-                        <span class="text-[8px] font-black text-white bg-vctRed px-2 py-0.5 rounded">VS</span>
-                        <div class="h-[1px] bg-white/10 flex-1"></div>
-                    </div>
-                    <div class="flex justify-between items-center gap-2 p-1.5 pointer-events-none">
-                        <div class="flex items-center gap-2 truncate">${iconoEquipo(m.eq2, 'w-6 h-6')}<span class="text-xs font-bold text-white truncate">${m.eq2}</span></div>
-                        <span class="text-xs font-black text-everGold">${m.score2 || '-'}</span>
-                    </div>
-                </div>`;
-
-            const f4 = document.getElementById('col-fase4-semis');
-            if (f4) f4.innerHTML = crearCardPlayoff('SEMIFINAL 1', datosTorneo.fase4.sf1) + crearCardPlayoff('SEMIFINAL 2', datosTorneo.fase4.sf2);
-
-            const f5 = document.getElementById('col-fase5-final');
-            if (f5) f5.innerHTML = crearCardPlayoff('GRAN FINAL', datosTorneo.final);
-
-            const campBox = document.getElementById('col-fase5-campeon');
-            if (campBox) {
-                const eqC = buscarEq(datosTorneo.final.campeon);
-                const logoC = eqC ? (eqC.logo_url || eqC.logo || '') : '';
-                campBox.innerHTML = `
-                    <div data-vs1="${enc(datosTorneo.final.campeon)}" data-vs2="" data-vstitle="${enc('CAMPEÓN 5EVER')}" class="btn-vs cursor-pointer">
-                        <div class="text-4xl mb-2 pointer-events-none">🏆</div>
-                        ${logoC ? `<img src="${logoC}" class="w-16 h-16 mx-auto mb-2 object-contain bg-black p-1.5 rounded border border-everGold pointer-events-none">` : ''}
-                        <span class="text-[9px] text-everGold font-black uppercase tracking-[0.3em] block pointer-events-none">VICTORIA SUPREMA</span>
-                        <h3 class="text-base font-black uppercase tracking-wider text-white mt-1 truncate pointer-events-none">${datosTorneo.final.campeon || 'CAMPEÓN'}</h3>
-                    </div>`;
-            }
-
-            pintarGaleriaEquipos('');
-        }
-
-        function pintarGaleriaEquipos(filtro = '') {
-            const grid = document.getElementById('grid-equipos');
-            if (!grid) return;
-            const base = equiposDB.length > 0 ? equiposDB : [
-                ...datosTorneo.fase1.A, ...datosTorneo.fase1.B, ...datosTorneo.fase1.C, ...datosTorneo.fase1.D
-            ].map(s => ({ nombre: s.nombre, rango: 'Escuadra Confirmada', logo_url: '', jugadores: [] }));
-
-            const q = String(filtro || '').toLowerCase().trim();
-            const filtrados = base.filter(eq => {
-                if (!eq || !eq.nombre) return false;
-                const nom = String(eq.nombre).toLowerCase();
-                const jug = Array.isArray(eq.jugadores) && eq.jugadores.some(j => j && String(j.riot_id || '').toLowerCase().includes(q));
-                return !q || nom.includes(q) || jug;
-            });
-
-            grid.innerHTML = filtrados.map((eq, idx) => {
-                const n1 = eq.nombre;
-                const par = idx % 2 === 0 ? idx + 1 : idx - 1;
-                const n2 = filtrados[par] ? filtrados[par].nombre : (filtrados[0] ? filtrados[0].nombre : '');
-                return `
-                    <div data-vs1="${enc(n1)}" data-vs2="${enc(n2)}" data-vstitle="${enc('CARA A CARA • ESCUADRAS')}"
-                         class="btn-vs bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer transition-all flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-3.5 truncate pointer-events-none">
-                            ${iconoEquipo(n1, 'w-12 h-12')}
-                            <div class="truncate">
-                                <span class="text-[8px] text-everGold font-black uppercase tracking-widest block">ESCUADRA #${idx + 1}</span>
-                                <h3 class="text-sm font-black text-white uppercase truncate">${n1}</h3>
-                                <span class="text-[9px] text-gray-400 uppercase font-bold block truncate">${eq.rango || 'Rango Oficial'}</span>
-                            </div>
-                        </div>
-                        <span class="text-[10px] text-vctRed font-black shrink-0 pointer-events-none">VS ➔</span>
-                    </div>`;
-            }).join('');
-        }
-
-        function abrirModalVS(n1, n2, titulo, s1 = '', s2 = '') {
-            const eq1 = buscarEq(n1);
-            const eq2 = buscarEq(n2);
-            const nombres = equiposDB.length > 0 ? equiposDB.map(e => e.nombre) : [...datosTorneo.fase1.A, ...datosTorneo.fase1.B, ...datosTorneo.fase1.C, ...datosTorneo.fase1.D].map(s => s.nombre);
-
-            let opts = `<option value="">-- Cambiar rival para comparar VS --</option>`;
-            nombres.forEach(nom => {
-                const sel = (n2 && norm(nom) === norm(n2)) ? 'selected' : '';
-                opts += `<option value="${enc(nom)}" ${sel}>${nom}</option>`;
-            });
-
-            const renderLado = (nomTxt, eqObj, colorBorde) => {
-                const logo = eqObj ? (eqObj.logo_url || eqObj.logo || '') : '';
-                if (!eqObj) {
-                    return `
-                        <div class="bg-[#0c0e16] border border-white/10 rounded-lg p-5 text-center flex flex-col items-center justify-center min-h-[220px]">
-                            <div class="w-16 h-16 rounded bg-white/5 border border-white/10 flex items-center justify-center text-xl font-black text-everGold mb-3">${String(nomTxt || '?').substring(0, 2).toUpperCase()}</div>
-                            <h4 class="text-base font-black uppercase text-white">${nomTxt || 'POR DEFINIR'}</h4>
-                            <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Cargando roster...</p>
-                        </div>`;
+        async function cargarFotosDeEquipos() {
+            const aviso = document.getElementById('estado-logos');
+            try {
+                const res = await fetch(API_URL + '/equipos');
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    equiposCargados = data;
+                    document.querySelectorAll('img[data-logo]').forEach(img => {
+                        const eq = encontrarEquipo(img.getAttribute('data-logo'));
+                        if (eq && eq.logo_url) {
+                            img.src = eq.logo_url;
+                        }
+                    });
+                    aviso.innerText = '✔ ' + data.length + ' FOTOS Y ROSTERS ACTIVOS';
+                    aviso.className = 'text-[10px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-950/40 border border-emerald-500/40 px-3 py-1 rounded';
                 }
-                const jugHtml = (eqObj.jugadores || []).map(j => `
-                    <div class="bg-[#121520] border-l-2 ${colorBorde} p-2.5 rounded-r flex justify-between items-center gap-2 mb-2">
-                        <div class="truncate">
-                            <span class="text-[8px] text-everGold font-black uppercase block">${j.role || 'TITULAR'}</span>
-                            <span class="text-xs font-black text-white truncate block">${j.riot_id || ''}</span>
-                        </div>
-                        <a href="${j.tracker_url || '#'}" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded shrink-0">TRACKER ↗</a>
-                    </div>`).join('');
+            } catch (err) {
+                setTimeout(cargarFotosDeEquipos, 4000);
+            }
+        }
+
+        function verVS(nom1, nom2, fase) {
+            const eq1 = encontrarEquipo(nom1);
+            const eq2 = encontrarEquipo(nom2);
+
+            const dibujarCol = (nombreTxt, eq, colorBorde) => {
+                const foto = (eq && eq.logo_url) ? eq.logo_url : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(nombreTxt) + '&background=111&color=e5c05c&bold=true';
+                const rango = (eq && eq.rango) ? eq.rango : 'Escuadra Confirmada';
+                const capitan = (eq && eq.discord) ? eq.discord : 'Verificado';
+                const listaJug = (eq && Array.isArray(eq.jugadores) && eq.jugadores.length > 0)
+                    ? eq.jugadores.map(j => `
+                        <div class="bg-[#121520] border-l-2 ${colorBorde} p-2.5 rounded-r flex justify-between items-center gap-2 mb-2">
+                            <div class="truncate">
+                                <span class="text-[8px] text-everGold font-black uppercase block">${j.role || 'TITULAR'}</span>
+                                <span class="text-xs font-black text-white truncate block">${j.riot_id || ''}</span>
+                            </div>
+                            <a href="${j.tracker_url || '#'}" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded shrink-0">TRACKER ↗</a>
+                        </div>`).join('')
+                    : `<p class="text-[10px] text-gray-400 uppercase tracking-widest py-6 text-center">Sincronizando integrantes del roster...</p>`;
 
                 return `
                     <div class="bg-[#0c0e16] border border-white/15 rounded-lg p-5">
                         <div class="flex items-center gap-4 mb-4 pb-3 border-b border-white/10">
-                            ${logo ? `<img src="${logo}" class="w-16 h-16 object-contain bg-black p-1 rounded border border-white/20 shrink-0">` : ''}
+                            <img src="${foto}" class="w-16 h-16 object-contain bg-black p-1 rounded border border-white/20 shrink-0">
                             <div class="truncate">
-                                <span class="text-[9px] text-everGold font-black uppercase block">${eqObj.rango || 'Rango Oficial'}</span>
-                                <h4 class="text-lg font-black uppercase text-white truncate">${eqObj.nombre}</h4>
-                                <span class="text-[9px] text-gray-400 font-bold uppercase block">Capitán: ${eqObj.discord || 'N/A'}</span>
+                                <span class="text-[9px] text-everGold font-black uppercase block">${rango}</span>
+                                <h4 class="text-lg font-black uppercase text-white truncate">${eq ? eq.nombre : nombreTxt}</h4>
+                                <span class="text-[9px] text-gray-400 font-bold uppercase block">Capitán: ${capitan}</span>
                             </div>
                         </div>
-                        <div class="max-h-[260px] overflow-y-auto pr-1">${jugHtml}</div>
+                        <div class="max-h-[260px] overflow-y-auto pr-1">${listaJug}</div>
                     </div>`;
             };
 
             document.getElementById('modal-vs-content').innerHTML = `
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6 pb-4 border-b border-white/10 pr-8">
-                    <div>
-                        <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">${titulo}</span>
-                        <h3 class="text-xl font-black uppercase text-white">⚔️ ${n1} <span class="text-vctRed mx-1">VS</span> ${n2 || 'RIVAL'}</h3>
-                    </div>
-                    <select id="sel-rival-vs" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-64 outline-none">${opts}</select>
+                <div class="mb-6 pb-4 border-b border-white/10 pr-8">
+                    <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">${fase}</span>
+                    <h3 class="text-xl md:text-2xl font-black uppercase text-white">⚔️ ${nom1} <span class="text-vctRed mx-2">VS</span> ${nom2}</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
-                    <div class="md:col-span-5">${renderLado(n1, eq1, 'border-vctRed')}</div>
-                    <div class="md:col-span-1 flex flex-col items-center justify-center">
+                    <div class="md:col-span-5">${dibujarCol(nom1, eq1, 'border-vctRed')}</div>
+                    <div class="md:col-span-1 flex justify-center">
                         <div class="w-12 h-12 rounded-full bg-vctRed border-2 border-white flex items-center justify-center font-black text-xs text-white shadow-lg">VS</div>
-                        ${(s1 || s2) ? `<div class="mt-2 bg-black border border-white/15 px-2.5 py-1 rounded text-xs font-black text-everGold">${s1\vert{}\vert{}0}:${s2||0}</div>` : ''}
                     </div>
-                    <div class="md:col-span-5">${renderLado(n2, eq2, 'border-everGold')}</div>
+                    <div class="md:col-span-5">${dibujarCol(nom2, eq2, 'border-everGold')}</div>
                 </div>`;
 
-            document.getElementById('sel-rival-vs').onchange = function() {
-                abrirModalVS(n1, dec(this.value), titulo, s1, s2);
-            };
             document.getElementById('modal-vs').classList.remove('hidden');
         }
 
-        async function conectarConRender() {
-            const badge = document.getElementById('estado-servidor');
-            const endpoints = [
-                'https://5ever-esports-web-1.onrender.com/api',
-                'https://bane-esports-web-1.onrender.com/api'
-            ];
-
-            for (const ep of endpoints) {
-                try {
-                    const resEq = await fetch(`${ep}/equipos`);
-                    if (resEq.ok) {
-                        const data = await resEq.json();
-                        if (Array.isArray(data) && data.length > 0) {
-                            equiposDB = data.filter(Boolean);
-                            document.getElementById('cupo-contador').innerText = `${equiposDB.length} / 24 EQUIPOS`;
-                            badge.innerText = `✔ ${equiposDB.length} FOTOS Y ROSTERS CONECTADOS`;
-                            badge.className = 'text-[10px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-950/40 border border-emerald-500/40 px-3 py-1 rounded';
-                            pintarTodo();
-                            return;
-                        }
-                    }
-                } catch (e) {}
-            }
-            setTimeout(conectarConRender, 4000);
-        }
-
-        // PINTADO INMEDIATO
-        pintarTodo();
-        conectarConRender();
-
-        document.addEventListener('click', (e) => {
-            const btn = e.target.closest('.btn-vs');
-            if (!btn) return;
-            abrirModalVS(
-                dec(btn.getAttribute('data-vs1')),
-                dec(btn.getAttribute('data-vs2')),
-                dec(btn.getAttribute('data-vstitle')),
-                dec(btn.getAttribute('data-s1')),
-                dec(btn.getAttribute('data-s2'))
-            );
-        });
-
-        const buscador = document.getElementById('buscador-equipos');
-        if (buscador) buscador.addEventListener('input', (e) => pintarGaleriaEquipos(e.target.value));
+        cargarFotosDeEquipos();
     </script>
 </body>
 </html>
