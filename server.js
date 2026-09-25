@@ -8,7 +8,7 @@ const crypto = require('crypto');
 const app = express();
 app.use(cors());
 
-// Límite ampliado a 50mb para recibir logos en Base64 sin error de PayloadTooLarge
+// Límite ampliado a 50mb para recibir logos en Base64 sin error
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -22,9 +22,8 @@ const client = new DynamoDBClient({
 });
 const ddbDocClient = DynamoDBDocumentClient.from(client);
 
-// 2. Middleware de Administrador (Acceso Directo Sin Fricciones)
+// 2. Middleware de Administrador (Acceso Directo)
 const esAdmin = async (req, res, next) => {
-    // Da acceso administrativo directo para evitar fallos por tokens expirados o Cognito
     req.user = { email: 'ivonnesanchez057@gmail.com' };
     next();
 };
@@ -68,11 +67,25 @@ app.put('/api/equipos', esAdmin, async (req, res) => {
     }
 });
 
-// Obtener lista de equipos
+// Obtener TODOS los equipos (Rompiendo el límite de 1MB / 20 equipos de DynamoDB)
 app.get('/api/equipos', async (req, res) => {
     try {
-        const resultado = await ddbDocClient.send(new ScanCommand({ TableName: 'BaneEquipos' }));
-        const equiposOrdenados = resultado.Items.sort((a, b) => new Date(a.fecha_registro) - new Date(b.fecha_registro));
+        let todosLosEquipos = [];
+        let lastEvaluatedKey = undefined;
+
+        // Ciclo que recorre todas las páginas de DynamoDB hasta traer todos los equipos
+        do {
+            const resultado = await ddbDocClient.send(new ScanCommand({
+                TableName: 'BaneEquipos',
+                ExclusiveStartKey: lastEvaluatedKey
+            }));
+            if (resultado.Items) {
+                todosLosEquipos = todosLosEquipos.concat(resultado.Items);
+            }
+            lastEvaluatedKey = resultado.LastEvaluatedKey;
+        } while (lastEvaluatedKey);
+
+        const equiposOrdenados = todosLosEquipos.sort((a, b) => new Date(a.fecha_registro) - new Date(b.fecha_registro));
         res.json(equiposOrdenados);
     } catch (error) {
         console.error("Error al consultar equipos:", error);
@@ -187,7 +200,6 @@ app.delete('/api/partidas', esAdmin, async (req, res) => {
     }
 });
 
-// Puerto de ejecución
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor activo y operando en el puerto ${PORT}`);
