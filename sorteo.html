@@ -3,168 +3,564 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5ever | The Arena</title>
+    <title>5ever | Valorant Tournament 24 Equipos</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#050507' } } } }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vctRed: '#ff2a3f',
+                        everGold: '#e5c05c',
+                        bgDark: '#050507'
+                    }
+                }
+            }
+        }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #050507; color: white; overflow-x: hidden; }
-        .bg-rays { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 0%, rgba(255, 42, 63, 0.08) 0%, transparent 60%); }
-        .clip-card { clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
-        .clip-btn { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%); }
-        .animate-item { opacity: 0; transform: translateY(20px); animation: slideUp 0.6s forwards; }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-        .roster-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease-out; }
-        .roster-panel.open { grid-template-rows: 1fr; }
-        .roster-content { overflow: hidden; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #06070b;
+            color: white;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 15% 10%, rgba(255, 42, 63, 0.08) 0%, transparent 40%),
+                              radial-gradient(circle at 85% 20%, rgba(229, 192, 92, 0.06) 0%, transparent 40%);
+        }
+        .clip-card { clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px); }
+        
+        /* Scrollbar horizontal para el tablero de 5 fases */
+        .board-scroll::-webkit-scrollbar { height: 8px; }
+        .board-scroll::-webkit-scrollbar-track { background: #0a0b10; border: 1px solid rgba(255,255,255,0.05); }
+        .board-scroll::-webkit-scrollbar-thumb { background: #ff2a3f; border-radius: 4px; }
+
+        .phase-col {
+            background: linear-gradient(180deg, rgba(16, 18, 26, 0.95) 0%, rgba(9, 10, 15, 0.98) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .slot-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.2s ease;
+        }
+        .slot-item:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.07);
+        }
+        .slot-qualified {
+            border-left: 3px solid #22c55e !important;
+            background: rgba(34, 197, 94, 0.08) !important;
+        }
+        .slot-eliminated {
+            border-left: 3px solid #ef4444 !important;
+            background: rgba(239, 68, 68, 0.08) !important;
+            opacity: 0.55;
+        }
     </style>
 </head>
-<body class="selection:bg-vctRed selection:text-white antialiased min-h-screen">
+<body class="antialiased min-h-screen pb-20">
 
-    <div class="bg-rays"></div>
-
-    <nav class="w-full bg-[#020202]/90 backdrop-blur-md border-b border-white/5 sticky top-0 z-50 flex items-center justify-between">
-        <div class="px-6 md:px-10 py-5 flex items-center gap-3">
-            <span class="text-2xl md:text-3xl font-black tracking-tighter text-white"><span class="text-vctRed">5</span>EVER</span>
-            <span class="text-[8px] md:text-[10px] text-gray-500 uppercase tracking-[0.4em] font-bold border-l border-white/20 pl-3">ARENA</span>
-        </div>
-        <div class="pr-4 md:pr-8">
-            <a href="registro-torneo.html" class="clip-btn font-black text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white bg-vctRed hover:bg-white hover:text-vctRed px-6 py-3 transition-colors shadow-[0_0_15px_rgba(255,42,63,0.3)]">
-                Inscribir Escuadra
-            </a>
-        </div>
-    </nav>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 relative z-10">
-        
-        <div class="text-center mb-24 animate-item">
-            <h1 class="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-2 leading-none">THE <span class="text-transparent bg-clip-text bg-gradient-to-br from-everGold to-yellow-700">ARENA</span></h1>
-            <p class="text-gray-400 text-[10px] tracking-[0.6em] uppercase font-bold">Base de Datos Global</p>
-        </div>
-
-        <div class="mb-32 animate-item" style="animation-delay: 0.1s;">
-            <h3 class="text-2xl font-black text-white uppercase tracking-widest mb-8 flex items-center gap-3"><span class="w-2 h-6 bg-everGold inline-block"></span> CLASIFICACIÓN ÉLITE</h3>
-            <div class="bg-[#050505]/80 backdrop-blur-sm border border-white/5 p-4 md:p-6 clip-card shadow-2xl">
-                <div class="flex justify-between text-[9px] uppercase tracking-[0.3em] text-gray-500 font-bold pb-4 mb-2 px-2 border-b border-white/10">
-                    <span>Escuadra</span><span>Victorias</span>
+    <!-- HEADER PRINCIPAL ESTILO VALORANT TOURNAMENT -->
+    <header class="border-b border-white/10 bg-[#06070b]/90 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-[1600px] mx-auto px-4 md:px-8 py-4 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-vctRed/10 border border-vctRed flex items-center justify-center font-black text-vctRed text-xl">V</div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black uppercase tracking-wider leading-none">
+                        VALORANT TOURNAMENT <span class="text-vctRed block sm:inline">24 EQUIPOS</span>
+                    </h1>
+                    <p class="text-[10px] text-everGold font-black uppercase tracking-[0.25em] mt-1">
+                        📅 CADA LUNES • 8:00 PM (HORA CENTRO DE MÉXICO)
+                    </p>
                 </div>
-                <div id="tabla-posiciones" class="flex flex-col gap-2"></div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="registro-torneo.html" class="bg-vctRed hover:bg-white text-white hover:text-black font-black text-[10px] uppercase tracking-[0.2em] px-5 py-3 transition-all clip-card">
+                    + INSCRIBIR EQUIPO
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1600px] mx-auto px-4 md:px-8 mt-8">
+
+        <!-- TABLERO OFICIAL DE LAS 5 FASES -->
+        <div class="mb-4 flex justify-between items-center">
+            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.25em]">
+                💡 Haz clic sobre cualquier equipo inscrito para inspeccionar su roster y Tracker
+            </span>
+            <span class="text-[9px] text-everGold font-black uppercase tracking-widest lg:hidden">
+                Desliza para ver las 5 fases ➔
+            </span>
+        </div>
+
+        <div class="board-scroll overflow-x-auto pb-4">
+            <div class="flex items-stretch gap-4 min-w-[1380px]" id="tournament-board">
+                <!-- JS Renderiza las 5 Columnas Exactas aquí -->
             </div>
         </div>
 
-        <div id="contenedor-sorteo" class="flex flex-col gap-16"></div>
+        <!-- BARRA INFERIOR DE PROGRESIÓN: 24 > 12 > 6 > 4 > 2 > 1 -->
+        <div class="mt-6 mb-14 bg-[#0a0c12] border border-white/10 rounded-lg py-4 px-6 flex flex-wrap justify-center items-center gap-4 md:gap-8 text-center">
+            <div>
+                <span class="text-xl md:text-2xl font-black text-white block">24</span>
+                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Equipos Iniciales</span>
+            </div>
+            <span class="text-gray-600 font-black text-lg">&gt;</span>
+            <div>
+                <span class="text-xl md:text-2xl font-black text-white block">12</span>
+                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Avanzan</span>
+            </div>
+            <span class="text-gray-600 font-black text-lg">&gt;</span>
+            <div>
+                <span class="text-xl md:text-2xl font-black text-white block">6</span>
+                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Tras Fase 2</span>
+            </div>
+            <span class="text-gray-600 font-black text-lg">&gt;</span>
+            <div>
+                <span class="text-xl md:text-2xl font-black text-white block">4</span>
+                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Tras Eliminación x Desempeño</span>
+            </div>
+            <span class="text-gray-600 font-black text-lg">&gt;</span>
+            <div>
+                <span class="text-xl md:text-2xl font-black text-white block">2</span>
+                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest">Finalistas</span>
+            </div>
+            <span class="text-gray-600 font-black text-lg">&gt;</span>
+            <div>
+                <span class="text-xl md:text-2xl font-black text-everGold block">1</span>
+                <span class="text-[8px] text-everGold font-black uppercase tracking-widest">Campeón</span>
+            </div>
+        </div>
+
+        <!-- GALERÍA DE ESCUADRAS REGISTRADAS -->
+        <div class="border-t border-white/10 pt-10">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div>
+                    <h2 class="text-2xl font-black uppercase tracking-wider">ESCUADRAS CONFIRMADAS</h2>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-[0.25em] font-bold mt-1">
+                        Inscritos en el sistema: <span id="cupo-contador" class="text-everGold">0 / 24 EQUIPOS</span>
+                    </p>
+                </div>
+                <input type="text" id="buscador-equipos" placeholder="🔍 Buscar escuadra o Riot ID..." class="bg-[#0b0c10] border border-white/15 focus:border-vctRed px-4 py-3 text-xs font-bold text-white w-full md:w-72 outline-none rounded">
+            </div>
+
+            <div id="grid-equipos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </div>
+
+    </main>
+
+    <!-- MODAL DE ROSTER DE EQUIPO -->
+    <div id="modal-equipo" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-[#08090d] border border-white/15 w-full max-w-2xl p-6 md:p-8 clip-card max-h-[90vh] overflow-y-auto relative">
+            <button onclick="cerrarModal()" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-lg font-black">✕</button>
+            <div id="modal-equipo-content"></div>
+        </div>
     </div>
 
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
-        let dataEq = []; let wins = {}; 
+        let listaEquiposGlobal = [];
+        let tournamentData = null;
 
-        document.addEventListener('DOMContentLoaded', initApp);
-
-        async function initApp() {
-            try {
-                const [resEq, resNot] = await Promise.all([fetch(`${API_URL}/equipos`), fetch(`${API_URL}/noticias`)]);
-                if(resEq.ok) { dataEq = await resEq.json(); dataEq.forEach(e => wins[e.nombre] = 0); }
-                const bData = (await resNot.json()).find(n => n.titulo === '[BRACKET_DATA]');
-                
-                if (bData && bData.descripcion !== '[]') {
-                    const matches = JSON.parse(bData.descripcion);
-                    matches.forEach(m => {
-                        if(m.eq1 && !wins[m.eq1]) wins[m.eq1] = 0; if(m.eq2 && m.eq2!=='BYE' && !wins[m.eq2]) wins[m.eq2] = 0;
-                        if(m.status === 'eq1') wins[m.eq1]++; if(m.status === 'eq2' && m.eq2!=='BYE') wins[m.eq2]++;
-                    });
-                    renderLeaderboard(); renderMatches(matches);
-                } else {
-                    renderLeaderboard();
-                    document.getElementById('contenedor-sorteo').innerHTML = `<div class="text-center p-12 bg-[#111] border border-white/5 clip-card animate-item"><p class="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Las llaves del torneo aún no han sido reveladas.</p></div>`;
+        // Estructura por defecto idéntica a la imagen oficial
+        function crearEstructuraPorDefecto() {
+            return {
+                version: '24_grupos_v1',
+                horario: 'Cada Lunes • 8:00 PM (Hora Centro de México)',
+                fase1: {
+                    A: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    B: ['B1', 'B2', 'B3', 'B4', 'B5', 'B6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    C: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    D: ['D1', 'D2', 'D3', 'D4', 'D5', 'D6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+                },
+                fase2: {
+                    E: ['E1', 'E2', 'E3', 'E4', 'E5', 'E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                    F: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+                },
+                fase3: [
+                    { pos: 1, nombre: 'Equipo', rd: '', eliminado: false },
+                    { pos: 2, nombre: 'Equipo', rd: '', eliminado: false },
+                    { pos: 3, nombre: 'Equipo', rd: '', eliminado: false },
+                    { pos: 4, nombre: 'Equipo', rd: '', eliminado: false },
+                    { pos: 5, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true },
+                    { pos: 6, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true }
+                ],
+                fase4: {
+                    sf1: { eq1: 'Equipo 1', eq2: 'Equipo 2', score1: '', score2: '', ganador: '' },
+                    sf2: { eq1: 'Equipo 3', eq2: 'Equipo 4', score1: '', score2: '', ganador: '' }
+                },
+                final: {
+                    eq1: 'Ganador SF1',
+                    eq2: 'Ganador SF2',
+                    score1: '',
+                    score2: '',
+                    campeon: 'CAMPEÓN'
                 }
-            } catch (e) {}
+            };
         }
 
-        function toggleRoster(id) { document.getElementById(id).classList.toggle('open'); }
+        document.addEventListener('DOMContentLoaded', async () => {
+            await cargarDatos();
+            document.getElementById('buscador-equipos').addEventListener('input', (e) => {
+                renderEquipos(e.target.value.toLowerCase());
+            });
+        });
 
-        function renderLeaderboard() {
-            const t = document.getElementById('tabla-posiciones'); t.innerHTML = '';
-            const sorted = dataEq.map(e => ({...e, w: wins[e.nombre]||0})).sort((a,b) => b.w - a.w);
-            if(sorted.length === 0) { t.innerHTML = '<p class="text-[10px] text-gray-600 text-center py-6 uppercase tracking-widest">Aún no hay escuadras registradas.</p>'; return; }
+        async function cargarDatos() {
+            try {
+                const [resEq, resNot] = await Promise.all([
+                    fetch(`${API_URL}/equipos`),
+                    fetch(`${API_URL}/noticias`)
+                ]);
+                listaEquiposGlobal = await resEq.json();
+                const noticias = await resNot.json();
 
-            sorted.forEach((item, idx) => {
-                let img = item.logo_url ? `<img src="${item.logo_url}" class="w-12 h-12 object-contain bg-black p-1">` : `<div class="w-12 h-12 bg-[#111] flex items-center justify-center font-black text-white">${item.nombre.charAt(0)}</div>`;
-                let rank = `<span class="text-gray-600 text-sm font-black w-6">${idx + 1}</span>`;
-                if(idx===0) rank = `<span class="text-everGold text-xl font-black w-6 drop-shadow-[0_0_5px_rgba(229,192,92,0.8)]">1</span>`;
+                document.getElementById('cupo-contador').innerText = `${listaEquiposGlobal.length} / 24 EQUIPOS`;
+                renderEquipos('');
 
-                let rHtml = '';
-                if(item.jugadores && item.jugadores.length > 0) {
-                    rHtml = `<div class="roster-panel" id="rost-${idx}"><div class="roster-content pt-4 mt-4 border-t border-white/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">`;
-                    item.jugadores.forEach(j => {
-                        let roleColor = j.role === 'TITULAR' ? 'text-gray-500' : (j.role === 'SUPLENTE' ? 'text-everGold' : 'text-vctRed');
-                        let borderColor = j.role === 'TITULAR' ? 'border-white/10' : (j.role === 'SUPLENTE' ? 'border-everGold/50' : 'border-vctRed/50');
-                        let trackerLink = j.tracker_url !== '#' ? `<a href="${j.tracker_url}" target="_blank" class="text-[8px] bg-white/5 px-2 py-1 text-gray-300 hover:text-white hover:bg-white/20 font-bold uppercase transition-colors rounded-sm">Tracker ↗</a>` : '';
+                const bd = noticias.find(n => n.titulo === '[BRACKET_DATA]');
+                if (bd) {
+                    const parsed = JSON.parse(bd.descripcion);
+                    if (parsed && parsed.version === '24_grupos_v1') {
+                        tournamentData = parsed;
+                    } else {
+                        tournamentData = crearEstructuraPorDefecto();
+                    }
+                } else {
+                    tournamentData = crearEstructuraPorDefecto();
+                }
 
-                        rHtml += `
-                            <div class="flex flex-col bg-[#0a0a0c] p-3 border-l-2 ${borderColor} hover:bg-[#111] transition-colors">
-                                <span class="text-[8px] ${roleColor} font-black uppercase tracking-widest mb-1">${j.role || 'JUGADOR'}</span>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-[10px] md:text-xs text-white font-bold uppercase tracking-wider truncate mr-2">${j.riot_id}</span>
-                                    ${trackerLink}
-                                </div>
-                            </div>`;
-                    });
-                    rHtml += `</div></div>`;
-                } else { rHtml = `<div class="roster-panel" id="rost-${idx}"><div class="roster-content pt-4 mt-2 text-[9px] text-vctRed font-bold uppercase tracking-widest">Sin datos de Roster.</div></div>`; }
+                renderBoard(tournamentData);
+            } catch (e) {
+                console.error("Error cargando datos:", e);
+                tournamentData = crearEstructuraPorDefecto();
+                renderBoard(tournamentData);
+            }
+        }
 
-                t.innerHTML += `
-                    <div class="bg-[#0a0a0c] hover:bg-[#111] border border-white/5 p-4 transition-all duration-300 animate-item clip-card mb-2" style="animation-delay: ${idx * 0.1}s;">
-                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleRoster('rost-${idx}')">
-                            <div class="flex items-center gap-4">${rank} ${img} <span class="font-bold text-sm md:text-lg text-white uppercase tracking-widest truncate w-32 md:w-full">${item.nombre}</span></div>
-                            <div class="flex items-center gap-6">
-                                <span class="text-base font-black text-white">${item.w} <span class="text-vctRed">W</span></span>
-                                <span class="text-[9px] text-gray-400 uppercase font-bold border border-white/10 px-3 py-1 hover:border-white hover:text-white transition-colors hidden sm:block">ROSTER ▼</span>
+        function buscarEquipoPorNombre(nombre) {
+            if (!nombre) return null;
+            return listaEquiposGlobal.find(e => e.nombre.trim().toLowerCase() === nombre.trim().toLowerCase()) || null;
+        }
+
+        function renderSlotGrupo(slot) {
+            const eq = buscarEquipoPorNombre(slot.nombre);
+            const claseEstado = slot.estado === 'clasificado' ? 'slot-qualified' : (slot.estado === 'eliminado' ? 'slot-eliminated' : '');
+            const clickAttr = eq ? `onclick="verDetalleEquipo('${eq.id}')" class="slot-item ${claseEstado} px-2.5 py-1.5 rounded flex items-center justify-between gap-2 cursor-pointer"` 
+                                 : `class="slot-item ${claseEstado} px-2.5 py-1.5 rounded flex items-center justify-between gap-2"`;
+
+            const imgHtml = eq && eq.logo_url 
+                ? `<img src="${eq.logo_url}" class="w-4 h-4 object-contain shrink-0">` 
+                : '';
+
+            return `
+                <div ${clickAttr}>
+                    <div class="flex items-center gap-2 truncate">
+                        ${imgHtml}
+                        <span class="text-[11px] font-bold text-gray-200 truncate">${slot.nombre}</span>
+                    </div>
+                    ${slot.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${slot.extra}</span>` : ''}
+                </div>
+            `;
+        }
+
+        function renderCajaGrupo(letra, listaSlots, colorHeader) {
+            const filas = listaSlots.map(s => renderSlotGrupo(s)).join('');
+            return `
+                <div class="bg-[#0b0d14] border border-white/10 rounded overflow-hidden flex flex-col">
+                    <div class="${colorHeader} py-1.5 px-3 text-center font-black text-[10px] uppercase tracking-widest text-white">
+                        GRUPO ${letra}
+                    </div>
+                    <div class="p-2 flex flex-col gap-1">
+                        ${filas}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderBoard(d) {
+            const board = document.getElementById('tournament-board');
+            const eqCampeon = buscarEquipoPorNombre(d.final.campeon);
+
+            // Ranking Fase 3
+            const rankingHtml = d.fase3.map((r, idx) => {
+                const esElim = idx >= 4 || r.eliminado;
+                const eq = buscarEquipoPorNombre(r.nombre);
+                const badgeColor = esElim ? 'bg-gradient-to-b from-red-600 to-red-800 border-red-400/40' : 'bg-gradient-to-b from-emerald-500 to-emerald-700 border-emerald-300/40';
+                const rowBorder = esElim ? 'border-red-500/30 bg-red-950/10' : 'border-emerald-500/30 bg-emerald-950/10';
+                const clickAttr = eq ? `onclick="verDetalleEquipo('${eq.id}')" cursor-pointer` : '';
+
+                return `
+                    <div ${clickAttr} class="flex items-center gap-2.5 p-1.5 rounded border ${rowBorder}">
+                        <div class="w-7 h-7 rounded flex items-center justify-center font-black text-xs text-white border ${badgeColor} shrink-0">
+                            ${idx + 1}
+                        </div>
+                        <div class="flex items-center gap-2 flex-1 truncate">
+                            ${eq && eq.logo_url ? `<img src="${eq.logo_url}" class="w-4 h-4 object-contain shrink-0">` : ''}
+                            <span class="text-xs font-bold ${esElim ? 'text-gray-400' : 'text-white'} truncate">${r.nombre}</span>
+                        </div>
+                        <span class="text-[9px] font-black ${esElim ? 'text-red-400' : 'text-emerald-400'} uppercase pr-1 shrink-0">
+                            ${r.rd || (esElim ? '(ELIMINADO)' : '')}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            board.innerHTML = `
+                <!-- COLUMNA 1: FASE 1 (24 EQUIPOS) -->
+                <div class="phase-col w-[330px] shrink-0 p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="text-center mb-3">
+                            <h2 class="text-lg font-black uppercase tracking-wider text-white">FASE 1</h2>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">FASE DE GRUPOS</p>
+                            <p class="text-xs font-black uppercase tracking-wider text-white">24 EQUIPOS</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-red-900/80 via-red-700/80 to-red-900/80 border border-red-500/40 rounded p-2 text-center mb-4">
+                            <div class="flex justify-center items-center gap-2 text-[10px] font-black uppercase tracking-wider">
+                                <span>4 GRUPOS DE 6</span>
+                                <span class="bg-black/50 px-2 py-0.5 rounded text-red-200">BO3</span>
+                            </div>
+                            <p class="text-[9px] font-bold uppercase tracking-widest text-gray-200 mt-1 border-t border-white/10 pt-1">
+                                AVANZAN 3 POR GRUPO (12 EQUIPOS)
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            ${renderCajaGrupo('A', d.fase1.A, 'bg-gradient-to-r from-red-800 to-red-600')}
+                            ${renderCajaGrupo('B', d.fase1.B, 'bg-gradient-to-r from-red-800 to-red-600')}
+                            ${renderCajaGrupo('C', d.fase1.C, 'bg-gradient-to-r from-red-800 to-red-600')}
+                            ${renderCajaGrupo('D', d.fase1.D, 'bg-gradient-to-r from-red-800 to-red-600')}
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-red-950/30 border border-red-500/30 rounded p-2.5 text-center">
+                        <p class="text-[10px] font-black uppercase text-red-200">12 EQUIPOS ELIMINADOS</p>
+                        <p class="text-[9px] text-gray-400">(Últimos 3 de cada grupo)</p>
+                    </div>
+                </div>
+
+                <!-- FLECHA -->
+                <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
+
+                <!-- COLUMNA 2: FASE 2 (12 EQUIPOS) -->
+                <div class="phase-col w-[240px] shrink-0 p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="text-center mb-3">
+                            <h2 class="text-lg font-black uppercase tracking-wider text-white">FASE 2</h2>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">FASE DE GRUPOS</p>
+                            <p class="text-xs font-black uppercase tracking-wider text-white">12 EQUIPOS</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-blue-900/80 via-blue-700/80 to-blue-900/80 border border-blue-400/40 rounded p-2 text-center mb-4">
+                            <div class="flex justify-center items-center gap-2 text-[10px] font-black uppercase tracking-wider">
+                                <span>2 GRUPOS DE 6</span>
+                                <span class="bg-black/50 px-2 py-0.5 rounded text-blue-200">BO3</span>
+                            </div>
+                            <p class="text-[9px] font-bold uppercase tracking-widest text-gray-200 mt-1 border-t border-white/10 pt-1">
+                                AVANZAN 3 POR GRUPO (6 EQUIPOS)
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col gap-3">
+                            ${renderCajaGrupo('E', d.fase2.E, 'bg-gradient-to-r from-blue-800 to-blue-600')}
+                            ${renderCajaGrupo('F', d.fase2.F, 'bg-gradient-to-r from-blue-800 to-blue-600')}
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-blue-950/30 border border-blue-500/30 rounded p-2.5 text-center">
+                        <p class="text-[10px] font-black uppercase text-blue-200">6 EQUIPOS ELIMINADOS</p>
+                        <p class="text-[9px] text-gray-400">(Últimos 3 de cada grupo)</p>
+                    </div>
+                </div>
+
+                <!-- FLECHA -->
+                <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
+
+                <!-- COLUMNA 3: FASE 3 (SELECCIÓN FINAL 6 EQUIPOS) -->
+                <div class="phase-col w-[250px] shrink-0 p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="text-center mb-3">
+                            <h2 class="text-lg font-black uppercase tracking-wider text-white">FASE 3</h2>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">SELECCIÓN FINAL</p>
+                            <p class="text-xs font-black uppercase tracking-wider text-white">6 EQUIPOS</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-indigo-900/80 via-purple-800/80 to-indigo-900/80 border border-purple-400/40 rounded p-2 text-center mb-4">
+                            <p class="text-[10px] font-black uppercase tracking-wider text-white">RANKING POR DESEMPEÑO</p>
+                            <p class="text-[9px] text-gray-200 mt-1 border-t border-white/10 pt-1">
+                                Se ordenan los 6 equipos por diferencia de rondas.
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col gap-2.5 my-4">
+                            ${rankingHtml}
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-red-950/30 border border-red-500/30 rounded p-2.5 text-center">
+                        <p class="text-[10px] font-bold text-red-200">Se eliminan 2 equipos por diferencia de rondas.</p>
+                    </div>
+                </div>
+
+                <!-- FLECHA -->
+                <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
+
+                <!-- COLUMNA 4: FASE 4 (SEMIFINALES 4 EQUIPOS) -->
+                <div class="phase-col w-[240px] shrink-0 p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="text-center mb-3">
+                            <h2 class="text-lg font-black uppercase tracking-wider text-white">FASE 4</h2>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">SEMIFINALES</p>
+                            <p class="text-xs font-black uppercase tracking-wider text-white">4 EQUIPOS</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-amber-700/80 via-yellow-600/80 to-amber-700/80 border border-everGold/50 rounded p-2 text-center mb-6">
+                            <p class="text-[10px] font-black uppercase tracking-wider text-white">2 ENFRENTAMIENTOS</p>
+                            <div class="flex justify-center items-center gap-2 text-[9px] font-black uppercase mt-1 border-t border-white/15 pt-1">
+                                <span>2 GRUPOS DE 2</span>
+                                <span class="bg-black/60 px-2 py-0.5 rounded text-everGold">BO5</span>
+                            </div>
+                            <p class="text-[8px] font-bold uppercase tracking-widest text-white mt-1">PASA 1 POR GRUPO</p>
+                        </div>
+
+                        <!-- SEMIFINAL 1 -->
+                        <div class="bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6">
+                            <div class="text-center text-[10px] font-black uppercase tracking-widest text-everGold mb-2 pb-1 border-b border-white/10">
+                                SEMIFINAL 1
+                            </div>
+                            <div class="slot-item p-2.5 rounded flex justify-between items-center mb-1.5">
+                                <span class="text-xs font-bold text-white truncate">${d.fase4.sf1.eq1}</span>
+                                <span class="text-xs font-black text-everGold">${d.fase4.sf1.score1 || ''}</span>
+                            </div>
+                            <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
+                            <div class="slot-item p-2.5 rounded flex justify-between items-center">
+                                <span class="text-xs font-bold text-white truncate">${d.fase4.sf1.eq2}</span>
+                                <span class="text-xs font-black text-everGold">${d.fase4.sf1.score2 || ''}</span>
                             </div>
                         </div>
-                        ${rHtml}
-                    </div>`;
+
+                        <!-- SEMIFINAL 2 -->
+                        <div class="bg-[#0b0d14] border border-everGold/40 rounded-lg p-3">
+                            <div class="text-center text-[10px] font-black uppercase tracking-widest text-everGold mb-2 pb-1 border-b border-white/10">
+                                SEMIFINAL 2
+                            </div>
+                            <div class="slot-item p-2.5 rounded flex justify-between items-center mb-1.5">
+                                <span class="text-xs font-bold text-white truncate">${d.fase4.sf2.eq1}</span>
+                                <span class="text-xs font-black text-everGold">${d.fase4.sf2.score1 || ''}</span>
+                            </div>
+                            <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
+                            <div class="slot-item p-2.5 rounded flex justify-between items-center">
+                                <span class="text-xs font-bold text-white truncate">${d.fase4.sf2.eq2}</span>
+                                <span class="text-xs font-black text-everGold">${d.fase4.sf2.score2 || ''}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div></div>
+                </div>
+
+                <!-- FLECHA -->
+                <div class="flex items-center justify-center text-gray-500 font-black text-xl">➔</div>
+
+                <!-- COLUMNA 5: GRAN FINAL (2 EQUIPOS) -->
+                <div class="phase-col w-[240px] shrink-0 p-4 flex flex-col justify-between border-vctRed/40">
+                    <div>
+                        <div class="text-center mb-4">
+                            <h2 class="text-xl font-black uppercase tracking-wider text-vctRed">GRAN FINAL</h2>
+                            <p class="text-xs font-black uppercase tracking-wider text-white mt-1">2 EQUIPOS</p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-red-800 via-vctRed to-red-800 border border-red-400/40 rounded py-2 text-center font-black text-xs uppercase tracking-widest mb-6">
+                            BO5
+                        </div>
+
+                        <div class="bg-[#0b0d14] border border-white/15 rounded-lg p-3.5 mb-6">
+                            <div class="slot-item p-3 rounded flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-white truncate">${d.final.eq1}</span>
+                                <span class="text-xs font-black text-everGold">${d.final.score1 || ''}</span>
+                            </div>
+                            <div class="text-center text-[9px] font-black text-gray-500 my-1">VS</div>
+                            <div class="slot-item p-3 rounded flex justify-between items-center">
+                                <span class="text-xs font-bold text-white truncate">${d.final.eq2}</span>
+                                <span class="text-xs font-black text-everGold">${d.final.score2 || ''}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TROFEO Y CAMPEÓN -->
+                    <div class="bg-gradient-to-b from-everGold/10 to-transparent border border-everGold/40 rounded-lg p-4 text-center">
+                        <div class="text-5xl mb-2 drop-shadow-[0_0_15px_rgba(229,192,92,0.5)]">🏆</div>
+                        ${eqCampeon && eqCampeon.logo_url ? `<img src="${eqCampeon.logo_url}" class="w-14 h-14 mx-auto mb-2 object-contain bg-black p-1 border border-everGold">` : ''}
+                        <span class="text-[9px] text-everGold font-black uppercase tracking-[0.3em] block">VICTORIA SUPREMA</span>
+                        <h3 class="text-base font-black uppercase tracking-wider text-white mt-1 truncate">${d.final.campeon || 'CAMPEÓN'}</h3>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderEquipos(filtro) {
+            const grid = document.getElementById('grid-equipos');
+            grid.innerHTML = '';
+
+            const filtrados = listaEquiposGlobal.filter(eq => {
+                const matchNombre = eq.nombre.toLowerCase().includes(filtro);
+                const matchJug = eq.jugadores && eq.jugadores.some(j => (j.riot_id || '').toLowerCase().includes(filtro));
+                return matchNombre || matchJug;
+            });
+
+            filtrados.forEach((eq, idx) => {
+                const logo = eq.logo_url || 'https://via.placeholder.com/100/0a0a0c/ff2a3f?text=5EVER';
+                grid.innerHTML += `
+                    <div onclick="verDetalleEquipo('${eq.id}')" class="bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer transition-all group flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3.5 truncate">
+                            <img src="${logo}" class="w-12 h-12 object-contain bg-black p-1 border border-white/10 group-hover:border-vctRed shrink-0">
+                            <div class="truncate">
+                                <span class="text-[8px] text-everGold font-black uppercase tracking-widest block">ESCUADRA #${idx + 1}</span>
+                                <h3 class="text-sm font-black text-white uppercase truncate">${eq.nombre}</h3>
+                                <span class="text-[9px] text-gray-400 uppercase font-bold block truncate">${eq.rango || 'Rango Oficial'}</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-vctRed font-black shrink-0">➔</span>
+                    </div>
+                `;
             });
         }
 
-        function getImg(name) {
-            const eq = dataEq.find(e => e.nombre === name);
-            if(eq && eq.logo_url) return `<img src="${eq.logo_url}" class="w-16 h-16 object-contain">`;
-            return `<div class="w-16 h-16 bg-[#111] border border-white/5 flex items-center justify-center font-bold text-2xl text-gray-700">${name.charAt(0)}</div>`;
+        function verDetalleEquipo(id) {
+            const eq = listaEquiposGlobal.find(e => e.id === id);
+            if (!eq) return;
+            let jugHtml = '';
+            (eq.jugadores || []).forEach(j => {
+                jugHtml += `
+                    <div class="bg-[#11131a] border-l-2 border-everGold p-3 flex justify-between items-center">
+                        <div>
+                            <span class="text-[9px] text-everGold font-black uppercase block">${j.role || 'TITULAR'}</span>
+                            <span class="text-xs font-black text-white">${j.riot_id}</span>
+                        </div>
+                        <a href="${j.tracker_url || '#'}" target="_blank" class="text-[9px] bg-white/5 hover:bg-vctRed px-3 py-1.5 font-black uppercase tracking-widest">TRACKER ↗</a>
+                    </div>`;
+            });
+
+            document.getElementById('modal-equipo-content').innerHTML = `
+                <div class="flex items-center gap-4 mb-6 pb-4 border-b border-white/10">
+                    <img src="${eq.logo_url}" class="w-16 h-16 object-contain bg-black p-2 border border-white/10">
+                    <div>
+                        <span class="text-[10px] text-everGold font-black uppercase tracking-widest">${eq.rango || 'Rango Oficial'}</span>
+                        <h3 class="text-2xl font-black uppercase text-white">${eq.nombre}</h3>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${jugHtml}</div>
+            `;
+            document.getElementById('modal-equipo').classList.remove('hidden');
         }
 
-        function renderMatches(matches) {
-            const c = document.getElementById('contenedor-sorteo'); c.innerHTML = '';
-            const fases = {}; matches.forEach(m => { if(!fases[m.fase]) fases[m.fase] = []; fases[m.fase].push(m); });
-
-            let delay = 0.3;
-            for (const f in fases) {
-                let html = `<div class="mb-12"><h3 class="text-xl md:text-2xl font-black text-white uppercase tracking-widest mb-8 flex items-center gap-4 animate-item" style="animation-delay: ${delay}s;"><div class="h-1 bg-vctRed w-8"></div> ${f}</h3><div class="grid grid-cols-1 xl:grid-cols-2 gap-6">`;
-                
-                fases[f].forEach(m => {
-                    delay += 0.1;
-                    let c1 = 'text-white', c2 = 'text-white', o1 = '', o2 = '';
-                    let mid = '<span class="text-gray-600 font-black text-2xl italic opacity-30">VS</span>';
-                    
-                    if (m.score1 && m.score2) mid = `<div class="flex flex-col items-center"><span class="text-everGold font-black text-4xl">${m.score1} <span class="text-white/20 text-2xl">-</span> ${m.score2}</span></div>`;
-                    else if (m.status !== 'pending' && m.eq2 !== 'BYE') mid = '<span class="text-vctRed font-bold text-[9px] uppercase tracking-widest text-center border border-vctRed px-2 py-1 bg-vctRed/10">CERRADO</span>';
-
-                    if (m.status === 'eq1') { c1 = 'text-everGold'; c2 = 'text-gray-600 line-through'; o2 = 'opacity-30 grayscale'; } 
-                    else if (m.status === 'eq2') { c2 = 'text-everGold'; c1 = 'text-gray-600 line-through'; o1 = 'opacity-30 grayscale'; }
-
-                    if (m.eq2 === 'BYE') { mid = '<span class="text-gray-600 font-bold text-[8px] uppercase tracking-widest text-center">BYE</span>'; c2 = 'text-gray-800'; o2 = 'opacity-10'; m.eq2 = 'VACANTE'; }
-
-                    html += `
-                        <div class="clip-card bg-[#0a0a0c] border-l-2 border-transparent hover:border-vctRed p-6 flex items-center justify-between animate-item transition-all hover:bg-[#111]" style="animation-delay: ${delay}s;">
-                            <div class="flex items-center gap-4 flex-1 ${o1}">${getImg(m.eq1)}<h4 class="text-sm md:text-xl ${c1} font-black uppercase tracking-wider truncate max-w-[100px] md:max-w-[180px]">${m.eq1}</h4></div>
-                            <div class="px-2 flex flex-col items-center">${mid}</div>
-                            <div class="flex items-center gap-4 flex-1 justify-end text-right ${o2}"><h4 class="text-sm md:text-xl ${c2} font-black uppercase tracking-wider truncate max-w-[100px] md:max-w-[180px]">${m.eq2}</h4>${m.eq2==='VACANTE' ? '<div class="w-16 h-16"></div>' : getImg(m.eq2)}</div>
-                        </div>`;
-                });
-                html += `</div></div>`; c.innerHTML += html;
-            }
+        function cerrarModal() {
+            document.getElementById('modal-equipo').classList.add('hidden');
         }
     </script>
 </body>
