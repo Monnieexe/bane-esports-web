@@ -3,603 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Copa 5EverMad | Valorant Tournament 24 Equipos</title>
+    <title>Copa 5EverMad | Valorant Tournament</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#050507' } } }
+            theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#06070b' } } }
         };
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: #05060a;
-            color: white;
+            background-color: #06070b;
+            color: #f3f4f6;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 12% 15%, rgba(255, 42, 63, 0.12) 0%, transparent 38%),
-                radial-gradient(circle at 88% 25%, rgba(229, 192, 92, 0.08) 0%, transparent 40%),
-                linear-gradient(to right, rgba(255,255,255,0.018) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.018) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+            background-image: radial-gradient(circle at 50% 0%, rgba(255, 42, 63, 0.07) 0%, transparent 50%);
         }
 
-        /* Marca de agua táctica gigante de fondo */
-        .vct-bg-watermark {
-            position: fixed;
-            top: 16%;
-            left: -2%;
-            font-size: 10.5vw;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: -0.04em;
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.025);
-            pointer-events: none;
-            z-index: 0;
-            white-space: nowrap;
-            user-select: none;
-        }
+        .board-scroll::-webkit-scrollbar { height: 6px; }
+        .board-scroll::-webkit-scrollbar-track { background: #0a0b10; }
+        .board-scroll::-webkit-scrollbar-thumb { background: #262936; border-radius: 3px; }
+        .board-scroll::-webkit-scrollbar-thumb:hover { background: #ff2a3f; }
 
-        .clip-card { clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px); }
-        .board-scroll::-webkit-scrollbar { height: 8px; }
-        .board-scroll::-webkit-scrollbar-track { background: #0a0b10; border: 1px solid rgba(255,255,255,0.05); }
-        .board-scroll::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #ff2a3f, #e5c05c); border-radius: 4px; }
-
-        /* Columnas con acabado HUD */
+        /* Columnas limpias y elegantes */
         .phase-col {
-            position: relative;
-            background: linear-gradient(180deg, rgba(15, 17, 26, 0.95) 0%, rgba(8, 9, 14, 0.98) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            border-radius: 10px;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.7);
+            background: #0b0d13;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
         }
-        .phase-col::before {
-            content: '';
-            position: absolute;
-            top: -1px; left: -1px;
-            width: 14px; height: 14px;
-            border-top: 2px solid #e5c05c;
-            border-left: 2px solid #e5c05c;
-            border-top-left-radius: 8px;
-            pointer-events: none;
-        }
-        .phase-col::after {
-            content: '';
-            position: absolute;
-            bottom: -1px; right: -1px;
-            width: 14px; height: 14px;
-            border-bottom: 2px solid #ff2a3f;
-            border-right: 2px solid #ff2a3f;
-            border-bottom-right-radius: 8px;
-            pointer-events: none;
-        }
-
-        /* Fase 1 Activa con brillo Neón */
         .phase-active {
-            border-color: rgba(255, 42, 63, 0.65) !important;
-            box-shadow: 0 0 35px rgba(255, 42, 63, 0.2), inset 0 0 25px rgba(255, 42, 63, 0.05) !important;
+            border-color: rgba(255, 42, 63, 0.4);
+            box-shadow: 0 0 25px rgba(255, 42, 63, 0.08);
         }
 
-        /* Conectores luminosos animados entre fases */
-        @keyframes pulseArrow {
-            0%, 100% { opacity: 0.35; transform: translateX(0); text-shadow: 0 0 5px #ff2a3f; }
-            50% { opacity: 1; transform: translateX(4px); text-shadow: 0 0 18px #ff2a3f, 0 0 8px #e5c05c; }
+        /* Duelos compactos estilo VLR.gg */
+        .match-pair {
+            background: #10131c;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 6px;
+            transition: all 0.18s ease;
         }
-        .connector-glow { animation: pulseArrow 2s infinite ease-in-out; }
-
-        .duel-box {
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            transition: all 0.22s ease;
+        .match-pair:hover {
+            border-color: rgba(255, 42, 63, 0.6);
+            background: #151925;
+            transform: translateY(-1px);
         }
-        .duel-box:hover {
-            border-color: #ff2a3f;
-            background: linear-gradient(135deg, rgba(255, 42, 63, 0.14) 0%, rgba(229, 192, 92, 0.05) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 42, 63, 0.2);
+        .team-row + .team-row {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Tarjetas de equipos con destello metálico y logo en marca de agua */
+        /* Tarjetas de galería limpias */
         .card-equipo {
             position: relative;
             overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            background: #0b0d13;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+            transition: all 0.2s ease;
         }
-        .card-equipo::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -120%;
-            width: 60%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-            transform: skewX(-25deg);
-            transition: left 0.55s ease;
-            pointer-events: none;
-            z-index: 2;
-        }
-        .card-equipo:hover::before { left: 140%; }
         .card-equipo:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 28px rgba(255, 42, 63, 0.22);
+            border-color: #ff2a3f;
+            transform: translateY(-2px);
+            background: #0f121a;
         }
         .watermark-logo {
             position: absolute;
-            right: -12px;
-            bottom: -12px;
-            width: 95px;
-            height: 95px;
+            right: -10px;
+            bottom: -10px;
+            width: 75px;
+            height: 75px;
             object-fit: contain;
-            opacity: 0.07;
-            filter: grayscale(30%) blur(0.5px);
-            transition: all 0.35s ease;
+            opacity: 0.04;
             pointer-events: none;
-            z-index: 0;
+            transition: all 0.3s ease;
         }
         .card-equipo:hover .watermark-logo {
-            opacity: 0.18;
-            transform: scale(1.15) rotate(-6deg);
-            filter: grayscale(0%);
+            opacity: 0.12;
+            transform: scale(1.08);
         }
 
-        /* Altar del Campeón con Halo Dorado */
-        @keyframes goldAura {
-            0%, 100% { box-shadow: 0 0 20px rgba(229, 192, 92, 0.2), inset 0 0 20px rgba(229, 192, 92, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(229, 192, 92, 0.45), inset 0 0 35px rgba(229, 192, 92, 0.22); }
-        }
-        .champion-altar {
-            animation: goldAura 3s infinite ease-in-out;
-            background: radial-gradient(circle at 50% 25%, rgba(229, 192, 92, 0.25) 0%, rgba(11, 13, 20, 0.95) 75%);
-        }
-        .gold-metallic-text {
-            background: linear-gradient(to right, #fff6d6 0%, #e5c05c 45%, #b8860b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Pulso Neón para el VS Central del Modal */
-        @keyframes vsPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(255, 42, 63, 0.6), 0 0 40px rgba(229, 192, 92, 0.2); transform: scale(1); }
-            50% { box-shadow: 0 0 35px rgba(255, 42, 63, 0.95), 0 0 60px rgba(229, 192, 92, 0.5); transform: scale(1.08); }
-        }
-        .vs-neon-badge { animation: vsPulse 2s infinite ease-in-out; }
-
-        .slot-qualified { border-left: 3px solid #22c55e !important; background: rgba(34, 197, 94, 0.1) !important; padding-left: 6px; }
-        .slot-eliminated { border-left: 3px solid #ef4444 !important; background: rgba(239, 68, 68, 0.08) !important; opacity: 0.5; padding-left: 6px; }
+        .slot-qualified { border-left: 3px solid #22c55e !important; background: rgba(34, 197, 94, 0.07) !important; }
+        .slot-eliminated { border-left: 3px solid #ef4444 !important; opacity: 0.45; }
     </style>
 </head>
-<body class="antialiased min-h-screen pb-20 relative">
+<body class="antialiased min-h-screen pb-20">
 
-    <!-- MARCA DE AGUA GIGANTE DE FONDO -->
-    <div class="vct-bg-watermark">COPA 5EVERMAD // VALORANT</div>
-
-    <!-- HEADER PRINCIPAL -->
+    <!-- HEADER LIMPIO Y MINIMALISTA -->
     <header class="border-b border-white/10 bg-[#06070b]/95 backdrop-blur-md sticky top-0 z-30">
-        <div class="max-w-[1650px] mx-auto px-4 md:px-8 py-3.5 flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-vctRed/15 border border-vctRed flex items-center justify-center font-black text-vctRed text-xl shadow-[0_0_15px_rgba(255,42,63,0.4)]">V</div>
+        <div class="max-w-[1600px] mx-auto px-4 md:px-6 py-3 flex flex-wrap justify-between items-center gap-4">
+            
+            <!-- Marca -->
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded bg-vctRed/15 border border-vctRed flex items-center justify-center font-black text-vctRed text-lg">V</div>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black uppercase tracking-wider leading-none">
-                        COPA <span class="text-vctRed">5EVERMAD</span> <span class="text-xs md:text-sm text-gray-300 font-extrabold ml-1">• 24 EQUIPOS</span>
-                    </h1>
-                    <p class="text-[10px] text-everGold font-black uppercase tracking-[0.22em] mt-1">
-                        📅 CADA LUNES • 8:00 PM CDMX (TOLERANCIA LÍMITE: 8:10 PM)
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg md:text-xl font-black uppercase tracking-wider text-white">
+                            COPA <span class="text-vctRed">5EVERMAD</span>
+                        </h1>
+                        <span class="text-[10px] bg-white/5 border border-white/10 text-gray-300 font-bold px-2 py-0.5 rounded">24 EQUIPOS</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400 font-semibold uppercase tracking-widest">
+                        Lunes 8:00 PM CDMX • Check-in 7:45 PM
                     </p>
                 </div>
             </div>
 
-            <!-- CONTADOR REGRESIVO AL PRÓXIMO LUNES 8:00 PM -->
-            <div class="flex items-center gap-3 bg-[#0c0e16] border border-white/15 px-4 py-2 rounded-lg shadow-inner">
-                <span id="reloj-label" class="text-[9px] text-gray-400 font-black uppercase tracking-widest">PRÓXIMA JORNADA:</span>
-                <div id="reloj-numeros" class="flex items-center gap-1.5 text-xs font-black text-everGold tracking-wider">
-                    <span id="cd-d" class="bg-black px-2 py-1 rounded border border-white/10">00d</span>:
-                    <span id="cd-h" class="bg-black px-2 py-1 rounded border border-white/10">00h</span>:
-                    <span id="cd-m" class="bg-black px-2 py-1 rounded border border-white/10">00m</span>:
-                    <span id="cd-s" class="bg-black px-2 py-1 rounded border border-white/10 text-vctRed">00s</span>
+            <!-- Contador discreto -->
+            <div class="flex items-center gap-2.5 bg-[#0b0d13] border border-white/10 px-3.5 py-1.5 rounded-md">
+                <span id="reloj-label" class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">PRÓXIMA JORNADA:</span>
+                <div id="reloj-numeros" class="flex items-center gap-1 text-xs font-black text-everGold">
+                    <span id="cd-d">00d</span>:<span id="cd-h">00h</span>:<span id="cd-m">00m</span>:<span id="cd-s" class="text-vctRed">00s</span>
                 </div>
             </div>
 
-            <!-- BOTONES DE REGLAS OFICIALES, STREAM Y CUPO -->
-            <div class="flex flex-wrap items-center gap-2.5">
-                <button onclick="abrirModalReglas()" class="bg-[#12141d] hover:bg-everGold text-everGold hover:text-black border border-everGold/60 font-black text-[10px] uppercase tracking-[0.18em] px-4 py-3 transition-all clip-card flex items-center gap-2 shadow-[0_0_15px_rgba(229,192,92,0.2)]">
-                    📜 REGLAS Y MAP POOL
+            <!-- Botones de Acción -->
+            <div class="flex items-center gap-2">
+                <button onclick="abrirModalReglas()" class="bg-[#10131c] hover:bg-everGold text-everGold hover:text-black border border-everGold/40 font-extrabold text-[10px] uppercase tracking-wider px-3.5 py-2 rounded transition-all">
+                    📜 Reglas y Map Pool
                 </button>
-                <button onclick="toggleStream()" class="bg-[#12141d] hover:bg-vctRed text-white border border-vctRed/50 font-black text-[10px] uppercase tracking-[0.18em] px-4 py-3 transition-all clip-card flex items-center gap-2 shadow-[0_0_15px_rgba(255,42,63,0.2)]">
-                    <span class="w-2 h-2 rounded-full bg-vctRed animate-ping"></span> STREAM
+                <button onclick="toggleStream()" class="bg-[#10131c] hover:bg-vctRed text-white border border-white/15 font-extrabold text-[10px] uppercase tracking-wider px-3.5 py-2 rounded transition-all flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-vctRed animate-ping"></span> Stream
                 </button>
-                <span id="btn-cupo-header" class="bg-everGold/15 border border-everGold text-everGold font-black text-[10px] uppercase tracking-[0.18em] px-4 py-3 clip-card cursor-default">
-                    🔒 CUPO LLENO (24/24)
+                <span id="btn-cupo-header" class="bg-white/5 border border-white/10 text-gray-300 font-extrabold text-[10px] uppercase tracking-wider px-3.5 py-2 rounded">
+                    🔒 24 / 24
                 </span>
             </div>
-        </div>
 
-        <!-- CINTILLO OFICIAL DE INFORMACIÓN RÁPIDA -->
-        <div class="bg-gradient-to-r from-[#0c0e16] via-[#160b10] to-[#0c0e16] border-t border-white/10 py-1.5 px-4 text-center">
-            <p class="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-gray-300">
-                ⚡ <span class="text-everGold font-black">CHECK-IN CANALES: 7:45 PM</span> (MANAGER O CAPITÁN) • <span class="text-vctRed font-black">INICIO: 8:00 PM CDMX</span> (LÍMITE NO-SHOW: 8:10 PM) • <span class="text-white font-black">MAP POOL:</span> ABYSS, ASCENT, HAVEN, SUNSET, SPLIT, SUMMIT, LOTUS
-            </p>
         </div>
     </header>
 
-    <main class="max-w-[1650px] mx-auto px-4 md:px-8 mt-6 relative z-10">
+    <main class="max-w-[1600px] mx-auto px-4 md:px-6 mt-6">
 
-        <!-- PANEL DESPLEGABLE DE STREAM EN VIVO -->
-        <div id="panel-stream" class="hidden mb-8 bg-[#0b0d14] border border-vctRed/40 rounded-xl p-4 shadow-2xl">
+        <!-- PANEL DESPLEGABLE DE STREAM -->
+        <div id="panel-stream" class="hidden mb-6 bg-[#0b0d13] border border-white/15 rounded-lg p-4">
             <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-white/10">
+                <span class="text-xs font-black uppercase tracking-widest text-white">🔴 Transmisión Oficial Copa 5EverMad</span>
                 <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-vctRed animate-pulse"></span>
-                    <h3 class="text-xs font-black uppercase tracking-widest text-white">TRANSMISIÓN OFICIAL COPA 5EVERMAD • 8:00 PM CDMX</h3>
-                </div>
-                <div class="flex items-center gap-2">
-                    <input type="text" id="input-canal-twitch" placeholder="Canal de Twitch (ej. valorant_la)" class="bg-black border border-white/15 px-3 py-1 text-[10px] font-bold text-white rounded outline-none">
-                    <button onclick="cambiarCanalStream()" class="bg-vctRed text-white text-[9px] font-black uppercase px-3 py-1 rounded">CARGAR CANAL</button>
-                    <button onclick="toggleStream()" class="text-gray-400 hover:text-white text-xs font-black ml-2">✕ CERRAR</button>
+                    <input type="text" id="input-canal-twitch" placeholder="Canal de Twitch" class="bg-black border border-white/15 px-2.5 py-1 text-[10px] font-bold text-white rounded outline-none">
+                    <button onclick="cambiarCanalStream()" class="bg-vctRed text-white text-[9px] font-black uppercase px-3 py-1 rounded">Cargar</button>
+                    <button onclick="toggleStream()" class="text-gray-400 hover:text-white text-xs font-black ml-2">✕</button>
                 </div>
             </div>
-            <div class="aspect-video w-full max-h-[480px] bg-black rounded-lg overflow-hidden border border-white/10">
+            <div class="aspect-video w-full max-h-[440px] bg-black rounded overflow-hidden">
                 <iframe id="iframe-stream" src="" class="w-full h-full" allowfullscreen></iframe>
             </div>
         </div>
 
-        <div class="mb-5 flex flex-wrap justify-between items-center gap-2">
-            <span class="text-[10px] text-gray-300 font-bold uppercase tracking-[0.2em] bg-white/5 border border-white/10 px-3.5 py-2 rounded backdrop-blur-sm">
-                ⚔️ Haz clic en cualquier enfrentamiento <b class="text-vctRed">VS</b> para abrir el <b class="text-everGold">CARA A CARA</b>, simular el Veto de Mapas y copiar Riot IDs
-            </span>
-            <button onclick="abrirModalReglas()" class="text-[10px] text-everGold hover:text-white font-black uppercase tracking-widest underline">
-                Ver Comunicado Oficial de Fechas, Tolerancia y Llamadas ➔
-            </button>
-        </div>
+        <!-- TABLERO DE LAS 5 FASES (PROPORCIONADO Y DESPEJADO) -->
+        <div class="board-scroll overflow-x-auto pb-4">
+            <div class="grid grid-cols-12 gap-3 min-w-[1280px] items-stretch">
 
-        <!-- TABLERO DE LAS 5 FASES CON FECHAS OFICIALES -->
-        <div class="board-scroll overflow-x-auto pb-6 pt-3">
-            <div class="flex items-stretch gap-3.5 min-w-[1520px]">
-
-                <!-- ================= COLUMNA 1: FASE 1 (LUNES 28 DE SEPTIEMBRE) ================= -->
-                <div class="phase-col phase-active w-[430px] shrink-0 p-4 flex flex-col justify-between">
-                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-vctRed via-red-500 to-vctRed text-white text-[9px] font-black uppercase tracking-[0.2em] px-4 py-1 rounded-full shadow-[0_0_15px_rgba(255,42,63,0.8)] border border-white/30 flex items-center gap-1.5 whitespace-nowrap">
-                        <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> 🔥 JORNADA 1 • LUNES 28 SEP
-                    </div>
-
-                    <div class="mt-2">
-                        <div class="text-center mb-3">
-                            <span class="text-[9px] font-black uppercase tracking-[0.25em] text-everGold block">LUNES 28 DE SEPTIEMBRE</span>
-                            <h2 class="text-lg font-black uppercase text-white tracking-wider">FASE 1</h2>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">FASE DE GRUPOS • 24 EQUIPOS</p>
-                        </div>
-                        <div class="bg-gradient-to-r from-red-900/80 via-red-700/80 to-red-900/80 border border-red-500/40 rounded p-2 text-center mb-4">
-                            <div class="flex justify-center items-center gap-2 text-[10px] font-black uppercase">
-                                <span>4 GRUPOS DE 6</span><span class="bg-black/50 px-2 py-0.5 rounded text-red-200">BO3</span>
+                <!-- ================= FASE 1 (4 Columnas de ancho) ================= -->
+                <div class="col-span-4 phase-col phase-active p-3.5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center border-b border-white/10 pb-2.5 mb-3">
+                            <div>
+                                <span class="text-[9px] font-extrabold uppercase tracking-widest text-vctRed block">LUNES 28 DE SEPTIEMBRE</span>
+                                <h2 class="text-sm font-black uppercase text-white">FASE 1 • GRUPOS (24 EQUIPOS)</h2>
                             </div>
-                            <p class="text-[9px] font-bold uppercase text-gray-200 mt-1 border-t border-white/10 pt-1">AVANZAN 3 POR GRUPO (12 EQUIPOS)</p>
+                            <span class="text-[9px] bg-vctRed/15 border border-vctRed/40 text-red-200 font-extrabold px-2 py-0.5 rounded uppercase">BO3 • Pasan 3</span>
                         </div>
 
-                        <div id="contenedor-fase1" class="grid grid-cols-2 gap-3">
+                        <div id="contenedor-fase1" class="grid grid-cols-2 gap-2.5">
                             <!-- GRUPO A -->
-                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
-                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase">
-                                    <span>GRUPO A</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">BO3</span>
+                            <div class="bg-[#08090e] border border-white/5 rounded-md p-2">
+                                <div class="flex justify-between items-center mb-1.5 px-1">
+                                    <span class="text-[10px] font-black uppercase text-vctRed">GRUPO A</span>
+                                    <span class="text-[8px] text-gray-500 font-bold uppercase">Clic para VS</span>
                                 </div>
-                                <div class="p-2 flex flex-col gap-2">
-                                    <div onclick="verVS('7z Esports','Abismus','GRUPO A • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">7z Esports</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Abismus</span></div>
+                                <div class="space-y-1.5">
+                                    <div onclick="verVS('7z Esports','Abismus','GRUPO A • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">7z Esports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Abismus</span></div>
                                     </div>
-                                    <div onclick="verVS('Nönsense by Bear','Thalyra','GRUPO A • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Nönsense by Bear</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Thalyra</span></div>
+                                    <div onclick="verVS('Nönsense by Bear','Thalyra','GRUPO A • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Nönsense by Bear</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Thalyra</span></div>
                                     </div>
-                                    <div onclick="verVS('Xiao Shīzi 北','Akari esports','GRUPO A • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Xiao Shīzi 北</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Akari esports</span></div>
+                                    <div onclick="verVS('Xiao Shīzi 北','Akari esports','GRUPO A • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Xiao Shīzi 北</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Akari esports</span></div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- GRUPO B -->
-                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
-                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase">
-                                    <span>GRUPO B</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">BO3</span>
+                            <div class="bg-[#08090e] border border-white/5 rounded-md p-2">
+                                <div class="flex justify-between items-center mb-1.5 px-1">
+                                    <span class="text-[10px] font-black uppercase text-vctRed">GRUPO B</span>
+                                    <span class="text-[8px] text-gray-500 font-bold uppercase">Clic para VS</span>
                                 </div>
-                                <div class="p-2 flex flex-col gap-2">
-                                    <div onclick="verVS('ULTRADIFF ESPORTS','Clarity Velvet','GRUPO B • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">ULTRADIFF ESPORTS</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Clarity Velvet</span></div>
+                                <div class="space-y-1.5">
+                                    <div onclick="verVS('ULTRADIFF ESPORTS','Clarity Velvet','GRUPO B • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">ULTRADIFF ESPORTS</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Clarity Velvet</span></div>
                                     </div>
-                                    <div onclick="verVS('Ancestral E-Sports','RYUJINN','GRUPO B • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Ancestral E-Sports</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">RYUJINN</span></div>
+                                    <div onclick="verVS('Ancestral E-Sports','RYUJINN','GRUPO B • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Ancestral E-Sports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">RYUJINN</span></div>
                                     </div>
-                                    <div onclick="verVS('5EverMad','Storm of Thorns','GRUPO B • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">5EverMad</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Storm of Thorns</span></div>
+                                    <div onclick="verVS('5EverMad','Storm of Thorns','GRUPO B • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">5EverMad</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Storm of Thorns</span></div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- GRUPO C -->
-                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
-                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase">
-                                    <span>GRUPO C</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">BO3</span>
+                            <div class="bg-[#08090e] border border-white/5 rounded-md p-2">
+                                <div class="flex justify-between items-center mb-1.5 px-1">
+                                    <span class="text-[10px] font-black uppercase text-vctRed">GRUPO C</span>
+                                    <span class="text-[8px] text-gray-500 font-bold uppercase">Clic para VS</span>
                                 </div>
-                                <div class="p-2 flex flex-col gap-2">
-                                    <div onclick="verVS('Cruel Karma','AERION ACADEMY','GRUPO C • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Cruel Karma</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">AERION ACADEMY</span></div>
+                                <div class="space-y-1.5">
+                                    <div onclick="verVS('Cruel Karma','AERION ACADEMY','GRUPO C • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Cruel Karma</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">AERION ACADEMY</span></div>
                                     </div>
-                                    <div onclick="verVS('Kaizen Esports','Ryujinn Lotus','GRUPO C • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Kaizen Esports</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Ryujinn Lotus</span></div>
+                                    <div onclick="verVS('Kaizen Esports','Ryujinn Lotus','GRUPO C • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Kaizen Esports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Ryujinn Lotus</span></div>
                                     </div>
-                                    <div onclick="verVS('YOSORA ESPORTS','Howlers BLX','GRUPO C • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">YOSORA ESPORTS</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Howlers BLX</span></div>
+                                    <div onclick="verVS('YOSORA ESPORTS','Howlers BLX','GRUPO C • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">YOSORA ESPORTS</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Howlers BLX</span></div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- GRUPO D -->
-                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
-                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase">
-                                    <span>GRUPO D</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">BO3</span>
+                            <div class="bg-[#08090e] border border-white/5 rounded-md p-2">
+                                <div class="flex justify-between items-center mb-1.5 px-1">
+                                    <span class="text-[10px] font-black uppercase text-vctRed">GRUPO D</span>
+                                    <span class="text-[8px] text-gray-500 font-bold uppercase">Clic para VS</span>
                                 </div>
-                                <div class="p-2 flex flex-col gap-2">
-                                    <div onclick="verVS('Platano Power Esports','Kings Aztek','GRUPO D • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Platano Power Esports</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">King's Aztek</span></div>
+                                <div class="space-y-1.5">
+                                    <div onclick="verVS('Platano Power Esports','Kings Aztek','GRUPO D • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Platano Power Esports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">King's Aztek</span></div>
                                     </div>
-                                    <div onclick="verVS('Black Roses Esports','Howlers Esports','GRUPO D • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Black Roses Esports</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Howlers Esports</span></div>
+                                    <div onclick="verVS('Black Roses Esports','Howlers Esports','GRUPO D • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Black Roses Esports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Howlers Esports</span></div>
                                     </div>
-                                    <div onclick="verVS('MOONRISE ESPORTS','Hydra','GRUPO D • LUNES 28 SEP (BO3)')" class="duel-box rounded p-2 cursor-pointer">
-                                        <div class="flex items-center gap-2"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">MOONRISE ESPORTS</span></div>
-                                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                                        <div class="flex items-center gap-2"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0"><span class="text-[11px] font-bold text-white truncate">Hydra</span></div>
+                                    <div onclick="verVS('MOONRISE ESPORTS','Hydra','GRUPO D • LUNES 28 SEP')" class="match-pair cursor-pointer">
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">MOONRISE ESPORTS</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="text-[11px] font-semibold text-gray-100 truncate">Hydra</span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-4 bg-red-950/30 border border-red-500/30 rounded p-2.5 text-center">
-                        <p class="text-[10px] font-black uppercase text-red-200">12 EQUIPOS ELIMINADOS</p>
-                        <p class="text-[9px] text-gray-400">(Últimos 3 de cada grupo)</p>
+
+                    <div class="mt-3 pt-2 border-t border-white/5 text-center">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Avanzan 12 equipos • 12 eliminados</span>
                     </div>
                 </div>
 
-                <!-- CONECTOR LUMINOSO -->
-                <div class="flex items-center justify-center text-vctRed font-black text-xl connector-glow select-none">»»</div>
-
-                <!-- ================= COLUMNA 2: FASE 2 (LUNES 5 DE OCTUBRE) ================= -->
-                <div class="phase-col w-[245px] shrink-0 p-4 flex flex-col justify-between">
+                <!-- ================= FASE 2 (2 Columnas de ancho) ================= -->
+                <div class="col-span-2 phase-col p-3.5 flex flex-col justify-between">
                     <div>
-                        <div class="text-center mb-3">
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-400 block">LUNES 5 DE OCTUBRE</span>
-                            <h2 class="text-lg font-black uppercase text-white">FASE 2</h2>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">FASE DE GRUPOS • 12 EQUIPOS</p>
-                        </div>
-                        <div class="bg-gradient-to-r from-blue-900/80 via-blue-700/80 to-blue-900/80 border border-blue-400/40 rounded p-2 text-center mb-4">
-                            <div class="flex justify-center items-center gap-2 text-[10px] font-black uppercase">
-                                <span>2 GRUPOS DE 6</span><span class="bg-black/50 px-2 py-0.5 rounded text-blue-200">BO3</span>
+                        <div class="border-b border-white/10 pb-2.5 mb-3">
+                            <span class="text-[9px] font-extrabold uppercase tracking-widest text-blue-400 block">LUNES 5 DE OCTUBRE</span>
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-sm font-black uppercase text-white">FASE 2 (12 EQ)</h2>
+                                <span class="text-[8px] bg-blue-500/15 border border-blue-400/30 text-blue-200 font-extrabold px-1.5 py-0.5 rounded">BO3</span>
                             </div>
-                            <p class="text-[9px] font-bold uppercase text-gray-200 mt-1 border-t border-white/10 pt-1">AVANZAN 3 POR GRUPO (6 EQUIPOS)</p>
                         </div>
-                        <div id="contenedor-fase2" class="flex flex-col gap-3">
-                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
-                                <div class="bg-gradient-to-r from-blue-800 to-blue-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px]"><span>GRUPO E</span><span>BO3</span></div>
-                                <div class="p-2 flex flex-col gap-2 text-[11px] font-bold">
-                                    <div class="duel-box rounded p-2"><div class="truncate">E1</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">E2</div></div>
-                                    <div class="duel-box rounded p-2"><div class="truncate">E3</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">E4</div></div>
-                                    <div class="duel-box rounded p-2"><div class="truncate">E5</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">E6</div></div>
+
+                        <div id="contenedor-fase2" class="space-y-3">
+                            <div class="bg-[#08090e] border border-white/5 rounded-md p-2">
+                                <span class="text-[10px] font-black uppercase text-blue-400 block mb-1.5 px-1">GRUPO E</span>
+                                <div class="space-y-1.5 text-[11px] text-gray-400 font-semibold">
+                                    <div class="match-pair"><div class="team-row px-2.5 py-1.5">Clasificado E1</div><div class="team-row px-2.5 py-1.5">Clasificado E2</div></div>
+                                    <div class="match-pair"><div class="team-row px-2.5 py-1.5">Clasificado E3</div><div class="team-row px-2.5 py-1.5">Clasificado E4</div></div>
+                                    <div class="match-pair"><div class="team-row px-2.5 py-1.5">Clasificado E5</div><div class="team-row px-2.5 py-1.5">Clasificado E6</div></div>
                                 </div>
                             </div>
-                            <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
-                                <div class="bg-gradient-to-r from-blue-800 to-blue-600 py-1.5 px-3 flex justify-between items-center font-black text-[10px]"><span>GRUPO F</span><span>BO3</span></div>
-                                <div class="p-2 flex flex-col gap-2 text-[11px] font-bold">
-                                    <div class="duel-box rounded p-2"><div class="truncate">F1</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">F2</div></div>
-                                    <div class="duel-box rounded p-2"><div class="truncate">F3</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">F4</div></div>
-                                    <div class="duel-box rounded p-2"><div class="truncate">F5</div><div class="text-center text-[8px] text-vctRed font-black my-0.5">VS</div><div class="truncate">F6</div></div>
+                            <div class="bg-[#08090e] border border-white/5 rounded-md p-2">
+                                <span class="text-[10px] font-black uppercase text-blue-400 block mb-1.5 px-1">GRUPO F</span>
+                                <div class="space-y-1.5 text-[11px] text-gray-400 font-semibold">
+                                    <div class="match-pair"><div class="team-row px-2.5 py-1.5">Clasificado F1</div><div class="team-row px-2.5 py-1.5">Clasificado F2</div></div>
+                                    <div class="match-pair"><div class="team-row px-2.5 py-1.5">Clasificado F3</div><div class="team-row px-2.5 py-1.5">Clasificado F4</div></div>
+                                    <div class="match-pair"><div class="team-row px-2.5 py-1.5">Clasificado F5</div><div class="team-row px-2.5 py-1.5">Clasificado F6</div></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-4 bg-blue-950/30 border border-blue-500/30 rounded p-2.5 text-center">
-                        <p class="text-[10px] font-black uppercase text-blue-200">6 EQUIPOS ELIMINADOS</p>
-                        <p class="text-[9px] text-gray-400">(Últimos 3 de cada grupo)</p>
+                    <div class="mt-3 pt-2 border-t border-white/5 text-center">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Avanzan 3 por grupo (6)</span>
                     </div>
                 </div>
 
-                <!-- CONECTOR LUMINOSO -->
-                <div class="flex items-center justify-center text-blue-400 font-black text-xl connector-glow select-none">»»</div>
-
-                <!-- ================= COLUMNA 3: FASE 3 (LUNES 12 DE OCTUBRE) ================= -->
-                <div class="phase-col w-[250px] shrink-0 p-4 flex flex-col justify-between">
+                <!-- ================= FASE 3 (2 Columnas de ancho) ================= -->
+                <div class="col-span-2 phase-col p-3.5 flex flex-col justify-between">
                     <div>
-                        <div class="text-center mb-3">
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-purple-400 block">LUNES 12 DE OCTUBRE</span>
-                            <h2 class="text-lg font-black uppercase text-white">FASE 3</h2>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">SELECCIÓN FINAL • 6 EQUIPOS</p>
+                        <div class="border-b border-white/10 pb-2.5 mb-3">
+                            <span class="text-[9px] font-extrabold uppercase tracking-widest text-purple-400 block">LUNES 12 DE OCTUBRE</span>
+                            <h2 class="text-sm font-black uppercase text-white">FASE 3 • DESEMPEÑO</h2>
                         </div>
-                        <div class="bg-gradient-to-r from-indigo-900/80 via-purple-800/80 to-indigo-900/80 border border-purple-400/40 rounded p-2 text-center mb-4">
-                            <p class="text-[10px] font-black uppercase text-white">RANKING POR DESEMPEÑO</p>
-                            <p class="text-[9px] text-gray-200 mt-1 border-t border-white/10 pt-1">Criterio: Diferencia de rondas</p>
-                        </div>
-                        <div id="contenedor-fase3" class="flex flex-col gap-2.5 my-4">
-                            <div class="flex items-center gap-2.5 p-2 rounded border border-emerald-500/30 bg-emerald-950/10"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-emerald-600">1</span><span class="text-xs font-bold">Clasificado #1</span></div>
-                            <div class="flex items-center gap-2.5 p-2 rounded border border-emerald-500/30 bg-emerald-950/10"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-emerald-600">2</span><span class="text-xs font-bold">Clasificado #2</span></div>
-                            <div class="flex items-center gap-2.5 p-2 rounded border border-emerald-500/30 bg-emerald-950/10"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-emerald-600">3</span><span class="text-xs font-bold">Clasificado #3</span></div>
-                            <div class="flex items-center gap-2.5 p-2 rounded border border-emerald-500/30 bg-emerald-950/10"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-emerald-600">4</span><span class="text-xs font-bold">Clasificado #4</span></div>
-                            <div class="flex items-center justify-between p-2 rounded border border-red-500/30 bg-red-950/10"><div class="flex items-center gap-2.5"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-red-600">5</span><span class="text-xs font-bold text-gray-400">Puesto #5</span></div><span class="text-[8px] font-black text-red-400">(ELIMINADO)</span></div>
-                            <div class="flex items-center justify-between p-2 rounded border border-red-500/30 bg-red-950/10"><div class="flex items-center gap-2.5"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs bg-red-600">6</span><span class="text-xs font-bold text-gray-400">Puesto #6</span></div><span class="text-[8px] font-black text-red-400">(ELIMINADO)</span></div>
+                        <p class="text-[10px] text-gray-400 mb-3 leading-relaxed">
+                            Los 6 equipos se ordenan por <b class="text-white">diferencia de rondas</b>. Pasan los 4 mejores:
+                        </p>
+                        <div id="contenedor-fase3" class="space-y-2">
+                            <div class="flex items-center gap-2.5 p-2 rounded bg-emerald-950/15 border border-emerald-500/25"><span class="w-5 h-5 rounded text-[10px] font-black bg-emerald-600 text-white flex items-center justify-center">1</span><span class="text-xs font-semibold text-gray-200">Puesto #1</span></div>
+                            <div class="flex items-center gap-2.5 p-2 rounded bg-emerald-950/15 border border-emerald-500/25"><span class="w-5 h-5 rounded text-[10px] font-black bg-emerald-600 text-white flex items-center justify-center">2</span><span class="text-xs font-semibold text-gray-200">Puesto #2</span></div>
+                            <div class="flex items-center gap-2.5 p-2 rounded bg-emerald-950/15 border border-emerald-500/25"><span class="w-5 h-5 rounded text-[10px] font-black bg-emerald-600 text-white flex items-center justify-center">3</span><span class="text-xs font-semibold text-gray-200">Puesto #3</span></div>
+                            <div class="flex items-center gap-2.5 p-2 rounded bg-emerald-950/15 border border-emerald-500/25"><span class="w-5 h-5 rounded text-[10px] font-black bg-emerald-600 text-white flex items-center justify-center">4</span><span class="text-xs font-semibold text-gray-200">Puesto #4</span></div>
+                            <div class="flex items-center justify-between p-2 rounded bg-red-950/15 border border-red-500/25 opacity-60"><div class="flex items-center gap-2.5"><span class="w-5 h-5 rounded text-[10px] font-black bg-red-600 text-white flex items-center justify-center">5</span><span class="text-xs font-semibold text-gray-400">Puesto #5</span></div><span class="text-[8px] font-black text-red-400">ELIM</span></div>
+                            <div class="flex items-center justify-between p-2 rounded bg-red-950/15 border border-red-500/25 opacity-60"><div class="flex items-center gap-2.5"><span class="w-5 h-5 rounded text-[10px] font-black bg-red-600 text-white flex items-center justify-center">6</span><span class="text-xs font-semibold text-gray-400">Puesto #6</span></div><span class="text-[8px] font-black text-red-400">ELIM</span></div>
                         </div>
                     </div>
-                    <div class="mt-4 bg-red-950/30 border border-red-500/30 rounded p-2.5 text-center">
-                        <p class="text-[10px] font-bold text-red-200">Se eliminan 2 por diferencia de rondas.</p>
+                    <div class="mt-3 pt-2 border-t border-white/5 text-center">
+                        <span class="text-[9px] font-bold text-red-300/80 uppercase tracking-widest">2 Eliminados por Rondas</span>
                     </div>
                 </div>
 
-                <!-- CONECTOR LUMINOSO -->
-                <div class="flex items-center justify-center text-purple-400 font-black text-xl connector-glow select-none">»»</div>
-
-                <!-- ================= COLUMNA 4: FASE 4 / SEMIFINALES (LUNES 12 DE OCTUBRE) ================= -->
-                <div class="phase-col w-[245px] shrink-0 p-4 flex flex-col justify-between">
+                <!-- ================= SEMIFINALES (2 Columnas de ancho) ================= -->
+                <div class="col-span-2 phase-col p-3.5 flex flex-col justify-between">
                     <div>
-                        <div class="text-center mb-3">
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-everGold block">LUNES 12 DE OCTUBRE</span>
-                            <h2 class="text-lg font-black uppercase text-white">SEMIFINALES</h2>
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">2 GRUPOS DE 2 • 4 EQUIPOS</p>
-                        </div>
-                        <div class="bg-gradient-to-r from-amber-700/80 via-yellow-600/80 to-amber-700/80 border border-everGold/50 rounded p-2 text-center mb-6">
-                            <p class="text-[10px] font-black uppercase text-white">PARTIDAS BO5</p>
-                            <p class="text-[8px] font-bold uppercase text-white mt-1">AVANZA 1 EQUIPO POR GRUPO</p>
-                        </div>
-                        <div id="contenedor-fase4">
-                            <div class="duel-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6">
-                                <div class="text-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 1 • BO5</div>
-                                <div class="p-2 rounded bg-white/5 text-xs font-bold text-white">Equipo 1</div>
-                                <div class="text-center text-[9px] font-black text-vctRed my-1.5">VS</div>
-                                <div class="p-2 rounded bg-white/5 text-xs font-bold text-white">Equipo 2</div>
+                        <div class="border-b border-white/10 pb-2.5 mb-3">
+                            <span class="text-[9px] font-extrabold uppercase tracking-widest text-everGold block">LUNES 12 DE OCTUBRE</span>
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-sm font-black uppercase text-white">SEMIFINALES</h2>
+                                <span class="text-[8px] bg-everGold/15 border border-everGold/40 text-everGold font-extrabold px-1.5 py-0.5 rounded">BO5</span>
                             </div>
-                            <div class="duel-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3">
-                                <div class="text-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 2 • BO5</div>
-                                <div class="p-2 rounded bg-white/5 text-xs font-bold text-white">Equipo 3</div>
-                                <div class="text-center text-[9px] font-black text-vctRed my-1.5">VS</div>
-                                <div class="p-2 rounded bg-white/5 text-xs font-bold text-white">Equipo 4</div>
+                        </div>
+
+                        <div id="contenedor-fase4" class="space-y-4 my-2">
+                            <div class="bg-[#08090e] border border-white/5 rounded-md p-2.5">
+                                <span class="text-[9px] font-black uppercase text-everGold block mb-2">SEMIFINAL 1 • BO5</span>
+                                <div class="match-pair text-xs font-semibold text-gray-300">
+                                    <div class="team-row px-3 py-2.5">Clasificado #1</div>
+                                    <div class="team-row px-3 py-2.5">Clasificado #4</div>
+                                </div>
+                            </div>
+                            <div class="bg-[#08090e] border border-white/5 rounded-md p-2.5">
+                                <span class="text-[9px] font-black uppercase text-everGold block mb-2">SEMIFINAL 2 • BO5</span>
+                                <div class="match-pair text-xs font-semibold text-gray-300">
+                                    <div class="team-row px-3 py-2.5">Clasificado #2</div>
+                                    <div class="team-row px-3 py-2.5">Clasificado #3</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div></div>
+                    <div class="mt-3 pt-2 border-t border-white/5 text-center">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Avanza 1 por grupo</span>
+                    </div>
                 </div>
 
-                <!-- CONECTOR LUMINOSO -->
-                <div class="flex items-center justify-center text-everGold font-black text-xl connector-glow select-none">»»</div>
-
-                <!-- ================= COLUMNA 5: GRAN FINAL (LUNES 19 DE OCTUBRE) ================= -->
-                <div class="phase-col w-[245px] shrink-0 p-4 flex flex-col justify-between border-vctRed/40">
+                <!-- ================= GRAN FINAL (2 Columnas de ancho) ================= -->
+                <div class="col-span-2 phase-col p-3.5 flex flex-col justify-between border-everGold/30">
                     <div>
-                        <div class="text-center mb-4">
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-everGold block">LUNES 19 DE OCTUBRE</span>
-                            <h2 class="text-xl font-black uppercase text-vctRed">GRAN FINAL</h2>
-                            <p class="text-xs font-black uppercase text-white mt-1">2 EQUIPOS FINALISTAS</p>
+                        <div class="border-b border-white/10 pb-2.5 mb-3">
+                            <span class="text-[9px] font-extrabold uppercase tracking-widest text-everGold block">LUNES 19 DE OCTUBRE</span>
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-sm font-black uppercase text-vctRed">GRAN FINAL</h2>
+                                <span class="text-[8px] bg-vctRed/20 border border-vctRed/50 text-white font-extrabold px-1.5 py-0.5 rounded">BO5</span>
+                            </div>
                         </div>
-                        <div class="bg-gradient-to-r from-red-800 via-vctRed to-red-800 border border-red-400/40 rounded py-2 text-center font-black text-xs uppercase mb-6 shadow-[0_0_15px_rgba(255,42,63,0.3)]">
-                            BO5 • ÚLTIMA JORNADA
-                        </div>
-                        <div id="contenedor-fase5-final">
-                            <div class="duel-box bg-[#0b0d14] border border-white/20 rounded-lg p-3.5 mb-6">
-                                <div class="p-2.5 rounded bg-white/5 text-xs font-bold text-white">Ganador SF1</div>
-                                <div class="text-center text-[9px] font-black text-vctRed my-2">VS</div>
-                                <div class="p-2.5 rounded bg-white/5 text-xs font-bold text-white">Ganador SF2</div>
+
+                        <div id="contenedor-fase5-final" class="my-2">
+                            <div class="bg-[#08090e] border border-white/10 rounded-md p-2.5">
+                                <span class="text-[9px] font-black uppercase text-gray-400 block mb-2">DUELO POR LA COPA</span>
+                                <div class="match-pair text-xs font-semibold text-gray-200">
+                                    <div class="team-row px-3 py-3">Ganador SF1</div>
+                                    <div class="team-row px-3 py-3">Ganador SF2</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ALTAR DEL CAMPEÓN CON HALO DORADO ANIMADO -->
-                    <div id="contenedor-fase5-campeon" class="champion-altar border border-everGold/60 rounded-xl p-5 text-center relative overflow-hidden">
-                        <div class="text-5xl mb-2 drop-shadow-[0_0_20px_rgba(229,192,92,0.8)]">🏆</div>
-                        <span class="text-[9px] text-everGold font-black uppercase tracking-[0.35em] block">COPA 5EVERMAD</span>
-                        <h3 class="text-lg font-black uppercase tracking-wider gold-metallic-text mt-1">CAMPEÓN</h3>
+                    <!-- Altar del Campeón sobrio y elegante -->
+                    <div id="contenedor-fase5-campeon" class="bg-gradient-to-b from-everGold/10 to-transparent border border-everGold/40 rounded-lg p-4 text-center mt-4">
+                        <div class="text-4xl mb-1">🏆</div>
+                        <span class="text-[8px] text-everGold font-extrabold uppercase tracking-[0.25em] block">COPA 5EVERMAD</span>
+                        <h3 class="text-sm font-black uppercase tracking-wider text-white mt-0.5">CAMPEÓN</h3>
                     </div>
                 </div>
 
             </div>
         </div>
 
-        <!-- BARRA DE PROGRESIÓN -->
-        <div class="mt-4 mb-14 bg-[#0a0c12]/90 border border-white/10 rounded-lg py-4 px-6 flex flex-wrap justify-center items-center gap-4 md:gap-8 text-center shadow-lg">
-            <div><span class="text-xl font-black text-white block">24</span><span class="text-[8px] text-gray-400 font-bold uppercase">28 Sep • Iniciales</span></div>
-            <span class="text-vctRed font-black">&gt;</span>
-            <div><span class="text-xl font-black text-white block">12</span><span class="text-[8px] text-gray-400 font-bold uppercase">5 Oct • Fase 2</span></div>
-            <span class="text-vctRed font-black">&gt;</span>
-            <div><span class="text-xl font-black text-white block">6</span><span class="text-[8px] text-gray-400 font-bold uppercase">12 Oct • Desempeño</span></div>
-            <span class="text-vctRed font-black">&gt;</span>
-            <div><span class="text-xl font-black text-white block">4</span><span class="text-[8px] text-gray-400 font-bold uppercase">12 Oct • Semis BO5</span></div>
-            <span class="text-vctRed font-black">&gt;</span>
-            <div><span class="text-xl font-black text-white block">2</span><span class="text-[8px] text-gray-400 font-bold uppercase">19 Oct • Gran Final</span></div>
-            <span class="text-everGold font-black">&gt;</span>
-            <div><span class="text-xl font-black gold-metallic-text block">1</span><span class="text-[8px] text-everGold font-bold uppercase">Campeón</span></div>
-        </div>
-
-        <!-- GALERÍA DE ESCUADRAS CON FILTRO POR GRUPO Y BUSCADOR -->
-        <div class="border-t border-white/10 pt-10">
-            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+        <!-- GALERÍA DE ESCUADRAS CONFIRMADAS -->
+        <div class="border-t border-white/10 pt-10 mt-8">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
                 <div>
-                    <h2 class="text-2xl font-black uppercase tracking-wider">ESCUADRAS CONFIRMADAS</h2>
-                    <p class="text-[10px] text-gray-400 uppercase tracking-[0.25em] font-bold mt-1">
-                        Inscritos en el sistema: <span id="cupo-contador" class="text-everGold">24 / 24 EQUIPOS</span>
+                    <h2 class="text-xl font-black uppercase tracking-wider text-white">ESCUADRAS CONFIRMADAS</h2>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mt-0.5">
+                        Haz clic en cualquier equipo para inspeccionar su roster y comparar Cara a Cara
                     </p>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
-                    <button onclick="filtrarPorBotonGrupo('')" class="btn-filtro-grupo bg-vctRed text-white text-[9px] font-black uppercase tracking-widest px-3 py-2.5 rounded transition-all">TODOS</button>
-                    <button onclick="filtrarPorBotonGrupo('GRUPO A')" class="btn-filtro-grupo bg-[#0b0c10] hover:bg-white/10 border border-white/15 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2.5 rounded transition-all">GRUPO A</button>
-                    <button onclick="filtrarPorBotonGrupo('GRUPO B')" class="btn-filtro-grupo bg-[#0b0c10] hover:bg-white/10 border border-white/15 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2.5 rounded transition-all">GRUPO B</button>
-                    <button onclick="filtrarPorBotonGrupo('GRUPO C')" class="btn-filtro-grupo bg-[#0b0c10] hover:bg-white/10 border border-white/15 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2.5 rounded transition-all">GRUPO C</button>
-                    <button onclick="filtrarPorBotonGrupo('GRUPO D')" class="btn-filtro-grupo bg-[#0b0c10] hover:bg-white/10 border border-white/15 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2.5 rounded transition-all">GRUPO D</button>
-                    <input type="text" id="buscador-equipos" oninput="filtrarTarjetasEquipos(this.value)" placeholder="🔍 Buscar escuadra o Riot ID..." class="bg-[#0b0c10] border border-white/15 focus:border-vctRed px-4 py-2.5 text-xs font-bold text-white w-full sm:w-64 outline-none rounded ml-auto">
+                    <button onclick="filtrarPorBotonGrupo('')" class="btn-filtro-grupo bg-vctRed text-white text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all">TODOS</button>
+                    <button onclick="filtrarPorBotonGrupo('GRUPO A')" class="btn-filtro-grupo bg-[#0b0d13] hover:bg-white/10 border border-white/10 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all">GRUPO A</button>
+                    <button onclick="filtrarPorBotonGrupo('GRUPO B')" class="btn-filtro-grupo bg-[#0b0d13] hover:bg-white/10 border border-white/10 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all">GRUPO B</button>
+                    <button onclick="filtrarPorBotonGrupo('GRUPO C')" class="btn-filtro-grupo bg-[#0b0d13] hover:bg-white/10 border border-white/10 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all">GRUPO C</button>
+                    <button onclick="filtrarPorBotonGrupo('GRUPO D')" class="btn-filtro-grupo bg-[#0b0d13] hover:bg-white/10 border border-white/10 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all">GRUPO D</button>
+                    <input type="text" id="buscador-equipos" oninput="filtrarTarjetasEquipos(this.value)" placeholder="🔍 Buscar equipo o Riot ID..." class="bg-[#0b0d13] border border-white/15 focus:border-vctRed px-3.5 py-2 text-xs font-semibold text-white w-full sm:w-60 outline-none rounded ml-auto">
                 </div>
             </div>
 
-            <div id="grid-equipos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div data-team="7z Esports" data-group="GRUPO A" onclick="verVS('7z Esports','Abismus','GRUPO A')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">7z Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Abismus" data-group="GRUPO A" onclick="verVS('Abismus','7z Esports','GRUPO A')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">Abismus</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Nönsense by Bear" data-group="GRUPO A" onclick="verVS('Nönsense by Bear','Thalyra','GRUPO A')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">Nönsense by Bear</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Thalyra" data-group="GRUPO A" onclick="verVS('Thalyra','Nönsense by Bear','GRUPO A')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">Thalyra</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Xiao Shīzi 北" data-group="GRUPO A" onclick="verVS('Xiao Shīzi 北','Akari esports','GRUPO A')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">Xiao Shīzi 北</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Akari esports" data-group="GRUPO A" onclick="verVS('Akari esports','Xiao Shīzi 北','GRUPO A')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-sm font-black text-white uppercase">Akari esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="ULTRADIFF ESPORTS" data-group="GRUPO B" onclick="verVS('ULTRADIFF ESPORTS','Clarity Velvet','GRUPO B')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">ULTRADIFF ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Clarity Velvet" data-group="GRUPO B" onclick="verVS('Clarity Velvet','ULTRADIFF ESPORTS','GRUPO B')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">Clarity Velvet</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Ancestral E-Sports" data-group="GRUPO B" onclick="verVS('Ancestral E-Sports','RYUJINN','GRUPO B')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">Ancestral E-Sports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="RYUJINN" data-group="GRUPO B" onclick="verVS('RYUJINN','Ancestral E-Sports','GRUPO B')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">RYUJINN</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="5EverMad" data-group="GRUPO B" onclick="verVS('5EverMad','Storm of Thorns','GRUPO B')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">5EverMad</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Storm of Thorns" data-group="GRUPO B" onclick="verVS('Storm of Thorns','5EverMad','GRUPO B')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-sm font-black text-white uppercase">Storm of Thorns</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Cruel Karma" data-group="GRUPO C" onclick="verVS('Cruel Karma','AERION ACADEMY','GRUPO C')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">Cruel Karma</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="AERION ACADEMY" data-group="GRUPO C" onclick="verVS('AERION ACADEMY','Cruel Karma','GRUPO C')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">AERION ACADEMY</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Kaizen Esports" data-group="GRUPO C" onclick="verVS('Kaizen Esports','Ryujinn Lotus','GRUPO C')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">Kaizen Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Ryujinn Lotus" data-group="GRUPO C" onclick="verVS('Ryujinn Lotus','Kaizen Esports','GRUPO C')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">Ryujinn Lotus</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="YOSORA ESPORTS" data-group="GRUPO C" onclick="verVS('YOSORA ESPORTS','Howlers BLX','GRUPO C')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">YOSORA ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Howlers BLX" data-group="GRUPO C" onclick="verVS('Howlers BLX','YOSORA ESPORTS','GRUPO C')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-sm font-black text-white uppercase">Howlers BLX</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Platano Power Esports" data-group="GRUPO D" onclick="verVS('Platano Power Esports','Kings Aztek','GRUPO D')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">Platano Power Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Kings Aztek" data-group="GRUPO D" onclick="verVS('Kings Aztek','Platano Power Esports','GRUPO D')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">King's Aztek</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Black Roses Esports" data-group="GRUPO D" onclick="verVS('Black Roses Esports','Howlers Esports','GRUPO D')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">Black Roses Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Howlers Esports" data-group="GRUPO D" onclick="verVS('Howlers Esports','Black Roses Esports','GRUPO D')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">Howlers Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="MOONRISE ESPORTS" data-group="GRUPO D" onclick="verVS('MOONRISE ESPORTS','Hydra','GRUPO D')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">MOONRISE ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Hydra" data-group="GRUPO D" onclick="verVS('Hydra','MOONRISE ESPORTS','GRUPO D')" class="card-equipo bg-[#0b0d13] border border-white/10 hover:border-vctRed p-4 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-sm font-black text-white uppercase">Hydra</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+            <div id="grid-equipos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+                <div data-team="7z Esports" data-group="GRUPO A" onclick="verVS('7z Esports','Abismus','GRUPO A')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO A</span><h3 class="text-xs font-extrabold text-white uppercase">7z Esports</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Abismus" data-group="GRUPO A" onclick="verVS('Abismus','7z Esports','GRUPO A')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO A</span><h3 class="text-xs font-extrabold text-white uppercase">Abismus</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Nönsense by Bear" data-group="GRUPO A" onclick="verVS('Nönsense by Bear','Thalyra','GRUPO A')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO A</span><h3 class="text-xs font-extrabold text-white uppercase">Nönsense by Bear</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Thalyra" data-group="GRUPO A" onclick="verVS('Thalyra','Nönsense by Bear','GRUPO A')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO A</span><h3 class="text-xs font-extrabold text-white uppercase">Thalyra</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Xiao Shīzi 北" data-group="GRUPO A" onclick="verVS('Xiao Shīzi 北','Akari esports','GRUPO A')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO A</span><h3 class="text-xs font-extrabold text-white uppercase">Xiao Shīzi 北</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Akari esports" data-group="GRUPO A" onclick="verVS('Akari esports','Xiao Shīzi 北','GRUPO A')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO A</span><h3 class="text-xs font-extrabold text-white uppercase">Akari esports</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="ULTRADIFF ESPORTS" data-group="GRUPO B" onclick="verVS('ULTRADIFF ESPORTS','Clarity Velvet','GRUPO B')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO B</span><h3 class="text-xs font-extrabold text-white uppercase">ULTRADIFF ESPORTS</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Clarity Velvet" data-group="GRUPO B" onclick="verVS('Clarity Velvet','ULTRADIFF ESPORTS','GRUPO B')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO B</span><h3 class="text-xs font-extrabold text-white uppercase">Clarity Velvet</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Ancestral E-Sports" data-group="GRUPO B" onclick="verVS('Ancestral E-Sports','RYUJINN','GRUPO B')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO B</span><h3 class="text-xs font-extrabold text-white uppercase">Ancestral E-Sports</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="RYUJINN" data-group="GRUPO B" onclick="verVS('RYUJINN','Ancestral E-Sports','GRUPO B')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO B</span><h3 class="text-xs font-extrabold text-white uppercase">RYUJINN</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="5EverMad" data-group="GRUPO B" onclick="verVS('5EverMad','Storm of Thorns','GRUPO B')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO B</span><h3 class="text-xs font-extrabold text-white uppercase">5EverMad</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Storm of Thorns" data-group="GRUPO B" onclick="verVS('Storm of Thorns','5EverMad','GRUPO B')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO B</span><h3 class="text-xs font-extrabold text-white uppercase">Storm of Thorns</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Cruel Karma" data-group="GRUPO C" onclick="verVS('Cruel Karma','AERION ACADEMY','GRUPO C')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO C</span><h3 class="text-xs font-extrabold text-white uppercase">Cruel Karma</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="AERION ACADEMY" data-group="GRUPO C" onclick="verVS('AERION ACADEMY','Cruel Karma','GRUPO C')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO C</span><h3 class="text-xs font-extrabold text-white uppercase">AERION ACADEMY</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Kaizen Esports" data-group="GRUPO C" onclick="verVS('Kaizen Esports','Ryujinn Lotus','GRUPO C')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO C</span><h3 class="text-xs font-extrabold text-white uppercase">Kaizen Esports</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Ryujinn Lotus" data-group="GRUPO C" onclick="verVS('Ryujinn Lotus','Kaizen Esports','GRUPO C')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO C</span><h3 class="text-xs font-extrabold text-white uppercase">Ryujinn Lotus</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="YOSORA ESPORTS" data-group="GRUPO C" onclick="verVS('YOSORA ESPORTS','Howlers BLX','GRUPO C')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO C</span><h3 class="text-xs font-extrabold text-white uppercase">YOSORA ESPORTS</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Howlers BLX" data-group="GRUPO C" onclick="verVS('Howlers BLX','YOSORA ESPORTS','GRUPO C')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO C</span><h3 class="text-xs font-extrabold text-white uppercase">Howlers BLX</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Platano Power Esports" data-group="GRUPO D" onclick="verVS('Platano Power Esports','Kings Aztek','GRUPO D')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO D</span><h3 class="text-xs font-extrabold text-white uppercase">Platano Power Esports</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Kings Aztek" data-group="GRUPO D" onclick="verVS('Kings Aztek','Platano Power Esports','GRUPO D')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO D</span><h3 class="text-xs font-extrabold text-white uppercase">King's Aztek</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Black Roses Esports" data-group="GRUPO D" onclick="verVS('Black Roses Esports','Howlers Esports','GRUPO D')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO D</span><h3 class="text-xs font-extrabold text-white uppercase">Black Roses Esports</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Howlers Esports" data-group="GRUPO D" onclick="verVS('Howlers Esports','Black Roses Esports','GRUPO D')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO D</span><h3 class="text-xs font-extrabold text-white uppercase">Howlers Esports</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="MOONRISE ESPORTS" data-group="GRUPO D" onclick="verVS('MOONRISE ESPORTS','Hydra','GRUPO D')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO D</span><h3 class="text-xs font-extrabold text-white uppercase">MOONRISE ESPORTS</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
+                <div data-team="Hydra" data-group="GRUPO D" onclick="verVS('Hydra','MOONRISE ESPORTS','GRUPO D')" class="card-equipo p-3.5 cursor-pointer flex items-center justify-between"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="w-10 h-10 rounded object-contain bg-black p-1 border border-white/10"><div><span class="text-[8px] text-everGold font-bold tracking-widest block">GRUPO D</span><h3 class="text-xs font-extrabold text-white uppercase">Hydra</h3></div></div><span class="text-[9px] text-gray-400 font-bold relative z-10">ROSTER ➔</span></div>
             </div>
         </div>
 
     </main>
 
-    <!-- MODAL CARA A CARA (VS) ESTILO PANTALLA DE DUELO + MAP POOL INTERACTIVO -->
-    <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div style="background: linear-gradient(125deg, rgba(255,42,63,0.14) 0%, #08090f 45%, #08090f 55%, rgba(229,192,92,0.14) 100%);" class="border border-white/25 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[92vh] overflow-y-auto relative shadow-[0_0_60px_rgba(0,0,0,0.95)]">
+    <!-- MODAL CARA A CARA (VS) + MAP POOL INTERACTIVO -->
+    <div id="modal-vs" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-[#0b0d14] border border-white/15 rounded-xl w-full max-w-4xl p-6 md:p-8 max-h-[92vh] overflow-y-auto relative shadow-2xl">
             <button onclick="document.getElementById('modal-vs').classList.add('hidden')" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
             <div id="modal-vs-content"></div>
         </div>
     </div>
 
     <!-- MODAL OFICIAL DE COMUNICADOS, FECHAS, MAP POOL Y REGLAS DE CANALES -->
-    <div id="modal-reglas" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div style="background: linear-gradient(135deg, rgba(255,42,63,0.12) 0%, #07080d 50%, rgba(229,192,92,0.12) 100%);" class="border border-white/25 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[92vh] overflow-y-auto relative shadow-[0_0_60px_rgba(0,0,0,0.95)]">
+    <div id="modal-reglas" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-[#0b0d14] border border-white/15 rounded-xl w-full max-w-4xl p-6 md:p-8 max-h-[92vh] overflow-y-auto relative shadow-2xl">
             
             <button onclick="cerrarModalReglas()" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
 
-            <div class="mb-6 pb-4 border-b border-white/15">
-                <span class="text-[10px] text-vctRed font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD • FORMATO OFICIAL 24 EQUIPOS</span>
-                <h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider mt-1">📜 COMUNICADOS OFICIALES, MAP POOL Y PROTOCOLO</h3>
+            <div class="mb-5 pb-4 border-b border-white/10">
+                <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">COPA 5EVERMAD • 24 EQUIPOS</span>
+                <h3 class="text-xl font-black uppercase text-white mt-0.5">📜 COMUNICADOS OFICIALES, MAP POOL Y REGLAS</h3>
             </div>
 
-            <!-- PESTAÑAS INTERNAS DEL MODAL DE REGLAS -->
+            <!-- PESTAÑAS INTERNAS -->
             <div class="flex flex-wrap gap-2 mb-6 border-b border-white/10 pb-3">
                 <button onclick="cambiarTabReglas('tab-fechas')" id="btn-tab-fechas" class="bg-vctRed text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded transition-all">
                     1. FECHAS, FASES Y MAP POOL
@@ -609,157 +464,113 @@
                 </button>
             </div>
 
-            <!-- CONTENIDO 1: COMUNICADO FECHAS, FASES, MAP POOL Y TOLERANCIA -->
-            <div id="tab-fechas" class="space-y-6">
-                
-                <!-- Cronograma de las 4 Jornadas -->
-                <div>
-                    <h4 class="text-xs font-black uppercase tracking-widest text-everGold mb-3">📅 CRONOGRAMA OFICIAL DE JORNADAS</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <div class="bg-[#0b0d15] border border-red-500/40 border-t-2 border-t-vctRed p-3.5 rounded">
-                            <span class="text-[9px] text-vctRed font-black uppercase tracking-widest block">LUNES 28 DE SEPTIEMBRE</span>
-                            <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 1</h5>
-                            <ul class="text-[11px] text-gray-300 space-y-1 font-medium">
-                                <li>• 4 grupos de 6 equipos.</li>
-                                <li>• Partidas <b class="text-white">BO3</b>.</li>
-                                <li>• Avanzan los <b class="text-emerald-400">3 mejores</b> de cada grupo (12 equipos).</li>
-                            </ul>
-                        </div>
-                        <div class="bg-[#0b0d15] border border-blue-500/40 border-t-2 border-t-blue-400 p-3.5 rounded">
-                            <span class="text-[9px] text-blue-400 font-black uppercase tracking-widest block">LUNES 5 DE OCTUBRE</span>
-                            <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 2</h5>
-                            <ul class="text-[11px] text-gray-300 space-y-1 font-medium">
-                                <li>• 2 grupos de 6 equipos.</li>
-                                <li>• Partidas <b class="text-white">BO3</b>.</li>
-                                <li>• Avanzan los <b class="text-emerald-400">3 mejores</b> de cada grupo (6 equipos).</li>
-                            </ul>
-                        </div>
-                        <div class="bg-[#0b0d15] border border-purple-500/40 border-t-2 border-t-purple-400 p-3.5 rounded">
-                            <span class="text-[9px] text-purple-400 font-black uppercase tracking-widest block">LUNES 12 DE OCTUBRE</span>
-                            <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 3 Y SEMIS</h5>
-                            <ul class="text-[11px] text-gray-300 space-y-1 font-medium">
-                                <li>• <b class="text-red-400">2 eliminados</b> por diferencia de rondas.</li>
-                                <li>• Los 4 restantes se dividen en <b class="text-white">2 grupos de 2</b>.</li>
-                                <li>• Partidas <b class="text-everGold">BO5</b> (Avanza 1 por grupo).</li>
-                            </ul>
-                        </div>
-                        <div class="bg-[#0b0d15] border border-everGold/50 border-t-2 border-t-everGold p-3.5 rounded">
-                            <span class="text-[9px] text-everGold font-black uppercase tracking-widest block">LUNES 19 DE OCTUBRE</span>
-                            <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">🏆 GRAN FINAL</h5>
-                            <ul class="text-[11px] text-gray-300 space-y-1 font-medium">
-                                <li>• Los 2 ganadores de los BO5 se enfrentan entre sí.</li>
-                                <li>• Última jornada de la <b class="text-everGold">Copa 5EverMad</b>.</li>
-                            </ul>
-                        </div>
+            <!-- PESTAÑA 1 -->
+            <div id="tab-fechas" class="space-y-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="bg-[#10131c] border border-white/10 border-t-2 border-t-vctRed p-3.5 rounded">
+                        <span class="text-[9px] text-vctRed font-black uppercase block">LUNES 28 DE SEPTIEMBRE</span>
+                        <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 1</h5>
+                        <ul class="text-[11px] text-gray-300 space-y-1">
+                            <li>• 4 grupos de 6 equipos.</li>
+                            <li>• Partidas <b class="text-white">BO3</b>.</li>
+                            <li>• Avanzan los <b class="text-emerald-400">3 mejores</b> por grupo (12 equipos).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-[#10131c] border border-white/10 border-t-2 border-t-blue-400 p-3.5 rounded">
+                        <span class="text-[9px] text-blue-400 font-black uppercase block">LUNES 5 DE OCTUBRE</span>
+                        <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 2</h5>
+                        <ul class="text-[11px] text-gray-300 space-y-1">
+                            <li>• 2 grupos de 6 equipos.</li>
+                            <li>• Partidas <b class="text-white">BO3</b>.</li>
+                            <li>• Avanzan los <b class="text-emerald-400">3 mejores</b> por grupo (6 equipos).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-[#10131c] border border-white/10 border-t-2 border-t-purple-400 p-3.5 rounded">
+                        <span class="text-[9px] text-purple-400 font-black uppercase block">LUNES 12 DE OCTUBRE</span>
+                        <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 3 Y SEMIS</h5>
+                        <ul class="text-[11px] text-gray-300 space-y-1">
+                            <li>• <b class="text-red-400">2 eliminados</b> por diferencia de rondas.</li>
+                            <li>• Los 4 restantes en <b class="text-white">2 grupos de 2</b>.</li>
+                            <li>• Partidas <b class="text-everGold">BO5</b> (Avanza 1 por grupo).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-[#10131c] border border-white/10 border-t-2 border-t-everGold p-3.5 rounded">
+                        <span class="text-[9px] text-everGold font-black uppercase block">LUNES 19 DE OCTUBRE</span>
+                        <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">🏆 GRAN FINAL</h5>
+                        <ul class="text-[11px] text-gray-300 space-y-1">
+                            <li>• Los 2 ganadores de los BO5 se enfrentan entre sí.</li>
+                            <li>• Última jornada de la <b class="text-everGold">Copa 5EverMad</b>.</li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- Map Pool Oficial -->
-                <div class="bg-[#0b0d15] border border-white/10 p-4 rounded-lg">
-                    <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
-                        <h4 class="text-xs font-black uppercase tracking-widest text-white">🗺️ MAP POOL OFICIAL (7 MAPAS DISPONIBLES)</h4>
-                        <span class="text-[9px] text-gray-400 font-bold uppercase">Recomendamos prepararse en cada uno de ellos</span>
-                    </div>
+                <!-- Map Pool -->
+                <div class="bg-[#10131c] border border-white/10 p-4 rounded-lg">
+                    <h4 class="text-xs font-black uppercase tracking-widest text-white mb-3">🗺️ MAP POOL OFICIAL</h4>
                     <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-center">
-                        <div class="bg-black/70 border border-everGold/40 py-2.5 px-2 rounded font-black text-xs text-white uppercase tracking-wider">Abyss</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2.5 px-2 rounded font-black text-xs text-white uppercase tracking-wider">Ascent</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2.5 px-2 rounded font-black text-xs text-white uppercase tracking-wider">Haven</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2.5 px-2 rounded font-black text-xs text-white uppercase tracking-wider">Sunset</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2.5 px-2 rounded font-black text-xs text-white uppercase tracking-wider">Split</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2.5 px-2 rounded font-black text-xs text-white uppercase tracking-wider">Summit</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2.5 px-2 rounded font-black text-xs text-white uppercase tracking-wider col-span-2 sm:col-span-1">Lotus</div>
+                        <div class="bg-black/60 border border-white/15 py-2 px-2 rounded font-extrabold text-xs text-everGold uppercase">Abyss</div>
+                        <div class="bg-black/60 border border-white/15 py-2 px-2 rounded font-extrabold text-xs text-everGold uppercase">Ascent</div>
+                        <div class="bg-black/60 border border-white/15 py-2 px-2 rounded font-extrabold text-xs text-everGold uppercase">Haven</div>
+                        <div class="bg-black/60 border border-white/15 py-2 px-2 rounded font-extrabold text-xs text-everGold uppercase">Sunset</div>
+                        <div class="bg-black/60 border border-white/15 py-2 px-2 rounded font-extrabold text-xs text-everGold uppercase">Split</div>
+                        <div class="bg-black/60 border border-white/15 py-2 px-2 rounded font-extrabold text-xs text-everGold uppercase">Summit</div>
+                        <div class="bg-black/60 border border-white/15 py-2 px-2 rounded font-extrabold text-xs text-everGold uppercase">Lotus</div>
                     </div>
                 </div>
 
-                <!-- Horario, Tolerancia y No-Show -->
+                <!-- Horario y No-Show -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-[#0b0d15] border border-white/10 border-l-4 border-l-everGold p-4 rounded">
-                        <span class="text-[10px] text-everGold font-black uppercase tracking-widest block mb-1">⏰ HORARIO Y TIEMPO DE TOLERANCIA</span>
-                        <p class="text-xs font-bold text-gray-300 mb-3">Todos los encuentros comenzarán a partir de las <b class="text-white">8:00 PM (CDMX)</b> con 10 minutos de tolerancia:</p>
-                        <div class="grid grid-cols-3 gap-2 text-center bg-black/50 p-2.5 rounded border border-white/5">
-                            <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Hora Inicio</span><span class="text-xs font-black text-white">8:00 PM</span></div>
+                    <div class="bg-[#10131c] border border-white/10 p-4 rounded-lg">
+                        <span class="text-[10px] text-everGold font-black uppercase block mb-2">⏰ HORARIO Y TOLERANCIA</span>
+                        <div class="grid grid-cols-3 gap-2 text-center bg-black/50 p-3 rounded border border-white/5">
+                            <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Hora de Inicio</span><span class="text-xs font-black text-white">8:00 PM</span></div>
                             <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Tolerancia</span><span class="text-xs font-black text-everGold">10 MIN</span></div>
                             <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Hora Límite</span><span class="text-xs font-black text-vctRed">8:10 PM</span></div>
                         </div>
                     </div>
-
-                    <div class="bg-red-950/20 border border-vctRed/40 border-l-4 border-l-vctRed p-4 rounded">
-                        <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block mb-1">⚠️ SANCIÓN POR NO-SHOW</span>
-                        <p class="text-[11px] text-gray-200 leading-relaxed font-medium">
-                            Una vez transcurridos los <b class="text-white">10 minutos de tolerancia (8:10 PM)</b>, si un equipo no se encuentra completo, el equipo contrario podrá solicitar que se declare <b class="text-vctRed">No-Show</b>.
-                        </p>
-                        <p class="text-[11px] text-everGold font-black uppercase mt-2 pt-2 border-t border-white/10">
-                            ➔ Sanción: Se otorgará Forfeit del mapa al equipo incompleto.
+                    <div class="bg-red-950/20 border border-vctRed/40 p-4 rounded-lg">
+                        <span class="text-[10px] text-vctRed font-black uppercase block mb-1">⚠️ SANCIÓN POR NO-SHOW</span>
+                        <p class="text-[11px] text-gray-200 leading-relaxed">
+                            Si a las <b class="text-white">8:10 PM</b> un equipo no se encuentra completo, el rival podrá solicitar <b class="text-vctRed">No-Show</b> (Forfeit del mapa al equipo incompleto).
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- CONTENIDO 2: COMUNICADO ORGANIZACIÓN DE CANALES Y LLAMADAS -->
-            <div id="tab-canales" class="hidden space-y-5">
-                <div class="bg-[#0b0d15] border border-white/10 p-4 rounded-lg">
-                    <p class="text-xs text-gray-300 leading-relaxed">
-                        Para mantener una mejor organización durante las jornadas de la <b class="text-white">Copa 5EverMad</b> y evitar la creación de múltiples canales por parte de una misma organización, el ingreso a las llamadas se manejará de la siguiente manera:
-                    </p>
-                </div>
-
+            <!-- PESTAÑA 2: CANALES Y LLAMADAS -->
+            <div id="tab-canales" class="hidden space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Creación del Canal -->
-                    <div class="bg-[#0b0d15] border border-white/10 border-t-2 border-t-vctRed p-4 rounded">
-                        <span class="text-[9px] text-vctRed font-black uppercase tracking-widest block mb-1">01 // CREACIÓN DEL CANAL</span>
-                        <h4 class="text-xs font-black uppercase text-white mb-2">1 Solo Canal por Equipo</h4>
-                        <p class="text-[11px] text-gray-300 mb-2">Cada organización decidirá quién creará y nombrará el canal oficial de su equipo:</p>
-                        <div class="flex gap-2 mt-2">
-                            <span class="bg-white/5 border border-white/15 px-3 py-1 rounded text-[10px] font-black text-everGold uppercase">✔ Manager</span>
-                            <span class="bg-white/5 border border-white/15 px-3 py-1 rounded text-[10px] font-black text-everGold uppercase">✔ Capitán</span>
-                        </div>
+                    <div class="bg-[#10131c] border border-white/10 p-4 rounded-lg">
+                        <span class="text-[9px] text-vctRed font-black uppercase block mb-1">01 // CREACIÓN DEL CANAL</span>
+                        <h4 class="text-xs font-black uppercase text-white mb-2">Manager o Capitán</h4>
+                        <p class="text-[11px] text-gray-300">Cada organización designará a su <b class="text-white">Manager o Capitán</b> para crear y nombrar un único canal oficial para su equipo.</p>
                     </div>
-
-                    <!-- Ingreso de Integrantes -->
-                    <div class="bg-[#0b0d15] border border-white/10 border-t-2 border-t-emerald-400 p-4 rounded">
-                        <span class="text-[9px] text-emerald-400 font-black uppercase tracking-widest block mb-1">02 // INTEGRANTES PERMITIDOS</span>
-                        <h4 class="text-xs font-black uppercase text-white mb-2">Acceso al Canal de Juego</h4>
-                        <p class="text-[11px] text-gray-300 mb-2">Únicamente deberán permanecer dentro del canal de voz:</p>
-                        <ul class="text-[11px] text-white font-bold space-y-1">
+                    <div class="bg-[#10131c] border border-white/10 p-4 rounded-lg">
+                        <span class="text-[9px] text-emerald-400 font-black uppercase block mb-1">02 // INTEGRANTES EN LLAMADA</span>
+                        <h4 class="text-xs font-black uppercase text-white mb-2">Acceso Exclusivo</h4>
+                        <ul class="text-[11px] text-gray-200 space-y-1 font-semibold">
                             <li>• 5 Jugadores Titulares</li>
                             <li>• Coach</li>
-                            <li>• Head Coach (en caso de contar con uno)</li>
+                            <li>• Head Coach (si cuentan con uno)</li>
                         </ul>
                     </div>
-
-                    <!-- Recomendación de Horario -->
-                    <div class="bg-[#0b0d15] border border-white/10 border-t-2 border-t-everGold p-4 rounded">
-                        <span class="text-[9px] text-everGold font-black uppercase tracking-widest block mb-1">03 // CITA PREVIA</span>
-                        <h4 class="text-xs font-black uppercase text-white mb-2">Creación desde las 7:45 PM</h4>
-                        <p class="text-[11px] text-gray-300 leading-relaxed">
-                            Pedimos que el <b class="text-white">Manager o Capitán</b> esté disponible <b class="text-everGold">15 minutos antes (7:45 PM)</b> para crear y organizar el canal con tiempo antes del inicio (8:00 PM).
-                        </p>
+                    <div class="bg-[#10131c] border border-white/10 p-4 rounded-lg">
+                        <span class="text-[9px] text-everGold font-black uppercase block mb-1">03 // CITA PREVIA</span>
+                        <h4 class="text-xs font-black uppercase text-white mb-2">7:45 PM (15 min antes)</h4>
+                        <p class="text-[11px] text-gray-300">El Manager o Capitán deberá estar disponible desde las <b class="text-everGold">7:45 PM</b> para dejar listo el canal antes de las 8:00 PM.</p>
                     </div>
                 </div>
-
-                <div class="bg-amber-950/25 border border-everGold/40 p-4 rounded-lg flex items-start gap-3">
-                    <span class="text-lg">⚠️</span>
-                    <p class="text-[11px] text-gray-200 leading-relaxed">
-                        <b class="text-everGold uppercase">IMPORTANTE:</b> Una vez que los 5 jugadores y el staff correspondiente se encuentren dentro de su canal, <b class="text-white">deberán permanecer ahí hasta que el encuentro haya finalizado</b>, salvo que la organización del torneo indique lo contrario.
-                    </p>
+                <div class="bg-amber-950/20 border border-everGold/40 p-3.5 rounded-lg text-[11px] text-gray-200">
+                    <b class="text-everGold">IMPORTANTE:</b> Una vez dentro del canal, los 5 jugadores y el staff deberán permanecer ahí hasta finalizar el encuentro.
                 </div>
-            </div>
-
-            <div class="mt-6 pt-4 border-t border-white/10 flex flex-wrap justify-between items-center gap-3">
-                <span class="text-[10px] text-everGold font-black uppercase tracking-[0.2em]">
-                    🔥 Cuatro jornadas. Una Copa. Un solo campeón. Que comience la batalla.
-                </span>
-                <button onclick="cerrarModalReglas()" class="bg-vctRed hover:bg-white text-white hover:text-black text-[10px] font-black uppercase tracking-widest px-6 py-2.5 clip-card transition-all">
-                    ENTENDIDO
-                </button>
             </div>
 
         </div>
     </div>
 
-    <!-- TOAST DE COPIADO AL PORTAPAPELES -->
-    <div id="toast-copy" class="fixed bottom-6 right-[-450px] z-50 bg-[#0b0d14] border-l-4 border-everGold px-5 py-3.5 shadow-2xl transition-all duration-300">
-        <p id="toast-copy-text" class="text-xs font-black uppercase tracking-widest text-white">✔ Copiado</p>
+    <!-- TOAST DE COPIADO -->
+    <div id="toast-copy" class="fixed bottom-6 right-[-450px] z-50 bg-[#10131c] border-l-4 border-everGold px-4 py-3 rounded shadow-2xl transition-all duration-300">
+        <p id="toast-copy-text" class="text-xs font-bold text-white">✔ Copiado</p>
     </div>
 
     <script>
@@ -776,9 +587,14 @@
             return String(txt || '').replace(/['"\\]/g, '');
         }
 
+        function esSlotPlaceholder(nombre) {
+            const n = limpiarNombre(nombre);
+            return !n || /^[a-f][1-6]$/.test(n) || n.startsWith('equipo') || n.startsWith('ganador') || n.startsWith('clasificado') || n.startsWith('puesto') || n === 'campeon';
+        }
+
         function encontrarEquipo(nombre) {
+            if (esSlotPlaceholder(nombre)) return null;
             const buscado = limpiarNombre(nombre);
-            if (!buscado || /^[a-f][1-6]$/.test(buscado) || buscado.startsWith('equipo') || buscado.startsWith('ganador') || buscado === 'campeon') return null;
             return equiposCargados.find(e => {
                 const actual = limpiarNombre(e.nombre);
                 return actual && (actual === buscado || actual.includes(buscado) || buscado.includes(actual));
@@ -790,13 +606,9 @@
             return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(ini) + '&background=111&color=e5c05c&bold=true';
         }
 
-        // MODAL DE COMUNICADOS Y REGLAS OFICIALES
-        function abrirModalReglas() {
-            document.getElementById('modal-reglas').classList.remove('hidden');
-        }
-        function cerrarModalReglas() {
-            document.getElementById('modal-reglas').classList.add('hidden');
-        }
+        function abrirModalReglas() { document.getElementById('modal-reglas').classList.remove('hidden'); }
+        function cerrarModalReglas() { document.getElementById('modal-reglas').classList.add('hidden'); }
+
         function cambiarTabReglas(tabId) {
             document.getElementById('tab-fechas').classList.add('hidden');
             document.getElementById('tab-canales').classList.add('hidden');
@@ -813,22 +625,20 @@
             }
         }
 
-        // SIMULADOR INTERACTIVO DE MAP POOL EN EL CARA A CARA
         function alternarEstadoMapa(el) {
             const st = el.getAttribute('data-state') || 'normal';
             if (st === 'normal') {
                 el.setAttribute('data-state', 'ban');
-                el.className = 'cursor-pointer select-none py-1.5 px-2.5 rounded border border-red-500 bg-red-950/60 text-red-300 text-[10px] font-black uppercase tracking-wider line-through opacity-75 transition-all';
+                el.className = 'cursor-pointer select-none py-1.5 px-2.5 rounded border border-red-500 bg-red-950/50 text-red-300 text-[10px] font-bold uppercase line-through opacity-70 transition-all';
             } else if (st === 'ban') {
                 el.setAttribute('data-state', 'pick');
-                el.className = 'cursor-pointer select-none py-1.5 px-2.5 rounded border border-emerald-400 bg-emerald-950/60 text-emerald-300 text-[10px] font-black uppercase tracking-wider shadow-[0_0_10px_rgba(16,185,129,0.4)] transition-all';
+                el.className = 'cursor-pointer select-none py-1.5 px-2.5 rounded border border-emerald-400 bg-emerald-950/50 text-emerald-300 text-[10px] font-bold uppercase transition-all';
             } else {
                 el.setAttribute('data-state', 'normal');
-                el.className = 'cursor-pointer select-none py-1.5 px-2.5 rounded border border-white/15 bg-black/60 hover:border-everGold text-gray-200 text-[10px] font-black uppercase tracking-wider transition-all';
+                el.className = 'cursor-pointer select-none py-1.5 px-2.5 rounded border border-white/15 bg-black/50 hover:border-everGold text-gray-200 text-[10px] font-bold uppercase transition-all';
             }
         }
 
-        // RELOJ CUENTA REGRESIVA (PRÓXIMO LUNES 8 PM CDMX)
         function actualizarRelojTorneo() {
             const ahora = new Date();
             const cdmxStr = ahora.toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
@@ -838,8 +648,8 @@
             const hora = ahoraCDMX.getHours();
 
             if (diaSemana === 1 && hora >= 20) {
-                document.getElementById('reloj-label').innerText = 'ESTADO:';
-                document.getElementById('reloj-numeros').innerHTML = '<span class="bg-vctRed text-white px-3 py-1 rounded animate-pulse">🔴 JORNADA EN VIVO AHORA</span>';
+                document.getElementById('reloj-label').innerText = '';
+                document.getElementById('reloj-numeros').innerHTML = '<span class="text-vctRed font-black animate-pulse">🔴 EN VIVO AHORA</span>';
                 return;
             }
 
@@ -873,7 +683,7 @@
             const toast = document.getElementById('toast-copy');
             document.getElementById('toast-copy-text').innerText = '✔ Copiado: ' + texto;
             toast.style.right = '24px';
-            setTimeout(() => { toast.style.right = '-450px'; }, 2800);
+            setTimeout(() => { toast.style.right = '-450px'; }, 2600);
         }
 
         function toggleStream() {
@@ -900,9 +710,9 @@
             document.querySelectorAll('.btn-filtro-grupo').forEach(btn => {
                 const txt = btn.innerText.trim();
                 if ((grupo === '' && txt === 'TODOS') || txt === grupo) {
-                    btn.className = 'btn-filtro-grupo bg-vctRed text-white text-[9px] font-black uppercase tracking-widest px-3 py-2.5 rounded transition-all';
+                    btn.className = 'btn-filtro-grupo bg-vctRed text-white text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all';
                 } else {
-                    btn.className = 'btn-filtro-grupo bg-[#0b0c10] hover:bg-white/10 border border-white/15 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2.5 rounded transition-all';
+                    btn.className = 'btn-filtro-grupo bg-[#0b0d13] hover:bg-white/10 border border-white/10 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all';
                 }
             });
         }
@@ -936,41 +746,44 @@
             });
         }
 
-        function construirGrupoSincronizado(letra, slots, headerClass) {
+        // Renderiza una fila de equipo dentro de un duelo (sin duplicar iconos si aún es placeholder)
+        function htmlFilaEquipo(slot) {
+            const nombre = slot.nombre || 'Por definir';
+            const est = slot.estado === 'clasificado' ? 'slot-qualified' : (slot.estado === 'eliminado' ? 'slot-eliminated' : '');
+            const nSeg = textoSeguro(nombre);
+            const mostrarIcono = !esSlotPlaceholder(nombre);
+
+            return `
+                <div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 ${est}">
+                    <div class="flex items-center gap-2 truncate">
+                        ${mostrarIcono ? `<img data-logo="${nSeg}" src="${urlAvatar(nSeg)}" class="w-5 h-5 rounded object-contain bg-black shrink-0">` : ''}
+                        <span class="text-[11px] font-semibold ${mostrarIcono ? 'text-gray-100' : 'text-gray-400'} truncate">${nombre}</span>
+                    </div>
+                    ${slot.extra ? `<span class="text-[9px] font-bold text-everGold shrink-0">${slot.extra}</span>` : ''}
+                </div>`;
+        }
+
+        function construirGrupoLimpio(letra, slots, colorTexto) {
             let duelos = '';
             for (let i = 0; i < slots.length; i += 2) {
-                const s1 = slots[i] || { nombre: letra + (i + 1), extra: '', estado: 'normal' };
-                const s2 = slots[i + 1] || { nombre: letra + (i + 2), extra: '', estado: 'normal' };
-                const c1 = s1.estado === 'clasificado' ? 'slot-qualified' : (s1.estado === 'eliminado' ? 'slot-eliminated' : '');
-                const c2 = s2.estado === 'clasificado' ? 'slot-qualified' : (s2.estado === 'eliminado' ? 'slot-eliminated' : '');
+                const s1 = slots[i] || { nombre: `${letra}${i + 1}`, extra: '', estado: 'normal' };
+                const s2 = slots[i + 1] || { nombre: `${letra}${i + 2}`, extra: '', estado: 'normal' };
                 const n1 = textoSeguro(s1.nombre);
                 const n2 = textoSeguro(s2.nombre);
 
                 duelos += `
-                    <div onclick="verVS('${n1}','${n2}','GRUPO ${letra} • BO3')" class="duel-box rounded p-2 cursor-pointer">
-                        <div class="flex items-center justify-between gap-1 rounded ${c1}">
-                            <div class="flex items-center gap-2 truncate">
-                                <img data-logo="${n1}" src="${urlAvatar(n1)}" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0">
-                                <span class="text-[11px] font-bold text-white truncate">${s1.nombre}</span>
-                            </div>
-                            ${s1.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${s1.extra}</span>` : ''}
-                        </div>
-                        <div class="flex items-center gap-1 my-1"><div class="h-[1px] bg-white/10 flex-1"></div><span class="text-[8px] font-black bg-vctRed text-white px-1.5 py-0.2 rounded">VS</span><div class="h-[1px] bg-white/10 flex-1"></div></div>
-                        <div class="flex items-center justify-between gap-1 rounded ${c2}">
-                            <div class="flex items-center gap-2 truncate">
-                                <img data-logo="${n2}" src="${urlAvatar(n2)}" class="w-6 h-6 rounded object-contain bg-black border border-white/20 shrink-0">
-                                <span class="text-[11px] font-bold text-white truncate">${s2.nombre}</span>
-                            </div>
-                            ${s2.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${s2.extra}</span>` : ''}
-                        </div>
+                    <div onclick="verVS('${n1}','${n2}','GRUPO ${letra} • BO3')" class="match-pair cursor-pointer">
+                        ${htmlFilaEquipo(s1)}
+                        ${htmlFilaEquipo(s2)}
                     </div>`;
             }
             return `
-                <div class="bg-[#0b0d14] border border-white/10 rounded-lg overflow-hidden">
-                    <div class="${headerClass} py-1.5 px-3 flex justify-between items-center font-black text-[10px] uppercase">
-                        <span>GRUPO ${letra}</span><span class="text-[8px] bg-black/40 px-1.5 py-0.5 rounded">BO3</span>
+                <div class="bg-[#08090e] border border-white/5 rounded-md p-2">
+                    <div class="flex justify-between items-center mb-1.5 px-1">
+                        <span class="text-[10px] font-black uppercase ${colorTexto}">GRUPO ${letra}</span>
+                        <span class="text-[8px] text-gray-500 font-bold uppercase">VS</span>
                     </div>
-                    <div class="p-2 flex flex-col gap-2">${duelos}</div>
+                    <div class="space-y-1.5">${duelos}</div>
                 </div>`;
         }
 
@@ -980,15 +793,6 @@
                 const data = await res.json();
                 if (Array.isArray(data) && data.length > 0) {
                     equiposCargados = data;
-                    document.getElementById('cupo-contador').innerText = `${data.length} / 24 EQUIPOS`;
-                    const btnCupo = document.getElementById('btn-cupo-header');
-                    if (btnCupo) {
-                        if (data.length >= 24) {
-                            btnCupo.innerText = '🔒 CUPO LLENO (24/24)';
-                        } else {
-                            btnCupo.outerHTML = `<a href="registro-torneo.html" class="bg-vctRed hover:bg-white text-white hover:text-black font-black text-[10px] uppercase tracking-[0.2em] px-5 py-3 transition-all clip-card">+ INSCRIBIR (${data.length}/24)</a>`;
-                        }
-                    }
                     inyectarLogosEnDOM();
                 }
             } catch (err) {
@@ -1005,23 +809,24 @@
                         const d = JSON.parse(bd.descripcion);
                         if (d && d.version === '24_grupos_v1') {
                             if (d.fase1) {
-                                document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(g => construirGrupoSincronizado(g, d.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600')).join('');
+                                document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(g => construirGrupoLimpio(g, d.fase1[g], 'text-vctRed')).join('');
                             }
                             if (d.fase2) {
-                                document.getElementById('contenedor-fase2').innerHTML = ['E','F'].map(g => construirGrupoSincronizado(g, d.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600')).join('');
+                                document.getElementById('contenedor-fase2').innerHTML = ['E','F'].map(g => construirGrupoLimpio(g, d.fase2[g], 'text-blue-400')).join('');
                             }
                             if (Array.isArray(d.fase3)) {
                                 document.getElementById('contenedor-fase3').innerHTML = d.fase3.map((r, i) => {
                                     const elim = i >= 4 || r.eliminado;
                                     const nomSeg = textoSeguro(r.nombre);
+                                    const tieneEq = !esSlotPlaceholder(r.nombre);
                                     return `
-                                        <div onclick="verVS('${nomSeg}','','FASE 3 • RANKING')" class="flex items-center justify-between gap-2 p-2 rounded border ${elim ? 'border-red-500/30 bg-red-950/10' : 'border-emerald-500/30 bg-emerald-950/10'} cursor-pointer hover:border-white/40">
+                                        <div onclick="verVS('${nomSeg}','','FASE 3 • DESEMPEÑO')" class="flex items-center justify-between gap-2 p-2 rounded border ${elim ? 'border-red-500/25 bg-red-950/15 opacity-60' : 'border-emerald-500/25 bg-emerald-950/15'} cursor-pointer hover:border-white/30">
                                             <div class="flex items-center gap-2 truncate">
-                                                <span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs ${elim ? 'bg-red-600' : 'bg-emerald-600'} shrink-0">${i + 1}</span>
-                                                <img data-logo="${nomSeg}" src="${urlAvatar(nomSeg)}" class="w-5 h-5 rounded object-contain bg-black border border-white/20 shrink-0">
-                                                <span class="text-xs font-bold ${elim ? 'text-gray-400' : 'text-white'} truncate">${r.nombre}</span>
+                                                <span class="w-5 h-5 rounded flex items-center justify-center font-black text-[10px] ${elim ? 'bg-red-600' : 'bg-emerald-600'} text-white shrink-0">${i + 1}</span>
+                                                ${tieneEq ? `<img data-logo="${nomSeg}" src="${urlAvatar(nomSeg)}" class="w-5 h-5 rounded object-contain bg-black shrink-0">` : ''}
+                                                <span class="text-xs font-semibold ${elim ? 'text-gray-400' : 'text-gray-100'} truncate">${tieneEq ? r.nombre : 'Puesto #' + (i + 1)}</span>
                                             </div>
-                                            <span class="text-[8px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} shrink-0">${r.rd || (elim ? '(ELIMINADO)' : '')}</span>
+                                            <span class="text-[8px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} shrink-0">${r.rd || (elim ? 'ELIM' : '')}</span>
                                         </div>`;
                                 }).join('');
                             }
@@ -1030,16 +835,11 @@
                                     const n1 = textoSeguro(m.eq1);
                                     const n2 = textoSeguro(m.eq2);
                                     return `
-                                        <div onclick="verVS('${n1}','${n2}','${tit} • BO5')" class="duel-box bg-[#0b0d14] border border-everGold/40 rounded-lg p-3 mb-6 cursor-pointer">
-                                            <div class="text-center text-[10px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">${tit} • BO5</div>
-                                            <div class="p-2 rounded bg-white/5 flex justify-between items-center gap-2">
-                                                <div class="flex items-center gap-2 truncate"><img data-logo="${n1}" src="${urlAvatar(n1)}" class="w-5 h-5 rounded object-contain bg-black"><span class="text-xs font-bold text-white truncate">${m.eq1}</span></div>
-                                                <span class="text-xs font-black text-everGold">${m.score1 || ''}</span>
-                                            </div>
-                                            <div class="text-center text-[9px] font-black text-vctRed my-1.5">VS</div>
-                                            <div class="p-2 rounded bg-white/5 flex justify-between items-center gap-2">
-                                                <div class="flex items-center gap-2 truncate"><img data-logo="${n2}" src="${urlAvatar(n2)}" class="w-5 h-5 rounded object-contain bg-black"><span class="text-xs font-bold text-white truncate">${m.eq2}</span></div>
-                                                <span class="text-xs font-black text-everGold">${m.score2 || ''}</span>
+                                        <div onclick="verVS('${n1}','${n2}','${tit} • BO5')" class="bg-[#08090e] border border-white/5 rounded-md p-2.5 cursor-pointer hover:border-everGold/50 transition-all">
+                                            <span class="text-[9px] font-black uppercase text-everGold block mb-2">${tit} • BO5</span>
+                                            <div class="match-pair">
+                                                ${htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal' })}
+                                                ${htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal' })}
                                             </div>
                                         </div>`;
                                 };
@@ -1047,12 +847,13 @@
                                 if (d.final) {
                                     document.getElementById('contenedor-fase5-final').innerHTML = cardBO5('GRAN FINAL', d.final);
                                     const campSeg = textoSeguro(d.final.campeon || 'CAMPEÓN');
+                                    const tieneCamp = !esSlotPlaceholder(d.final.campeon);
                                     document.getElementById('contenedor-fase5-campeon').innerHTML = `
                                         <div onclick="verVS('${campSeg}','','CAMPEÓN COPA 5EVERMAD')" class="cursor-pointer">
-                                            <div class="text-5xl mb-2 drop-shadow-[0_0_20px_rgba(229,192,92,0.8)]">🏆</div>
-                                            <img data-logo="${campSeg}" src="${urlAvatar(campSeg)}" class="w-16 h-16 mx-auto mb-2 rounded object-contain bg-black border border-everGold">
-                                            <span class="text-[9px] text-everGold font-black uppercase tracking-[0.35em] block">COPA 5EVERMAD</span>
-                                            <h3 class="text-lg font-black uppercase tracking-wider gold-metallic-text mt-1 truncate">${d.final.campeon || 'CAMPEÓN'}</h3>
+                                            <div class="text-4xl mb-1">🏆</div>
+                                            ${tieneCamp ? `<img data-logo="${campSeg}" src="${urlAvatar(campSeg)}" class="w-14 h-14 mx-auto mb-2 rounded object-contain bg-black border border-everGold">` : ''}
+                                            <span class="text-[8px] text-everGold font-extrabold uppercase tracking-[0.25em] block">COPA 5EVERMAD</span>
+                                            <h3 class="text-sm font-black uppercase tracking-wider text-white mt-0.5 truncate">${d.final.campeon || 'CAMPEÓN'}</h3>
                                         </div>`;
                                 }
                             }
@@ -1063,7 +864,6 @@
             } catch (e) {}
         }
 
-        // MODAL CARA A CARA ESTILO PANTALLA DE DUELO + MAP POOL INTERACTIVO
         function verVS(nom1, nom2, fase) {
             const eq1 = encontrarEquipo(nom1);
             const eq2 = encontrarEquipo(nom2);
@@ -1078,7 +878,7 @@
                 opcionesRival += `<option value="${textoSeguro(n)}" ${sel}>${n}</option>`;
             });
 
-            const dibujarCol = (nombreTxt, eq, colorBorde, colorGlow) => {
+            const dibujarCol = (nombreTxt, eq, colorBorde) => {
                 const foto = (eq && eq.logo_url) ? eq.logo_url : urlAvatar(nombreTxt);
                 const rango = (eq && eq.rango) ? eq.rango : 'Escuadra Confirmada';
                 const capitan = (eq && eq.discord) ? eq.discord : 'Verificado';
@@ -1088,33 +888,32 @@
                     ? eq.jugadores.map(j => {
                         const idSeg = textoSeguro(j.riot_id || '');
                         return `
-                        <div class="bg-[#121520]/90 border-l-2 ${colorBorde} p-2.5 rounded-r flex justify-between items-center gap-2 mb-2 relative z-10 backdrop-blur-sm">
-                            <div class="truncate cursor-pointer" onclick="copiarDato('${idSeg}')" title="Clic para copiar Riot ID">
-                                <span class="text-[8px] text-everGold font-black uppercase block">${j.role || 'TITULAR'}</span>
-                                <span class="text-xs font-black text-white hover:text-everGold truncate block">${j.riot_id || ''} 📋</span>
+                        <div class="bg-[#141824] border-l-2 ${colorBorde} p-2.5 rounded-r flex justify-between items-center gap-2 mb-2">
+                            <div class="truncate cursor-pointer" onclick="copiarDato('${idSeg}')">
+                                <span class="text-[8px] text-everGold font-bold uppercase block">${j.role || 'TITULAR'}</span>
+                                <span class="text-xs font-bold text-white hover:text-everGold truncate block">${j.riot_id || ''} 📋</span>
                             </div>
                             <div class="flex items-center gap-1.5 shrink-0">
-                                <button onclick="copiarDato('${idSeg}')" class="bg-white/5 hover:bg-everGold hover:text-black text-gray-300 text-[9px] font-black uppercase px-2 py-1.5 rounded transition-colors">COPIAR</button>
-                                <a href="${j.tracker_url || '#'}" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-colors">TRACKER ↗</a>
+                                <button onclick="copiarDato('${idSeg}')" class="bg-white/5 hover:bg-everGold hover:text-black text-gray-300 text-[9px] font-bold uppercase px-2 py-1 rounded">COPIAR</button>
+                                <a href="${j.tracker_url || '#'}" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-bold uppercase px-2.5 py-1 rounded">TRACKER ↗</a>
                             </div>
                         </div>`;
                     }).join('')
-                    : `<p class="text-[10px] text-gray-400 uppercase tracking-widest py-6 text-center relative z-10">Cargando integrantes del roster...</p>`;
+                    : `<p class="text-[10px] text-gray-400 uppercase tracking-widest py-6 text-center">Cargando roster...</p>`;
 
                 return `
-                    <div class="bg-[#0b0d15]/90 border ${colorGlow} rounded-xl p-5 relative overflow-hidden">
-                        <img src="${foto}" class="absolute -right-6 -bottom-6 w-44 h-44 object-contain opacity-[0.07] pointer-events-none select-none">
-                        <div class="flex items-center gap-4 mb-4 pb-3 border-b border-white/10 relative z-10">
-                            <img src="${foto}" class="w-16 h-16 object-contain bg-black p-1.5 rounded-lg border border-white/25 shrink-0 shadow-lg">
+                    <div class="bg-[#10131c] border border-white/10 rounded-lg p-4">
+                        <div class="flex items-center gap-3.5 mb-4 pb-3 border-b border-white/10">
+                            <img src="${foto}" class="w-14 h-14 object-contain bg-black p-1 rounded border border-white/15 shrink-0">
                             <div class="truncate">
-                                <span class="text-[9px] text-everGold font-black uppercase tracking-widest block">${rango}</span>
-                                <h4 class="text-lg font-black uppercase text-white truncate">${eq ? eq.nombre : (nombreTxt || 'POR DEFINIR')}</h4>
-                                <button onclick="copiarDato('${capSeguro}')" class="text-[9px] text-gray-400 hover:text-white font-bold uppercase block mt-0.5">
+                                <span class="text-[9px] text-everGold font-bold uppercase block">${rango}</span>
+                                <h4 class="text-base font-black uppercase text-white truncate">${eq ? eq.nombre : (nombreTxt || 'POR DEFINIR')}</h4>
+                                <button onclick="copiarDato('${capSeguro}')" class="text-[9px] text-gray-400 hover:text-white font-semibold uppercase block mt-0.5">
                                     Capitán DC: <span class="text-everGold underline">${capitan}</span> 📋
                                 </button>
                             </div>
                         </div>
-                        <div class="max-h-[250px] overflow-y-auto pr-1 relative z-10">${listaJug}</div>
+                        <div class="max-h-[250px] overflow-y-auto pr-1">${listaJug}</div>
                     </div>`;
             };
 
@@ -1122,40 +921,35 @@
             const faseSeg = textoSeguro(fase);
 
             const mapPoolHtml = MAP_POOL_OFICIAL.map(m => `
-                <div onclick="alternarEstadoMapa(this)" data-state="normal" class="cursor-pointer select-none py-1.5 px-2.5 rounded border border-white/15 bg-black/60 hover:border-everGold text-gray-200 text-[10px] font-black uppercase tracking-wider transition-all">
+                <div onclick="alternarEstadoMapa(this)" data-state="normal" class="cursor-pointer select-none py-1.5 px-2.5 rounded border border-white/15 bg-black/50 hover:border-everGold text-gray-200 text-[10px] font-bold uppercase transition-all">
                     ${m}
                 </div>
             `).join('');
 
             document.getElementById('modal-vs-content').innerHTML = `
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-5 pb-4 border-b border-white/15 pr-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 pb-3 border-b border-white/10 pr-8">
                     <div>
-                        <span class="text-[10px] text-vctRed font-black uppercase tracking-[0.3em] block">${fase} • 8:00 PM CDMX (LÍMITE 8:10 PM)</span>
-                        <h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider">⚔️ ${nom1} <span class="text-vctRed mx-2">VS</span> ${nom2 || 'RIVAL'}</h3>
+                        <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">${fase} • 8:00 PM CDMX</span>
+                        <h3 class="text-lg md:text-xl font-black uppercase text-white">⚔️ ${nom1} <span class="text-vctRed mx-1.5">VS</span> ${nom2 || 'RIVAL'}</h3>
                     </div>
-                    <select onchange="verVS('${n1Seg}', this.value, '${faseSeg}')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2.5 rounded w-full md:w-64 outline-none">
+                    <select onchange="verVS('${n1Seg}', this.value, '${faseSeg}')" class="bg-black border border-white/20 text-white text-xs font-semibold p-2 rounded w-full md:w-60 outline-none">
                         ${opcionesRival}
                     </select>
                 </div>
 
-                <!-- SIMULADOR DE VETO DEL MAP POOL OFICIAL -->
-                <div class="mb-5 bg-[#0b0d14]/90 border border-white/10 rounded-lg p-3 text-center">
-                    <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest block mb-2">
-                        🗺️ MAP POOL OFICIAL COPA 5EVERMAD <span class="text-everGold">(CLIC PARA MARCAR BAN ❌ / PICK ✔)</span>
+                <div class="mb-4 bg-[#10131c] border border-white/10 rounded-lg p-2.5 text-center">
+                    <span class="text-[9px] text-gray-400 font-bold uppercase tracking-widest block mb-2">
+                        🗺️ MAP POOL OFICIAL <span class="text-everGold">(CLIC PARA TACHAR BAN ❌ / MARCAR PICK ✔)</span>
                     </span>
-                    <div class="flex flex-wrap justify-center gap-2">
-                        ${mapPoolHtml}
-                    </div>
+                    <div class="flex flex-wrap justify-center gap-1.5">${mapPoolHtml}</div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
-                    <div class="md:col-span-5">${dibujarCol(nom1, eq1, 'border-vctRed', 'border-vctRed/40')}</div>
-                    <div class="md:col-span-1 flex justify-center py-2">
-                        <div class="vs-neon-badge w-14 h-14 rounded-full bg-gradient-to-br from-vctRed to-red-900 border-2 border-white flex items-center justify-center font-black text-sm text-white">
-                            VS
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-11 gap-3 items-center">
+                    <div class="md:col-span-5">${dibujarCol(nom1, eq1, 'border-vctRed')}</div>
+                    <div class="md:col-span-1 flex justify-center py-1">
+                        <div class="w-10 h-10 rounded-full bg-vctRed text-white flex items-center justify-center font-black text-xs shadow">VS</div>
                     </div>
-                    <div class="md:col-span-5">${dibujarCol(nom2, eq2, 'border-everGold', 'border-everGold/40')}</div>
+                    <div class="md:col-span-5">${dibujarCol(nom2, eq2, 'border-everGold')}</div>
                 </div>`;
 
             document.getElementById('modal-vs').classList.remove('hidden');
