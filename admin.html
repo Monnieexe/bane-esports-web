@@ -3,574 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5ever | Centro de Control - 24 Equipos</title>
+    <title>Admin | Centro de Control Copa 5EverMad</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#050507' } } } }
+        tailwind.config = {
+            theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#06070b' } } }
+        };
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #040406; color: white; }
-        .tab-content { display: none; } 
-        .tab-content.active { display: block; }
-        .tab-btn { opacity: 0.5; transition: all 0.3s; } 
-        .tab-btn.active { opacity: 1; border-bottom: 2px solid #ff2a3f; color: white; }
-        .input-admin { background: #0b0c10; border: 1px solid rgba(255,255,255,0.12); color: white; transition: border-color 0.2s; }
-        .input-admin:focus { border-color: #e5c05c; outline: none; background: #000; }
-        #toast { position: fixed; top: 20px; right: -400px; transition: right 0.35s ease; z-index: 100; }
+        body { font-family: 'Montserrat', sans-serif; background-color: #06070b; color: white; }
+        .panel-box { background: #0c0e16; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 </head>
-<body class="antialiased p-4 md:p-8 min-h-screen">
+<body class="min-h-screen pb-28">
 
-    <!-- LISTA DESPLEGABLE AUTOMÁTICA DE EQUIPOS INSCRITOS PARA VINCULAR LOGOS -->
-    <datalist id="lista-equipos-dl"></datalist>
-
-    <div class="max-w-7xl mx-auto">
-        <!-- BARRA SUPERIOR -->
-        <div class="flex flex-wrap justify-between items-center gap-4 mb-8 border-b border-white/10 pb-5">
-            <div>
-                <h1 class="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">
-                    <span class="text-vctRed">5</span>EVER <span class="text-gray-500">ADMIN • 24 EQUIPOS</span>
-                </h1>
-                <p class="text-[9px] text-everGold uppercase tracking-[0.3em] font-bold mt-1 flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 bg-vctRed rounded-full animate-ping"></span> Formato Oficial 5 Fases • Lunes 8:00 PM CDMX
-                </p>
+    <!-- HEADER ADMIN -->
+    <header class="border-b border-white/10 bg-[#06070b]/95 sticky top-0 z-40">
+        <div class="max-w-[1600px] mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-vctRed flex items-center justify-center font-black text-white rounded">A</div>
+                <div>
+                    <h1 class="text-lg font-black uppercase tracking-wider">CENTRO DE CONTROL • <span class="text-vctRed">COPA 5EVERMAD</span></h1>
+                    <p id="estado-conexion" class="text-[10px] text-everGold font-bold uppercase tracking-widest">Sincronizando con Render...</p>
+                </div>
             </div>
-            <div class="flex gap-3">
-                <a href="sorteo.html" target="_blank" class="text-[9px] font-black text-everGold border border-everGold/40 hover:bg-everGold hover:text-black px-4 py-2 uppercase tracking-widest transition-all">VER ARENA ↗</a>
-                <button onclick="cerrarSesion()" class="text-[9px] font-bold text-gray-400 hover:text-white border border-white/10 hover:bg-vctRed px-4 py-2 transition-all">SALIR</button>
-            </div>
-        </div>
-
-        <!-- PESTAÑAS -->
-        <div class="flex gap-8 mb-8 border-b border-white/10">
-            <button onclick="switchTab('tab-equipos')" id="btn-tab-equipos" class="tab-btn active text-[10px] font-black uppercase tracking-[0.2em] pb-3">1. Equipos y Rosters</button>
-            <button onclick="switchTab('tab-bracket')" id="btn-tab-bracket" class="tab-btn text-[10px] font-black uppercase tracking-[0.2em] pb-3">2. Consola de 5 Fases (Grupos y Playoffs)</button>
-        </div>
-
-        <!-- PESTAÑA 1: EQUIPOS INSCRITOS -->
-        <div id="tab-equipos" class="tab-content active bg-[#090a0f] border border-white/10 p-6">
-            <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/5">
-                <h2 class="text-lg font-black text-white uppercase tracking-widest">Base de Datos de Equipos</h2>
-                <span id="contador-equipos" class="bg-[#111] border border-white/10 text-everGold text-[10px] font-black px-4 py-2 uppercase tracking-widest">0 EN SISTEMA</span>
-            </div>
-            <div class="flex flex-col gap-3" id="lista-equipos-admin"></div>
-        </div>
-
-        <!-- PESTAÑA 2: CONSOLA DEL TORNEO DE 5 FASES -->
-        <div id="tab-bracket" class="tab-content">
-            
-            <!-- BOTONES DE ACCIÓN RÁPIDA -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <button onclick="sortearFase1AlAzar()" class="bg-vctRed/20 border border-vctRed hover:bg-vctRed text-white font-black text-[10px] uppercase tracking-[0.2em] p-4 transition-all">
-                    🎲 SORTEAR 24 EQUIPOS AL AZAR (GRUPOS A, B, C, D)
-                </button>
-                <button onclick="resetearPlantilla()" class="bg-white/5 border border-white/15 hover:border-white text-gray-300 hover:text-white font-black text-[10px] uppercase tracking-[0.2em] p-4 transition-all">
-                    📋 REINICIAR A PLANTILLA POR DEFINIR (A1..D6)
-                </button>
-                <button onclick="publicarTablero()" id="btn-sync" class="bg-everGold text-black hover:bg-white font-black text-xs uppercase tracking-[0.25em] p-4 transition-all shadow-[0_0_25px_rgba(229,192,92,0.3)]">
-                    💾 GUARDAR Y PUBLICAR EN LA ARENA
+            <div class="flex items-center gap-3">
+                <a href="sorteo.html" target="_blank" class="bg-white/10 hover:bg-white/20 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded">
+                    VER TABLERO PÚBLICO ↗
+                </a>
+                <button onclick="guardarTodoEnVivo()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black uppercase tracking-widest px-6 py-2.5 rounded shadow-lg">
+                    💾 PUBLICAR CAMBIOS EN VIVO
                 </button>
             </div>
+        </div>
+    </header>
 
-            <!-- FASE 1: 4 GRUPOS DE 6 -->
-            <div class="bg-[#090a0f] border border-red-500/30 p-6 mb-8">
-                <h3 class="text-sm font-black uppercase tracking-widest text-vctRed mb-1">FASE 1 • 4 GRUPOS DE 6 EQUIPOS (BO3 - Pasan 3 por grupo)</h3>
-                <p class="text-[10px] text-gray-400 mb-4">Haz clic en cualquier casilla para elegir un equipo de la lista desplegable (así se mostrará su logo automáticamente).</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="admin-fase1"></div>
-            </div>
+    <main class="max-w-[1600px] mx-auto px-6 mt-8 space-y-8">
 
-            <!-- FASE 2: 2 GRUPOS DE 6 -->
-            <div class="bg-[#090a0f] border border-blue-500/30 p-6 mb-8">
-                <h3 class="text-sm font-black uppercase tracking-widest text-blue-400 mb-1">FASE 2 • 2 GRUPOS DE 6 EQUIPOS (BO3 - Pasan 3 por grupo)</h3>
-                <p class="text-[10px] text-gray-400 mb-4">Coloca aquí a los 12 clasificados de la Fase 1 divididos en Grupo E y Grupo F.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="admin-fase2"></div>
-            </div>
-
-            <!-- FASE 3: RANKING POR DESEMPEÑO (6 EQUIPOS) -->
-            <div class="bg-[#090a0f] border border-purple-500/30 p-6 mb-8">
-                <h3 class="text-sm font-black uppercase tracking-widest text-purple-400 mb-1">FASE 3 • SELECCIÓN FINAL (RANKING POR DIFERENCIA DE RONDAS)</h3>
-                <p class="text-[10px] text-gray-400 mb-4">Ordena del 1 al 6. Los lugares 1 al 4 avanzan a Semifinales; los lugares 5 y 6 quedan eliminados.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="admin-fase3"></div>
-            </div>
-
-            <!-- FASE 4 Y GRAN FINAL (BO5) -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div class="bg-[#090a0f] border border-everGold/40 p-6">
-                    <h3 class="text-sm font-black uppercase tracking-widest text-everGold mb-4">FASE 4 • SEMIFINALES (BO5)</h3>
-                    
-                    <div class="mb-4 bg-black/50 p-4 border border-white/5">
-                        <span class="text-[10px] text-everGold font-black uppercase block mb-2">SEMIFINAL 1</span>
-                        <div class="grid grid-cols-12 gap-2">
-                            <input type="text" id="sf1_eq1" list="lista-equipos-dl" placeholder="Equipo 1" class="input-admin col-span-5 p-2 text-xs font-bold">
-                            <input type="text" id="sf1_s1" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
-                            <input type="text" id="sf1_s2" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
-                            <input type="text" id="sf1_eq2" list="lista-equipos-dl" placeholder="Equipo 2" class="input-admin col-span-5 p-2 text-xs font-bold">
-                        </div>
-                    </div>
-
-                    <div class="bg-black/50 p-4 border border-white/5">
-                        <span class="text-[10px] text-everGold font-black uppercase block mb-2">SEMIFINAL 2</span>
-                        <div class="grid grid-cols-12 gap-2">
-                            <input type="text" id="sf2_eq1" list="lista-equipos-dl" placeholder="Equipo 3" class="input-admin col-span-5 p-2 text-xs font-bold">
-                            <input type="text" id="sf2_s1" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
-                            <input type="text" id="sf2_s2" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
-                            <input type="text" id="sf2_eq2" list="lista-equipos-dl" placeholder="Equipo 4" class="input-admin col-span-5 p-2 text-xs font-bold">
-                        </div>
-                    </div>
+        <!-- 1. CONSOLA EN VIVO: AVISOS, PARTIDO EN STREAM Y MVP -->
+        <section class="panel-box p-5 border-l-4 border-l-everGold">
+            <h2 class="text-sm font-black uppercase tracking-widest text-everGold mb-4">📡 TRANSMISIÓN EN VIVO, AVISOS Y MVP DE LA JORNADA</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Aviso Flotante -->
+                <div class="bg-black/50 border border-white/10 p-3.5 rounded-lg">
+                    <label class="text-[10px] font-black uppercase text-vctRed block mb-1">📢 Aviso Urgente en Pantalla (Live Banner)</label>
+                    <input id="inp-aviso" type="text" placeholder="Ej. Check-in abierto: Capitanes entrar a Discord" class="w-full bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-white outline-none">
+                    <p class="text-[9px] text-gray-400 mt-1">Déjalo vacío para ocultar la barra roja de aviso.</p>
                 </div>
 
-                <div class="bg-[#090a0f] border border-vctRed/40 p-6">
-                    <h3 class="text-sm font-black uppercase tracking-widest text-vctRed mb-4">GRAN FINAL (BO5) Y CAMPEÓN</h3>
-                    <div class="bg-black/50 p-4 border border-white/5 mb-4">
-                        <span class="text-[10px] text-vctRed font-black uppercase block mb-2">DUELO FINAL BO5</span>
-                        <div class="grid grid-cols-12 gap-2">
-                            <input type="text" id="fin_eq1" list="lista-equipos-dl" placeholder="Ganador SF1" class="input-admin col-span-5 p-2 text-xs font-bold">
-                            <input type="text" id="fin_s1" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
-                            <input type="text" id="fin_s2" placeholder="Pts" class="input-admin col-span-1 p-2 text-xs text-center font-black text-everGold">
-                            <input type="text" id="fin_eq2" list="lista-equipos-dl" placeholder="Ganador SF2" class="input-admin col-span-5 p-2 text-xs font-bold">
-                        </div>
+                <!-- Partido en Stream -->
+                <div class="bg-black/50 border border-white/10 p-3.5 rounded-lg">
+                    <label class="text-[10px] font-black uppercase text-emerald-400 block mb-1">📺 Equipo en Stream Ahora (Pone insignia 🔴 LIVE)</label>
+                    <div class="flex gap-2">
+                        <input id="inp-stream-match" type="text" placeholder="Ej. 5EverMad" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-white outline-none">
+                        <input id="inp-stream-channel" type="text" placeholder="Canal Twitch" class="w-36 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-everGold outline-none">
                     </div>
-                    <div class="bg-black/50 p-4 border border-everGold/30">
-                        <label class="text-[10px] text-everGold font-black uppercase block mb-2">🏆 NOMBRE DEL EQUIPO CAMPEÓN</label>
-                        <input type="text" id="fin_campeon" list="lista-equipos-dl" placeholder="CAMPEÓN" class="input-admin w-full p-3 text-sm font-black text-everGold">
+                    <p class="text-[9px] text-gray-400 mt-1">Escribe el nombre de uno de los equipos que estés casteando.</p>
+                </div>
+
+                <!-- MVP de la Jornada -->
+                <div class="bg-black/50 border border-white/10 p-3.5 rounded-lg">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-[10px] font-black uppercase text-everGold">🌟 MVP de la Jornada</label>
+                        <label class="text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                            <input type="checkbox" id="chk-mvp-activo"> Mostrar en Header
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1.5">
+                        <input id="inp-mvp-id" type="text" placeholder="Riot ID (Ej. Player#LAN)" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-white outline-none">
+                        <input id="inp-mvp-eq" type="text" placeholder="Equipo" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-white outline-none">
+                        <input id="inp-mvp-kda" type="text" placeholder="KDA / ACS (Ej. 28/11/9)" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-everGold outline-none">
+                        <input id="inp-mvp-ag" type="text" placeholder="Agente (Ej. Jett)" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-white outline-none">
                     </div>
                 </div>
             </div>
+        </section>
 
-            <button onclick="publicarTablero()" class="w-full bg-vctRed hover:bg-white text-white hover:text-black font-black text-sm uppercase tracking-[0.3em] p-5 transition-all">
-                SINCRONIZAR TODAS LAS FASES EN LA ARENA
-            </button>
+        <!-- 2. FASE 1 (GRUPOS A, B, C, D) + BOTÓN AUTO-AVANCE A FASE 2 -->
+        <section class="panel-box p-5">
+            <div class="flex flex-wrap justify-between items-center gap-3 mb-4 pb-3 border-b border-white/10">
+                <div>
+                    <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">LUNES 28 DE SEPTIEMBRE</span>
+                    <h2 class="text-base font-black uppercase">FASE 1 • 4 GRUPOS DE 6 EQUIPOS (BO3)</h2>
+                </div>
+                <button onclick="pasarClasificadosAFase2()" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded shadow">
+                    ⚡ PASAR CLASIFICADOS (✔) AUTOMÁTICAMENTE A FASE 2 ➔
+                </button>
+            </div>
+            <div id="admin-fase1" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </section>
+
+        <!-- 3. FASE 2 (GRUPOS E, F) + FASE 3 (RANKING DIFERENCIA DE RONDAS) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Fase 2 -->
+            <section class="lg:col-span-5 panel-box p-5">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-white/10">
+                    <div>
+                        <span class="text-[10px] text-blue-400 font-black uppercase block">LUNES 5 DE OCTUBRE</span>
+                        <h2 class="text-sm font-black uppercase">FASE 2 • GRUPOS E Y F (12 EQ)</h2>
+                    </div>
+                    <button onclick="pasarClasificadosAFase3()" class="bg-purple-600 hover:bg-purple-500 text-white text-[9px] font-black uppercase px-3 py-2 rounded">
+                        ⚡ PASAR A FASE 3 ➔
+                    </button>
+                </div>
+                <div id="admin-fase2" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </section>
+
+            <!-- Fase 3 -->
+            <section class="lg:col-span-4 panel-box p-5">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-white/10">
+                    <div>
+                        <span class="text-[10px] text-purple-400 font-black uppercase block">LUNES 12 DE OCTUBRE</span>
+                        <h2 class="text-sm font-black uppercase">FASE 3 • DIFERENCIA DE RONDAS</h2>
+                    </div>
+                    <button onclick="ordenarFase3YPasarASemis()" class="bg-everGold text-black text-[9px] font-black uppercase px-3 py-2 rounded">
+                        📊 ORDENAR X RONDAS Y PASAR TOP 4
+                    </button>
+                </div>
+                <p class="text-[10px] text-gray-400 mb-3">Escribe la diferencia de rondas (ej. <b class="text-white">+18</b>, <b class="text-white">+4</b>, <b class="text-white">-7</b>) y presiona el botón dorado para ordenar y enviar al Top 4 a Semifinales.</p>
+                <div id="admin-fase3" class="space-y-2"></div>
+            </section>
+
+            <!-- Fase 4 (Semis) y Gran Final -->
+            <section class="lg:col-span-3 panel-box p-5">
+                <div class="mb-4 pb-3 border-b border-white/10">
+                    <span class="text-[10px] text-everGold font-black uppercase block">12 Y 19 DE OCTUBRE</span>
+                    <h2 class="text-sm font-black uppercase">SEMIFINALES Y GRAN FINAL (BO5)</h2>
+                </div>
+                <div id="admin-playoffs" class="space-y-4"></div>
+            </section>
         </div>
-    </div>
 
-    <!-- TOAST -->
-    <div id="toast" class="bg-[#0a0a0a] border-l-4 border-everGold p-4 shadow-2xl flex items-center gap-4">
-        <div class="text-everGold font-black">!</div>
-        <div><h4 class="text-white text-[10px] font-black uppercase tracking-widest" id="toast-title">Alerta</h4></div>
+    </main>
+
+    <!-- BARRA FLOTANTE DE GUARDADO -->
+    <div class="fixed bottom-0 inset-x-0 bg-[#08090f]/95 border-t border-white/15 py-3 px-6 z-50 flex justify-between items-center">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Todos los cambios se reflejan en sorteo.html en menos de 3.5 segundos</span>
+        <button onclick="guardarTodoEnVivo()" class="bg-vctRed hover:bg-white text-white hover:text-black text-xs font-black uppercase tracking-widest px-8 py-3 rounded transition-all shadow-[0_0_20px_rgba(255,42,63,0.5)]">
+            💾 GUARDAR Y PUBLICAR EN VIVO AHORA
+        </button>
     </div>
 
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
-        let listaEquipos = [];
         let bracketNoticiaId = null;
-        let equipoActualizando = null;
-        let boardData = null;
 
-        function crearEstructuraPorDefecto() {
-            return {
-                version: '24_grupos_v1',
-                horario: 'Cada Lunes • 8:00 PM (Hora Centro de México)',
-                fase1: {
-                    A: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    B: ['B1', 'B2', 'B3', 'B4', 'B5', 'B6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    C: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    D: ['D1', 'D2', 'D3', 'D4', 'D5', 'D6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
-                },
-                fase2: {
-                    E: ['E1', 'E2', 'E3', 'E4', 'E5', 'E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                    F: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
-                },
-                fase3: [
-                    { pos: 1, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 2, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 3, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 4, nombre: 'Equipo', rd: '', eliminado: false },
-                    { pos: 5, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true },
-                    { pos: 6, nombre: 'Equipo', rd: '(ELIMINADO)', eliminado: true }
-                ],
-                fase4: {
-                    sf1: { eq1: 'Equipo 1', eq2: 'Equipo 2', score1: '', score2: '' },
-                    sf2: { eq1: 'Equipo 3', eq2: 'Equipo 4', score1: '', score2: '' }
-                },
-                final: {
-                    eq1: 'Ganador SF1',
-                    eq2: 'Ganador SF2',
-                    score1: '',
-                    score2: '',
-                    campeon: 'CAMPEÓN'
-                }
-            };
-        }
+        let datos = {
+            version: '24_grupos_v1',
+            aviso: '',
+            partidoStream: '',
+            canalTwitch: 'valorant_la',
+            mvp: { activo: false, riot_id: '', equipo: '', kda: '', agente: 'Jett' },
+            fase1: {
+                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+            },
+            fase2: {
+                E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
+                F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+            },
+            fase3: [
+                { pos: 1, nombre: 'Clasificado #1', rd: '', eliminado: false },
+                { pos: 2, nombre: 'Clasificado #2', rd: '', eliminado: false },
+                { pos: 3, nombre: 'Clasificado #3', rd: '', eliminado: false },
+                { pos: 4, nombre: 'Clasificado #4', rd: '', eliminado: false },
+                { pos: 5, nombre: 'Puesto #5', rd: 'ELIM', eliminado: true },
+                { pos: 6, nombre: 'Puesto #6', rd: 'ELIM', eliminado: true }
+            ],
+            fase4: {
+                sf1: { eq1: 'Equipo 1', eq2: 'Equipo 2', score1: '', score2: '' },
+                sf2: { eq1: 'Equipo 3', eq2: 'Equipo 4', score1: '', score2: '' }
+            },
+            final: { eq1: 'Ganador SF1', eq2: 'Ganador SF2', score1: '', score2: '', campeon: 'CAMPEÓN' }
+        };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            localStorage.setItem('idToken', 'pase-vip-temporal-5ever');
-            cargarEquiposInscritos();
-            cargarDatosTablero();
-        });
-
-        function getAuthHeaders() {
-            return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('idToken')}` };
-        }
-
-        function cerrarSesion() { localStorage.removeItem('idToken'); window.location.href = 'login.html'; }
-
-        function switchTab(t) {
-            document.querySelectorAll('.tab-content, .tab-btn').forEach(e => e.classList.remove('active'));
-            document.getElementById(t).classList.add('active');
-            document.getElementById('btn-' + t).classList.add('active');
-        }
-
-        function showToast(title, isError = false) {
-            const t = document.getElementById('toast');
-            t.className = `fixed top-6 z-50 bg-[#0a0a0a] border-l-4 ${isError ? 'border-vctRed' : 'border-everGold'} p-4 shadow-2xl flex items-center gap-4 right-[-400px]`;
-            document.getElementById('toast-title').innerText = title;
-            t.style.right = '24px';
-            setTimeout(() => { t.style.right = '-400px'; }, 3000);
-        }
-
-        // ==========================================
-        // 1. GESTIÓN Y EDICIÓN DE ROSTERS
-        // ==========================================
-        async function cargarEquiposInscritos() {
-            try {
-                const res = await fetch(`${API_URL}/equipos`);
-                listaEquipos = await res.json();
-                document.getElementById('contador-equipos').innerText = `${listaEquipos.length} EN SISTEMA`;
-                
-                // Llenar el autocompletado para que las casillas del bracket sugieran los nombres exactos
-                const dl = document.getElementById('lista-equipos-dl');
-                if (dl) {
-                    dl.innerHTML = listaEquipos.map(e => `<option value="${e.nombre.replace(/"/g, '&quot;')}">`).join('');
-                }
-
-                const lista = document.getElementById('lista-equipos-admin');
-                lista.innerHTML = '';
-
-                listaEquipos.forEach((eq, idx) => {
-                    let rosterHtml = '';
-                    if (eq.jugadores && eq.jugadores.length > 0) {
-                        rosterHtml = `<div id="admin-roster-${idx}" class="hidden mt-4 pt-4 border-t border-white/5 grid grid-cols-1 md:grid-cols-2 gap-2">`;
-                        eq.jugadores.forEach(j => {
-                            rosterHtml += `<div class="bg-[#111] p-2.5 px-3 border-l-2 border-vctRed text-[10px] font-bold text-white uppercase"><span class="text-gray-400 mr-2">[${j.role}]</span> ${j.riot_id} <span class="text-everGold ml-2">DC: ${j.dc || '-'}</span></div>`;
-                        });
-                        rosterHtml += `</div>`;
-                    }
-
-                    const logoThumb = eq.logo_url 
-                        ? `<img src="${eq.logo_url}" class="w-10 h-10 object-contain bg-black p-1 border border-white/10 shrink-0">`
-                        : `<div class="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center text-xs font-black text-gray-500 shrink-0">?</div>`;
-
-                    lista.innerHTML += `
-                        <div class="bg-[#050507] border border-white/10 p-4 flex flex-col hover:border-white/25 transition-colors">
-                            <div class="flex items-center justify-between gap-4">
-                                <div class="flex items-center gap-3.5 cursor-pointer flex-1 truncate" onclick="document.getElementById('admin-roster-${idx}').classList.toggle('hidden')">
-                                    ${logoThumb}
-                                    <div class="truncate">
-                                        <span class="text-sm font-black text-white uppercase tracking-wider block truncate">${idx + 1}. ${eq.nombre}</span>
-                                        <span class="text-[9px] text-everGold block uppercase font-bold truncate">Capitán: ${eq.discord || '-'} | Rangos: ${eq.rango || '-'}</span>
-                                    </div>
-                                    <span class="text-[9px] text-everGold border border-white/10 px-2 py-1 font-bold shrink-0">ROSTER ▼</span>
-                                </div>
-                                <div class="flex gap-4 items-center shrink-0">
-                                    <button onclick='abrirModalEdicion(${JSON.stringify(eq).replace(/'/g, "&apos;")})' class="text-everGold hover:text-white text-xs font-black uppercase">✎ EDITAR</button>
-                                    <button onclick="borrarEquipoInscrito('${eq.id}')" class="text-gray-500 hover:text-vctRed text-xs font-black uppercase">X PURGAR</button>
-                                </div>
-                            </div>
-                            ${rosterHtml}
-                        </div>`;
-                });
-            } catch (e) { console.error(e); }
-        }
-
-        function abrirModalEdicion(equipo) {
-            equipoActualizando = JSON.parse(JSON.stringify(equipo));
-            let rosterInputsHTML = '';
-            (equipoActualizando.jugadores || []).forEach(j => {
-                rosterInputsHTML += `
-                    <div class="roster-row flex flex-col sm:flex-row items-center gap-2 mb-2 bg-[#111] p-2.5 border border-white/5">
-                        <input type="text" class="edit_role bg-black text-everGold p-2 text-xs w-full sm:w-32 border border-white/10 font-bold uppercase" value="${j.role || ''}" placeholder="Rol">
-                        <input type="text" class="edit_id bg-black text-white p-2 text-xs flex-1 w-full border border-white/10 font-bold" value="${j.riot_id || ''}" placeholder="Riot ID#TAG">
-                        <input type="text" class="edit_dc bg-black text-white p-2 text-xs w-full sm:w-36 border border-white/10 font-bold" value="${j.dc || ''}" placeholder="Discord">
-                        <button onclick="this.parentElement.remove()" class="text-gray-500 hover:text-vctRed font-black px-2" title="Eliminar jugador">X</button>
-                    </div>`;
-            });
-
-            const modal = document.createElement('div');
-            modal.id = 'modal-edicion';
-            modal.className = 'fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4';
-            modal.innerHTML = `
-                <div class="bg-[#07080c] border border-white/15 p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-                    <h3 class="text-vctRed font-black uppercase text-lg mb-4">Modificar Escuadra</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                        <div>
-                            <label class="text-[9px] text-gray-400 uppercase font-black block mb-1">Nombre del Equipo</label>
-                            <input type="text" id="edit_nombre" value="${equipoActualizando.nombre}" class="input-admin w-full p-2.5 text-xs font-bold">
-                        </div>
-                        <div>
-                            <label class="text-[9px] text-gray-400 uppercase font-black block mb-1">Discord Capitán</label>
-                            <input type="text" id="edit_capitan" value="${equipoActualizando.discord || ''}" class="input-admin w-full p-2.5 text-xs font-bold">
-                        </div>
-                        <div>
-                            <label class="text-[9px] text-gray-400 uppercase font-black block mb-1">Rangos</label>
-                            <input type="text" id="edit_rango" value="${equipoActualizando.rango || ''}" class="input-admin w-full p-2.5 text-xs font-bold">
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center mb-3">
-                        <h4 class="text-everGold text-xs font-black uppercase">Integrantes del Roster</h4>
-                        <button onclick="agregarFilaJugador()" class="text-[9px] bg-everGold text-black font-black px-3 py-1.5 uppercase hover:bg-white transition-colors">+ Añadir Suplente / Jugador</button>
-                    </div>
-                    <div id="contenedor-edicion-roster">${rosterInputsHTML}</div>
-                    <div class="flex justify-end gap-4 mt-6 pt-4 border-t border-white/10">
-                        <button onclick="document.getElementById('modal-edicion').remove()" class="text-gray-400 hover:text-white text-xs font-bold uppercase px-4 py-2">Cancelar</button>
-                        <button onclick="guardarEdicionEquipo()" class="bg-vctRed hover:bg-white text-white hover:text-black font-black text-xs uppercase px-6 py-2.5 transition-colors">Guardar Cambios</button>
-                    </div>
-                </div>`;
-            document.body.appendChild(modal);
-        }
-
-        function agregarFilaJugador() {
-            const container = document.getElementById('contenedor-edicion-roster');
-            const row = document.createElement('div');
-            row.className = 'roster-row flex flex-col sm:flex-row items-center gap-2 mb-2 bg-[#111] p-2.5 border border-white/5';
-            row.innerHTML = `
-                <input type="text" class="edit_role bg-black text-everGold p-2 text-xs w-full sm:w-32 border border-white/10 font-bold uppercase" value="SUPLENTE" placeholder="Rol">
-                <input type="text" class="edit_id bg-black text-white p-2 text-xs flex-1 w-full border border-white/10 font-bold" placeholder="Riot ID#TAG">
-                <input type="text" class="edit_dc bg-black text-white p-2 text-xs w-full sm:w-36 border border-white/10 font-bold" placeholder="Discord">
-                <button onclick="this.parentElement.remove()" class="text-gray-500 hover:text-vctRed font-black px-2" title="Eliminar jugador">X</button>`;
-            container.appendChild(row);
-        }
-
-        async function guardarEdicionEquipo() {
-            equipoActualizando.nombre = document.getElementById('edit_nombre').value.trim();
-            equipoActualizando.discord = document.getElementById('edit_capitan').value.trim();
-            equipoActualizando.rango = document.getElementById('edit_rango').value.trim();
-
-            const rows = document.querySelectorAll('.roster-row');
-            let nuevos = [];
-            rows.forEach(r => {
-                const role = r.querySelector('.edit_role').value.trim();
-                const id = r.querySelector('.edit_id').value.trim();
-                const dc = r.querySelector('.edit_dc').value.trim();
-                if (id) {
-                    nuevos.push({
-                        role: role || 'SUPLENTE',
-                        riot_id: id,
-                        dc: dc,
-                        tracker_url: `https://tracker.gg/valorant/profile/riot/${encodeURIComponent(id)}/overview`
-                    });
-                }
-            });
-            equipoActualizando.jugadores = nuevos;
-
-            try {
-                const res = await fetch(`${API_URL}/equipos`, { method: 'PUT', headers: getAuthHeaders(), body: JSON.stringify(equipoActualizando) });
-                if (res.ok) {
-                    showToast("Roster actualizado correctamente");
-                    document.getElementById('modal-edicion').remove();
-                    cargarEquiposInscritos();
-                } else {
-                    showToast("Error al actualizar", true);
-                }
-            } catch (e) {
-                showToast("Error de conexión", true);
-            }
-        }
-
-        async function borrarEquipoInscrito(id) {
-            if (confirm("⚠ ¿Eliminar este equipo del sistema?")) {
-                await fetch(`${API_URL}/equipos?id=${id}`, { method: 'DELETE', headers: getAuthHeaders() });
-                cargarEquiposInscritos();
-                showToast("Equipo eliminado");
-            }
-        }
-
-        // ==========================================
-        // 2. CONSOLA DE LAS 5 FASES (24 EQUIPOS)
-        // ==========================================
-        async function cargarDatosTablero() {
-            try {
-                const resNot = await fetch(`${API_URL}/noticias`);
-                const noticias = await resNot.json();
-                const bd = noticias.find(n => n.titulo === '[BRACKET_DATA]');
-                bracketNoticiaId = bd ? bd.id : null;
-
-                if (bd) {
-                    const parsed = JSON.parse(bd.descripcion);
-                    boardData = (parsed && parsed.version === '24_grupos_v1') ? parsed : crearEstructuraPorDefecto();
-                } else {
-                    boardData = crearEstructuraPorDefecto();
-                }
-                renderFormularioTablero();
-            } catch (e) {
-                boardData = crearEstructuraPorDefecto();
-                renderFormularioTablero();
-            }
-        }
-
-        function renderEditorGrupo(faseKey, letra, slots) {
+        function dibujarEditorGrupo(faseKey, letra, colorHeader) {
+            const slots = datos[faseKey][letra] || [];
             let filas = '';
-            slots.forEach((s, idx) => {
+            slots.forEach((s, i) => {
                 filas += `
-                    <div class="grid grid-cols-12 gap-1 mb-1.5">
-                        <input type="text" id="${faseKey}_${letra}_nom_${idx}" list="lista-equipos-dl" value="${s.nombre}" class="input-admin col-span-6 p-1.5 text-[11px] font-bold" placeholder="Equipo">
-                        <input type="text" id="${faseKey}_${letra}_ext_${idx}" value="${s.extra || ''}" class="input-admin col-span-3 p-1.5 text-[10px] text-center text-everGold font-bold" placeholder="Pts/RD">
-                        <select id="${faseKey}_${letra}_est_${idx}" class="input-admin col-span-3 p-1 text-[9px] font-bold">
-                            <option value="normal" ${s.estado === 'normal' ? 'selected' : ''}>Normal</option>
-                            <option value="clasificado" ${s.estado === 'clasificado' ? 'selected' : ''}>✔ Avanza</option>
-                            <option value="eliminado" ${s.estado === 'eliminado' ? 'selected' : ''}>✕ Elim</option>
+                    <div class="bg-black/60 border border-white/10 p-2 rounded mb-1.5">
+                        <div class="flex gap-1.5 mb-1">
+                            <input type="text" value="${s.nombre || ''}" onchange="datos.${faseKey}.${letra}[${i}].nombre=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-white">
+                            <input type="text" value="${s.extra || ''}" placeholder="Pts/Score" onchange="datos.${faseKey}.${letra}[${i}].extra=this.value" class="w-16 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-everGold text-center">
+                        </div>
+                        <select onchange="datos.${faseKey}.${letra}[${i}].estado=this.value" class="w-full bg-[#0b0d14] border border-white/10 text-[10px] font-bold px-2 py-1 rounded text-gray-300">
+                            <option value="normal" ${s.estado === 'normal' ? 'selected' : ''}>⚪ En Juego</option>
+                            <option value="clasificado" ${s.estado === 'clasificado' ? 'selected' : ''}>🟢 ✔ Clasificado (Avanza)</option>
+                            <option value="eliminado" ${s.estado === 'eliminado' ? 'selected' : ''}>🔴 ✕ Eliminado</option>
                         </select>
                     </div>`;
             });
             return `
-                <div class="bg-black/60 border border-white/10 p-3">
-                    <div class="text-xs font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">GRUPO ${letra}</div>
-                    ${filas}
+                <div class="bg-[#080a10] border border-white/10 rounded-lg overflow-hidden">
+                    <div class="${colorHeader} py-1.5 px-3 font-black text-xs uppercase">GRUPO ${letra}</div>
+                    <div class="p-2.5">${filas}</div>
                 </div>`;
         }
 
-        function renderFormularioTablero() {
-            // Fase 1: Grupos A, B, C, D
-            const f1 = document.getElementById('admin-fase1');
-            f1.innerHTML = ['A', 'B', 'C', 'D'].map(g => renderEditorGrupo('f1', g, boardData.fase1[g])).join('');
+        function renderizarPanelesAdmin() {
+            document.getElementById('inp-aviso').value = datos.aviso || '';
+            document.getElementById('inp-stream-match').value = datos.partidoStream || '';
+            document.getElementById('inp-stream-channel').value = datos.canalTwitch || 'valorant_la';
 
-            // Fase 2: Grupos E, F
-            const f2 = document.getElementById('admin-fase2');
-            f2.innerHTML = ['E', 'F'].map(g => renderEditorGrupo('f2', g, boardData.fase2[g])).join('');
+            const m = datos.mvp || {};
+            document.getElementById('chk-mvp-activo').checked = Boolean(m.activo);
+            document.getElementById('inp-mvp-id').value = m.riot_id || '';
+            document.getElementById('inp-mvp-eq').value = m.equipo || '';
+            document.getElementById('inp-mvp-kda').value = m.kda || '';
+            document.getElementById('inp-mvp-ag').value = m.agente || '';
 
-            // Fase 3: Ranking 1-6
-            const f3 = document.getElementById('admin-fase3');
-            f3.innerHTML = boardData.fase3.map((r, i) => `
-                <div class="flex items-center gap-2 bg-black/60 p-2.5 border ${i >= 4 ? 'border-red-500/40' : 'border-emerald-500/40'}">
-                    <span class="w-6 h-6 flex items-center justify-center font-black text-xs ${i >= 4 ? 'bg-red-600' : 'bg-emerald-600'}">${i + 1}</span>
-                    <input type="text" id="f3_nom_${i}" list="lista-equipos-dl" value="${r.nombre}" class="input-admin flex-1 p-2 text-xs font-bold" placeholder="Nombre Equipo">
-                    <input type="text" id="f3_rd_${i}" value="${r.rd || ''}" class="input-admin w-32 p-2 text-xs font-bold text-center" placeholder="Ej: +14 o (ELIMINADO)">
+            document.getElementById('admin-fase1').innerHTML = ['A','B','C','D'].map(g => dibujarEditorGrupo('fase1', g, 'bg-red-700')).join('');
+            document.getElementById('admin-fase2').innerHTML = ['E','F'].map(g => dibujarEditorGrupo('fase2', g, 'bg-blue-700')).join('');
+
+            document.getElementById('admin-fase3').innerHTML = (datos.fase3 || []).map((r, i) => `
+                <div class="flex items-center gap-2 bg-black/60 border ${i >= 4 ? 'border-red-500/40' : 'border-emerald-500/40'} p-2 rounded">
+                    <span class="w-6 h-6 rounded flex items-center justify-center text-xs font-black ${i >= 4 ? 'bg-red-600' : 'bg-emerald-600'}">${i + 1}</span>
+                    <input type="text" value="${r.nombre || ''}" onchange="datos.fase3[${i}].nombre=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-white">
+                    <input type="text" value="${r.rd || ''}" placeholder="+12 RD" onchange="datos.fase3[${i}].rd=this.value" class="w-20 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-everGold text-center">
+                </div>`).join('');
+
+            const sf1 = datos.fase4.sf1;
+            const sf2 = datos.fase4.sf2;
+            const fin = datos.final;
+
+            document.getElementById('admin-playoffs').innerHTML = `
+                <div class="bg-black/60 border border-everGold/40 p-3 rounded">
+                    <span class="text-[10px] font-black text-everGold block mb-2">SEMIFINAL 1 (BO5)</span>
+                    <div class="flex gap-1.5 mb-1.5"><input value="${sf1.eq1}" onchange="datos.fase4.sf1.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold"><input value="${sf1.score1}" placeholder="0" onchange="datos.fase4.sf1.score1=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold"></div>
+                    <div class="flex gap-1.5"><input value="${sf1.eq2}" onchange="datos.fase4.sf1.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold"><input value="${sf1.score2}" placeholder="0" onchange="datos.fase4.sf1.score2=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold"></div>
                 </div>
-            `).join('');
-
-            // Fase 4 y Gran Final
-            document.getElementById('sf1_eq1').value = boardData.fase4.sf1.eq1;
-            document.getElementById('sf1_eq2').value = boardData.fase4.sf1.eq2;
-            document.getElementById('sf1_s1').value = boardData.fase4.sf1.score1;
-            document.getElementById('sf1_s2').value = boardData.fase4.sf1.score2;
-
-            document.getElementById('sf2_eq1').value = boardData.fase4.sf2.eq1;
-            document.getElementById('sf2_eq2').value = boardData.fase4.sf2.eq2;
-            document.getElementById('sf2_s1').value = boardData.fase4.sf2.score1;
-            document.getElementById('sf2_s2').value = boardData.fase4.sf2.score2;
-
-            document.getElementById('fin_eq1').value = boardData.final.eq1;
-            document.getElementById('fin_eq2').value = boardData.final.eq2;
-            document.getElementById('fin_s1').value = boardData.final.score1;
-            document.getElementById('fin_s2').value = boardData.final.score2;
-            document.getElementById('fin_campeon').value = boardData.final.campeon;
+                <div class="bg-black/60 border border-everGold/40 p-3 rounded">
+                    <span class="text-[10px] font-black text-everGold block mb-2">SEMIFINAL 2 (BO5)</span>
+                    <div class="flex gap-1.5 mb-1.5"><input value="${sf2.eq1}" onchange="datos.fase4.sf2.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold"><input value="${sf2.score1}" placeholder="0" onchange="datos.fase4.sf2.score1=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold"></div>
+                    <div class="flex gap-1.5"><input value="${sf2.eq2}" onchange="datos.fase4.sf2.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold"><input value="${sf2.score2}" placeholder="0" onchange="datos.fase4.sf2.score2=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold"></div>
+                </div>
+                <div class="bg-black/60 border border-vctRed/50 p-3 rounded">
+                    <span class="text-[10px] font-black text-vctRed block mb-2">🏆 GRAN FINAL (BO5)</span>
+                    <div class="flex gap-1.5 mb-1.5"><input value="${fin.eq1}" onchange="datos.final.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold"><input value="${fin.score1}" placeholder="0" onchange="datos.final.score1=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold"></div>
+                    <div class="flex gap-1.5 mb-2"><input value="${fin.eq2}" onchange="datos.final.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold"><input value="${fin.score2}" placeholder="0" onchange="datos.final.score2=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold"></div>
+                    <label class="text-[9px] font-black uppercase text-everGold block mb-1">Campeón Oficial:</label>
+                    <input value="${fin.campeon}" onchange="datos.final.campeon=this.value" class="w-full bg-[#0b0d14] border border-everGold p-1.5 rounded text-xs font-black text-everGold text-center">
+                </div>`;
         }
 
-        function recolectarFormularioTablero() {
-            ['A', 'B', 'C', 'D'].forEach(g => {
-                for (let i = 0; i < 6; i++) {
-                    boardData.fase1[g][i] = {
-                        nombre: document.getElementById(`f1_${g}_nom_${i}`).value.trim(),
-                        extra: document.getElementById(`f1_${g}_ext_${i}`).value.trim(),
-                        estado: document.getElementById(`f1_${g}_est_${i}`).value
-                    };
-                }
-            });
-            ['E', 'F'].forEach(g => {
-                for (let i = 0; i < 6; i++) {
-                    boardData.fase2[g][i] = {
-                        nombre: document.getElementById(`f2_${g}_nom_${i}`).value.trim(),
-                        extra: document.getElementById(`f2_${g}_ext_${i}`).value.trim(),
-                        estado: document.getElementById(`f2_${g}_est_${i}`).value
-                    };
-                }
-            });
+        // =============================================================
+        // BOTONES DE AUTOMATIZACIÓN EN 1 CLIC
+        // =============================================================
+        function pasarClasificadosAFase2() {
+            const clasAB = [...datos.fase1.A, ...datos.fase1.B].filter(s => s.estado === 'clasificado').map(s => s.nombre);
+            const clasCD = [...datos.fase1.C, ...datos.fase1.D].filter(s => s.estado === 'clasificado').map(s => s.nombre);
+
             for (let i = 0; i < 6; i++) {
-                boardData.fase3[i] = {
-                    pos: i + 1,
-                    nombre: document.getElementById(`f3_nom_${i}`).value.trim(),
-                    rd: document.getElementById(`f3_rd_${i}`).value.trim(),
-                    eliminado: i >= 4
-                };
+                if (clasAB[i]) datos.fase2.E[i] = { nombre: clasAB[i], extra: '', estado: 'normal' };
+                if (clasCD[i]) datos.fase2.F[i] = { nombre: clasCD[i], extra: '', estado: 'normal' };
             }
-            boardData.fase4.sf1 = {
-                eq1: document.getElementById('sf1_eq1').value.trim(),
-                eq2: document.getElementById('sf1_eq2').value.trim(),
-                score1: document.getElementById('sf1_s1').value.trim(),
-                score2: document.getElementById('sf1_s2').value.trim()
-            };
-            boardData.fase4.sf2 = {
-                eq1: document.getElementById('sf2_eq1').value.trim(),
-                eq2: document.getElementById('sf2_eq2').value.trim(),
-                score1: document.getElementById('sf2_s1').value.trim(),
-                score2: document.getElementById('sf2_s2').value.trim()
-            };
-            boardData.final = {
-                eq1: document.getElementById('fin_eq1').value.trim(),
-                eq2: document.getElementById('fin_eq2').value.trim(),
-                score1: document.getElementById('fin_s1').value.trim(),
-                score2: document.getElementById('fin_s2').value.trim(),
-                campeon: document.getElementById('fin_campeon').value.trim()
-            };
+            renderizarPanelesAdmin();
+            alert('✔ Clasificados de A/B enviados al Grupo E y de C/D enviados al Grupo F. Presiona PUBLICAR CAMBIOS EN VIVO para confirmar.');
         }
 
-        async function sortearFase1AlAzar() {
-            if (!confirm("🎲 ¿Mezclar al azar a los equipos registrados y distribuirlos en los Grupos A, B, C y D (6 por grupo)?")) return;
-            const res = await fetch(`${API_URL}/equipos`);
-            let eqs = await res.json();
-
-            const letras = ['A', 'B', 'C', 'D'];
-            let nombres = eqs.map(e => e.nombre);
-
-            for (let i = nombres.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [nombres[i], nombres[j]] = [nombres[j], nombres[i]];
-            }
-
-            let cursor = 0;
-            letras.forEach(g => {
-                for (let i = 0; i < 6; i++) {
-                    boardData.fase1[g][i] = {
-                        nombre: nombres[cursor] ? nombres[cursor] : `${g}${i + 1}`,
-                        extra: '',
-                        estado: 'normal'
+        function pasarClasificadosAFase3() {
+            const clasEF = [...datos.fase2.E, ...datos.fase2.F].filter(s => s.estado === 'clasificado');
+            for (let i = 0; i < 6; i++) {
+                if (clasEF[i]) {
+                    datos.fase3[i] = {
+                        pos: i + 1,
+                        nombre: clasEF[i].nombre,
+                        rd: clasEF[i].extra || '+0',
+                        eliminado: i >= 4
                     };
-                    cursor++;
                 }
+            }
+            renderizarPanelesAdmin();
+            alert('✔ Clasificados de Fase 2 copiados a la Fase 3.');
+        }
+
+        function ordenarFase3YPasarASemis() {
+            datos.fase3.sort((a, b) => {
+                const numA = parseFloat(String(a.rd || '0').replace(/[^0-9.-]/g, '')) || -999;
+                const numB = parseFloat(String(b.rd || '0').replace(/[^0-9.-]/g, '')) || -999;
+                return numB - numA;
+            });
+            datos.fase3.forEach((r, idx) => {
+                r.pos = idx + 1;
+                r.eliminado = idx >= 4;
             });
 
-            renderFormularioTablero();
-            showToast("¡Grupos A, B, C y D sorteados! Dale a GUARDAR Y PUBLICAR.");
+            // Top 4 pasan a Semifinales (1 vs 4 y 2 vs 3)
+            if (datos.fase3[0]) datos.fase4.sf1.eq1 = datos.fase3[0].nombre;
+            if (datos.fase3[3]) datos.fase4.sf1.eq2 = datos.fase3[3].nombre;
+            if (datos.fase3[1]) datos.fase4.sf2.eq1 = datos.fase3[1].nombre;
+            if (datos.fase3[2]) datos.fase4.sf2.eq2 = datos.fase3[2].nombre;
+
+            renderizarPanelesAdmin();
+            alert('📊 Fase 3 ordenada de mayor a menor Diferencia de Rondas y Top 4 enviados a Semifinales.');
         }
 
-        function resetearPlantilla() {
-            if (!confirm("¿Restablecer todo el tablero a la plantilla original por definir (A1..D6)?")) return;
-            boardData = crearEstructuraPorDefecto();
-            renderFormularioTablero();
-            showToast("Plantilla reiniciada. Dale a GUARDAR Y PUBLICAR.");
+        async function cargarEstadoDesdeRender() {
+            try {
+                const res = await fetch(`${API_URL}/noticias?t=${Date.now()}`, { cache: 'no-store' });
+                const noticias = await res.json();
+                if (Array.isArray(noticias)) {
+                    noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+                    const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
+                    if (bd && bd.descripcion) {
+                        bracketNoticiaId = bd.id;
+                        const parsed = JSON.parse(bd.descripcion);
+                        if (parsed && parsed.version === '24_grupos_v1') {
+                            datos = Object.assign({}, datos, parsed);
+                        }
+                    }
+                }
+                document.getElementById('estado-conexion').innerText = '✔ Conectado en vivo con Render';
+            } catch (e) {
+                document.getElementById('estado-conexion').innerText = '⚠️ Reintentando conexión...';
+            }
+            renderizarPanelesAdmin();
         }
 
-        async function publicarTablero() {
-            recolectarFormularioTablero();
-            const btn = document.getElementById('btn-sync');
-            const txtOriginal = btn.innerText;
-            btn.innerText = "PUBLICANDO EN LA ARENA...";
+        async function guardarTodoEnVivo() {
+            datos.aviso = document.getElementById('inp-aviso').value.trim();
+            datos.partidoStream = document.getElementById('inp-stream-match').value.trim();
+            datos.canalTwitch = document.getElementById('inp-stream-channel').value.trim() || 'valorant_la';
+            datos.mvp = {
+                activo: document.getElementById('chk-mvp-activo').checked,
+                riot_id: document.getElementById('inp-mvp-id').value.trim(),
+                equipo: document.getElementById('inp-mvp-eq').value.trim(),
+                kda: document.getElementById('inp-mvp-kda').value.trim(),
+                agente: document.getElementById('inp-mvp-ag').value.trim()
+            };
+
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + (localStorage.getItem('idToken') || 'pase-vip-temporal-5ever')
+            };
 
             try {
                 if (bracketNoticiaId) {
-                    await fetch(`${API_URL}/noticias?id=${bracketNoticiaId}`, { method: 'DELETE', headers: getAuthHeaders() });
+                    await fetch(`${API_URL}/noticias?id=${bracketNoticiaId}`, { method: 'DELETE', headers }).catch(() => null);
                 }
                 const res = await fetch(`${API_URL}/noticias`, {
                     method: 'POST',
-                    headers: getAuthHeaders(),
+                    headers,
                     body: JSON.stringify({
                         titulo: '[BRACKET_DATA]',
-                        descripcion: JSON.stringify(boardData),
+                        descripcion: JSON.stringify(datos),
                         imagen_url: 'HIDDEN'
                     })
                 });
                 if (res.ok) {
-                    showToast("¡Tablero de 5 Fases sincronizado!");
-                    cargarDatosTablero();
-                } else {
-                    showToast("Error al sincronizar", true);
+                    const creada = await res.json();
+                    if (creada && creada.id) bracketNoticiaId = creada.id;
+                    alert('✔ ¡Publicado en vivo! Todas las pantallas de sorteo.html ya se actualizaron.');
                 }
             } catch (e) {
-                showToast("Error de red", true);
-            } finally {
-                btn.innerText = txtOriginal;
+                alert('Error de red al guardar, intenta de nuevo.');
             }
         }
+
+        cargarEstadoDesdeRender();
     </script>
 </body>
 </html>
