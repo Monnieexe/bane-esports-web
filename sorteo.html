@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Copa 5EverMad | Valorant Tournament 24 Equipos</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         tailwind.config = {
             theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#05060a' } } }
@@ -23,6 +24,16 @@
                 linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
             background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+        }
+
+        /* Modo OBS Transparente para Casters */
+        body.obs-transparent {
+            background: transparent !important;
+            background-image: none !important;
+        }
+        body.obs-transparent .vct-bg-watermark,
+        body.obs-transparent header {
+            background: rgba(5, 6, 10, 0.75) !important;
         }
 
         .vct-bg-watermark {
@@ -132,6 +143,25 @@
             animation: pulse 1.4s infinite;
             pointer-events: none;
             z-index: 5;
+        }
+
+        /* Semáforo de Check-in */
+        .dot-checkin-ok {
+            width: 6px;
+            height: 6px;
+            border-radius: 9999px;
+            background-color: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .dot-checkin-wait {
+            width: 6px;
+            height: 6px;
+            border-radius: 9999px;
+            background-color: rgba(234, 179, 8, 0.45);
+            display: inline-block;
+            flex-shrink: 0;
         }
 
         .card-equipo {
@@ -254,6 +284,9 @@
                 <button onclick="toggleStream()" class="bg-[#12141d] hover:bg-vctRed text-white border border-vctRed/50 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-vctRed animate-ping"></span> STREAM
                 </button>
+                <button onclick="toggleModoOBS()" class="bg-[#12141d] hover:bg-purple-600 text-gray-300 hover:text-white border border-white/15 font-black text-[10px] uppercase tracking-[0.12em] px-3 py-2.5 transition-all clip-card" title="Modo transparente para OBS / Casters">
+                    🎥 OBS
+                </button>
                 <span id="btn-cupo-header" class="bg-everGold/15 border border-everGold text-everGold font-black text-[10px] uppercase tracking-[0.14em] px-3 py-2.5 clip-card cursor-default">
                     🔒 24/24
                 </span>
@@ -261,7 +294,15 @@
 
         </div>
 
-        <!-- BANNER DE AVISO EN VIVO DEL ADMIN (OCULTO SI NO HAY AVISO) -->
+        <!-- CRONÓMETRO OFICIAL DE TOLERANCIA 10 MINUTOS (ANTI NO-SHOW) -->
+        <div id="barra-tolerancia-oficial" class="hidden bg-gradient-to-r from-amber-600/95 via-red-600/95 to-amber-600/95 border-t border-white/25 py-2 px-4 text-center shadow-lg">
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-white flex items-center justify-center gap-2">
+                <span>🚨 RELOJ OFICIAL DE TOLERANCIA (ANTI NO-SHOW):</span>
+                <span id="reloj-tolerancia-txt" class="bg-black/80 text-everGold px-3 py-0.5 rounded border border-everGold font-mono text-sm">10:00</span>
+            </p>
+        </div>
+
+        <!-- BANNER DE AVISO EN VIVO DEL ADMIN -->
         <div id="banner-aviso-admin" class="hidden bg-gradient-to-r from-vctRed/90 via-red-700/90 to-vctRed/90 border-t border-white/20 py-1.5 px-4 text-center shadow-lg">
             <p class="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-white flex items-center justify-center gap-2">
                 <span class="animate-bounce">📢</span> <span id="texto-aviso-admin"></span>
@@ -269,7 +310,17 @@
         </div>
     </header>
 
-    <main class="max-w-[1640px] mx-auto px-4 md:px-6 mt-7 relative z-10">
+    <main class="max-w-[1640px] mx-auto px-4 md:px-6 mt-5 relative z-10">
+
+        <!-- LEYENDA RÁPIDA DEL SEMÁFORO DE CHECK-IN -->
+        <div class="mb-4 flex flex-wrap justify-between items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+            <div class="flex items-center gap-4 bg-[#0b0d14]/90 border border-white/10 px-3.5 py-1.5 rounded-md">
+                <span class="flex items-center gap-1.5 text-emerald-400"><span class="dot-checkin-ok"></span> Check-in OK en Canal</span>
+                <span class="flex items-center gap-1.5 text-yellow-400/80"><span class="dot-checkin-wait"></span> Check-in Pendiente</span>
+                <span class="text-everGold">🔥 Invicto / Líder</span>
+            </div>
+            <span>Haz clic en cualquier enfrentamiento <b class="text-vctRed">VS</b> para votar, reaccionar y descargar el póster PNG</span>
+        </div>
 
         <!-- PANEL DESPLEGABLE DE STREAM -->
         <div id="panel-stream" class="hidden mb-6 bg-[#0b0d14] border border-vctRed/40 rounded-xl p-4 shadow-2xl">
@@ -318,18 +369,18 @@
                                 <div class="p-1.5 space-y-1.5">
                                     <div onclick="verVS('7z Esports','Abismus','GRUPO A • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">7z Esports</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Abismus</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">7z Esports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Abismus</span></div>
                                     </div>
                                     <div onclick="verVS('Nönsense by Bear','Thalyra','GRUPO A • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Nönsense by Bear</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Thalyra</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Nönsense by Bear</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Thalyra</span></div>
                                     </div>
                                     <div onclick="verVS('Xiao Shīzi 北','Akari esports','GRUPO A • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Xiao Shīzi 北</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Akari esports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Xiao Shīzi 北</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Akari esports</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -342,18 +393,18 @@
                                 <div class="p-1.5 space-y-1.5">
                                     <div onclick="verVS('ULTRADIFF ESPORTS','Clarity Velvet','GRUPO B • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">ULTRADIFF ESPORTS</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Clarity Velvet</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">ULTRADIFF ESPORTS</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Clarity Velvet</span></div>
                                     </div>
                                     <div onclick="verVS('Ancestral E-Sports','RYUJINN','GRUPO B • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Ancestral E-Sports</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">RYUJINN</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Ancestral E-Sports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">RYUJINN</span></div>
                                     </div>
                                     <div onclick="verVS('5EverMad','Storm of Thorns','GRUPO B • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">5EverMad</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Storm of Thorns</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">5EverMad</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Storm of Thorns</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -366,18 +417,18 @@
                                 <div class="p-1.5 space-y-1.5">
                                     <div onclick="verVS('Cruel Karma','AERION ACADEMY','GRUPO C • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Cruel Karma</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">AERION ACADEMY</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Cruel Karma</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">AERION ACADEMY</span></div>
                                     </div>
                                     <div onclick="verVS('Kaizen Esports','Ryujinn Lotus','GRUPO C • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Kaizen Esports</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Ryujinn Lotus</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Kaizen Esports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Ryujinn Lotus</span></div>
                                     </div>
                                     <div onclick="verVS('YOSORA ESPORTS','Howlers BLX','GRUPO C • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">YOSORA ESPORTS</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Howlers BLX</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">YOSORA ESPORTS</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Howlers BLX</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -390,18 +441,18 @@
                                 <div class="p-1.5 space-y-1.5">
                                     <div onclick="verVS('Platano Power Esports','Kings Aztek','GRUPO D • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Platano Power Esports</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">King's Aztek</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Platano Power Esports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">King's Aztek</span></div>
                                     </div>
                                     <div onclick="verVS('Black Roses Esports','Howlers Esports','GRUPO D • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Black Roses Esports</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Howlers Esports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Black Roses Esports</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Howlers Esports</span></div>
                                     </div>
                                     <div onclick="verVS('MOONRISE ESPORTS','Hydra','GRUPO D • LUNES 28 SEP')" class="match-pair cursor-pointer">
                                         <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">MOONRISE ESPORTS</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Hydra</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">MOONRISE ESPORTS</span></div>
+                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Hydra</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -457,12 +508,12 @@
                     </div>
                 </div>
 
-                <!-- ================= FASE 3 (2 Columnas) ================= -->
+                <!-- ================= FASE 3 • CLASIFICADOS (2 Columnas) ================= -->
                 <div class="col-span-2 phase-col p-3.5 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-2.5">
                             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-purple-400 block">LUNES 12 DE OCTUBRE</span>
-                            <h2 class="text-base font-black uppercase text-white tracking-wider">FASE 3 (6 EQ)</h2>
+                            <h2 class="text-sm md:text-base font-black uppercase text-white tracking-wider">FASE 3 • CLASIFICADOS</h2>
                         </div>
 
                         <div class="bg-gradient-to-r from-indigo-900/85 via-purple-800/85 to-indigo-900/85 border border-purple-400/40 rounded p-1.5 text-center mb-3">
@@ -564,7 +615,7 @@
             <span class="text-vctRed font-black">&gt;</span>
             <div><span class="text-lg font-black text-white block">12</span><span class="text-[8px] text-gray-400 font-bold uppercase">5 Oct • Fase 2</span></div>
             <span class="text-vctRed font-black">&gt;</span>
-            <div><span class="text-lg font-black text-white block">6</span><span class="text-[8px] text-gray-400 font-bold uppercase">12 Oct • Desempeño</span></div>
+            <div><span class="text-lg font-black text-white block">6</span><span class="text-[8px] text-gray-400 font-bold uppercase">12 Oct • Clasificados</span></div>
             <span class="text-vctRed font-black">&gt;</span>
             <div><span class="text-lg font-black text-white block">4</span><span class="text-[8px] text-gray-400 font-bold uppercase">12 Oct • Semis BO5</span></div>
             <span class="text-vctRed font-black">&gt;</span>
@@ -623,10 +674,10 @@
 
     </main>
 
-    <!-- MODAL CARA A CARA (VS) CON MARCADOR, CORONA Y PREDICCIÓN -->
+    <!-- MODAL CARA A CARA (VS) CON COMPARATIVA TÁCTICA, HYPE METER Y DESCARGA PNG -->
     <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div id="modal-vs-box" style="background: linear-gradient(125deg, rgba(255,42,63,0.14) 0%, #08090f 45%, #08090f 55%, rgba(229,192,92,0.14) 100%);" class="border border-white/25 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[94vh] overflow-y-auto relative shadow-[0_0_60px_rgba(0,0,0,0.95)]">
-            <button onclick="document.getElementById('modal-vs').classList.add('hidden')" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
+            <button onclick="document.getElementById('modal-vs').classList.add('hidden')" class="ocultar-en-poster absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
             <div id="modal-vs-content"></div>
         </div>
     </div>
@@ -637,7 +688,7 @@
             <button onclick="document.getElementById('modal-posiciones').classList.add('hidden')" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
             <div class="mb-5 pb-4 border-b border-white/15">
                 <span class="text-[10px] text-everGold font-black uppercase tracking-[0.3em] block">ESTADÍSTICAS EN TIEMPO REAL</span>
-                <h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider mt-1">📊 TABLA GENERAL DE POSICIONES Y RONDAS</h3>
+                <h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider mt-1">📊 TABLA GENERAL DE POSICIONES Y CHECK-IN</h3>
             </div>
             <div id="contenido-tabla-posiciones" class="space-y-6"></div>
         </div>
@@ -691,7 +742,7 @@
                     </div>
                     <div class="bg-[#0b0d15] border border-purple-500/40 border-t-2 border-t-purple-400 p-3.5 rounded">
                         <span class="text-[9px] text-purple-400 font-black uppercase block">LUNES 12 DE OCTUBRE</span>
-                        <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 3 Y SEMIS</h5>
+                        <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 3 • CLASIFICADOS</h5>
                         <ul class="text-[11px] text-gray-300 space-y-1">
                             <li>• <b class="text-red-400">2 eliminados</b> por diferencia de rondas.</li>
                             <li>• Los 4 restantes en <b class="text-white">2 grupos de 2</b>.</li>
@@ -777,6 +828,12 @@
         </div>
     </div>
 
+    <!-- ALERTA FLOTANTE DE TRANSMISIÓN EN VIVO (GOLPE DE MARCADOR) -->
+    <div id="alerta-broadcast" class="fixed bottom-6 left-[-500px] z-50 bg-gradient-to-r from-[#0b0d14] to-[#160b11] border-l-4 border-vctRed border border-white/20 px-5 py-3.5 rounded shadow-2xl transition-all duration-500">
+        <span class="text-[9px] text-vctRed font-black uppercase tracking-[0.25em] block">⚡ ACTUALIZACIÓN EN VIVO</span>
+        <p id="alerta-broadcast-txt" class="text-xs font-black uppercase text-white mt-0.5"></p>
+    </div>
+
     <!-- TOAST DE COPIADO / AVISOS -->
     <div id="toast-copy" class="fixed bottom-6 right-[-450px] z-50 bg-[#0b0d14] border-l-4 border-everGold px-5 py-3.5 shadow-2xl transition-all duration-300">
         <p id="toast-copy-text" class="text-xs font-black uppercase tracking-widest text-white">✔ Copiado</p>
@@ -787,22 +844,22 @@
         let CANAL_TWITCH_DEFECTO = 'valorant_la';
         let equiposCargados = [];
 
-        // Estado global del torneo para tablas de posiciones, MVP, avisos y marcadores
         let estadoTorneoActual = {
             version: '24_grupos_v1',
             aviso: '',
+            toleranciaFin: 0,
             partidoStream: '',
             canalTwitch: 'valorant_la',
             mvp: { activo: false, riot_id: '', equipo: '', kda: '', agente: 'Jett' },
             fase1: {
-                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
+                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
+                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
+                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false }))
             },
             fase2: {
-                E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+                E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
+                F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false }))
             },
             fase3: [
                 { pos: 1, nombre: 'Clasificado #1', rd: '', eliminado: false },
@@ -825,8 +882,18 @@
         let ultimoBracketJSON = '';
         let ultimasPrediccionesJSON = '';
         let dueloActualKey = '';
-        let dueloActualDatos = { nom1: '', nom2: '', fase: '', s1: '', s2: '' };
+        let dueloActualDatos = { nom1: '', nom2: '', fase: '', s1: '', s2: '', c1: false, c2: false };
         let votandoEnCurso = false;
+
+        // Activar modo OBS si viene en la URL (?obs=1)
+        if (new URLSearchParams(window.location.search).get('obs') === '1') {
+            document.body.classList.add('obs-transparent');
+        }
+
+        function toggleModoOBS() {
+            document.body.classList.toggle('obs-transparent');
+            mostrarToast('🎥 Modo OBS / Caster alternado');
+        }
 
         function limpiarNombre(txt) {
             return String(txt || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
@@ -864,15 +931,15 @@
             }) || null;
         }
 
-        function buscarScoreDuelo(n1, n2) {
-            let s1 = '', s2 = '';
+        function buscarInfoSlotDuelo(n1, n2) {
+            let s1 = '', s2 = '', c1 = false, c2 = false;
             const a = limpiarNombre(n1);
             const b = limpiarNombre(n2);
             const revisarGrupo = (arr) => {
                 (arr || []).forEach(slot => {
                     const sn = limpiarNombre(slot.nombre);
-                    if (sn && sn === a && slot.extra) s1 = slot.extra;
-                    if (sn && sn === b && slot.extra) s2 = slot.extra;
+                    if (sn && sn === a) { if (slot.extra) s1 = slot.extra; c1 = Boolean(slot.checkin); }
+                    if (sn && sn === b) { if (slot.extra) s2 = slot.extra; c2 = Boolean(slot.checkin); }
                 });
             };
             ['A','B','C','D'].forEach(g => revisarGrupo(estadoTorneoActual.fase1?.[g]));
@@ -882,7 +949,7 @@
                 if (limpiarNombre(m.eq1) === a && m.score1) s1 = m.score1;
                 if (limpiarNombre(m.eq2) === b && m.score2) s2 = m.score2;
             });
-            return { s1, s2 };
+            return { s1, s2, c1, c2 };
         }
 
         function urlAvatar(nombre) {
@@ -895,6 +962,13 @@
             document.getElementById('toast-copy-text').innerText = msg;
             toast.style.right = '24px';
             setTimeout(() => { toast.style.right = '-450px'; }, 3000);
+        }
+
+        function dispararAlertaBroadcast(texto) {
+            const b = document.getElementById('alerta-broadcast');
+            document.getElementById('alerta-broadcast-txt').innerText = texto;
+            b.style.left = '24px';
+            setTimeout(() => { b.style.left = '-500px'; }, 4500);
         }
 
         function copiarDato(texto) {
@@ -923,7 +997,7 @@
         }
 
         // =============================================================
-        // MODAL TABLA DE POSICIONES Y RONDAS
+        // TABLA DE POSICIONES Y CHECK-IN
         // =============================================================
         function abrirModalPosiciones() {
             const cont = document.getElementById('contenido-tabla-posiciones');
@@ -939,6 +1013,7 @@
                         <div class="flex items-center justify-between py-1.5 px-2.5 border-b border-white/5 text-xs">
                             <div class="flex items-center gap-2 truncate">
                                 <span class="text-[10px] font-black text-gray-500 w-4">${idx + 1}.</span>
+                                <span class="${s.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait'}" title="${s.checkin ? 'Check-in OK' : 'Pendiente'}"></span>
                                 <img src="${logo}" class="w-5 h-5 rounded object-contain bg-black shrink-0">
                                 <span class="font-bold text-white truncate">${s.nombre}</span>
                             </div>
@@ -951,7 +1026,7 @@
                 return `
                     <div class="bg-[#0c0e16] border border-white/10 rounded-lg overflow-hidden">
                         <div class="${colorTit} py-1.5 px-3 font-black text-[10px] uppercase text-white flex justify-between">
-                            <span>GRUPO ${letra}</span><span>PTS / RONDAS</span>
+                            <span>GRUPO ${letra}</span><span>PTS / ESTADO</span>
                         </div>
                         <div class="p-2">${filas}</div>
                     </div>`;
@@ -972,9 +1047,6 @@
             document.getElementById('modal-posiciones').classList.remove('hidden');
         }
 
-        // =============================================================
-        // MODAL MVP DE LA JORNADA
-        // =============================================================
         function abrirModalMVP() {
             const m = estadoTorneoActual.mvp || {};
             const eq = encontrarEquipo(m.equipo);
@@ -996,13 +1068,39 @@
         }
 
         // =============================================================
-        // PREDICCIONES EN TIEMPO REAL
+        // PREDICCIONES + REACCIONES EN TIEMPO REAL (HYPE METER)
         // =============================================================
         function obtenerPrediccionDuelo(key) {
             if (!prediccionesMap[key]) {
-                prediccionesMap[key] = { votos1: 1, votos2: 1 };
+                prediccionesMap[key] = { votos1: 1, votos2: 1, reac: { hype: 0, clutch: 0, stomp: 0, partidazo: 0 } };
+            }
+            if (!prediccionesMap[key].reac) {
+                prediccionesMap[key].reac = { hype: 0, clutch: 0, stomp: 0, partidazo: 0 };
             }
             return prediccionesMap[key];
+        }
+
+        async function sincronizarPrediccionesConServidor() {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer pase-vip-temporal-5ever'
+            };
+            if (prediccionesNoticiaId) {
+                await fetch(`${API_URL}/noticias?id=${prediccionesNoticiaId}`, { method: 'DELETE', headers }).catch(() => null);
+            }
+            const resPost = await fetch(`${API_URL}/noticias`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    titulo: '[PREDICCIONES_DATA]',
+                    descripcion: JSON.stringify(prediccionesMap),
+                    imagen_url: 'HIDDEN'
+                })
+            });
+            if (resPost.ok) {
+                const creada = await resPost.json();
+                if (creada && creada.id) prediccionesNoticiaId = creada.id;
+            }
         }
 
         async function votarEquipoVS(lado) {
@@ -1010,19 +1108,6 @@
             votandoEnCurso = true;
 
             try {
-                const resNot = await fetch(`${API_URL}/noticias?t=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
-                if (resNot && resNot.ok) {
-                    const noticias = await resNot.json();
-                    if (Array.isArray(noticias)) {
-                        noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
-                        const pNot = noticias.find(n => n && n.titulo === '[PREDICCIONES_DATA]');
-                        if (pNot && pNot.descripcion) {
-                            prediccionesNoticiaId = pNot.id;
-                            try { prediccionesMap = Object.assign({}, prediccionesMap, JSON.parse(pNot.descripcion)); } catch (e) {}
-                        }
-                    }
-                }
-
                 const p = obtenerPrediccionDuelo(dueloActualKey);
                 const votoPrevio = misVotosLocal[dueloActualKey];
 
@@ -1048,35 +1133,41 @@
                 localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap));
                 ultimasPrediccionesJSON = JSON.stringify(prediccionesMap);
                 renderizarBarraPrediccion();
-
-                const headers = {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer pase-vip-temporal-5ever'
-                };
-                if (prediccionesNoticiaId) {
-                    await fetch(`${API_URL}/noticias?id=${prediccionesNoticiaId}`, { method: 'DELETE', headers }).catch(() => null);
-                }
-                const resPost = await fetch(`${API_URL}/noticias`, {
-                    method: 'POST',
-                    headers,
-                    body: JSON.stringify({
-                        titulo: '[PREDICCIONES_DATA]',
-                        descripcion: JSON.stringify(prediccionesMap),
-                        imagen_url: 'HIDDEN'
-                    })
-                });
-                if (resPost.ok) {
-                    const creada = await resPost.json();
-                    if (creada && creada.id) prediccionesNoticiaId = creada.id;
-                }
+                await sincronizarPrediccionesConServidor();
             } catch (e) {} finally {
                 votandoEnCurso = false;
             }
         }
 
+        async function enviarReaccionDuelo(tipo) {
+            const p = obtenerPrediccionDuelo(dueloActualKey);
+            p.reac[tipo] = (p.reac[tipo] || 0) + 1;
+            localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap));
+            renderizarBarraPrediccion();
+            try { await sincronizarPrediccionesConServidor(); } catch (e) {}
+        }
+
         function toggleModoPoster() {
             document.getElementById('modal-vs-box').classList.toggle('modo-poster');
-            mostrarToast('📸 Modo Póster alternado (Toma tu captura)');
+            mostrarToast('📸 Modo Póster alternado');
+        }
+
+        async function descargarPosterPNG() {
+            const box = document.getElementById('modal-vs-box');
+            box.classList.add('modo-poster');
+            mostrarToast('⏳ Generando imagen PNG del duelo...');
+            try {
+                const canvas = await html2canvas(box, { backgroundColor: '#08090f', useCORS: true, scale: 2 });
+                const link = document.createElement('a');
+                link.download = `VS_${limpiarNombre(dueloActualDatos.nom1)}_${limpiarNombre(dueloActualDatos.nom2)}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                mostrarToast('📥 ¡Póster PNG descargado!');
+            } catch (e) {
+                mostrarToast('📸 Usa captura de pantalla en Modo Póster');
+            } finally {
+                box.classList.remove('modo-poster');
+            }
         }
 
         function renderizarBarraPrediccion() {
@@ -1090,9 +1181,10 @@
             const pct1 = Math.round((v1 / totalVotos) * 100);
             const pct2 = 100 - pct1;
             const miVoto = misVotosLocal[dueloActualKey];
+            const r = p.reac || { hype: 0, clutch: 0, stomp: 0, partidazo: 0 };
 
             cont.innerHTML = `
-                <div class="mb-5 bg-[#0b0d14]/95 border border-white/15 rounded-xl p-3.5 shadow-lg">
+                <div class="mb-4 bg-[#0b0d14]/95 border border-white/15 rounded-xl p-3.5 shadow-lg">
                     <div class="flex flex-wrap justify-between items-center gap-2 text-[10px] font-black uppercase tracking-wider mb-2">
                         <button onclick="votarEquipoVS(1)" class="${miVoto === 1 ? 'bg-vctRed text-white' : 'bg-vctRed/15 text-vctRed'} hover:bg-vctRed hover:text-white border border-vctRed/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">
                             🔥 ${dueloActualDatos.nom1} <span class="font-extrabold">${pct1}% (${v1})</span>
@@ -1108,11 +1200,20 @@
                         <div style="width:${pct1}%" class="bg-gradient-to-r from-red-700 to-vctRed rounded-l-full transition-all duration-500"></div>
                         <div style="width:${pct2}%" class="bg-gradient-to-r from-amber-500 to-everGold rounded-r-full transition-all duration-500"></div>
                     </div>
+
+                    <!-- REACCIONES RÁPIDAS EN VIVO (HYPE METER) -->
+                    <div class="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap justify-center items-center gap-2 ocultar-en-poster">
+                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest mr-1">REACCIONES EN VIVO:</span>
+                        <button onclick="enviarReaccionDuelo('hype')" class="bg-white/5 hover:bg-vctRed/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🔥 Hype (${r.hype || 0})</button>
+                        <button onclick="enviarReaccionDuelo('clutch')" class="bg-white/5 hover:bg-everGold/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">👑 Clutch (${r.clutch || 0})</button>
+                        <button onclick="enviarReaccionDuelo('stomp')" class="bg-white/5 hover:bg-purple-500/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">💀 Stomp (${r.stomp || 0})</button>
+                        <button onclick="enviarReaccionDuelo('partidazo')" class="bg-white/5 hover:bg-emerald-500/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🍿 Partidazo (${r.partidazo || 0})</button>
+                    </div>
                 </div>
             `;
         }
 
-        // RELOJ CUENTA REGRESIVA
+        // RELOJ CUENTA REGRESIVA + RELOJ DE TOLERANCIA 10 MIN
         function actualizarRelojTorneo() {
             const ahora = new Date();
             const cdmxStr = ahora.toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
@@ -1124,28 +1225,47 @@
             if (diaSemana === 1 && hora >= 20) {
                 document.getElementById('reloj-label').innerText = 'ESTADO:';
                 document.getElementById('reloj-numeros').innerHTML = '<span class="bg-vctRed text-white px-3 py-0.5 rounded animate-pulse">🔴 EN VIVO AHORA</span>';
-                return;
+            } else {
+                let diasFaltantes = (1 - diaSemana + 7) % 7;
+                if (diasFaltantes === 0 && hora >= 20) diasFaltantes = 7;
+
+                const proximoLunes = new Date(ahoraCDMX);
+                proximoLunes.setDate(ahoraCDMX.getDate() + diasFaltantes);
+                proximoLunes.setHours(20, 0, 0, 0);
+
+                const diff = Math.max(0, proximoLunes - ahoraCDMX);
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const m = Math.floor((diff / (1000 * 60)) % 60);
+                const s = Math.floor((diff / 1000) % 60);
+
+                const elD = document.getElementById('cd-d');
+                if (elD) {
+                    elD.innerText = String(d).padStart(2, '0') + 'd';
+                    document.getElementById('cd-h').innerText = String(h).padStart(2, '0') + 'h';
+                    document.getElementById('cd-m').innerText = String(m).padStart(2, '0') + 'm';
+                    document.getElementById('cd-s').innerText = String(s).padStart(2, '0') + 's';
+                }
             }
 
-            let diasFaltantes = (1 - diaSemana + 7) % 7;
-            if (diasFaltantes === 0 && hora >= 20) diasFaltantes = 7;
-
-            const proximoLunes = new Date(ahoraCDMX);
-            proximoLunes.setDate(ahoraCDMX.getDate() + diasFaltantes);
-            proximoLunes.setHours(20, 0, 0, 0);
-
-            const diff = Math.max(0, proximoLunes - ahoraCDMX);
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const m = Math.floor((diff / (1000 * 60)) % 60);
-            const s = Math.floor((diff / 1000) % 60);
-
-            const elD = document.getElementById('cd-d');
-            if (elD) {
-                elD.innerText = String(d).padStart(2, '0') + 'd';
-                document.getElementById('cd-h').innerText = String(h).padStart(2, '0') + 'h';
-                document.getElementById('cd-m').innerText = String(m).padStart(2, '0') + 'm';
-                document.getElementById('cd-s').innerText = String(s).padStart(2, '0') + 's';
+            // Verificar Reloj Oficial de Tolerancia Anti No-Show
+            const barraTol = document.getElementById('barra-tolerancia-oficial');
+            const finTol = Number(estadoTorneoActual.toleranciaFin || 0);
+            if (finTol > 0) {
+                const rest = finTol - Date.now();
+                if (rest > 0) {
+                    barraTol.classList.remove('hidden');
+                    const min = Math.floor(rest / 60000);
+                    const seg = Math.floor((rest % 60000) / 1000);
+                    document.getElementById('reloj-tolerancia-txt').innerText = `${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')} RESTANTES`;
+                } else if (rest > -600000) {
+                    barraTol.classList.remove('hidden');
+                    document.getElementById('reloj-tolerancia-txt').innerText = `⛔ TIEMPO LÍMITE AGOTADO (NO-SHOW HABILITADO)`;
+                } else {
+                    barraTol.classList.add('hidden');
+                }
+            } else {
+                barraTol.classList.add('hidden');
             }
         }
         setInterval(actualizarRelojTorneo, 1000);
@@ -1216,12 +1336,15 @@
             const est = slot.estado === 'clasificado' ? 'slot-qualified' : (slot.estado === 'eliminado' ? 'slot-eliminated' : '');
             const nSeg = textoSeguro(nombre);
             const mostrarIcono = !esSlotPlaceholder(nombre);
+            const esLider = slot.estado === 'clasificado' || String(slot.extra || '').includes('2-0') || String(slot.extra || '').includes('3-0');
 
             return `
                 <div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 pr-10 ${est}">
-                    <div class="flex items-center gap-2 truncate">
+                    <div class="flex items-center gap-1.5 truncate">
+                        ${mostrarIcono ? `<span class="${slot.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait'}" title="${slot.checkin ? 'Check-in OK en Canal' : 'Check-in Pendiente'}"></span>` : ''}
                         ${mostrarIcono ? `<img data-logo="${nSeg}" src="${urlAvatar(nSeg)}" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0">` : ''}
                         <span class="text-[11px] font-bold ${mostrarIcono ? 'text-white' : 'text-gray-300'} truncate">${nombre}</span>
+                        ${esLider ? `<span class="text-[10px]" title="Invicto / Clasificado">🔥</span>` : ''}
                     </div>
                     ${slot.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${slot.extra}</span>` : ''}
                 </div>`;
@@ -1230,8 +1353,8 @@
         function construirGrupoLlamativo(letra, slots, headerGradient) {
             let duelos = '';
             for (let i = 0; i < slots.length; i += 2) {
-                const s1 = slots[i] || { nombre: `${letra}${i + 1}`, extra: '', estado: 'normal' };
-                const s2 = slots[i + 1] || { nombre: `${letra}${i + 2}`, extra: '', estado: 'normal' };
+                const s1 = slots[i] || { nombre: `${letra}${i + 1}`, extra: '', estado: 'normal', checkin: false };
+                const s2 = slots[i + 1] || { nombre: `${letra}${i + 2}`, extra: '', estado: 'normal', checkin: false };
                 const n1 = textoSeguro(s1.nombre);
                 const n2 = textoSeguro(s2.nombre);
                 const enVivo = esDueloEnStream(n1, n2);
@@ -1252,10 +1375,12 @@
                 </div>`;
         }
 
-        function aplicarDatosDeBracketEnPantalla(d) {
+        function aplicarDatosDeBracketEnPantalla(d, esActualizacionEnVivo = false) {
+            if (esActualizacionEnVivo && d.aviso && d.aviso !== estadoTorneoActual.aviso) {
+                dispararAlertaBroadcast(d.aviso);
+            }
             estadoTorneoActual = Object.assign({}, estadoTorneoActual, d);
 
-            // 1. Aviso en Vivo del Admin
             const bannerAviso = document.getElementById('banner-aviso-admin');
             if (d.aviso && String(d.aviso).trim() !== '') {
                 document.getElementById('texto-aviso-admin').innerText = d.aviso;
@@ -1264,7 +1389,6 @@
                 bannerAviso.classList.add('hidden');
             }
 
-            // 2. Canal de Twitch y Botón MVP
             if (d.canalTwitch) CANAL_TWITCH_DEFECTO = d.canalTwitch;
             const btnMvp = document.getElementById('btn-mvp-header');
             if (d.mvp && d.mvp.activo && d.mvp.riot_id) {
@@ -1273,7 +1397,6 @@
                 btnMvp.classList.add('hidden');
             }
 
-            // 3. Fases 1 a 5
             if (d.fase1) {
                 document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(g => construirGrupoLlamativo(g, d.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600')).join('');
             }
@@ -1286,7 +1409,7 @@
                     const nomSeg = textoSeguro(r.nombre);
                     const tieneEq = !esSlotPlaceholder(r.nombre);
                     return `
-                        <div onclick="verVS('${nomSeg}','','FASE 3 • DESEMPEÑO')" class="flex items-center justify-between gap-2 p-2 rounded border ${elim ? 'border-red-500/35 bg-red-950/20' : 'border-emerald-500/35 bg-emerald-950/20'} cursor-pointer hover:border-white/40">
+                        <div onclick="verVS('${nomSeg}','','FASE 3 • CLASIFICADOS')" class="flex items-center justify-between gap-2 p-2 rounded border ${elim ? 'border-red-500/35 bg-red-950/20' : 'border-emerald-500/35 bg-emerald-950/20'} cursor-pointer hover:border-white/40">
                             <div class="flex items-center gap-2 truncate">
                                 <span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs ${elim ? 'bg-gradient-to-b from-red-600 to-red-800' : 'bg-gradient-to-b from-emerald-500 to-emerald-700'} text-white shrink-0 shadow">${i + 1}</span>
                                 ${tieneEq ? `<img data-logo="${nomSeg}" src="${urlAvatar(nomSeg)}" class="w-5 h-5 rounded object-contain bg-black shrink-0">` : ''}
@@ -1306,8 +1429,8 @@
                             <div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">${tit} • BO5</div>
                             <div class="match-pair ${enVivo ? 'match-stream-active' : ''}">
                                 <span class="${enVivo ? 'live-pill-inline' : 'vs-pill-inline'}">${enVivo ? '🔴 LIVE' : 'VS'}</span>
-                                ${htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal' })}
-                                ${htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal' })}
+                                ${htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal', checkin: true })}
+                                ${htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal', checkin: true })}
                             </div>
                         </div>`;
                 };
@@ -1370,25 +1493,29 @@
 
                 const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
                 if (bd && bd.descripcion && bd.descripcion !== ultimoBracketJSON) {
+                    const eraPrimeraCarga = ultimoBracketJSON === '';
                     ultimoBracketJSON = bd.descripcion;
                     const d = JSON.parse(bd.descripcion);
                     if (d && d.version === '24_grupos_v1') {
-                        aplicarDatosDeBracketEnPantalla(d);
+                        aplicarDatosDeBracketEnPantalla(d, !eraPrimeraCarga);
+                        if (!eraPrimeraCarga) {
+                            dispararAlertaBroadcast('Tablero y marcadores actualizados en tiempo real');
+                        }
                     }
                 }
             } catch (e) {}
         }
 
         function verVS(nom1, nom2, fase) {
-            const scores = buscarScoreDuelo(nom1, nom2);
-            dueloActualDatos = { nom1: nom1 || 'Equipo 1', nom2: nom2 || 'Equipo 2', fase: fase || 'DUELO OFICIAL', s1: scores.s1, s2: scores.s2 };
+            const info = buscarInfoSlotDuelo(nom1, nom2);
+            dueloActualDatos = { nom1: nom1 || 'Equipo 1', nom2: nom2 || 'Equipo 2', fase: fase || 'DUELO OFICIAL', s1: info.s1, s2: info.s2, c1: info.c1, c2: info.c2 };
             dueloActualKey = claveDuelo(dueloActualDatos.nom1, dueloActualDatos.nom2);
 
             const eq1 = encontrarEquipo(nom1);
             const eq2 = encontrarEquipo(nom2);
 
-            const num1 = parseFloat(scores.s1);
-            const num2 = parseFloat(scores.s2);
+            const num1 = parseFloat(info.s1);
+            const num2 = parseFloat(info.s2);
             const gana1 = !isNaN(num1) && !isNaN(num2) && num1 > num2;
             const gana2 = !isNaN(num1) && !isNaN(num2) && num2 > num1;
 
@@ -1402,7 +1529,7 @@
                 opcionesRival += `<option value="${textoSeguro(n)}" ${sel}>${n}</option>`;
             });
 
-            const dibujarCol = (nombreTxt, eq, colorBorde, colorGlow, esGanador) => {
+            const dibujarCol = (nombreTxt, eq, colorBorde, colorGlow, esGanador, checkinOk) => {
                 const foto = (eq && eq.logo_url) ? eq.logo_url : urlAvatar(nombreTxt);
                 const rango = (eq && eq.rango) ? eq.rango : 'Escuadra Confirmada';
                 const capitan = (eq && eq.discord) ? eq.discord : 'Verificado';
@@ -1432,20 +1559,27 @@
                         <div class="flex items-center gap-4 mb-4 pb-3 border-b border-white/10 relative z-10">
                             <img src="${foto}" class="w-16 h-16 object-contain bg-black p-1.5 rounded-lg border border-white/25 shrink-0 shadow-lg">
                             <div class="truncate">
-                                <span class="text-[9px] text-everGold font-black uppercase tracking-widest block">${rango}</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="${checkinOk ? 'dot-checkin-ok' : 'dot-checkin-wait'}"></span>
+                                    <span class="text-[9px] ${checkinOk ? 'text-emerald-400' : 'text-everGold'} font-black uppercase tracking-widest block">${checkinOk ? 'CHECK-IN LISTO' : rango}</span>
+                                </div>
                                 <h4 class="text-lg font-black uppercase text-white truncate">${eq ? eq.nombre : (nombreTxt || 'POR DEFINIR')}</h4>
                                 <button onclick="copiarDato('${capSeguro}')" class="text-[9px] text-gray-400 hover:text-white font-bold uppercase block mt-0.5">
                                     Capitán DC: <span class="text-everGold underline">${capitan}</span> 📋
                                 </button>
                             </div>
                         </div>
-                        <div class="max-h-[260px] overflow-y-auto pr-1 relative z-10">${listaJug}</div>
+                        <div class="max-h-[250px] overflow-y-auto pr-1 relative z-10">${listaJug}</div>
                     </div>`;
             };
 
             const n1Seg = textoSeguro(nom1);
             const faseSeg = textoSeguro(fase);
-            const tieneMarcador = scores.s1 !== '' || scores.s2 !== '';
+            const tieneMarcador = info.s1 !== '' || info.s2 !== '';
+
+            // Datos para Tale of the Tape (Comparativa Táctica)
+            const count1 = (eq1 && Array.isArray(eq1.jugadores)) ? eq1.jugadores.length : 5;
+            const count2 = (eq2 && Array.isArray(eq2.jugadores)) ? eq2.jugadores.length : 5;
 
             document.getElementById('modal-vs-content').innerHTML = `
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 pb-3 border-b border-white/15 pr-8">
@@ -1453,28 +1587,38 @@
                         <span class="text-[10px] text-vctRed font-black uppercase tracking-[0.3em] block">${fase} • 8:00 PM CDMX</span>
                         <h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider">⚔️ ${nom1} <span class="text-vctRed mx-2">VS</span> ${nom2 || 'RIVAL'}</h3>
                     </div>
-                    <div class="flex items-center gap-2 w-full md:w-auto">
+                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto ocultar-en-poster">
+                        <button onclick="descargarPosterPNG()" class="bg-everGold hover:bg-white text-black text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0 transition-all">
+                            📥 Descargar PNG
+                        </button>
                         <button onclick="toggleModoPoster()" class="bg-white/5 hover:bg-white/15 border border-white/20 text-white text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0">
                             📸 Modo Póster
                         </button>
-                        <select onchange="verVS('${n1Seg}', this.value, '${faseSeg}')" class="ocultar-en-poster bg-black border border-everGold/50 text-white text-xs font-bold p-2.5 rounded w-full md:w-56 outline-none">
+                        <select onchange="verVS('${n1Seg}', this.value, '${faseSeg}')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-52 outline-none">
                             ${opcionesRival}
                         </select>
                     </div>
                 </div>
 
-                <!-- BARRA DE PREDICCIÓN EN TIEMPO REAL -->
+                <!-- COMPARATIVA TÁCTICA (TALE OF THE TAPE) -->
+                <div class="grid grid-cols-3 gap-2 bg-black/60 border border-white/10 rounded-lg p-2.5 mb-4 text-center text-[10px] font-bold">
+                    <div class="${info.c1 ? 'text-emerald-400' : 'text-yellow-400'}">${info.c1 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente'} • ${count1} Jug.</div>
+                    <div class="text-gray-400 font-black uppercase tracking-widest">⚡ COMPARATIVA TÁCTICA</div>
+                    <div class="${info.c2 ? 'text-emerald-400' : 'text-yellow-400'}">${info.c2 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente'} • ${count2} Jug.</div>
+                </div>
+
+                <!-- BARRA DE PREDICCIÓN Y HYPE METER -->
                 <div id="panel-prediccion-dinamico"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
-                    <div class="md:col-span-5">${dibujarCol(nom1, eq1, 'border-vctRed', 'border-vctRed/40', gana1)}</div>
+                    <div class="md:col-span-5">${dibujarCol(nom1, eq1, 'border-vctRed', 'border-vctRed/40', gana1, info.c1)}</div>
                     <div class="md:col-span-1 flex flex-col items-center justify-center py-2">
-                        ${tieneMarcador ? `<div class="mb-2 bg-black border border-everGold/50 px-3 py-1 rounded text-sm font-black text-everGold shadow-lg">${scores.s1 || '0'} : ${scores.s2 || '0'}</div>` : ''}
+                        ${tieneMarcador ? `<div class="mb-2 bg-black border border-everGold/50 px-3 py-1 rounded text-sm font-black text-everGold shadow-lg">${info.s1 || '0'} : ${info.s2 || '0'}</div>` : ''}
                         <div class="vs-neon-badge w-14 h-14 rounded-full bg-gradient-to-br from-vctRed to-red-900 border-2 border-white flex items-center justify-center font-black text-sm text-white">
                             VS
                         </div>
                     </div>
-                    <div class="md:col-span-5">${dibujarCol(nom2, eq2, 'border-everGold', 'border-everGold/40', gana2)}</div>
+                    <div class="md:col-span-5">${dibujarCol(nom2, eq2, 'border-everGold', 'border-everGold/40', gana2, info.c2)}</div>
                 </div>`;
 
             renderizarBarraPrediccion();

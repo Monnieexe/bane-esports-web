@@ -45,25 +45,40 @@
 
     <main class="max-w-[1600px] mx-auto px-6 mt-8 space-y-8">
 
-        <!-- 1. CONSOLA EN VIVO: AVISOS, PARTIDO EN STREAM Y MVP -->
+        <!-- 1. CONSOLA EN VIVO: AVISOS, RELOJ ANTI NO-SHOW, STREAM Y MVP -->
         <section class="panel-box p-5 border-l-4 border-l-everGold">
-            <h2 class="text-sm font-black uppercase tracking-widest text-everGold mb-4">📡 TRANSMISIÓN EN VIVO, AVISOS Y MVP DE LA JORNADA</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <h2 class="text-sm font-black uppercase tracking-widest text-everGold mb-4">📡 TRANSMISIÓN EN VIVO, RELOJ ANTI NO-SHOW (10 MIN), AVISOS Y MVP</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                
                 <!-- Aviso Flotante -->
                 <div class="bg-black/50 border border-white/10 p-3.5 rounded-lg">
                     <label class="text-[10px] font-black uppercase text-vctRed block mb-1">📢 Aviso Urgente en Pantalla (Live Banner)</label>
                     <input id="inp-aviso" type="text" placeholder="Ej. Check-in abierto: Capitanes entrar a Discord" class="w-full bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-white outline-none">
-                    <p class="text-[9px] text-gray-400 mt-1">Déjalo vacío para ocultar la barra roja de aviso.</p>
+                    <p class="text-[9px] text-gray-400 mt-1">Déjalo vacío para ocultar la barra de aviso.</p>
+                </div>
+
+                <!-- Cronómetro Oficial de Tolerancia 10 Minutos -->
+                <div class="bg-black/50 border border-amber-500/30 p-3.5 rounded-lg">
+                    <label class="text-[10px] font-black uppercase text-amber-400 block mb-1">🚨 Reloj Tolerancia Anti No-Show (10 Min)</label>
+                    <div class="flex gap-2 mt-1.5">
+                        <button onclick="iniciarRelojTolerancia10Min()" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-black uppercase py-2 px-2 rounded transition-all">
+                            ⏱️ Iniciar 10:00 Min
+                        </button>
+                        <button onclick="detenerRelojTolerancia()" class="bg-white/10 hover:bg-red-600 text-white text-[10px] font-black uppercase py-2 px-3 rounded transition-all">
+                            ⏹️ Apagar
+                        </button>
+                    </div>
+                    <p class="text-[9px] text-gray-400 mt-1.5">Muestra el reloj oficial de 8:00 a 8:10 PM a todos.</p>
                 </div>
 
                 <!-- Partido en Stream -->
                 <div class="bg-black/50 border border-white/10 p-3.5 rounded-lg">
-                    <label class="text-[10px] font-black uppercase text-emerald-400 block mb-1">📺 Equipo en Stream Ahora (Pone insignia 🔴 LIVE)</label>
+                    <label class="text-[10px] font-black uppercase text-emerald-400 block mb-1">📺 Equipo en Stream Ahora (Insignia 🔴 LIVE)</label>
                     <div class="flex gap-2">
                         <input id="inp-stream-match" type="text" placeholder="Ej. 5EverMad" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-white outline-none">
-                        <input id="inp-stream-channel" type="text" placeholder="Canal Twitch" class="w-36 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-everGold outline-none">
+                        <input id="inp-stream-channel" type="text" placeholder="Canal Twitch" class="w-32 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-everGold outline-none">
                     </div>
-                    <p class="text-[9px] text-gray-400 mt-1">Escribe el nombre de uno de los equipos que estés casteando.</p>
+                    <p class="text-[9px] text-gray-400 mt-1">Pone el botón LIVE parpadeante en ese duelo.</p>
                 </div>
 
                 <!-- MVP de la Jornada -->
@@ -71,34 +86,43 @@
                     <div class="flex justify-between items-center mb-1">
                         <label class="text-[10px] font-black uppercase text-everGold">🌟 MVP de la Jornada</label>
                         <label class="text-[10px] font-bold flex items-center gap-1 cursor-pointer">
-                            <input type="checkbox" id="chk-mvp-activo"> Mostrar en Header
+                            <input type="checkbox" id="chk-mvp-activo"> Mostrar
                         </label>
                     </div>
                     <div class="grid grid-cols-2 gap-1.5">
-                        <input id="inp-mvp-id" type="text" placeholder="Riot ID (Ej. Player#LAN)" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-white outline-none">
+                        <input id="inp-mvp-id" type="text" placeholder="Riot ID" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-white outline-none">
                         <input id="inp-mvp-eq" type="text" placeholder="Equipo" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-white outline-none">
-                        <input id="inp-mvp-kda" type="text" placeholder="KDA / ACS (Ej. 28/11/9)" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-everGold outline-none">
-                        <input id="inp-mvp-ag" type="text" placeholder="Agente (Ej. Jett)" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-white outline-none">
+                        <input id="inp-mvp-kda" type="text" placeholder="KDA / ACS" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-everGold outline-none">
+                        <input id="inp-mvp-ag" type="text" placeholder="Agente" class="bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-white outline-none">
                     </div>
                 </div>
+
             </div>
         </section>
 
-        <!-- 2. FASE 1 (GRUPOS A, B, C, D) + BOTÓN AUTO-AVANCE A FASE 2 -->
+        <!-- 2. FASE 1 (GRUPOS A, B, C, D) + SEMÁFORO CHECK-IN + AUTO-AVANCE -->
         <section class="panel-box p-5">
             <div class="flex flex-wrap justify-between items-center gap-3 mb-4 pb-3 border-b border-white/10">
                 <div>
                     <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">LUNES 28 DE SEPTIEMBRE</span>
-                    <h2 class="text-base font-black uppercase">FASE 1 • 4 GRUPOS DE 6 EQUIPOS (BO3)</h2>
+                    <h2 class="text-base font-black uppercase">FASE 1 • 4 GRUPOS DE 6 EQUIPOS (BO3 + SEMÁFORO CHECK-IN)</h2>
                 </div>
-                <button onclick="pasarClasificadosAFase2()" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded shadow">
-                    ⚡ PASAR CLASIFICADOS (✔) AUTOMÁTICAMENTE A FASE 2 ➔
-                </button>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="marcarTodosCheckinFase1(true)" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded">
+                        🟢 Marcar Todos Check-in OK
+                    </button>
+                    <button onclick="marcarTodosCheckinFase1(false)" class="bg-white/10 hover:bg-white/20 text-gray-300 text-[10px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded">
+                        🟡 Reiniciar Check-in
+                    </button>
+                    <button onclick="pasarClasificadosAFase2()" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded shadow">
+                        ⚡ PASAR CLASIFICADOS (✔) A FASE 2 ➔
+                    </button>
+                </div>
             </div>
             <div id="admin-fase1" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
         </section>
 
-        <!-- 3. FASE 2 (GRUPOS E, F) + FASE 3 (RANKING DIFERENCIA DE RONDAS) + PLAYOFFS -->
+        <!-- 3. FASE 2 + FASE 3 • CLASIFICADOS + PLAYOFFS -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <!-- Fase 2 -->
             <section class="lg:col-span-5 panel-box p-5">
@@ -108,18 +132,18 @@
                         <h2 class="text-sm font-black uppercase">FASE 2 • GRUPOS E Y F (12 EQ)</h2>
                     </div>
                     <button onclick="pasarClasificadosAFase3()" class="bg-purple-600 hover:bg-purple-500 text-white text-[9px] font-black uppercase px-3 py-2 rounded">
-                        ⚡ PASAR A FASE 3 ➔
+                        ⚡ PASAR A FASE 3 • CLASIFICADOS ➔
                     </button>
                 </div>
                 <div id="admin-fase2" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
             </section>
 
-            <!-- Fase 3 -->
+            <!-- Fase 3 • Clasificados -->
             <section class="lg:col-span-4 panel-box p-5">
                 <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-white/10">
                     <div>
                         <span class="text-[10px] text-purple-400 font-black uppercase block">LUNES 12 DE OCTUBRE</span>
-                        <h2 class="text-sm font-black uppercase">FASE 3 • DIFERENCIA DE RONDAS</h2>
+                        <h2 class="text-sm font-black uppercase">FASE 3 • CLASIFICADOS (RONDAS)</h2>
                     </div>
                     <button onclick="ordenarFase3YPasarASemis()" class="bg-everGold text-black text-[9px] font-black uppercase px-3 py-2 rounded">
                         📊 ORDENAR X RONDAS Y PASAR TOP 4
@@ -139,7 +163,7 @@
             </section>
         </div>
 
-        <!-- 4. SECCIÓN RESTAURADA: EQUIPOS REGISTRADOS EN LA BASE DE DATOS -->
+        <!-- 4. EQUIPOS REGISTRADOS EN LA BASE DE DATOS -->
         <section id="seccion-equipos-registrados" class="panel-box p-6 border-t-4 border-t-vctRed scroll-mt-24">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-white/10">
                 <div>
@@ -156,7 +180,6 @@
                 </div>
             </div>
 
-            <!-- Grid de tarjetas de los 24 equipos inscritos -->
             <div id="grid-admin-equipos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <p class="text-xs text-gray-400 uppercase tracking-widest py-8 text-center col-span-full">Cargando escuadras inscritas desde Render...</p>
             </div>
@@ -185,18 +208,19 @@
         let datos = {
             version: '24_grupos_v1',
             aviso: '',
+            toleranciaFin: 0,
             partidoStream: '',
             canalTwitch: 'valorant_la',
             mvp: { activo: false, riot_id: '', equipo: '', kda: '', agente: 'Jett' },
             fase1: {
-                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
+                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
+                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
+                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false }))
             },
             fase2: {
-                E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal' })),
-                F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal' }))
+                E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
+                F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false }))
             },
             fase3: [
                 { pos: 1, nombre: 'Clasificado #1', rd: '', eliminado: false },
@@ -230,21 +254,47 @@
             return String(txt || '').replace(/['"\\]/g, '');
         }
 
+        function iniciarRelojTolerancia10Min() {
+            datos.toleranciaFin = Date.now() + (10 * 60 * 1000);
+            guardarTodoEnVivo();
+            mostrarToastAdmin('🚨 Reloj de Tolerancia (10:00) activado en todas las pantallas');
+        }
+
+        function detenerRelojTolerancia() {
+            datos.toleranciaFin = 0;
+            guardarTodoEnVivo();
+            mostrarToastAdmin('⏹️ Reloj de Tolerancia ocultado');
+        }
+
+        function marcarTodosCheckinFase1(estado) {
+            ['A','B','C','D'].forEach(g => {
+                (datos.fase1[g] || []).forEach(s => { s.checkin = estado; });
+            });
+            renderizarPanelesAdmin();
+            mostrarToastAdmin(estado ? '🟢 Todos marcados con Check-in OK' : '🟡 Check-in reiniciado');
+        }
+
         function dibujarEditorGrupo(faseKey, letra, colorHeader) {
             const slots = datos[faseKey][letra] || [];
             let filas = '';
             slots.forEach((s, i) => {
                 filas += `
                     <div class="bg-black/60 border border-white/10 p-2 rounded mb-1.5">
-                        <div class="flex gap-1.5 mb-1">
+                        <div class="flex gap-1.5 mb-1.5">
                             <input type="text" value="${s.nombre || ''}" onchange="datos.${faseKey}.${letra}[${i}].nombre=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-white">
-                            <input type="text" value="${s.extra || ''}" placeholder="Pts/Score" onchange="datos.${faseKey}.${letra}[${i}].extra=this.value" class="w-16 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-everGold text-center">
+                            <input type="text" value="${s.extra || ''}" placeholder="Pts/2-0" onchange="datos.${faseKey}.${letra}[${i}].extra=this.value" class="w-16 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-everGold text-center">
                         </div>
-                        <select onchange="datos.${faseKey}.${letra}[${i}].estado=this.value" class="w-full bg-[#0b0d14] border border-white/10 text-[10px] font-bold px-2 py-1 rounded text-gray-300">
-                            <option value="normal" ${s.estado === 'normal' ? 'selected' : ''}>⚪ En Juego</option>
-                            <option value="clasificado" ${s.estado === 'clasificado' ? 'selected' : ''}>🟢 ✔ Clasificado (Avanza)</option>
-                            <option value="eliminado" ${s.estado === 'eliminado' ? 'selected' : ''}>🔴 ✕ Eliminado</option>
-                        </select>
+                        <div class="flex items-center justify-between gap-2">
+                            <label class="flex items-center gap-1.5 text-[10px] font-bold ${s.checkin ? 'text-emerald-400' : 'text-gray-400'} cursor-pointer">
+                                <input type="checkbox" ${s.checkin ? 'checked' : ''} onchange="datos.${faseKey}.${letra}[${i}].checkin=this.checked; renderizarPanelesAdmin()">
+                                ${s.checkin ? '🟢 Check-in OK' : '🟡 Check-in'}
+                            </label>
+                            <select onchange="datos.${faseKey}.${letra}[${i}].estado=this.value" class="bg-[#0b0d14] border border-white/10 text-[10px] font-bold px-2 py-1 rounded text-gray-300">
+                                <option value="normal" ${s.estado === 'normal' ? 'selected' : ''}>⚪ En Juego</option>
+                                <option value="clasificado" ${s.estado === 'clasificado' ? 'selected' : ''}>🟢 ✔ Clasificado</option>
+                                <option value="eliminado" ${s.estado === 'eliminado' ? 'selected' : ''}>🔴 ✕ Eliminado</option>
+                            </select>
+                        </div>
                     </div>`;
             });
             return `
@@ -301,7 +351,7 @@
         }
 
         // =============================================================
-        // GESTIÓN Y VISUALIZACIÓN DE EQUIPOS REGISTRADOS (24/24)
+        // EQUIPOS REGISTRADOS (24/24)
         // =============================================================
         async function cargarEquiposRegistrados() {
             try {
@@ -348,7 +398,6 @@
 
                 const jugadoresHtml = (eq.jugadores || []).map(j => {
                     const idSeg = textoSeguro(j.riot_id || '');
-                    const dcJug = textoSeguro(j.dc || '');
                     return `
                         <div class="flex items-center justify-between gap-2 bg-black/50 border border-white/5 px-2.5 py-1.5 rounded text-[11px]">
                             <div class="truncate">
@@ -374,7 +423,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <button onclick="eliminarEquipoDB('${eq.id}', '${nomSeg}')" class="bg-red-950/50 hover:bg-vctRed text-red-300 hover:text-white border border-red-500/30 text-[9px] font-black uppercase px-2.5 py-1.5 rounded shrink-0 transition-all" title="Eliminar equipo de la base de datos">
+                                <button onclick="eliminarEquipoDB('${eq.id}', '${nomSeg}')" class="bg-red-950/50 hover:bg-vctRed text-red-300 hover:text-white border border-red-500/30 text-[9px] font-black uppercase px-2.5 py-1.5 rounded shrink-0 transition-all">
                                     🗑️ Baja
                                 </button>
                             </div>
@@ -405,19 +454,16 @@
             }
         }
 
-        // =============================================================
-        // BOTONES DE AUTOMATIZACIÓN EN 1 CLIC
-        // =============================================================
         function pasarClasificadosAFase2() {
             const clasAB = [...datos.fase1.A, ...datos.fase1.B].filter(s => s.estado === 'clasificado').map(s => s.nombre);
             const clasCD = [...datos.fase1.C, ...datos.fase1.D].filter(s => s.estado === 'clasificado').map(s => s.nombre);
 
             for (let i = 0; i < 6; i++) {
-                if (clasAB[i]) datos.fase2.E[i] = { nombre: clasAB[i], extra: '', estado: 'normal' };
-                if (clasCD[i]) datos.fase2.F[i] = { nombre: clasCD[i], extra: '', estado: 'normal' };
+                if (clasAB[i]) datos.fase2.E[i] = { nombre: clasAB[i], extra: '', estado: 'normal', checkin: false };
+                if (clasCD[i]) datos.fase2.F[i] = { nombre: clasCD[i], extra: '', estado: 'normal', checkin: false };
             }
             renderizarPanelesAdmin();
-            alert('✔ Clasificados de A/B enviados al Grupo E y de C/D enviados al Grupo F. Presiona PUBLICAR CAMBIOS EN VIVO para confirmar.');
+            alert('✔ Clasificados enviados a los Grupos E y F de la Fase 2.');
         }
 
         function pasarClasificadosAFase3() {
@@ -433,7 +479,7 @@
                 }
             }
             renderizarPanelesAdmin();
-            alert('✔ Clasificados de Fase 2 copiados a la Fase 3.');
+            alert('✔ Clasificados de Fase 2 copiados a Fase 3 • Clasificados.');
         }
 
         function ordenarFase3YPasarASemis() {
@@ -453,7 +499,7 @@
             if (datos.fase3[2]) datos.fase4.sf2.eq2 = datos.fase3[2].nombre;
 
             renderizarPanelesAdmin();
-            alert('📊 Fase 3 ordenada de mayor a menor Diferencia de Rondas y Top 4 enviados a Semifinales.');
+            alert('📊 Fase 3 • Clasificados ordenada por Diferencia de Rondas y Top 4 enviados a Semifinales.');
         }
 
         async function cargarEstadoDesdeRender() {
