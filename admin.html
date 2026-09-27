@@ -12,6 +12,7 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        html { scroll-behavior: smooth; }
         body { font-family: 'Montserrat', sans-serif; background-color: #06070b; color: white; }
         .panel-box { background: #0c0e16; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
@@ -19,7 +20,7 @@
 <body class="min-h-screen pb-28">
 
     <!-- HEADER ADMIN -->
-    <header class="border-b border-white/10 bg-[#06070b]/95 sticky top-0 z-40">
+    <header class="border-b border-white/10 bg-[#06070b]/95 sticky top-0 z-40 backdrop-blur-md">
         <div class="max-w-[1600px] mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-vctRed flex items-center justify-center font-black text-white rounded">A</div>
@@ -28,7 +29,10 @@
                     <p id="estado-conexion" class="text-[10px] text-everGold font-bold uppercase tracking-widest">Sincronizando con Render...</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-2.5">
+                <a href="#seccion-equipos-registrados" class="bg-everGold/15 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded transition-all">
+                    👥 VER EQUIPOS REGISTRADOS (<span id="badge-total-eq">0</span>/24)
+                </a>
                 <a href="sorteo.html" target="_blank" class="bg-white/10 hover:bg-white/20 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded">
                     VER TABLERO PÚBLICO ↗
                 </a>
@@ -94,7 +98,7 @@
             <div id="admin-fase1" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
         </section>
 
-        <!-- 3. FASE 2 (GRUPOS E, F) + FASE 3 (RANKING DIFERENCIA DE RONDAS) -->
+        <!-- 3. FASE 2 (GRUPOS E, F) + FASE 3 (RANKING DIFERENCIA DE RONDAS) + PLAYOFFS -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <!-- Fase 2 -->
             <section class="lg:col-span-5 panel-box p-5">
@@ -135,19 +139,48 @@
             </section>
         </div>
 
+        <!-- 4. SECCIÓN RESTAURADA: EQUIPOS REGISTRADOS EN LA BASE DE DATOS -->
+        <section id="seccion-equipos-registrados" class="panel-box p-6 border-t-4 border-t-vctRed scroll-mt-24">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-white/10">
+                <div>
+                    <span class="text-[10px] text-everGold font-black uppercase tracking-[0.25em] block">BASE DE DATOS DE INSCRIPCIONES</span>
+                    <h2 class="text-xl font-black uppercase tracking-wider text-white mt-0.5">
+                        👥 EQUIPOS REGISTRADOS (<span id="contador-equipos-db" class="text-vctRed">0 / 24</span>)
+                    </h2>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <input type="text" id="buscador-admin-equipos" oninput="filtrarEquiposAdmin(this.value)" placeholder="🔍 Buscar equipo, capitán o Riot ID..." class="bg-[#080a10] border border-white/15 focus:border-vctRed px-4 py-2.5 text-xs font-bold text-white rounded w-full sm:w-72 outline-none">
+                    <button onclick="cargarEquiposRegistrados()" class="bg-white/10 hover:bg-white/20 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded shrink-0">
+                        🔄 Recargar Lista
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid de tarjetas de los 24 equipos inscritos -->
+            <div id="grid-admin-equipos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <p class="text-xs text-gray-400 uppercase tracking-widest py-8 text-center col-span-full">Cargando escuadras inscritas desde Render...</p>
+            </div>
+        </section>
+
     </main>
 
     <!-- BARRA FLOTANTE DE GUARDADO -->
-    <div class="fixed bottom-0 inset-x-0 bg-[#08090f]/95 border-t border-white/15 py-3 px-6 z-50 flex justify-between items-center">
+    <div class="fixed bottom-0 inset-x-0 bg-[#08090f]/95 border-t border-white/15 py-3 px-6 z-50 flex justify-between items-center backdrop-blur-md">
         <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Todos los cambios se reflejan en sorteo.html en menos de 3.5 segundos</span>
         <button onclick="guardarTodoEnVivo()" class="bg-vctRed hover:bg-white text-white hover:text-black text-xs font-black uppercase tracking-widest px-8 py-3 rounded transition-all shadow-[0_0_20px_rgba(255,42,63,0.5)]">
             💾 GUARDAR Y PUBLICAR EN VIVO AHORA
         </button>
     </div>
 
+    <!-- TOAST DE COPIADO -->
+    <div id="toast-admin" class="fixed bottom-20 right-[-450px] z-50 bg-[#0b0d14] border-l-4 border-everGold px-5 py-3 shadow-2xl transition-all duration-300">
+        <p id="toast-admin-txt" class="text-xs font-black uppercase tracking-widest text-white">✔ Copiado</p>
+    </div>
+
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
         let bracketNoticiaId = null;
+        let listaEquiposDB = [];
 
         let datos = {
             version: '24_grupos_v1',
@@ -179,6 +212,23 @@
             },
             final: { eq1: 'Ganador SF1', eq2: 'Ganador SF2', score1: '', score2: '', campeon: 'CAMPEÓN' }
         };
+
+        function mostrarToastAdmin(msg) {
+            const t = document.getElementById('toast-admin');
+            document.getElementById('toast-admin-txt').innerText = msg;
+            t.style.right = '24px';
+            setTimeout(() => { t.style.right = '-450px'; }, 2600);
+        }
+
+        function copiarTextoAdmin(txt) {
+            if (!txt) return;
+            navigator.clipboard.writeText(txt);
+            mostrarToastAdmin('✔ Copiado: ' + txt);
+        }
+
+        function textoSeguro(txt) {
+            return String(txt || '').replace(/['"\\]/g, '');
+        }
 
         function dibujarEditorGrupo(faseKey, letra, colorHeader) {
             const slots = datos[faseKey][letra] || [];
@@ -251,6 +301,111 @@
         }
 
         // =============================================================
+        // GESTIÓN Y VISUALIZACIÓN DE EQUIPOS REGISTRADOS (24/24)
+        // =============================================================
+        async function cargarEquiposRegistrados() {
+            try {
+                const res = await fetch(`${API_URL}/equipos?t=${Date.now()}`, { cache: 'no-store' });
+                const data = await res.json();
+                if (Array.isArray(data)) {
+                    listaEquiposDB = data.filter(Boolean);
+                    document.getElementById('contador-equipos-db').innerText = `${listaEquiposDB.length} / 24`;
+                    document.getElementById('badge-total-eq').innerText = listaEquiposDB.length;
+                    dibujarTarjetasEquiposAdmin('');
+                }
+            } catch (e) {
+                setTimeout(cargarEquiposRegistrados, 4000);
+            }
+        }
+
+        function filtrarEquiposAdmin(q) {
+            dibujarTarjetasEquiposAdmin(q);
+        }
+
+        function dibujarTarjetasEquiposAdmin(filtro = '') {
+            const grid = document.getElementById('grid-admin-equipos');
+            const q = String(filtro || '').toLowerCase().trim();
+
+            const filtrados = listaEquiposDB.filter(eq => {
+                const nom = String(eq.nombre || '').toLowerCase();
+                const cap = String(eq.discord || '').toLowerCase();
+                const jug = Array.isArray(eq.jugadores) && eq.jugadores.some(j =>
+                    String(j.riot_id || '').toLowerCase().includes(q) || String(j.dc || '').toLowerCase().includes(q)
+                );
+                return !q || nom.includes(q) || cap.includes(q) || jug;
+            });
+
+            if (filtrados.length === 0) {
+                grid.innerHTML = `<p class="text-xs text-gray-400 uppercase tracking-widest py-8 text-center col-span-full">No se encontraron equipos con ese filtro.</p>`;
+                return;
+            }
+
+            grid.innerHTML = filtrados.map((eq, idx) => {
+                const ini = String(eq.nombre || '?').substring(0, 2).toUpperCase();
+                const logo = eq.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(ini)}&background=111&color=e5c05c&bold=true`;
+                const capSeg = textoSeguro(eq.discord || '');
+                const nomSeg = textoSeguro(eq.nombre || '');
+
+                const jugadoresHtml = (eq.jugadores || []).map(j => {
+                    const idSeg = textoSeguro(j.riot_id || '');
+                    const dcJug = textoSeguro(j.dc || '');
+                    return `
+                        <div class="flex items-center justify-between gap-2 bg-black/50 border border-white/5 px-2.5 py-1.5 rounded text-[11px]">
+                            <div class="truncate">
+                                <span class="text-[8px] text-everGold font-black uppercase mr-1.5">[${j.role || 'TIT'}]</span>
+                                <button onclick="copiarTextoAdmin('${idSeg}')" class="font-bold text-white hover:text-everGold truncate">${j.riot_id || 'Sin ID'} 📋</button>
+                                ${j.dc ? `<span class="text-[9px] text-gray-400 ml-1">(${j.dc})</span>` : ''}
+                            </div>
+                            <a href="${j.tracker_url || '#'}" target="_blank" class="text-[9px] font-black text-vctRed hover:underline shrink-0">TRACKER ↗</a>
+                        </div>`;
+                }).join('');
+
+                return `
+                    <div class="bg-[#080a10] border border-white/10 hover:border-white/25 rounded-lg p-4 flex flex-col justify-between gap-3">
+                        <div>
+                            <div class="flex items-start justify-between gap-3 mb-3 pb-3 border-b border-white/10">
+                                <div class="flex items-center gap-3 truncate">
+                                    <img src="${logo}" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15 shrink-0">
+                                    <div class="truncate">
+                                        <span class="text-[9px] text-everGold font-black uppercase block">ESCUADRA #${idx + 1} • ${eq.rango || 'Rango Oficial'}</span>
+                                        <h3 class="text-sm font-black uppercase text-white truncate">${eq.nombre}</h3>
+                                        <button onclick="copiarTextoAdmin('${capSeg}')" class="text-[10px] text-gray-300 hover:text-white font-bold block mt-0.5">
+                                            Capitán DC: <span class="text-everGold underline">${eq.discord || 'N/A'}</span> 📋
+                                        </button>
+                                    </div>
+                                </div>
+                                <button onclick="eliminarEquipoDB('${eq.id}', '${nomSeg}')" class="bg-red-950/50 hover:bg-vctRed text-red-300 hover:text-white border border-red-500/30 text-[9px] font-black uppercase px-2.5 py-1.5 rounded shrink-0 transition-all" title="Eliminar equipo de la base de datos">
+                                    🗑️ Baja
+                                </button>
+                            </div>
+                            <div class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+                                ${jugadoresHtml}
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        async function eliminarEquipoDB(id, nombre) {
+            if (!id) return;
+            if (!confirm(`⚠️ ¿Seguro que deseas eliminar al equipo "${nombre}" de la base de datos?`)) return;
+
+            const headers = {
+                'Authorization': 'Bearer ' + (localStorage.getItem('idToken') || 'pase-vip-temporal-5ever')
+            };
+            try {
+                let res = await fetch(`${API_URL}/equipos?id=${id}`, { method: 'DELETE', headers });
+                if (!res.ok) {
+                    res = await fetch(`${API_URL}/equipos/${id}`, { method: 'DELETE', headers });
+                }
+                mostrarToastAdmin(`🗑️ Equipo ${nombre} eliminado`);
+                cargarEquiposRegistrados();
+            } catch (e) {
+                alert('No se pudo eliminar el equipo.');
+            }
+        }
+
+        // =============================================================
         // BOTONES DE AUTOMATIZACIÓN EN 1 CLIC
         // =============================================================
         function pasarClasificadosAFase2() {
@@ -292,7 +447,6 @@
                 r.eliminado = idx >= 4;
             });
 
-            // Top 4 pasan a Semifinales (1 vs 4 y 2 vs 3)
             if (datos.fase3[0]) datos.fase4.sf1.eq1 = datos.fase3[0].nombre;
             if (datos.fase3[3]) datos.fase4.sf1.eq2 = datos.fase3[3].nombre;
             if (datos.fase3[1]) datos.fase4.sf2.eq1 = datos.fase3[1].nombre;
@@ -357,7 +511,7 @@
                 if (res.ok) {
                     const creada = await res.json();
                     if (creada && creada.id) bracketNoticiaId = creada.id;
-                    alert('✔ ¡Publicado en vivo! Todas las pantallas de sorteo.html ya se actualizaron.');
+                    mostrarToastAdmin('✔ ¡Cambios publicados en vivo!');
                 }
             } catch (e) {
                 alert('Error de red al guardar, intenta de nuevo.');
@@ -365,6 +519,7 @@
         }
 
         cargarEstadoDesdeRender();
+        cargarEquiposRegistrados();
     </script>
 </body>
 </html>
