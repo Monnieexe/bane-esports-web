@@ -25,7 +25,6 @@
             background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
         }
 
-        /* Marca de agua táctica de fondo */
         .vct-bg-watermark {
             position: fixed;
             top: 16%;
@@ -47,7 +46,6 @@
         .board-scroll::-webkit-scrollbar-track { background: #0a0b10; }
         .board-scroll::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #ff2a3f, #e5c05c); border-radius: 3px; }
 
-        /* Columnas con esquinas HUD */
         .phase-col {
             position: relative;
             background: linear-gradient(180deg, rgba(16, 19, 29, 0.96) 0%, rgba(8, 10, 15, 0.98) 100%);
@@ -76,13 +74,11 @@
             pointer-events: none;
         }
 
-        /* Columna Fase 1 encendida */
         .phase-active {
             border-color: rgba(255, 42, 63, 0.65) !important;
             box-shadow: 0 0 32px rgba(255, 42, 63, 0.22), inset 0 0 25px rgba(255, 42, 63, 0.06) !important;
         }
 
-        /* Duelos con insignia VS integrada en medio */
         .match-pair {
             position: relative;
             background: linear-gradient(135deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.015) 100%);
@@ -116,7 +112,6 @@
             z-index: 5;
         }
 
-        /* Tarjetas de galería con destello y marca de agua */
         .card-equipo {
             position: relative;
             overflow: hidden;
@@ -160,7 +155,6 @@
             filter: grayscale(0%);
         }
 
-        /* Altar del Campeón con Halo Dorado */
         @keyframes goldAura {
             0%, 100% { box-shadow: 0 0 18px rgba(229, 192, 92, 0.22), inset 0 0 18px rgba(229, 192, 92, 0.1); }
             50% { box-shadow: 0 0 36px rgba(229, 192, 92, 0.48), inset 0 0 30px rgba(229, 192, 92, 0.22); }
@@ -183,14 +177,16 @@
 
         .slot-qualified { border-left: 3px solid #22c55e !important; background: rgba(34, 197, 94, 0.1) !important; }
         .slot-eliminated { border-left: 3px solid #ef4444 !important; opacity: 0.45; }
+
+        /* Modo Póster oculta controles innecesarios para captura limpia */
+        .modo-poster .ocultar-en-poster { display: none !important; }
     </style>
 </head>
 <body class="antialiased min-h-screen pb-20 relative">
 
-    <!-- MARCA DE AGUA GIGANTE DE FONDO -->
     <div class="vct-bg-watermark">COPA 5EVERMAD // VALORANT</div>
 
-    <!-- HEADER PRINCIPAL LLAMATIVO Y ORDENADO -->
+    <!-- HEADER PRINCIPAL -->
     <header class="border-b border-white/10 bg-[#06070b]/95 backdrop-blur-md sticky top-0 z-30">
         <div class="max-w-[1640px] mx-auto px-4 md:px-6 py-3 flex flex-wrap justify-between items-center gap-4">
             
@@ -220,7 +216,7 @@
                 </div>
             </div>
 
-            <!-- BOTONES CON CORTE TÁCTICO -->
+            <!-- BOTONES DE ACCIÓN -->
             <div class="flex items-center gap-2.5">
                 <button onclick="abrirModalReglas()" class="bg-[#12141d] hover:bg-everGold text-everGold hover:text-black border border-everGold/60 font-black text-[10px] uppercase tracking-[0.16em] px-4 py-2.5 transition-all clip-card shadow-[0_0_15px_rgba(229,192,92,0.18)]">
                     📜 REGLAS Y MAP POOL
@@ -253,7 +249,7 @@
             </div>
         </div>
 
-        <!-- TABLERO DE LAS 5 FASES (CABE COMPLETO EN PANTALLA Y CON COLORES VCT) -->
+        <!-- TABLERO DE LAS 5 FASES -->
         <div class="board-scroll overflow-x-auto pb-4 pt-3">
             <div class="grid grid-cols-12 gap-3.5 min-w-[1320px] items-stretch">
 
@@ -469,7 +465,7 @@
                         <div id="contenedor-fase4" class="space-y-4">
                             <div class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5">
                                 <div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 1 • BO5</div>
-                                <div class="match-pair text-xs font-bold text-white">
+                                <div class="match-pair text-xs font-bold text-white cursor-pointer" onclick="verVS('Equipo 1','Equipo 2','SEMIFINAL 1 • BO5')">
                                     <span class="vs-pill-inline">VS</span>
                                     <div class="team-row px-3 py-2.5">Equipo 1</div>
                                     <div class="team-row px-3 py-2.5">Equipo 2</div>
@@ -477,7 +473,7 @@
                             </div>
                             <div class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5">
                                 <div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 2 • BO5</div>
-                                <div class="match-pair text-xs font-bold text-white">
+                                <div class="match-pair text-xs font-bold text-white cursor-pointer" onclick="verVS('Equipo 3','Equipo 4','SEMIFINAL 2 • BO5')">
                                     <span class="vs-pill-inline">VS</span>
                                     <div class="team-row px-3 py-2.5">Equipo 3</div>
                                     <div class="team-row px-3 py-2.5">Equipo 4</div>
@@ -506,7 +502,7 @@
                         <div id="contenedor-fase5-final">
                             <div class="bg-[#080a10] border border-white/20 rounded-lg p-2.5">
                                 <div class="text-center text-[9px] font-black uppercase text-vctRed mb-2 pb-1 border-b border-white/10">POR EL TÍTULO</div>
-                                <div class="match-pair text-xs font-bold text-white">
+                                <div class="match-pair text-xs font-bold text-white cursor-pointer" onclick="verVS('Ganador SF1','Ganador SF2','GRAN FINAL • BO5')">
                                     <span class="vs-pill-inline">VS</span>
                                     <div class="team-row px-3 py-3">Ganador SF1</div>
                                     <div class="team-row px-3 py-3">Ganador SF2</div>
@@ -515,7 +511,6 @@
                         </div>
                     </div>
 
-                    <!-- ALTAR DEL CAMPEÓN CON HALO DORADO ANIMADO -->
                     <div id="contenedor-fase5-campeon" class="champion-altar border border-everGold/60 rounded-xl p-4 text-center mt-4">
                         <div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>
                         <span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span>
@@ -526,7 +521,7 @@
             </div>
         </div>
 
-        <!-- BARRA INFERIOR DE PROGRESIÓN: 24 > 12 > 6 > 4 > 2 > 1 -->
+        <!-- BARRA INFERIOR DE PROGRESIÓN -->
         <div class="mt-3 mb-12 bg-[#0a0c12]/90 border border-white/10 rounded-lg py-3.5 px-6 flex flex-wrap justify-center items-center gap-4 md:gap-8 text-center shadow-lg">
             <div><span class="text-lg font-black text-white block">24</span><span class="text-[8px] text-gray-400 font-bold uppercase">28 Sep • Iniciales</span></div>
             <span class="text-vctRed font-black">&gt;</span>
@@ -541,7 +536,7 @@
             <div><span class="text-lg font-black gold-metallic-text block">1</span><span class="text-[8px] text-everGold font-bold uppercase">Campeón</span></div>
         </div>
 
-        <!-- GALERÍA DE ESCUADRAS CON LOGO EN MARCA DE AGUA -->
+        <!-- GALERÍA DE ESCUADRAS -->
         <div class="border-t border-white/10 pt-10">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
                 <div>
@@ -591,9 +586,9 @@
 
     </main>
 
-    <!-- MODAL CARA A CARA (VS) ESTILO PANTALLA DE DUELO -->
+    <!-- MODAL CARA A CARA (VS) CON VETO SINCRONIZADO Y ACTA OFICIAL -->
     <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div style="background: linear-gradient(125deg, rgba(255,42,63,0.14) 0%, #08090f 45%, #08090f 55%, rgba(229,192,92,0.14) 100%);" class="border border-white/25 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[92vh] overflow-y-auto relative shadow-[0_0_60px_rgba(0,0,0,0.95)]">
+        <div id="modal-vs-box" style="background: linear-gradient(125deg, rgba(255,42,63,0.14) 0%, #08090f 45%, #08090f 55%, rgba(229,192,92,0.14) 100%);" class="border border-white/25 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[94vh] overflow-y-auto relative shadow-[0_0_60px_rgba(0,0,0,0.95)]">
             <button onclick="document.getElementById('modal-vs').classList.add('hidden')" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
             <div id="modal-vs-content"></div>
         </div>
@@ -727,7 +722,7 @@
         </div>
     </div>
 
-    <!-- TOAST DE COPIADO -->
+    <!-- TOAST DE COPIADO / AVISOS -->
     <div id="toast-copy" class="fixed bottom-6 right-[-450px] z-50 bg-[#0b0d14] border-l-4 border-everGold px-5 py-3.5 shadow-2xl transition-all duration-300">
         <p id="toast-copy-text" class="text-xs font-black uppercase tracking-widest text-white">✔ Copiado</p>
     </div>
@@ -738,12 +733,28 @@
         let CANAL_TWITCH_DEFECTO = 'valorant_la';
         let equiposCargados = [];
 
+        // Diccionario en vivo de Vetos Oficiales sincronizados con Render
+        let vetosOficialesMap = {};
+        let vetoNoticiaId = null;
+        let dueloActualKey = '';
+        let dueloActualDatos = { nom1: '', nom2: '', fase: '' };
+
         function limpiarNombre(txt) {
             return String(txt || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
         }
 
         function textoSeguro(txt) {
             return String(txt || '').replace(/['"\\]/g, '');
+        }
+
+        function claveDuelo(n1, n2) {
+            const a = limpiarNombre(n1);
+            const b = limpiarNombre(n2);
+            return [a, b].sort().join('_vs_');
+        }
+
+        function esAdminActivo() {
+            return Boolean(localStorage.getItem('idToken'));
         }
 
         function esSlotPlaceholder(nombre) {
@@ -765,6 +776,19 @@
             return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(ini) + '&background=111&color=e5c05c&bold=true';
         }
 
+        function mostrarToast(msg) {
+            const toast = document.getElementById('toast-copy');
+            document.getElementById('toast-copy-text').innerText = msg;
+            toast.style.right = '24px';
+            setTimeout(() => { toast.style.right = '-450px'; }, 3000);
+        }
+
+        function copiarDato(texto) {
+            if (!texto) return;
+            navigator.clipboard.writeText(texto);
+            mostrarToast('✔ Copiado: ' + texto);
+        }
+
         function abrirModalReglas() { document.getElementById('modal-reglas').classList.remove('hidden'); }
         function cerrarModalReglas() { document.getElementById('modal-reglas').classList.add('hidden'); }
 
@@ -784,20 +808,265 @@
             }
         }
 
-        function alternarEstadoMapa(el) {
-            const st = el.getAttribute('data-state') || 'normal';
-            if (st === 'normal') {
-                el.setAttribute('data-state', 'ban');
-                el.className = 'cursor-pointer select-none py-1.5 px-2.5 rounded border border-red-500 bg-red-950/60 text-red-300 text-[10px] font-black uppercase tracking-wider line-through opacity-75 transition-all';
-            } else if (st === 'ban') {
-                el.setAttribute('data-state', 'pick');
-                el.className = 'cursor-pointer select-none py-1.5 px-2.5 rounded border border-emerald-400 bg-emerald-950/60 text-emerald-300 text-[10px] font-black uppercase tracking-wider shadow-[0_0_10px_rgba(16,185,129,0.4)] transition-all';
-            } else {
-                el.setAttribute('data-state', 'normal');
-                el.className = 'cursor-pointer select-none py-1.5 px-2.5 rounded border border-white/15 bg-black/60 hover:border-everGold text-gray-200 text-[10px] font-black uppercase tracking-wider transition-all';
+        // =============================================================
+        // SISTEMA DE VETO GUIADO POR TURNOS + SINCRONIZACIÓN CON RENDER
+        // =============================================================
+        function obtenerEstadoVeto(key, n1, n2) {
+            if (!vetosOficialesMap[key]) {
+                vetosOficialesMap[key] = {
+                    eq1: n1,
+                    eq2: n2,
+                    paso: 0,
+                    bloqueado: false,
+                    moneda: '',
+                    hora: '',
+                    codigo: '5EV-' + Math.floor(1000 + Math.random() * 9000),
+                    mapas: {}, // { Ascent: { tipo: 'BAN'|'PICK 1'|'PICK 2'|'DECIDER', autor: '7z Esports' } }
+                    votos1: 1,
+                    votos2: 1
+                };
+            }
+            return vetosOficialesMap[key];
+        }
+
+        function descripcionTurnoVeto(paso, n1, n2) {
+            const secuencia = [
+                { accion: 'BAN 1', equipo: n1, texto: `Turno de ${n1}: Banear 1 Mapa ❌` },
+                { accion: 'BAN 2', equipo: n2, texto: `Turno de ${n2}: Banear 1 Mapa ❌` },
+                { accion: 'MAPA 1', equipo: n1, texto: `Turno de ${n1}: Elegir MAPA 1 ✅` },
+                { accion: 'MAPA 2', equipo: n2, texto: `Turno de ${n2}: Elegir MAPA 2 ✅` },
+                { accion: 'BAN 3', equipo: n1, texto: `Turno de ${n1}: Banear 1 Mapa ❌` },
+                { accion: 'BAN 4', equipo: n2, texto: `Turno de ${n2}: Banear 1 Mapa ❌` }
+            ];
+            return secuencia[paso] || null;
+        }
+
+        function seleccionarMapaEnVeto(nombreMapa) {
+            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
+            if (v.bloqueado) {
+                mostrarToast('🔒 Este veto oficial ya está cerrado y bloqueado');
+                return;
+            }
+            if (v.mapas[nombreMapa]) return; // Ya fue seleccionado
+
+            const infoTurno = descripcionTurnoVeto(v.paso, dueloActualDatos.nom1, dueloActualDatos.nom2);
+            if (!infoTurno) return;
+
+            v.mapas[nombreMapa] = {
+                tipo: infoTurno.accion,
+                autor: infoTurno.equipo
+            };
+            v.paso++;
+
+            // Si ya se hicieron los 6 pasos, el 7° mapa restante queda automáticamente como MAPA 3 (DECIDER)
+            if (v.paso === 6) {
+                const restante = MAP_POOL_OFICIAL.find(m => !v.mapas[m]);
+                if (restante) {
+                    v.mapas[restante] = { tipo: 'MAPA 3 (DECIDER)', autor: 'SORTEO' };
+                }
+                const ahora = new Date();
+                v.hora = ahora.toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            }
+
+            renderizarPanelVetoEnModal();
+        }
+
+        function lanzarMonedaVeto() {
+            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
+            if (v.bloqueado) {
+                mostrarToast('🔒 El veto ya está bloqueado');
+                return;
+            }
+            const ganador = Math.random() < 0.5 ? dueloActualDatos.nom1 : dueloActualDatos.nom2;
+            const lado = Math.random() < 0.5 ? 'ATACANTE (ATK)' : 'DEFENSOR (DEF)';
+            v.moneda = `🪙 Ganador sorteo: ${ganador} (${lado})`;
+            mostrarToast(v.moneda);
+            renderizarPanelVetoEnModal();
+        }
+
+        async function guardarVetoEnServidor(bloquear = true) {
+            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
+            if (bloquear && v.paso < 6) {
+                if (!confirm('Aún no se completan los 6 pasos del veto. ¿Seguro que deseas fijar y bloquear el veto así?')) return;
+            }
+            v.bloqueado = bloquear;
+            if (!v.hora) {
+                v.hora = new Date().toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            }
+            renderizarPanelVetoEnModal();
+
+            try {
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer pase-vip-temporal-5ever'
+                };
+                if (vetoNoticiaId) {
+                    await fetch(`${API_URL}/noticias?id=${vetoNoticiaId}`, { method: 'DELETE', headers });
+                }
+                const res = await fetch(`${API_URL}/noticias`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({
+                        titulo: '[VETO_DATA]',
+                        descripcion: JSON.stringify(vetosOficialesMap),
+                        imagen_url: 'HIDDEN'
+                    })
+                });
+                if (res.ok) {
+                    mostrarToast(bloquear ? '🔒 Veto Oficial guardado y sincronizado en vivo' : '🔓 Veto reiniciado en el servidor');
+                }
+            } catch (e) {
+                mostrarToast('✔ Guardado localmente');
             }
         }
 
+        function reiniciarVetoDuelo() {
+            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
+            if (v.bloqueado && !esAdminActivo()) {
+                const pin = prompt('🔒 Veto Oficial bloqueado. Ingresa clave de Admin para desbloquear (5ever):');
+                if (!pin || pin.toLowerCase() !== '5ever') {
+                    mostrarToast('❌ Clave incorrecta');
+                    return;
+                }
+            }
+            vetosOficialesMap[dueloActualKey] = {
+                eq1: dueloActualDatos.nom1,
+                eq2: dueloActualDatos.nom2,
+                paso: 0,
+                bloqueado: false,
+                moneda: '',
+                hora: '',
+                codigo: '5EV-' + Math.floor(1000 + Math.random() * 9000),
+                mapas: {},
+                votos1: v.votos1 || 1,
+                votos2: v.votos2 || 1
+            };
+            guardarVetoEnServidor(false);
+        }
+
+        function copiarActaVetoDiscord() {
+            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
+            let m1 = 'Pendiente', m2 = 'Pendiente', m3 = 'Pendiente', bans = [];
+            Object.entries(v.mapas).forEach(([mapa, info]) => {
+                if (info.tipo === 'MAPA 1') m1 = `${mapa} (Pick ${info.autor})`;
+                else if (info.tipo === 'MAPA 2') m2 = `${mapa} (Pick ${info.autor})`;
+                else if (info.tipo.includes('MAPA 3')) m3 = `${mapa} (Decider)`;
+                else bans.push(`${mapa} (${info.autor})`);
+            });
+
+            const acta = [
+                `📜 **ACTA OFICIAL DE VETO — COPA 5EVERMAD**`,
+                `⚔️ **Enfrentamiento:** ${dueloActualDatos.nom1} vs ${dueloActualDatos.nom2} (${dueloActualDatos.fase})`,
+                `🕒 **Hora CDMX:** ${v.hora || 'En curso'} | **Cód:** #${v.codigo}`,
+                v.moneda ? `${v.moneda}` : '',
+                `❌ **Baneados:** ${bans.join(', ') || 'Ninguno'}`,
+                `✅ **MAPA 1:** ${m1}`,
+                `✅ **MAPA 2:** ${m2}`,
+                `🔥 **MAPA 3 (Decider):** ${m3}`
+            ].filter(Boolean).join('\n');
+
+            navigator.clipboard.writeText(acta);
+            mostrarToast('📋 Acta Oficial copiada. ¡Pégala en Discord!');
+        }
+
+        function votarEquipoVS(lado) {
+            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
+            if (lado === 1) v.votos1 = (v.votos1 || 1) + 1;
+            else v.votos2 = (v.votos2 || 1) + 1;
+            renderizarPanelVetoEnModal();
+        }
+
+        function toggleModoPoster() {
+            document.getElementById('modal-vs-box').classList.toggle('modo-poster');
+            mostrarToast('📸 Modo Póster alternado (Toma tu captura)');
+        }
+
+        function renderizarPanelVetoEnModal() {
+            const cont = document.getElementById('panel-veto-dinamico');
+            if (!cont) return;
+
+            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
+            const infoTurno = descripcionTurnoVeto(v.paso, dueloActualDatos.nom1, dueloActualDatos.nom2);
+
+            const totalVotos = (v.votos1 || 1) + (v.votos2 || 1);
+            const pct1 = Math.round(((v.votos1 || 1) / totalVotos) * 100);
+            const pct2 = 100 - pct1;
+
+            const tarjetasMapas = MAP_POOL_OFICIAL.map(m => {
+                const estado = v.mapas[m];
+                if (!estado) {
+                    return `
+                        <button onclick="seleccionarMapaEnVeto('${m}')" class="py-2 px-3 rounded border border-white/15 bg-black/70 hover:border-everGold text-white text-[10px] font-black uppercase tracking-wider transition-all">
+                            ${m}
+                        </button>`;
+                }
+                const esBan = estado.tipo.startsWith('BAN');
+                const esDecider = estado.tipo.includes('DECIDER');
+                const claseColor = esBan
+                    ? 'border-red-500/60 bg-red-950/60 text-red-300 opacity-75'
+                    : (esDecider ? 'border-everGold bg-amber-950/70 text-everGold shadow-[0_0_12px_rgba(229,192,92,0.4)]' : 'border-emerald-400 bg-emerald-950/70 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.35)]');
+
+                return `
+                    <div class="py-1.5 px-2.5 rounded border ${claseColor} text-center select-none">
+                        <span class="text-[10px] font-black uppercase block ${esBan ? 'line-through' : ''}">${m}</span>
+                        <span class="text-[8px] font-bold uppercase block opacity-90">${estado.tipo} • ${estado.autor.substring(0, 10)}</span>
+                    </div>`;
+            }).join('');
+
+            cont.innerHTML = `
+                <!-- BARRA DE PREDICCIÓN DE LA COMUNIDAD -->
+                <div class="mb-4 bg-[#0b0d14]/90 border border-white/10 rounded-lg p-2.5 ocultar-en-poster">
+                    <div class="flex justify-between items-center text-[9px] font-black uppercase tracking-wider mb-1.5">
+                        <button onclick="votarEquipoVS(1)" class="text-vctRed hover:underline">🔥 APOYAR A ${dueloActualDatos.nom1} (${pct1}%)</button>
+                        <span class="text-gray-400">PREDICCIÓN DE LA ARENA</span>
+                        <button onclick="votarEquipoVS(2)" class="text-everGold hover:underline">APOYAR A ${dueloActualDatos.nom2} (${pct2}%) ⚡</button>
+                    </div>
+                    <div class="w-full h-2 bg-black rounded-full overflow-hidden flex border border-white/10">
+                        <div style="width:${pct1}%" class="bg-vctRed transition-all duration-300"></div>
+                        <div style="width:${pct2}%" class="bg-everGold transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- CONSOLA DE VETO OFICIAL SINCRONIZADA -->
+                <div class="mb-5 bg-[#0b0d14]/95 border ${v.bloqueado ? 'border-emerald-500/50' : 'border-white/15'} rounded-lg p-3.5 text-center">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-2.5 pb-2 border-b border-white/10">
+                        <div class="text-left">
+                            <span class="text-[9px] font-black uppercase tracking-widest ${v.bloqueado ? 'text-emerald-400' : 'text-everGold'} block">
+                                ${v.bloqueado ? '🔒 VETO OFICIAL CONFIRMADO Y SINCRONIZADO (CÓD #' + v.codigo + ')' : '🗺️ VETO OFICIAL PASO A PASO (BO3 • SINCRONIZADO EN VIVO)'}
+                            </span>
+                            <p class="text-[11px] font-black uppercase text-white mt-0.5">
+                                ${v.bloqueado ? ('Hora oficial de cierre: ' + (v.hora || 'Confirmado')) : (infoTurno ? infoTurno.texto : '✅ ¡Veto completado! Presiona CONFIRMAR VETO OFICIAL')}
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-1.5 ocultar-en-poster">
+                            <button onclick="lanzarMonedaVeto()" class="bg-white/5 hover:bg-everGold hover:text-black border border-everGold/40 text-everGold text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-all">
+                                🪙 Moneda (ATK/DEF)
+                            </button>
+                            <button onclick="copiarActaVetoDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-all">
+                                📋 Copiar Acta Discord
+                            </button>
+                            ${!v.bloqueado ? `
+                                <button onclick="guardarVetoEnServidor(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-all">
+                                    🔒 Fijar Veto Oficial
+                                </button>
+                            ` : ''}
+                            <button onclick="reiniciarVetoDuelo()" class="bg-white/5 hover:bg-vctRed text-gray-300 hover:text-white text-[9px] font-black uppercase px-2 py-1.5 rounded transition-all" title="Reiniciar / Desbloquear (Admin)">
+                                ↺
+                            </button>
+                        </div>
+                    </div>
+
+                    ${v.moneda ? `<div class="mb-2 text-[10px] font-black text-everGold uppercase bg-everGold/10 border border-everGold/30 py-1 px-3 rounded inline-block">${v.moneda}</div>` : ''}
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 mt-1">
+                        ${tarjetasMapas}
+                    </div>
+                </div>
+            `;
+        }
+
+        // RELOJ CUENTA REGRESIVA (PRÓXIMO LUNES 8 PM CDMX)
         function actualizarRelojTorneo() {
             const ahora = new Date();
             const cdmxStr = ahora.toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
@@ -835,15 +1104,6 @@
         }
         setInterval(actualizarRelojTorneo, 1000);
         actualizarRelojTorneo();
-
-        function copiarDato(texto) {
-            if (!texto) return;
-            navigator.clipboard.writeText(texto);
-            const toast = document.getElementById('toast-copy');
-            document.getElementById('toast-copy-text').innerText = '✔ Copiado: ' + texto;
-            toast.style.right = '24px';
-            setTimeout(() => { toast.style.right = '-450px'; }, 2600);
-        }
 
         function toggleStream() {
             const panel = document.getElementById('panel-stream');
@@ -962,6 +1222,14 @@
                 const noticias = await resNot.json();
                 if (Array.isArray(noticias)) {
                     noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+
+                    // Cargar Vetos Oficiales guardados en Render
+                    const vNot = noticias.find(n => n && n.titulo === '[VETO_DATA]');
+                    if (vNot && vNot.descripcion) {
+                        vetoNoticiaId = vNot.id;
+                        try { vetosOficialesMap = JSON.parse(vNot.descripcion) || {}; } catch (e) {}
+                    }
+
                     const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
                     if (bd && bd.descripcion) {
                         const d = JSON.parse(bd.descripcion);
@@ -1024,6 +1292,9 @@
         }
 
         function verVS(nom1, nom2, fase) {
+            dueloActualDatos = { nom1: nom1 || 'Equipo 1', nom2: nom2 || 'Equipo 2', fase: fase || 'DUELO OFICIAL' };
+            dueloActualKey = claveDuelo(dueloActualDatos.nom1, dueloActualDatos.nom2);
+
             const eq1 = encontrarEquipo(nom1);
             const eq2 = encontrarEquipo(nom2);
 
@@ -1052,7 +1323,7 @@
                                 <span class="text-[8px] text-everGold font-black uppercase block">${j.role || 'TITULAR'}</span>
                                 <span class="text-xs font-black text-white hover:text-everGold truncate block">${j.riot_id || ''} 📋</span>
                             </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
+                            <div class="flex items-center gap-1.5 shrink-0 ocultar-en-poster">
                                 <button onclick="copiarDato('${idSeg}')" class="bg-white/5 hover:bg-everGold hover:text-black text-gray-300 text-[9px] font-black uppercase px-2 py-1.5 rounded">COPIAR</button>
                                 <a href="${j.tracker_url || '#'}" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded">TRACKER ↗</a>
                             </div>
@@ -1080,29 +1351,24 @@
             const n1Seg = textoSeguro(nom1);
             const faseSeg = textoSeguro(fase);
 
-            const mapPoolHtml = MAP_POOL_OFICIAL.map(m => `
-                <div onclick="alternarEstadoMapa(this)" data-state="normal" class="cursor-pointer select-none py-1.5 px-2.5 rounded border border-white/15 bg-black/60 hover:border-everGold text-gray-200 text-[10px] font-black uppercase tracking-wider transition-all">
-                    ${m}
-                </div>
-            `).join('');
-
             document.getElementById('modal-vs-content').innerHTML = `
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-5 pb-4 border-b border-white/15 pr-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 pb-3 border-b border-white/15 pr-8">
                     <div>
                         <span class="text-[10px] text-vctRed font-black uppercase tracking-[0.3em] block">${fase} • 8:00 PM CDMX</span>
                         <h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider">⚔️ ${nom1} <span class="text-vctRed mx-2">VS</span> ${nom2 || 'RIVAL'}</h3>
                     </div>
-                    <select onchange="verVS('${n1Seg}', this.value, '${faseSeg}')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2.5 rounded w-full md:w-64 outline-none">
-                        ${opcionesRival}
-                    </select>
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <button onclick="toggleModoPoster()" class="bg-white/5 hover:bg-white/15 border border-white/20 text-white text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0" title="Ocultar controles para tomar captura">
+                            📸 Modo Póster
+                        </button>
+                        <select onchange="verVS('${n1Seg}', this.value, '${faseSeg}')" class="ocultar-en-poster bg-black border border-everGold/50 text-white text-xs font-bold p-2.5 rounded w-full md:w-56 outline-none">
+                            ${opcionesRival}
+                        </select>
+                    </div>
                 </div>
 
-                <div class="mb-5 bg-[#0b0d14]/90 border border-white/10 rounded-lg p-3 text-center">
-                    <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest block mb-2">
-                        🗺️ MAP POOL OFICIAL COPA 5EVERMAD <span class="text-everGold">(CLIC PARA MARCAR BAN ❌ / PICK ✔)</span>
-                    </span>
-                    <div class="flex flex-wrap justify-center gap-2">${mapPoolHtml}</div>
-                </div>
+                <!-- CONTENEDOR DINÁMICO DE VETO OFICIAL Y PREDICCIÓN -->
+                <div id="panel-veto-dinamico"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
                     <div class="md:col-span-5">${dibujarCol(nom1, eq1, 'border-vctRed', 'border-vctRed/40')}</div>
@@ -1114,6 +1380,7 @@
                     <div class="md:col-span-5">${dibujarCol(nom2, eq2, 'border-everGold', 'border-everGold/40')}</div>
                 </div>`;
 
+            renderizarPanelVetoEnModal();
             document.getElementById('modal-vs').classList.remove('hidden');
         }
 
