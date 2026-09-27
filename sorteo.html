@@ -197,6 +197,9 @@
                             COPA <span class="text-vctRed">5EVERMAD</span>
                         </h1>
                         <span class="bg-vctRed/15 border border-vctRed/50 text-vctRed text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-widest">24 EQUIPOS</span>
+                        <span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-widest flex items-center gap-1" title="Las estadísticas y votos se actualizan en vivo cada 3.5 segundos">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE SYNC
+                        </span>
                     </div>
                     <p class="text-[10px] text-everGold font-black uppercase tracking-[0.22em] mt-1">
                         📅 CADA LUNES • 8:00 PM CDMX (CHECK-IN 7:45 PM)
@@ -585,7 +588,7 @@
 
     </main>
 
-    <!-- MODAL CARA A CARA (VS) CON BARRA DE PREDICCIÓN -->
+    <!-- MODAL CARA A CARA (VS) CON BARRA DE PREDICCIÓN EN TIEMPO REAL -->
     <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div id="modal-vs-box" style="background: linear-gradient(125deg, rgba(255,42,63,0.14) 0%, #08090f 45%, #08090f 55%, rgba(229,192,92,0.14) 100%);" class="border border-white/25 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[94vh] overflow-y-auto relative shadow-[0_0_60px_rgba(0,0,0,0.95)]">
             <button onclick="document.getElementById('modal-vs').classList.add('hidden')" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
@@ -731,11 +734,15 @@
         let CANAL_TWITCH_DEFECTO = 'valorant_la';
         let equiposCargados = [];
 
-        // Diccionario de Predicciones de la Comunidad
+        // Variables del Motor de Sincronización en Tiempo Real (Live Sync)
         let prediccionesMap = JSON.parse(localStorage.getItem('5ever_predicciones_map') || '{}');
+        let misVotosLocal = JSON.parse(localStorage.getItem('5ever_mis_votos') || '{}');
         let prediccionesNoticiaId = null;
+        let ultimoBracketJSON = '';
+        let ultimasPrediccionesJSON = '';
         let dueloActualKey = '';
         let dueloActualDatos = { nom1: '', nom2: '', fase: '' };
+        let votandoEnCurso = false;
 
         function limpiarNombre(txt) {
             return String(txt || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
@@ -803,7 +810,7 @@
         }
 
         // =============================================================
-        // SISTEMA DE PREDICCIONES DE LA COMUNIDAD ("¿QUIÉN GANA?")
+        // PREDICCIONES EN TIEMPO REAL SINCRONIZADAS PARA TODOS
         // =============================================================
         function obtenerPrediccionDuelo(key) {
             if (!prediccionesMap[key]) {
@@ -813,27 +820,60 @@
         }
 
         async function votarEquipoVS(lado) {
-            const p = obtenerPrediccionDuelo(dueloActualKey);
-            if (lado === 1) {
-                p.votos1 = (p.votos1 || 1) + 1;
-                mostrarToast(`🔥 Votaste por ${dueloActualDatos.nom1}`);
-            } else {
-                p.votos2 = (p.votos2 || 1) + 1;
-                mostrarToast(`⚡ Votaste por ${dueloActualDatos.nom2}`);
-            }
-
-            localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap));
-            renderizarBarraPrediccion();
+            if (votandoEnCurso) return;
+            votandoEnCurso = true;
 
             try {
+                // 1. Descargar primero el estado más reciente del servidor para no pisar votos de otros usuarios
+                const resNot = await fetch(`${API_URL}/noticias?t=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
+                if (resNot && resNot.ok) {
+                    const noticias = await resNot.json();
+                    if (Array.isArray(noticias)) {
+                        noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+                        const pNot = noticias.find(n => n && n.titulo === '[PREDICCIONES_DATA]');
+                        if (pNot && pNot.descripcion) {
+                            prediccionesNoticiaId = pNot.id;
+                            try { prediccionesMap = Object.assign({}, prediccionesMap, JSON.parse(pNot.descripcion)); } catch (e) {}
+                        }
+                    }
+                }
+
+                const p = obtenerPrediccionDuelo(dueloActualKey);
+                const votoPrevio = misVotosLocal[dueloActualKey];
+
+                if (votoPrevio === lado) {
+                    mostrarToast('⚡ Ya habías registrado tu apoyo por este equipo');
+                    votandoEnCurso = false;
+                    return;
+                }
+
+                // Si cambia de opinión, descuenta el voto anterior y suma al nuevo
+                if (votoPrevio === 1 && p.votos1 > 1) p.votos1--;
+                if (votoPrevio === 2 && p.votos2 > 1) p.votos2--;
+
+                if (lado === 1) {
+                    p.votos1 = (p.votos1 || 1) + 1;
+                    mostrarToast(`🔥 Voto en vivo registrado para ${dueloActualDatos.nom1}`);
+                } else {
+                    p.votos2 = (p.votos2 || 1) + 1;
+                    mostrarToast(`⚡ Voto en vivo registrado para ${dueloActualDatos.nom2}`);
+                }
+
+                misVotosLocal[dueloActualKey] = lado;
+                localStorage.setItem('5ever_mis_votos', JSON.stringify(misVotosLocal));
+                localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap));
+                ultimasPrediccionesJSON = JSON.stringify(prediccionesMap);
+                renderizarBarraPrediccion();
+
+                // 2. Publicar inmediatamente para que todos los demás espectadores lo vean en tiempo real
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer pase-vip-temporal-5ever'
                 };
                 if (prediccionesNoticiaId) {
-                    await fetch(`${API_URL}/noticias?id=${prediccionesNoticiaId}`, { method: 'DELETE', headers });
+                    await fetch(`${API_URL}/noticias?id=${prediccionesNoticiaId}`, { method: 'DELETE', headers }).catch(() => null);
                 }
-                const res = await fetch(`${API_URL}/noticias`, {
+                const resPost = await fetch(`${API_URL}/noticias`, {
                     method: 'POST',
                     headers,
                     body: JSON.stringify({
@@ -842,11 +882,13 @@
                         imagen_url: 'HIDDEN'
                     })
                 });
-                if (res.ok) {
-                    const creada = await res.json();
+                if (resPost.ok) {
+                    const creada = await resPost.json();
                     if (creada && creada.id) prediccionesNoticiaId = creada.id;
                 }
-            } catch (e) {}
+            } catch (e) {} finally {
+                votandoEnCurso = false;
+            }
         }
 
         function toggleModoPoster() {
@@ -859,24 +901,29 @@
             if (!cont) return;
 
             const p = obtenerPrediccionDuelo(dueloActualKey);
-            const totalVotos = (p.votos1 || 1) + (p.votos2 || 1);
-            const pct1 = Math.round(((p.votos1 || 1) / totalVotos) * 100);
+            const v1 = p.votos1 || 1;
+            const v2 = p.votos2 || 1;
+            const totalVotos = v1 + v2;
+            const pct1 = Math.round((v1 / totalVotos) * 100);
             const pct2 = 100 - pct1;
+            const miVoto = misVotosLocal[dueloActualKey];
 
             cont.innerHTML = `
                 <div class="mb-5 bg-[#0b0d14]/95 border border-white/15 rounded-xl p-3.5 shadow-lg">
                     <div class="flex flex-wrap justify-between items-center gap-2 text-[10px] font-black uppercase tracking-wider mb-2">
-                        <button onclick="votarEquipoVS(1)" class="bg-vctRed/15 hover:bg-vctRed text-vctRed hover:text-white border border-vctRed/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">
-                            🔥 APOYAR A ${dueloActualDatos.nom1} <span class="font-extrabold">(${pct1}%)</span>
+                        <button onclick="votarEquipoVS(1)" class="${miVoto === 1 ? 'bg-vctRed text-white' : 'bg-vctRed/15 text-vctRed'} hover:bg-vctRed hover:text-white border border-vctRed/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">
+                            🔥 ${dueloActualDatos.nom1} <span class="font-extrabold">${pct1}% (${v1})</span>
                         </button>
-                        <span class="text-[9px] text-gray-400 tracking-[0.2em] ocultar-en-poster">⚔️ ¿QUIÉN GANA ESTE DUELO?</span>
-                        <button onclick="votarEquipoVS(2)" class="bg-everGold/15 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">
-                            <span class="font-extrabold">(${pct2}%)</span> APOYAR A ${dueloActualDatos.nom2} ⚡
+                        <span class="text-[9px] text-emerald-400 tracking-[0.18em] flex items-center gap-1.5 ocultar-en-poster">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> VOTOS EN TIEMPO REAL (${totalVotos})
+                        </span>
+                        <button onclick="votarEquipoVS(2)" class="${miVoto === 2 ? 'bg-everGold text-black' : 'bg-everGold/15 text-everGold'} hover:bg-everGold hover:text-black border border-everGold/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">
+                            <span class="font-extrabold">${pct2}% (${v2})</span> ${dueloActualDatos.nom2} ⚡
                         </button>
                     </div>
                     <div class="w-full h-2.5 bg-black rounded-full overflow-hidden flex border border-white/10 p-0.5">
-                        <div style="width:${pct1}%" class="bg-gradient-to-r from-red-700 to-vctRed rounded-l-full transition-all duration-300"></div>
-                        <div style="width:${pct2}%" class="bg-gradient-to-r from-amber-500 to-everGold rounded-r-full transition-all duration-300"></div>
+                        <div style="width:${pct1}%" class="bg-gradient-to-r from-red-700 to-vctRed rounded-l-full transition-all duration-500"></div>
+                        <div style="width:${pct2}%" class="bg-gradient-to-r from-amber-500 to-everGold rounded-r-full transition-all duration-500"></div>
                     </div>
                 </div>
             `;
@@ -1021,90 +1068,112 @@
                 </div>`;
         }
 
-        async function cargarDatosYLogos() {
+        function aplicarDatosDeBracketEnPantalla(d) {
+            if (d.fase1) {
+                document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(g => construirGrupoLlamativo(g, d.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600')).join('');
+            }
+            if (d.fase2) {
+                document.getElementById('contenedor-fase2').innerHTML = ['E','F'].map(g => construirGrupoLlamativo(g, d.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600')).join('');
+            }
+            if (Array.isArray(d.fase3)) {
+                document.getElementById('contenedor-fase3').innerHTML = d.fase3.map((r, i) => {
+                    const elim = i >= 4 || r.eliminado;
+                    const nomSeg = textoSeguro(r.nombre);
+                    const tieneEq = !esSlotPlaceholder(r.nombre);
+                    return `
+                        <div onclick="verVS('${nomSeg}','','FASE 3 • DESEMPEÑO')" class="flex items-center justify-between gap-2 p-2 rounded border ${elim ? 'border-red-500/35 bg-red-950/20' : 'border-emerald-500/35 bg-emerald-950/20'} cursor-pointer hover:border-white/40">
+                            <div class="flex items-center gap-2 truncate">
+                                <span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs ${elim ? 'bg-gradient-to-b from-red-600 to-red-800' : 'bg-gradient-to-b from-emerald-500 to-emerald-700'} text-white shrink-0 shadow">${i + 1}</span>
+                                ${tieneEq ? `<img data-logo="${nomSeg}" src="${urlAvatar(nomSeg)}" class="w-5 h-5 rounded object-contain bg-black shrink-0">` : ''}
+                                <span class="text-xs font-bold ${elim ? 'text-gray-400' : 'text-white'} truncate">${tieneEq ? r.nombre : 'Clasificado #' + (i + 1)}</span>
+                            </div>
+                            <span class="text-[8px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} shrink-0">${r.rd || (elim ? 'ELIM' : '')}</span>
+                        </div>`;
+                }).join('');
+            }
+            if (d.fase4) {
+                const cardBO5 = (tit, m) => {
+                    const n1 = textoSeguro(m.eq1);
+                    const n2 = textoSeguro(m.eq2);
+                    return `
+                        <div onclick="verVS('${n1}','${n2}','${tit} • BO5')" class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5 cursor-pointer hover:border-vctRed transition-all">
+                            <div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">${tit} • BO5</div>
+                            <div class="match-pair">
+                                <span class="vs-pill-inline">VS</span>
+                                ${htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal' })}
+                                ${htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal' })}
+                            </div>
+                        </div>`;
+                };
+                document.getElementById('contenedor-fase4').innerHTML = cardBO5('SEMIFINAL 1', d.fase4.sf1) + cardBO5('SEMIFINAL 2', d.fase4.sf2);
+                if (d.final) {
+                    document.getElementById('contenedor-fase5-final').innerHTML = cardBO5('GRAN FINAL', d.final);
+                    const campSeg = textoSeguro(d.final.campeon || 'CAMPEÓN');
+                    const tieneCamp = !esSlotPlaceholder(d.final.campeon);
+                    document.getElementById('contenedor-fase5-campeon').innerHTML = `
+                        <div onclick="verVS('${campSeg}','','CAMPEÓN COPA 5EVERMAD')" class="cursor-pointer">
+                            <div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>
+                            ${tieneCamp ? `<img data-logo="${campSeg}" src="${urlAvatar(campSeg)}" class="w-14 h-14 mx-auto mb-2 rounded object-contain bg-black border border-everGold">` : ''}
+                            <span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span>
+                            <h3 class="text-base font-black uppercase tracking-wider gold-metallic-text mt-0.5 truncate">${d.final.campeon || 'CAMPEÓN'}</h3>
+                        </div>`;
+                }
+            }
+            inyectarLogosEnDOM();
+        }
+
+        // =============================================================
+        // MOTOR LIVE SYNC: ACTUALIZA MARCADORES Y PREDICCIONES CADA 3.5s
+        // =============================================================
+        async function cargarEquiposIniciales() {
             try {
-                const res = await fetch(API_URL + '/equipos');
+                const res = await fetch(`${API_URL}/equipos?t=${Date.now()}`, { cache: 'no-store' });
                 const data = await res.json();
                 if (Array.isArray(data) && data.length > 0) {
                     equiposCargados = data;
                     inyectarLogosEnDOM();
+                } else {
+                    setTimeout(cargarEquiposIniciales, 4000);
                 }
             } catch (err) {
-                setTimeout(cargarDatosYLogos, 4000);
+                setTimeout(cargarEquiposIniciales, 4000);
             }
+        }
 
+        async function pulsoEnTiempoReal() {
+            if (votandoEnCurso) return;
             try {
-                const resNot = await fetch(API_URL + '/noticias');
+                const resNot = await fetch(`${API_URL}/noticias?t=${Date.now()}`, { cache: 'no-store' });
+                if (!resNot.ok) return;
                 const noticias = await resNot.json();
-                if (Array.isArray(noticias)) {
-                    noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+                if (!Array.isArray(noticias)) return;
 
-                    // Cargar Predicciones guardadas en Render
-                    const pNot = noticias.find(n => n && n.titulo === '[PREDICCIONES_DATA]');
-                    if (pNot && pNot.descripcion) {
-                        prediccionesNoticiaId = pNot.id;
+                noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+
+                // 1. Verificar si hubo nuevos votos de predicción
+                const pNot = noticias.find(n => n && n.titulo === '[PREDICCIONES_DATA]');
+                if (pNot && pNot.descripcion) {
+                    prediccionesNoticiaId = pNot.id;
+                    if (pNot.descripcion !== ultimasPrediccionesJSON) {
+                        ultimasPrediccionesJSON = pNot.descripcion;
                         try {
                             prediccionesMap = Object.assign({}, prediccionesMap, JSON.parse(pNot.descripcion));
                             localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap));
+                            // Si el usuario tiene abierto un Cara a Cara, actualiza la barra en vivo sin cerrar el modal
+                            if (!document.getElementById('modal-vs').classList.contains('hidden')) {
+                                renderizarBarraPrediccion();
+                            }
                         } catch (e) {}
                     }
+                }
 
-                    const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
-                    if (bd && bd.descripcion) {
-                        const d = JSON.parse(bd.descripcion);
-                        if (d && d.version === '24_grupos_v1') {
-                            if (d.fase1) {
-                                document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(g => construirGrupoLlamativo(g, d.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600')).join('');
-                            }
-                            if (d.fase2) {
-                                document.getElementById('contenedor-fase2').innerHTML = ['E','F'].map(g => construirGrupoLlamativo(g, d.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600')).join('');
-                            }
-                            if (Array.isArray(d.fase3)) {
-                                document.getElementById('contenedor-fase3').innerHTML = d.fase3.map((r, i) => {
-                                    const elim = i >= 4 || r.eliminado;
-                                    const nomSeg = textoSeguro(r.nombre);
-                                    const tieneEq = !esSlotPlaceholder(r.nombre);
-                                    return `
-                                        <div onclick="verVS('${nomSeg}','','FASE 3 • DESEMPEÑO')" class="flex items-center justify-between gap-2 p-2 rounded border ${elim ? 'border-red-500/35 bg-red-950/20' : 'border-emerald-500/35 bg-emerald-950/20'} cursor-pointer hover:border-white/40">
-                                            <div class="flex items-center gap-2 truncate">
-                                                <span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs ${elim ? 'bg-gradient-to-b from-red-600 to-red-800' : 'bg-gradient-to-b from-emerald-500 to-emerald-700'} text-white shrink-0 shadow">${i + 1}</span>
-                                                ${tieneEq ? `<img data-logo="${nomSeg}" src="${urlAvatar(nomSeg)}" class="w-5 h-5 rounded object-contain bg-black shrink-0">` : ''}
-                                                <span class="text-xs font-bold ${elim ? 'text-gray-400' : 'text-white'} truncate">${tieneEq ? r.nombre : 'Clasificado #' + (i + 1)}</span>
-                                            </div>
-                                            <span class="text-[8px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} shrink-0">${r.rd || (elim ? 'ELIM' : '')}</span>
-                                        </div>`;
-                                }).join('');
-                            }
-                            if (d.fase4) {
-                                const cardBO5 = (tit, m) => {
-                                    const n1 = textoSeguro(m.eq1);
-                                    const n2 = textoSeguro(m.eq2);
-                                    return `
-                                        <div onclick="verVS('${n1}','${n2}','${tit} • BO5')" class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5 cursor-pointer hover:border-vctRed transition-all">
-                                            <div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">${tit} • BO5</div>
-                                            <div class="match-pair">
-                                                <span class="vs-pill-inline">VS</span>
-                                                ${htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal' })}
-                                                ${htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal' })}
-                                            </div>
-                                        </div>`;
-                                };
-                                document.getElementById('contenedor-fase4').innerHTML = cardBO5('SEMIFINAL 1', d.fase4.sf1) + cardBO5('SEMIFINAL 2', d.fase4.sf2);
-                                if (d.final) {
-                                    document.getElementById('contenedor-fase5-final').innerHTML = cardBO5('GRAN FINAL', d.final);
-                                    const campSeg = textoSeguro(d.final.campeon || 'CAMPEÓN');
-                                    const tieneCamp = !esSlotPlaceholder(d.final.campeon);
-                                    document.getElementById('contenedor-fase5-campeon').innerHTML = `
-                                        <div onclick="verVS('${campSeg}','','CAMPEÓN COPA 5EVERMAD')" class="cursor-pointer">
-                                            <div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>
-                                            ${tieneCamp ? `<img data-logo="${campSeg}" src="${urlAvatar(campSeg)}" class="w-14 h-14 mx-auto mb-2 rounded object-contain bg-black border border-everGold">` : ''}
-                                            <span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span>
-                                            <h3 class="text-base font-black uppercase tracking-wider gold-metallic-text mt-0.5 truncate">${d.final.campeon || 'CAMPEÓN'}</h3>
-                                        </div>`;
-                                }
-                            }
-                            inyectarLogosEnDOM();
-                        }
+                // 2. Verificar si el Admin actualizó puntos, rondas, clasificados o llaves
+                const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
+                if (bd && bd.descripcion && bd.descripcion !== ultimoBracketJSON) {
+                    ultimoBracketJSON = bd.descripcion;
+                    const d = JSON.parse(bd.descripcion);
+                    if (d && d.version === '24_grupos_v1') {
+                        aplicarDatosDeBracketEnPantalla(d);
                     }
                 }
             } catch (e) {}
@@ -1186,7 +1255,7 @@
                     </div>
                 </div>
 
-                <!-- BARRA DE PREDICCIÓN DE LA ARENA -->
+                <!-- BARRA DE PREDICCIÓN EN TIEMPO REAL -->
                 <div id="panel-prediccion-dinamico"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
@@ -1203,7 +1272,10 @@
             document.getElementById('modal-vs').classList.remove('hidden');
         }
 
-        cargarDatosYLogos();
+        // Iniciar carga y activar el pulso en tiempo real cada 3.5 segundos
+        cargarEquiposIniciales();
+        pulsoEnTiempoReal();
+        setInterval(pulsoEnTiempoReal, 3500);
     </script>
 </body>
 </html>
