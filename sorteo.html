@@ -178,7 +178,6 @@
         .slot-qualified { border-left: 3px solid #22c55e !important; background: rgba(34, 197, 94, 0.1) !important; }
         .slot-eliminated { border-left: 3px solid #ef4444 !important; opacity: 0.45; }
 
-        /* Modo Póster oculta controles innecesarios para captura limpia */
         .modo-poster .ocultar-en-poster { display: none !important; }
     </style>
 </head>
@@ -586,7 +585,7 @@
 
     </main>
 
-    <!-- MODAL CARA A CARA (VS) CON VETO SINCRONIZADO Y ACTA OFICIAL -->
+    <!-- MODAL CARA A CARA (VS) CON BARRA DE PREDICCIÓN -->
     <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div id="modal-vs-box" style="background: linear-gradient(125deg, rgba(255,42,63,0.14) 0%, #08090f 45%, #08090f 55%, rgba(229,192,92,0.14) 100%);" class="border border-white/25 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[94vh] overflow-y-auto relative shadow-[0_0_60px_rgba(0,0,0,0.95)]">
             <button onclick="document.getElementById('modal-vs').classList.add('hidden')" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
@@ -729,13 +728,12 @@
 
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
-        const MAP_POOL_OFICIAL = ['Abyss', 'Ascent', 'Haven', 'Sunset', 'Split', 'Summit', 'Lotus'];
         let CANAL_TWITCH_DEFECTO = 'valorant_la';
         let equiposCargados = [];
 
-        // Diccionario en vivo de Vetos Oficiales sincronizados con Render
-        let vetosOficialesMap = {};
-        let vetoNoticiaId = null;
+        // Diccionario de Predicciones de la Comunidad
+        let prediccionesMap = JSON.parse(localStorage.getItem('5ever_predicciones_map') || '{}');
+        let prediccionesNoticiaId = null;
         let dueloActualKey = '';
         let dueloActualDatos = { nom1: '', nom2: '', fase: '' };
 
@@ -751,10 +749,6 @@
             const a = limpiarNombre(n1);
             const b = limpiarNombre(n2);
             return [a, b].sort().join('_vs_');
-        }
-
-        function esAdminActivo() {
-            return Boolean(localStorage.getItem('idToken'));
         }
 
         function esSlotPlaceholder(nombre) {
@@ -809,171 +803,50 @@
         }
 
         // =============================================================
-        // SISTEMA DE VETO GUIADO POR TURNOS + SINCRONIZACIÓN CON RENDER
+        // SISTEMA DE PREDICCIONES DE LA COMUNIDAD ("¿QUIÉN GANA?")
         // =============================================================
-        function obtenerEstadoVeto(key, n1, n2) {
-            if (!vetosOficialesMap[key]) {
-                vetosOficialesMap[key] = {
-                    eq1: n1,
-                    eq2: n2,
-                    paso: 0,
-                    bloqueado: false,
-                    moneda: '',
-                    hora: '',
-                    codigo: '5EV-' + Math.floor(1000 + Math.random() * 9000),
-                    mapas: {}, // { Ascent: { tipo: 'BAN'|'PICK 1'|'PICK 2'|'DECIDER', autor: '7z Esports' } }
-                    votos1: 1,
-                    votos2: 1
-                };
+        function obtenerPrediccionDuelo(key) {
+            if (!prediccionesMap[key]) {
+                prediccionesMap[key] = { votos1: 1, votos2: 1 };
             }
-            return vetosOficialesMap[key];
+            return prediccionesMap[key];
         }
 
-        function descripcionTurnoVeto(paso, n1, n2) {
-            const secuencia = [
-                { accion: 'BAN 1', equipo: n1, texto: `Turno de ${n1}: Banear 1 Mapa ❌` },
-                { accion: 'BAN 2', equipo: n2, texto: `Turno de ${n2}: Banear 1 Mapa ❌` },
-                { accion: 'MAPA 1', equipo: n1, texto: `Turno de ${n1}: Elegir MAPA 1 ✅` },
-                { accion: 'MAPA 2', equipo: n2, texto: `Turno de ${n2}: Elegir MAPA 2 ✅` },
-                { accion: 'BAN 3', equipo: n1, texto: `Turno de ${n1}: Banear 1 Mapa ❌` },
-                { accion: 'BAN 4', equipo: n2, texto: `Turno de ${n2}: Banear 1 Mapa ❌` }
-            ];
-            return secuencia[paso] || null;
-        }
-
-        function seleccionarMapaEnVeto(nombreMapa) {
-            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
-            if (v.bloqueado) {
-                mostrarToast('🔒 Este veto oficial ya está cerrado y bloqueado');
-                return;
-            }
-            if (v.mapas[nombreMapa]) return; // Ya fue seleccionado
-
-            const infoTurno = descripcionTurnoVeto(v.paso, dueloActualDatos.nom1, dueloActualDatos.nom2);
-            if (!infoTurno) return;
-
-            v.mapas[nombreMapa] = {
-                tipo: infoTurno.accion,
-                autor: infoTurno.equipo
-            };
-            v.paso++;
-
-            // Si ya se hicieron los 6 pasos, el 7° mapa restante queda automáticamente como MAPA 3 (DECIDER)
-            if (v.paso === 6) {
-                const restante = MAP_POOL_OFICIAL.find(m => !v.mapas[m]);
-                if (restante) {
-                    v.mapas[restante] = { tipo: 'MAPA 3 (DECIDER)', autor: 'SORTEO' };
-                }
-                const ahora = new Date();
-                v.hora = ahora.toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        async function votarEquipoVS(lado) {
+            const p = obtenerPrediccionDuelo(dueloActualKey);
+            if (lado === 1) {
+                p.votos1 = (p.votos1 || 1) + 1;
+                mostrarToast(`🔥 Votaste por ${dueloActualDatos.nom1}`);
+            } else {
+                p.votos2 = (p.votos2 || 1) + 1;
+                mostrarToast(`⚡ Votaste por ${dueloActualDatos.nom2}`);
             }
 
-            renderizarPanelVetoEnModal();
-        }
-
-        function lanzarMonedaVeto() {
-            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
-            if (v.bloqueado) {
-                mostrarToast('🔒 El veto ya está bloqueado');
-                return;
-            }
-            const ganador = Math.random() < 0.5 ? dueloActualDatos.nom1 : dueloActualDatos.nom2;
-            const lado = Math.random() < 0.5 ? 'ATACANTE (ATK)' : 'DEFENSOR (DEF)';
-            v.moneda = `🪙 Ganador sorteo: ${ganador} (${lado})`;
-            mostrarToast(v.moneda);
-            renderizarPanelVetoEnModal();
-        }
-
-        async function guardarVetoEnServidor(bloquear = true) {
-            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
-            if (bloquear && v.paso < 6) {
-                if (!confirm('Aún no se completan los 6 pasos del veto. ¿Seguro que deseas fijar y bloquear el veto así?')) return;
-            }
-            v.bloqueado = bloquear;
-            if (!v.hora) {
-                v.hora = new Date().toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            }
-            renderizarPanelVetoEnModal();
+            localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap));
+            renderizarBarraPrediccion();
 
             try {
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer pase-vip-temporal-5ever'
                 };
-                if (vetoNoticiaId) {
-                    await fetch(`${API_URL}/noticias?id=${vetoNoticiaId}`, { method: 'DELETE', headers });
+                if (prediccionesNoticiaId) {
+                    await fetch(`${API_URL}/noticias?id=${prediccionesNoticiaId}`, { method: 'DELETE', headers });
                 }
                 const res = await fetch(`${API_URL}/noticias`, {
                     method: 'POST',
                     headers,
                     body: JSON.stringify({
-                        titulo: '[VETO_DATA]',
-                        descripcion: JSON.stringify(vetosOficialesMap),
+                        titulo: '[PREDICCIONES_DATA]',
+                        descripcion: JSON.stringify(prediccionesMap),
                         imagen_url: 'HIDDEN'
                     })
                 });
                 if (res.ok) {
-                    mostrarToast(bloquear ? '🔒 Veto Oficial guardado y sincronizado en vivo' : '🔓 Veto reiniciado en el servidor');
+                    const creada = await res.json();
+                    if (creada && creada.id) prediccionesNoticiaId = creada.id;
                 }
-            } catch (e) {
-                mostrarToast('✔ Guardado localmente');
-            }
-        }
-
-        function reiniciarVetoDuelo() {
-            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
-            if (v.bloqueado && !esAdminActivo()) {
-                const pin = prompt('🔒 Veto Oficial bloqueado. Ingresa clave de Admin para desbloquear (5ever):');
-                if (!pin || pin.toLowerCase() !== '5ever') {
-                    mostrarToast('❌ Clave incorrecta');
-                    return;
-                }
-            }
-            vetosOficialesMap[dueloActualKey] = {
-                eq1: dueloActualDatos.nom1,
-                eq2: dueloActualDatos.nom2,
-                paso: 0,
-                bloqueado: false,
-                moneda: '',
-                hora: '',
-                codigo: '5EV-' + Math.floor(1000 + Math.random() * 9000),
-                mapas: {},
-                votos1: v.votos1 || 1,
-                votos2: v.votos2 || 1
-            };
-            guardarVetoEnServidor(false);
-        }
-
-        function copiarActaVetoDiscord() {
-            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
-            let m1 = 'Pendiente', m2 = 'Pendiente', m3 = 'Pendiente', bans = [];
-            Object.entries(v.mapas).forEach(([mapa, info]) => {
-                if (info.tipo === 'MAPA 1') m1 = `${mapa} (Pick ${info.autor})`;
-                else if (info.tipo === 'MAPA 2') m2 = `${mapa} (Pick ${info.autor})`;
-                else if (info.tipo.includes('MAPA 3')) m3 = `${mapa} (Decider)`;
-                else bans.push(`${mapa} (${info.autor})`);
-            });
-
-            const acta = [
-                `📜 **ACTA OFICIAL DE VETO — COPA 5EVERMAD**`,
-                `⚔️ **Enfrentamiento:** ${dueloActualDatos.nom1} vs ${dueloActualDatos.nom2} (${dueloActualDatos.fase})`,
-                `🕒 **Hora CDMX:** ${v.hora || 'En curso'} | **Cód:** #${v.codigo}`,
-                v.moneda ? `${v.moneda}` : '',
-                `❌ **Baneados:** ${bans.join(', ') || 'Ninguno'}`,
-                `✅ **MAPA 1:** ${m1}`,
-                `✅ **MAPA 2:** ${m2}`,
-                `🔥 **MAPA 3 (Decider):** ${m3}`
-            ].filter(Boolean).join('\n');
-
-            navigator.clipboard.writeText(acta);
-            mostrarToast('📋 Acta Oficial copiada. ¡Pégala en Discord!');
-        }
-
-        function votarEquipoVS(lado) {
-            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
-            if (lado === 1) v.votos1 = (v.votos1 || 1) + 1;
-            else v.votos2 = (v.votos2 || 1) + 1;
-            renderizarPanelVetoEnModal();
+            } catch (e) {}
         }
 
         function toggleModoPoster() {
@@ -981,86 +854,29 @@
             mostrarToast('📸 Modo Póster alternado (Toma tu captura)');
         }
 
-        function renderizarPanelVetoEnModal() {
-            const cont = document.getElementById('panel-veto-dinamico');
+        function renderizarBarraPrediccion() {
+            const cont = document.getElementById('panel-prediccion-dinamico');
             if (!cont) return;
 
-            const v = obtenerEstadoVeto(dueloActualKey, dueloActualDatos.nom1, dueloActualDatos.nom2);
-            const infoTurno = descripcionTurnoVeto(v.paso, dueloActualDatos.nom1, dueloActualDatos.nom2);
-
-            const totalVotos = (v.votos1 || 1) + (v.votos2 || 1);
-            const pct1 = Math.round(((v.votos1 || 1) / totalVotos) * 100);
+            const p = obtenerPrediccionDuelo(dueloActualKey);
+            const totalVotos = (p.votos1 || 1) + (p.votos2 || 1);
+            const pct1 = Math.round(((p.votos1 || 1) / totalVotos) * 100);
             const pct2 = 100 - pct1;
 
-            const tarjetasMapas = MAP_POOL_OFICIAL.map(m => {
-                const estado = v.mapas[m];
-                if (!estado) {
-                    return `
-                        <button onclick="seleccionarMapaEnVeto('${m}')" class="py-2 px-3 rounded border border-white/15 bg-black/70 hover:border-everGold text-white text-[10px] font-black uppercase tracking-wider transition-all">
-                            ${m}
-                        </button>`;
-                }
-                const esBan = estado.tipo.startsWith('BAN');
-                const esDecider = estado.tipo.includes('DECIDER');
-                const claseColor = esBan
-                    ? 'border-red-500/60 bg-red-950/60 text-red-300 opacity-75'
-                    : (esDecider ? 'border-everGold bg-amber-950/70 text-everGold shadow-[0_0_12px_rgba(229,192,92,0.4)]' : 'border-emerald-400 bg-emerald-950/70 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.35)]');
-
-                return `
-                    <div class="py-1.5 px-2.5 rounded border ${claseColor} text-center select-none">
-                        <span class="text-[10px] font-black uppercase block ${esBan ? 'line-through' : ''}">${m}</span>
-                        <span class="text-[8px] font-bold uppercase block opacity-90">${estado.tipo} • ${estado.autor.substring(0, 10)}</span>
-                    </div>`;
-            }).join('');
-
             cont.innerHTML = `
-                <!-- BARRA DE PREDICCIÓN DE LA COMUNIDAD -->
-                <div class="mb-4 bg-[#0b0d14]/90 border border-white/10 rounded-lg p-2.5 ocultar-en-poster">
-                    <div class="flex justify-between items-center text-[9px] font-black uppercase tracking-wider mb-1.5">
-                        <button onclick="votarEquipoVS(1)" class="text-vctRed hover:underline">🔥 APOYAR A ${dueloActualDatos.nom1} (${pct1}%)</button>
-                        <span class="text-gray-400">PREDICCIÓN DE LA ARENA</span>
-                        <button onclick="votarEquipoVS(2)" class="text-everGold hover:underline">APOYAR A ${dueloActualDatos.nom2} (${pct2}%) ⚡</button>
+                <div class="mb-5 bg-[#0b0d14]/95 border border-white/15 rounded-xl p-3.5 shadow-lg">
+                    <div class="flex flex-wrap justify-between items-center gap-2 text-[10px] font-black uppercase tracking-wider mb-2">
+                        <button onclick="votarEquipoVS(1)" class="bg-vctRed/15 hover:bg-vctRed text-vctRed hover:text-white border border-vctRed/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">
+                            🔥 APOYAR A ${dueloActualDatos.nom1} <span class="font-extrabold">(${pct1}%)</span>
+                        </button>
+                        <span class="text-[9px] text-gray-400 tracking-[0.2em] ocultar-en-poster">⚔️ ¿QUIÉN GANA ESTE DUELO?</span>
+                        <button onclick="votarEquipoVS(2)" class="bg-everGold/15 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">
+                            <span class="font-extrabold">(${pct2}%)</span> APOYAR A ${dueloActualDatos.nom2} ⚡
+                        </button>
                     </div>
-                    <div class="w-full h-2 bg-black rounded-full overflow-hidden flex border border-white/10">
-                        <div style="width:${pct1}%" class="bg-vctRed transition-all duration-300"></div>
-                        <div style="width:${pct2}%" class="bg-everGold transition-all duration-300"></div>
-                    </div>
-                </div>
-
-                <!-- CONSOLA DE VETO OFICIAL SINCRONIZADA -->
-                <div class="mb-5 bg-[#0b0d14]/95 border ${v.bloqueado ? 'border-emerald-500/50' : 'border-white/15'} rounded-lg p-3.5 text-center">
-                    <div class="flex flex-wrap justify-between items-center gap-2 mb-2.5 pb-2 border-b border-white/10">
-                        <div class="text-left">
-                            <span class="text-[9px] font-black uppercase tracking-widest ${v.bloqueado ? 'text-emerald-400' : 'text-everGold'} block">
-                                ${v.bloqueado ? '🔒 VETO OFICIAL CONFIRMADO Y SINCRONIZADO (CÓD #' + v.codigo + ')' : '🗺️ VETO OFICIAL PASO A PASO (BO3 • SINCRONIZADO EN VIVO)'}
-                            </span>
-                            <p class="text-[11px] font-black uppercase text-white mt-0.5">
-                                ${v.bloqueado ? ('Hora oficial de cierre: ' + (v.hora || 'Confirmado')) : (infoTurno ? infoTurno.texto : '✅ ¡Veto completado! Presiona CONFIRMAR VETO OFICIAL')}
-                            </p>
-                        </div>
-
-                        <div class="flex flex-wrap items-center gap-1.5 ocultar-en-poster">
-                            <button onclick="lanzarMonedaVeto()" class="bg-white/5 hover:bg-everGold hover:text-black border border-everGold/40 text-everGold text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-all">
-                                🪙 Moneda (ATK/DEF)
-                            </button>
-                            <button onclick="copiarActaVetoDiscord()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-all">
-                                📋 Copiar Acta Discord
-                            </button>
-                            ${!v.bloqueado ? `
-                                <button onclick="guardarVetoEnServidor(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-all">
-                                    🔒 Fijar Veto Oficial
-                                </button>
-                            ` : ''}
-                            <button onclick="reiniciarVetoDuelo()" class="bg-white/5 hover:bg-vctRed text-gray-300 hover:text-white text-[9px] font-black uppercase px-2 py-1.5 rounded transition-all" title="Reiniciar / Desbloquear (Admin)">
-                                ↺
-                            </button>
-                        </div>
-                    </div>
-
-                    ${v.moneda ? `<div class="mb-2 text-[10px] font-black text-everGold uppercase bg-everGold/10 border border-everGold/30 py-1 px-3 rounded inline-block">${v.moneda}</div>` : ''}
-
-                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 mt-1">
-                        ${tarjetasMapas}
+                    <div class="w-full h-2.5 bg-black rounded-full overflow-hidden flex border border-white/10 p-0.5">
+                        <div style="width:${pct1}%" class="bg-gradient-to-r from-red-700 to-vctRed rounded-l-full transition-all duration-300"></div>
+                        <div style="width:${pct2}%" class="bg-gradient-to-r from-amber-500 to-everGold rounded-r-full transition-all duration-300"></div>
                     </div>
                 </div>
             `;
@@ -1223,11 +1039,14 @@
                 if (Array.isArray(noticias)) {
                     noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
 
-                    // Cargar Vetos Oficiales guardados en Render
-                    const vNot = noticias.find(n => n && n.titulo === '[VETO_DATA]');
-                    if (vNot && vNot.descripcion) {
-                        vetoNoticiaId = vNot.id;
-                        try { vetosOficialesMap = JSON.parse(vNot.descripcion) || {}; } catch (e) {}
+                    // Cargar Predicciones guardadas en Render
+                    const pNot = noticias.find(n => n && n.titulo === '[PREDICCIONES_DATA]');
+                    if (pNot && pNot.descripcion) {
+                        prediccionesNoticiaId = pNot.id;
+                        try {
+                            prediccionesMap = Object.assign({}, prediccionesMap, JSON.parse(pNot.descripcion));
+                            localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap));
+                        } catch (e) {}
                     }
 
                     const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
@@ -1344,7 +1163,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="max-h-[250px] overflow-y-auto pr-1 relative z-10">${listaJug}</div>
+                        <div class="max-h-[260px] overflow-y-auto pr-1 relative z-10">${listaJug}</div>
                     </div>`;
             };
 
@@ -1367,8 +1186,8 @@
                     </div>
                 </div>
 
-                <!-- CONTENEDOR DINÁMICO DE VETO OFICIAL Y PREDICCIÓN -->
-                <div id="panel-veto-dinamico"></div>
+                <!-- BARRA DE PREDICCIÓN DE LA ARENA -->
+                <div id="panel-prediccion-dinamico"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
                     <div class="md:col-span-5">${dibujarCol(nom1, eq1, 'border-vctRed', 'border-vctRed/40')}</div>
@@ -1380,7 +1199,7 @@
                     <div class="md:col-span-5">${dibujarCol(nom2, eq2, 'border-everGold', 'border-everGold/40')}</div>
                 </div>`;
 
-            renderizarPanelVetoEnModal();
+            renderizarBarraPrediccion();
             document.getElementById('modal-vs').classList.remove('hidden');
         }
 
