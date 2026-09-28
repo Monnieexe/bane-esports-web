@@ -931,25 +931,44 @@
             }) || null;
         }
 
-        function buscarInfoSlotDuelo(n1, n2) {
-            let s1 = '', s2 = '', c1 = false, c2 = false;
-            const a = limpiarNombre(n1);
-            const b = limpiarNombre(n2);
-            const revisarGrupo = (arr) => {
-                (arr || []).forEach(slot => {
-                    const sn = limpiarNombre(slot.nombre);
-                    if (sn && sn === a) { if (slot.extra) s1 = slot.extra; c1 = Boolean(slot.checkin); }
-                    if (sn && sn === b) { if (slot.extra) s2 = slot.extra; c2 = Boolean(slot.checkin); }
-                });
-            };
-            ['A','B','C','D'].forEach(g => revisarGrupo(estadoTorneoActual.fase1?.[g]));
-            ['E','F'].forEach(g => revisarGrupo(estadoTorneoActual.fase2?.[g]));
-            [estadoTorneoActual.fase4?.sf1, estadoTorneoActual.fase4?.sf2, estadoTorneoActual.final].forEach(m => {
-                if (!m) return;
-                if (limpiarNombre(m.eq1) === a && m.score1) s1 = m.score1;
-                if (limpiarNombre(m.eq2) === b && m.score2) s2 = m.score2;
+        function encontrarEquipo(nombre) {
+            if (esSlotPlaceholder(nombre)) return null;
+            const buscado = limpiarNombre(nombre);
+            const buscadoSinDobles = buscado.replace(/(.)\1+/g, '$1'); // Une 'ryujinn' y 'ryujin'
+            const pideLotus = buscado.includes('lotus');
+            const pideBLX = buscado.includes('blx');
+
+            // 1. Prohibir que RYUJINN haga match con Ryujinn Lotus (y que Howlers haga match con Howlers BLX)
+            const candidatos = equiposCargados.filter(e => {
+                const actual = limpiarNombre(e.nombre);
+                if (!actual) return false;
+                if (pideLotus !== actual.includes('lotus')) return false;
+                if (pideBLX !== actual.includes('blx')) return false;
+                return true;
             });
-            return { s1, s2, c1, c2 };
+
+            // 2. Prioridad 1: Coincidencia 100% exacta
+            let match = candidatos.find(e => limpiarNombre(e.nombre) === buscado);
+            if (match) return match;
+
+            // 3. Prioridad 2: Coincidencia exacta aunque tenga 1 o 2 "n" (Ryujin vs Ryujinn)
+            match = candidatos.find(e => limpiarNombre(e.nombre).replace(/(.)\1+/g, '$1') === buscadoSinDobles);
+            if (match) return match;
+
+            // 4. Prioridad 3: Coincidencia parcial eligiendo el nombre de longitud más parecida
+            const parciales = candidatos.filter(e => {
+                const actual = limpiarNombre(e.nombre);
+                const actualSinDobles = actual.replace(/(.)\1+/g, '$1');
+                return actual.includes(buscado) || buscado.includes(actual) ||
+                       actualSinDobles.includes(buscadoSinDobles) || buscadoSinDobles.includes(actualSinDobles);
+            });
+
+            if (parciales.length > 0) {
+                parciales.sort((a, b) => Math.abs(limpiarNombre(a.nombre).length - buscado.length) - Math.abs(limpiarNombre(b.nombre).length - buscado.length));
+                return parciales[0];
+            }
+
+            return null;
         }
 
         function urlAvatar(nombre) {
