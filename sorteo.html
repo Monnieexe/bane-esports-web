@@ -26,7 +26,6 @@
             background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
         }
 
-        /* Modo OBS Transparente para Casters */
         body.obs-transparent {
             background: transparent !important;
             background-image: none !important;
@@ -145,7 +144,6 @@
             z-index: 5;
         }
 
-        /* Semáforo de Check-in */
         .dot-checkin-ok {
             width: 6px;
             height: 6px;
@@ -674,7 +672,7 @@
 
     </main>
 
-    <!-- MODAL CARA A CARA (VS) CON COMPARATIVA TÁCTICA, HYPE METER Y DESCARGA PNG -->
+    <!-- MODAL CARA A CARA (VS) -->
     <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div id="modal-vs-box" style="background: linear-gradient(125deg, rgba(255,42,63,0.14) 0%, #08090f 45%, #08090f 55%, rgba(229,192,92,0.14) 100%);" class="border border-white/25 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[94vh] overflow-y-auto relative shadow-[0_0_60px_rgba(0,0,0,0.95)]">
             <button onclick="document.getElementById('modal-vs').classList.add('hidden')" class="ocultar-en-poster absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
@@ -828,7 +826,7 @@
         </div>
     </div>
 
-    <!-- ALERTA FLOTANTE DE TRANSMISIÓN EN VIVO (GOLPE DE MARCADOR) -->
+    <!-- ALERTA FLOTANTE DE TRANSMISIÓN EN VIVO -->
     <div id="alerta-broadcast" class="fixed bottom-6 left-[-500px] z-50 bg-gradient-to-r from-[#0b0d14] to-[#160b11] border-l-4 border-vctRed border border-white/20 px-5 py-3.5 rounded shadow-2xl transition-all duration-500">
         <span class="text-[9px] text-vctRed font-black uppercase tracking-[0.25em] block">⚡ ACTUALIZACIÓN EN VIVO</span>
         <p id="alerta-broadcast-txt" class="text-xs font-black uppercase text-white mt-0.5"></p>
@@ -885,7 +883,6 @@
         let dueloActualDatos = { nom1: '', nom2: '', fase: '', s1: '', s2: '', c1: false, c2: false };
         let votandoEnCurso = false;
 
-        // Activar modo OBS si viene en la URL (?obs=1)
         if (new URLSearchParams(window.location.search).get('obs') === '1') {
             document.body.classList.add('obs-transparent');
         }
@@ -922,23 +919,16 @@
             return !n || /^[a-f][1-6]$/.test(n) || n.startsWith('equipo') || n.startsWith('ganador') || n.startsWith('clasificado') || n.startsWith('puesto') || n === 'campeon';
         }
 
+        // =============================================================
+        // BUSCADOR EXACTO SIN COLISIÓN ENTRE RYUJINN Y RYUJINN LOTUS
+        // =============================================================
         function encontrarEquipo(nombre) {
             if (esSlotPlaceholder(nombre)) return null;
             const buscado = limpiarNombre(nombre);
-            return equiposCargados.find(e => {
-                const actual = limpiarNombre(e.nombre);
-                return actual && (actual === buscado || actual.includes(buscado) || buscado.includes(actual));
-            }) || null;
-        }
-
-        function encontrarEquipo(nombre) {
-            if (esSlotPlaceholder(nombre)) return null;
-            const buscado = limpiarNombre(nombre);
-            const buscadoSinDobles = buscado.replace(/(.)\1+/g, '$1'); // Une 'ryujinn' y 'ryujin'
+            const buscadoSinDobles = buscado.replace(/(.)\1+/g, '$1');
             const pideLotus = buscado.includes('lotus');
             const pideBLX = buscado.includes('blx');
 
-            // 1. Prohibir que RYUJINN haga match con Ryujinn Lotus (y que Howlers haga match con Howlers BLX)
             const candidatos = equiposCargados.filter(e => {
                 const actual = limpiarNombre(e.nombre);
                 if (!actual) return false;
@@ -947,15 +937,15 @@
                 return true;
             });
 
-            // 2. Prioridad 1: Coincidencia 100% exacta
+            // 1. Coincidencia 100% exacta
             let match = candidatos.find(e => limpiarNombre(e.nombre) === buscado);
             if (match) return match;
 
-            // 3. Prioridad 2: Coincidencia exacta aunque tenga 1 o 2 "n" (Ryujin vs Ryujinn)
+            // 2. Coincidencia ignorando letras dobles (ej. Ryujinn vs Ryujin)
             match = candidatos.find(e => limpiarNombre(e.nombre).replace(/(.)\1+/g, '$1') === buscadoSinDobles);
             if (match) return match;
 
-            // 4. Prioridad 3: Coincidencia parcial eligiendo el nombre de longitud más parecida
+            // 3. Coincidencia parcial segura eligiendo la longitud más parecida
             const parciales = candidatos.filter(e => {
                 const actual = limpiarNombre(e.nombre);
                 const actualSinDobles = actual.replace(/(.)\1+/g, '$1');
@@ -969,6 +959,27 @@
             }
 
             return null;
+        }
+
+        function buscarInfoSlotDuelo(n1, n2) {
+            let s1 = '', s2 = '', c1 = false, c2 = false;
+            const a = limpiarNombre(n1).replace(/(.)\1+/g, '$1');
+            const b = limpiarNombre(n2).replace(/(.)\1+/g, '$1');
+            const revisarGrupo = (arr) => {
+                (arr || []).forEach(slot => {
+                    const sn = limpiarNombre(slot.nombre).replace(/(.)\1+/g, '$1');
+                    if (sn && sn === a) { if (slot.extra) s1 = slot.extra; c1 = Boolean(slot.checkin); }
+                    if (sn && sn === b) { if (slot.extra) s2 = slot.extra; c2 = Boolean(slot.checkin); }
+                });
+            };
+            ['A','B','C','D'].forEach(g => revisarGrupo(estadoTorneoActual.fase1?.[g]));
+            ['E','F'].forEach(g => revisarGrupo(estadoTorneoActual.fase2?.[g]));
+            [estadoTorneoActual.fase4?.sf1, estadoTorneoActual.fase4?.sf2, estadoTorneoActual.final].forEach(m => {
+                if (!m) return;
+                if (limpiarNombre(m.eq1).replace(/(.)\1+/g, '$1') === a && m.score1) s1 = m.score1;
+                if (limpiarNombre(m.eq2).replace(/(.)\1+/g, '$1') === b && m.score2) s2 = m.score2;
+            });
+            return { s1, s2, c1, c2 };
         }
 
         function urlAvatar(nombre) {
@@ -1015,9 +1026,6 @@
             }
         }
 
-        // =============================================================
-        // TABLA DE POSICIONES Y CHECK-IN
-        // =============================================================
         function abrirModalPosiciones() {
             const cont = document.getElementById('contenido-tabla-posiciones');
             const renderTablaGrupo = (letra, slots, colorTit) => {
@@ -1086,9 +1094,6 @@
             document.getElementById('modal-mvp').classList.remove('hidden');
         }
 
-        // =============================================================
-        // PREDICCIONES + REACCIONES EN TIEMPO REAL (HYPE METER)
-        // =============================================================
         function obtenerPrediccionDuelo(key) {
             if (!prediccionesMap[key]) {
                 prediccionesMap[key] = { votos1: 1, votos2: 1, reac: { hype: 0, clutch: 0, stomp: 0, partidazo: 0 } };
@@ -1220,7 +1225,6 @@
                         <div style="width:${pct2}%" class="bg-gradient-to-r from-amber-500 to-everGold rounded-r-full transition-all duration-500"></div>
                     </div>
 
-                    <!-- REACCIONES RÁPIDAS EN VIVO (HYPE METER) -->
                     <div class="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap justify-center items-center gap-2 ocultar-en-poster">
                         <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest mr-1">REACCIONES EN VIVO:</span>
                         <button onclick="enviarReaccionDuelo('hype')" class="bg-white/5 hover:bg-vctRed/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🔥 Hype (${r.hype || 0})</button>
@@ -1232,7 +1236,6 @@
             `;
         }
 
-        // RELOJ CUENTA REGRESIVA + RELOJ DE TOLERANCIA 10 MIN
         function actualizarRelojTorneo() {
             const ahora = new Date();
             const cdmxStr = ahora.toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
@@ -1267,7 +1270,6 @@
                 }
             }
 
-            // Verificar Reloj Oficial de Tolerancia Anti No-Show
             const barraTol = document.getElementById('barra-tolerancia-oficial');
             const finTol = Number(estadoTorneoActual.toleranciaFin || 0);
             if (finTol > 0) {
@@ -1544,7 +1546,9 @@
 
             let opcionesRival = `<option value="">-- Cambiar rival para comparar VS --</option>`;
             todosNombres.forEach(n => {
-                const sel = (nom2 && limpiarNombre(n) === limpiarNombre(nom2)) ? 'selected' : '';
+                const eqRival = encontrarEquipo(nom2);
+                const nombreComparar = eqRival ? eqRival.nombre : nom2;
+                const sel = (nombreComparar && limpiarNombre(n) === limpiarNombre(nombreComparar)) ? 'selected' : '';
                 opcionesRival += `<option value="${textoSeguro(n)}" ${sel}>${n}</option>`;
             });
 
@@ -1596,7 +1600,6 @@
             const faseSeg = textoSeguro(fase);
             const tieneMarcador = info.s1 !== '' || info.s2 !== '';
 
-            // Datos para Tale of the Tape (Comparativa Táctica)
             const count1 = (eq1 && Array.isArray(eq1.jugadores)) ? eq1.jugadores.length : 5;
             const count2 = (eq2 && Array.isArray(eq2.jugadores)) ? eq2.jugadores.length : 5;
 
@@ -1632,7 +1635,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
                     <div class="md:col-span-5">${dibujarCol(nom1, eq1, 'border-vctRed', 'border-vctRed/40', gana1, info.c1)}</div>
                     <div class="md:col-span-1 flex flex-col items-center justify-center py-2">
-                        ${tieneMarcador ? `<div class="mb-2 bg-black border border-everGold/50 px-3 py-1 rounded text-sm font-black text-everGold shadow-lg">${info.s1 || '0'} : ${info.s2 || '0'}</div>` : ''}
+                        ${tieneMarcador ? `<div class="mb-2 bg-black border border-everGold/50 px-3 py-1 rounded text-sm font-black text-everGold shadow-lg">${info.s1 \vert{}\vert{} '0'} :${info.s2 || '0'}</div>` : ''}
                         <div class="vs-neon-badge w-14 h-14 rounded-full bg-gradient-to-br from-vctRed to-red-900 border-2 border-white flex items-center justify-center font-black text-sm text-white">
                             VS
                         </div>
