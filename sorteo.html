@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Copa 5EverMad | Valorant Tournament 24 Equipos</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         tailwind.config = {
             theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#05060a' } } }
@@ -29,10 +28,6 @@
         body.obs-transparent {
             background: transparent !important;
             background-image: none !important;
-        }
-        body.obs-transparent .vct-bg-watermark,
-        body.obs-transparent header {
-            background: rgba(5, 6, 10, 0.75) !important;
         }
 
         .vct-bg-watermark {
@@ -292,7 +287,7 @@
 
         </div>
 
-        <!-- CRONÓMETRO OFICIAL DE TOLERANCIA 10 MINUTOS (ANTI NO-SHOW) -->
+        <!-- CRONÓMETRO OFICIAL DE TOLERANCIA 10 MINUTOS -->
         <div id="barra-tolerancia-oficial" class="hidden bg-gradient-to-r from-amber-600/95 via-red-600/95 to-amber-600/95 border-t border-white/25 py-2 px-4 text-center shadow-lg">
             <p class="text-xs font-black uppercase tracking-[0.2em] text-white flex items-center justify-center gap-2">
                 <span>🚨 RELOJ OFICIAL DE TOLERANCIA (ANTI NO-SHOW):</span>
@@ -317,7 +312,7 @@
                 <span class="flex items-center gap-1.5 text-yellow-400/80"><span class="dot-checkin-wait"></span> Check-in Pendiente</span>
                 <span class="text-everGold">🔥 Invicto / Líder</span>
             </div>
-            <span>Haz clic en cualquier enfrentamiento <b class="text-vctRed">VS</b> para votar, reaccionar y descargar el póster PNG</span>
+            <span>Haz clic en cualquier enfrentamiento <b class="text-vctRed">VS</b> para abrir el Cara a Cara, votar y copiar Riot IDs</span>
         </div>
 
         <!-- PANEL DESPLEGABLE DE STREAM -->
@@ -840,7 +835,13 @@
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
         let CANAL_TWITCH_DEFECTO = 'valorant_la';
+
+        // Precargar rosters desde caché local para que el Cara a Cara abra al instante (0ms)
         let equiposCargados = [];
+        try {
+            const cacheGuardado = sessionStorage.getItem('5ever_equipos_cache');
+            if (cacheGuardado) equiposCargados = JSON.parse(cacheGuardado) || [];
+        } catch (e) {}
 
         let estadoTorneoActual = {
             version: '24_grupos_v1',
@@ -920,16 +921,16 @@
         }
 
         // =============================================================
-        // BUSCADOR EXACTO SIN COLISIÓN ENTRE RYUJINN Y RYUJINN LOTUS
+        // BUSCADOR EXACTO: SEPARA RYUJINN DE RYUJINN LOTUS Y HOWLERS DE HOWLERS BLX
         // =============================================================
         function encontrarEquipo(nombre) {
             if (esSlotPlaceholder(nombre)) return null;
             const buscado = limpiarNombre(nombre);
-            const buscadoSinDobles = buscado.replace(/(.)\1+/g, '$1');
             const pideLotus = buscado.includes('lotus');
             const pideBLX = buscado.includes('blx');
 
             const candidatos = equiposCargados.filter(e => {
+                if (!e || !e.nombre) return false;
                 const actual = limpiarNombre(e.nombre);
                 if (!actual) return false;
                 if (pideLotus !== actual.includes('lotus')) return false;
@@ -937,48 +938,43 @@
                 return true;
             });
 
-            // 1. Coincidencia 100% exacta
+            // 1. Coincidencia exacta
             let match = candidatos.find(e => limpiarNombre(e.nombre) === buscado);
             if (match) return match;
 
-            // 2. Coincidencia ignorando letras dobles (ej. Ryujinn vs Ryujin)
-            match = candidatos.find(e => limpiarNombre(e.nombre).replace(/(.)\1+/g, '$1') === buscadoSinDobles);
+            // 2. Coincidencia ignorando si tiene 1 o 2 "n" (Ryujin vs Ryujinn)
+            const bSimple = buscado.replace(/n+/g, 'n');
+            match = candidatos.find(e => limpiarNombre(e.nombre).replace(/n+/g, 'n') === bSimple);
             if (match) return match;
 
-            // 3. Coincidencia parcial segura eligiendo la longitud más parecida
-            const parciales = candidatos.filter(e => {
+            // 3. Coincidencia parcial segura
+            return candidatos.find(e => {
                 const actual = limpiarNombre(e.nombre);
-                const actualSinDobles = actual.replace(/(.)\1+/g, '$1');
-                return actual.includes(buscado) || buscado.includes(actual) ||
-                       actualSinDobles.includes(buscadoSinDobles) || buscadoSinDobles.includes(actualSinDobles);
-            });
-
-            if (parciales.length > 0) {
-                parciales.sort((a, b) => Math.abs(limpiarNombre(a.nombre).length - buscado.length) - Math.abs(limpiarNombre(b.nombre).length - buscado.length));
-                return parciales[0];
-            }
-
-            return null;
+                return actual.includes(buscado) || buscado.includes(actual);
+            }) || null;
         }
 
         function buscarInfoSlotDuelo(n1, n2) {
             let s1 = '', s2 = '', c1 = false, c2 = false;
-            const a = limpiarNombre(n1).replace(/(.)\1+/g, '$1');
-            const b = limpiarNombre(n2).replace(/(.)\1+/g, '$1');
-            const revisarGrupo = (arr) => {
-                (arr || []).forEach(slot => {
-                    const sn = limpiarNombre(slot.nombre).replace(/(.)\1+/g, '$1');
-                    if (sn && sn === a) { if (slot.extra) s1 = slot.extra; c1 = Boolean(slot.checkin); }
-                    if (sn && sn === b) { if (slot.extra) s2 = slot.extra; c2 = Boolean(slot.checkin); }
+            try {
+                const a = limpiarNombre(n1).replace(/n+/g, 'n');
+                const b = limpiarNombre(n2).replace(/n+/g, 'n');
+                const revisarGrupo = (arr) => {
+                    (arr || []).forEach(slot => {
+                        if (!slot || !slot.nombre) return;
+                        const sn = limpiarNombre(slot.nombre).replace(/n+/g, 'n');
+                        if (sn && sn === a) { if (slot.extra) s1 = slot.extra; c1 = Boolean(slot.checkin); }
+                        if (sn && sn === b) { if (slot.extra) s2 = slot.extra; c2 = Boolean(slot.checkin); }
+                    });
+                };
+                ['A','B','C','D'].forEach(g => revisarGrupo(estadoTorneoActual.fase1?.[g]));
+                ['E','F'].forEach(g => revisarGrupo(estadoTorneoActual.fase2?.[g]));
+                [estadoTorneoActual.fase4?.sf1, estadoTorneoActual.fase4?.sf2, estadoTorneoActual.final].forEach(m => {
+                    if (!m) return;
+                    if (limpiarNombre(m.eq1).replace(/n+/g, 'n') === a && m.score1) s1 = m.score1;
+                    if (limpiarNombre(m.eq2).replace(/n+/g, 'n') === b && m.score2) s2 = m.score2;
                 });
-            };
-            ['A','B','C','D'].forEach(g => revisarGrupo(estadoTorneoActual.fase1?.[g]));
-            ['E','F'].forEach(g => revisarGrupo(estadoTorneoActual.fase2?.[g]));
-            [estadoTorneoActual.fase4?.sf1, estadoTorneoActual.fase4?.sf2, estadoTorneoActual.final].forEach(m => {
-                if (!m) return;
-                if (limpiarNombre(m.eq1).replace(/(.)\1+/g, '$1') === a && m.score1) s1 = m.score1;
-                if (limpiarNombre(m.eq2).replace(/(.)\1+/g, '$1') === b && m.score2) s2 = m.score2;
-            });
+            } catch (e) {}
             return { s1, s2, c1, c2 };
         }
 
@@ -1040,7 +1036,7 @@
                         <div class="flex items-center justify-between py-1.5 px-2.5 border-b border-white/5 text-xs">
                             <div class="flex items-center gap-2 truncate">
                                 <span class="text-[10px] font-black text-gray-500 w-4">${idx + 1}.</span>
-                                <span class="${s.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait'}" title="${s.checkin ? 'Check-in OK' : 'Pendiente'}"></span>
+                                <span class="${s.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait'}"></span>
                                 <img src="${logo}" class="w-5 h-5 rounded object-contain bg-black shrink-0">
                                 <span class="font-bold text-white truncate">${s.nombre}</span>
                             </div>
@@ -1173,25 +1169,7 @@
 
         function toggleModoPoster() {
             document.getElementById('modal-vs-box').classList.toggle('modo-poster');
-            mostrarToast('📸 Modo Póster alternado');
-        }
-
-        async function descargarPosterPNG() {
-            const box = document.getElementById('modal-vs-box');
-            box.classList.add('modo-poster');
-            mostrarToast('⏳ Generando imagen PNG del duelo...');
-            try {
-                const canvas = await html2canvas(box, { backgroundColor: '#08090f', useCORS: true, scale: 2 });
-                const link = document.createElement('a');
-                link.download = `VS_${limpiarNombre(dueloActualDatos.nom1)}_${limpiarNombre(dueloActualDatos.nom2)}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                mostrarToast('📥 ¡Póster PNG descargado!');
-            } catch (e) {
-                mostrarToast('📸 Usa captura de pantalla en Modo Póster');
-            } finally {
-                box.classList.remove('modo-poster');
-            }
+            mostrarToast('📸 Modo Póster alternado (Toma tu captura)');
         }
 
         function renderizarBarraPrediccion() {
@@ -1472,25 +1450,42 @@
             inyectarLogosEnDOM();
         }
 
+        // =============================================================
+        // CARGA RÁPIDA CON CACHÉ Y REFRESCO AUTOMÁTICO SI EL MODAL ESTÁ ABIERTO
+        // =============================================================
         async function cargarEquiposIniciales() {
+            if (equiposCargados.length > 0) {
+                inyectarLogosEnDOM();
+            }
             try {
-                const res = await fetch(`${API_URL}/equipos?t=${Date.now()}`, { cache: 'no-store' });
+                const res = await fetch(API_URL + '/equipos');
                 const data = await res.json();
                 if (Array.isArray(data) && data.length > 0) {
                     equiposCargados = data;
                     inyectarLogosEnDOM();
+
+                    // Guardar copia ligera en sessionStorage para aperturas en 0.0s
+                    try { sessionStorage.setItem('5ever_equipos_cache', JSON.stringify(data)); } catch (e) {}
+
+                    // Si el usuario ya tenía abierto el Cara a Cara esperando los rosters, actualizarlo de inmediato
+                    if (!document.getElementById('modal-vs').classList.contains('hidden') && dueloActualDatos.nom1) {
+                        verVS(dueloActualDatos.nom1, dueloActualDatos.nom2, dueloActualDatos.fase);
+                    }
                 } else {
-                    setTimeout(cargarEquiposIniciales, 4000);
+                    setTimeout(cargarEquiposIniciales, 3500);
                 }
             } catch (err) {
-                setTimeout(cargarEquiposIniciales, 4000);
+                setTimeout(cargarEquiposIniciales, 3500);
             }
+
+            // Iniciar sincronización de marcadores y votos una vez lista la petición de equipos
+            pulsoEnTiempoReal();
         }
 
         async function pulsoEnTiempoReal() {
             if (votandoEnCurso) return;
             try {
-                const resNot = await fetch(`${API_URL}/noticias?t=${Date.now()}`, { cache: 'no-store' });
+                const resNot = await fetch(API_URL + '/noticias');
                 if (!resNot.ok) return;
                 const noticias = await resNot.json();
                 if (!Array.isArray(noticias)) return;
@@ -1519,9 +1514,6 @@
                     const d = JSON.parse(bd.descripcion);
                     if (d && d.version === '24_grupos_v1') {
                         aplicarDatosDeBracketEnPantalla(d, !eraPrimeraCarga);
-                        if (!eraPrimeraCarga) {
-                            dispararAlertaBroadcast('Tablero y marcadores actualizados en tiempo real');
-                        }
                     }
                 }
             } catch (e) {}
@@ -1546,9 +1538,8 @@
 
             let opcionesRival = `<option value="">-- Cambiar rival para comparar VS --</option>`;
             todosNombres.forEach(n => {
-                const eqRival = encontrarEquipo(nom2);
-                const nombreComparar = eqRival ? eqRival.nombre : nom2;
-                const sel = (nombreComparar && limpiarNombre(n) === limpiarNombre(nombreComparar)) ? 'selected' : '';
+                const eqRival = eq2 ? eq2.nombre : nom2;
+                const sel = (eqRival && limpiarNombre(n) === limpiarNombre(eqRival)) ? 'selected' : '';
                 opcionesRival += `<option value="${textoSeguro(n)}" ${sel}>${n}</option>`;
             });
 
@@ -1573,7 +1564,7 @@
                             </div>
                         </div>`;
                     }).join('')
-                    : `<p class="text-[10px] text-gray-400 uppercase tracking-widest py-6 text-center relative z-10">Cargando roster...</p>`;
+                    : `<p class="text-[10px] text-gray-400 uppercase tracking-widest py-6 text-center relative z-10">Sincronizando integrantes del roster...</p>`;
 
                 return `
                     <div class="bg-[#0b0d15]/90 border ${esGanador ? 'border-everGold shadow-[0_0_25px_rgba(229,192,92,0.25)]' : colorGlow} rounded-xl p-5 relative overflow-hidden">
@@ -1610,19 +1601,16 @@
                         <h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider">⚔️ ${nom1} <span class="text-vctRed mx-2">VS</span> ${nom2 || 'RIVAL'}</h3>
                     </div>
                     <div class="flex flex-wrap items-center gap-2 w-full md:w-auto ocultar-en-poster">
-                        <button onclick="descargarPosterPNG()" class="bg-everGold hover:bg-white text-black text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0 transition-all">
-                            📥 Descargar PNG
-                        </button>
                         <button onclick="toggleModoPoster()" class="bg-white/5 hover:bg-white/15 border border-white/20 text-white text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0">
                             📸 Modo Póster
                         </button>
-                        <select onchange="verVS('${n1Seg}', this.value, '${faseSeg}')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-52 outline-none">
+                        <select onchange="verVS('${n1Seg}', this.value, '${faseSeg}')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-56 outline-none">
                             ${opcionesRival}
                         </select>
                     </div>
                 </div>
 
-                <!-- COMPARATIVA TÁCTICA (TALE OF THE TAPE) -->
+                <!-- COMPARATIVA TÁCTICA -->
                 <div class="grid grid-cols-3 gap-2 bg-black/60 border border-white/10 rounded-lg p-2.5 mb-4 text-center text-[10px] font-bold">
                     <div class="${info.c1 ? 'text-emerald-400' : 'text-yellow-400'}">${info.c1 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente'} • ${count1} Jug.</div>
                     <div class="text-gray-400 font-black uppercase tracking-widest">⚡ COMPARATIVA TÁCTICA</div>
@@ -1648,8 +1636,7 @@
         }
 
         cargarEquiposIniciales();
-        pulsoEnTiempoReal();
-        setInterval(pulsoEnTiempoReal, 3500);
+        setInterval(pulsoEnTiempoReal, 8000);
     </script>
 </body>
 </html>
