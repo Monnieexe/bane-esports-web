@@ -312,7 +312,7 @@
                 <span class="flex items-center gap-1.5 text-yellow-400/80"><span class="dot-checkin-wait"></span> Check-in Pendiente</span>
                 <span class="text-everGold">🔥 Invicto / Líder</span>
             </div>
-            <span>Haz clic en cualquier enfrentamiento <b class="text-vctRed">VS</b> para abrir el Cara a Cara, votar y copiar Riot IDs</span>
+            <span id="indicador-carga-equipos" class="text-everGold font-black">⚡ Haz clic en cualquier enfrentamiento VS para abrir el Cara a Cara</span>
         </div>
 
         <!-- PANEL DESPLEGABLE DE STREAM -->
@@ -836,12 +836,19 @@
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
         let CANAL_TWITCH_DEFECTO = 'valorant_la';
 
-        // Precargar rosters desde caché local para que el Cara a Cara abra al instante (0ms)
-        let equiposCargados = [];
-        try {
-            const cacheGuardado = sessionStorage.getItem('5ever_equipos_cache');
-            if (cacheGuardado) equiposCargados = JSON.parse(cacheGuardado) || [];
-        } catch (e) {}
+        function leerJSONSeguro(storage, key, fallback) {
+            try {
+                const raw = storage.getItem(key);
+                if (!raw) return fallback;
+                const parsed = JSON.parse(raw);
+                return parsed && typeof parsed === 'object' ? parsed : fallback;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        let equiposCargados = leerJSONSeguro(sessionStorage, '5ever_equipos_cache', []);
+        if (!Array.isArray(equiposCargados)) equiposCargados = [];
 
         let estadoTorneoActual = {
             version: '24_grupos_v1',
@@ -875,8 +882,8 @@
             final: { eq1: 'Ganador SF1', eq2: 'Ganador SF2', score1: '', score2: '', campeon: 'CAMPEÓN' }
         };
 
-        let prediccionesMap = JSON.parse(localStorage.getItem('5ever_predicciones_map') || '{}');
-        let misVotosLocal = JSON.parse(localStorage.getItem('5ever_mis_votos') || '{}');
+        let prediccionesMap = leerJSONSeguro(localStorage, '5ever_predicciones_map', {});
+        let misVotosLocal = leerJSONSeguro(localStorage, '5ever_mis_votos', {});
         let prediccionesNoticiaId = null;
         let ultimoBracketJSON = '';
         let ultimasPrediccionesJSON = '';
@@ -884,14 +891,16 @@
         let dueloActualDatos = { nom1: '', nom2: '', fase: '', s1: '', s2: '', c1: false, c2: false };
         let votandoEnCurso = false;
 
-        if (new URLSearchParams(window.location.search).get('obs') === '1') {
-            document.body.classList.add('obs-transparent');
-        }
+        try {
+            if (new URLSearchParams(window.location.search).get('obs') === '1') {
+                document.body.classList.add('obs-transparent');
+            }
+        } catch (e) {}
 
-        function toggleModoOBS() {
+        window.toggleModoOBS = function() {
             document.body.classList.toggle('obs-transparent');
             mostrarToast('🎥 Modo OBS / Caster alternado');
-        }
+        };
 
         function limpiarNombre(txt) {
             return String(txt || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
@@ -921,7 +930,7 @@
         }
 
         // =============================================================
-        // BUSCADOR EXACTO: SEPARA RYUJINN DE RYUJINN LOTUS Y HOWLERS DE HOWLERS BLX
+        // BUSCADOR EXACTO: SEPARA RYUJINN DE RYUJINN LOTUS
         // =============================================================
         function encontrarEquipo(nombre) {
             if (esSlotPlaceholder(nombre)) return null;
@@ -929,7 +938,7 @@
             const pideLotus = buscado.includes('lotus');
             const pideBLX = buscado.includes('blx');
 
-            const candidatos = equiposCargados.filter(e => {
+            const candidatos = equiposCargados.filter(function(e) {
                 if (!e || !e.nombre) return false;
                 const actual = limpiarNombre(e.nombre);
                 if (!actual) return false;
@@ -938,17 +947,14 @@
                 return true;
             });
 
-            // 1. Coincidencia exacta
-            let match = candidatos.find(e => limpiarNombre(e.nombre) === buscado);
+            let match = candidatos.find(function(e) { return limpiarNombre(e.nombre) === buscado; });
             if (match) return match;
 
-            // 2. Coincidencia ignorando si tiene 1 o 2 "n" (Ryujin vs Ryujinn)
             const bSimple = buscado.replace(/n+/g, 'n');
-            match = candidatos.find(e => limpiarNombre(e.nombre).replace(/n+/g, 'n') === bSimple);
+            match = candidatos.find(function(e) { return limpiarNombre(e.nombre).replace(/n+/g, 'n') === bSimple; });
             if (match) return match;
 
-            // 3. Coincidencia parcial segura
-            return candidatos.find(e => {
+            return candidatos.find(function(e) {
                 const actual = limpiarNombre(e.nombre);
                 return actual.includes(buscado) || buscado.includes(actual);
             }) || null;
@@ -959,23 +965,23 @@
             try {
                 const a = limpiarNombre(n1).replace(/n+/g, 'n');
                 const b = limpiarNombre(n2).replace(/n+/g, 'n');
-                const revisarGrupo = (arr) => {
-                    (arr || []).forEach(slot => {
+                const revisarGrupo = function(arr) {
+                    (arr || []).forEach(function(slot) {
                         if (!slot || !slot.nombre) return;
                         const sn = limpiarNombre(slot.nombre).replace(/n+/g, 'n');
                         if (sn && sn === a) { if (slot.extra) s1 = slot.extra; c1 = Boolean(slot.checkin); }
                         if (sn && sn === b) { if (slot.extra) s2 = slot.extra; c2 = Boolean(slot.checkin); }
                     });
                 };
-                ['A','B','C','D'].forEach(g => revisarGrupo(estadoTorneoActual.fase1?.[g]));
-                ['E','F'].forEach(g => revisarGrupo(estadoTorneoActual.fase2?.[g]));
-                [estadoTorneoActual.fase4?.sf1, estadoTorneoActual.fase4?.sf2, estadoTorneoActual.final].forEach(m => {
+                ['A','B','C','D'].forEach(function(g) { revisarGrupo(estadoTorneoActual.fase1 && estadoTorneoActual.fase1[g]); });
+                ['E','F'].forEach(function(g) { revisarGrupo(estadoTorneoActual.fase2 && estadoTorneoActual.fase2[g]); });
+                [estadoTorneoActual.fase4 && estadoTorneoActual.fase4.sf1, estadoTorneoActual.fase4 && estadoTorneoActual.fase4.sf2, estadoTorneoActual.final].forEach(function(m) {
                     if (!m) return;
                     if (limpiarNombre(m.eq1).replace(/n+/g, 'n') === a && m.score1) s1 = m.score1;
                     if (limpiarNombre(m.eq2).replace(/n+/g, 'n') === b && m.score2) s2 = m.score2;
                 });
             } catch (e) {}
-            return { s1, s2, c1, c2 };
+            return { s1: s1, s2: s2, c1: c1, c2: c2 };
         }
 
         function urlAvatar(nombre) {
@@ -985,28 +991,30 @@
 
         function mostrarToast(msg) {
             const toast = document.getElementById('toast-copy');
+            if (!toast) return;
             document.getElementById('toast-copy-text').innerText = msg;
             toast.style.right = '24px';
-            setTimeout(() => { toast.style.right = '-450px'; }, 3000);
+            setTimeout(function() { toast.style.right = '-450px'; }, 3000);
         }
 
         function dispararAlertaBroadcast(texto) {
             const b = document.getElementById('alerta-broadcast');
+            if (!b) return;
             document.getElementById('alerta-broadcast-txt').innerText = texto;
             b.style.left = '24px';
-            setTimeout(() => { b.style.left = '-500px'; }, 4500);
+            setTimeout(function() { b.style.left = '-500px'; }, 4500);
         }
 
-        function copiarDato(texto) {
+        window.copiarDato = function(texto) {
             if (!texto) return;
             navigator.clipboard.writeText(texto);
             mostrarToast('✔ Copiado: ' + texto);
-        }
+        };
 
-        function abrirModalReglas() { document.getElementById('modal-reglas').classList.remove('hidden'); }
-        function cerrarModalReglas() { document.getElementById('modal-reglas').classList.add('hidden'); }
+        window.abrirModalReglas = function() { document.getElementById('modal-reglas').classList.remove('hidden'); };
+        window.cerrarModalReglas = function() { document.getElementById('modal-reglas').classList.add('hidden'); };
 
-        function cambiarTabReglas(tabId) {
+        window.cambiarTabReglas = function(tabId) {
             document.getElementById('tab-fechas').classList.add('hidden');
             document.getElementById('tab-canales').classList.add('hidden');
             document.getElementById(tabId).classList.remove('hidden');
@@ -1020,75 +1028,66 @@
                 b2.className = 'bg-vctRed text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded transition-all';
                 b1.className = 'bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded transition-all';
             }
-        }
+        };
 
-        function abrirModalPosiciones() {
+        window.abrirModalPosiciones = function() {
             const cont = document.getElementById('contenido-tabla-posiciones');
-            const renderTablaGrupo = (letra, slots, colorTit) => {
-                const filas = (slots || []).map((s, idx) => {
+            const renderTablaGrupo = function(letra, slots, colorTit) {
+                const filas = (slots || []).map(function(s, idx) {
                     const badge = s.estado === 'clasificado'
                         ? '<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[8px] font-black px-2 py-0.5 rounded uppercase">✔ Avanza</span>'
                         : (s.estado === 'eliminado' ? '<span class="bg-red-500/20 text-red-400 border border-red-500/40 text-[8px] font-black px-2 py-0.5 rounded uppercase">✕ Elim</span>' : '<span class="text-[8px] text-gray-500 font-bold uppercase">En juego</span>');
                     const nSeg = textoSeguro(s.nombre);
                     const eq = encontrarEquipo(s.nombre);
                     const logo = (eq && eq.logo_url) ? eq.logo_url : urlAvatar(nSeg);
-                    return `
-                        <div class="flex items-center justify-between py-1.5 px-2.5 border-b border-white/5 text-xs">
-                            <div class="flex items-center gap-2 truncate">
-                                <span class="text-[10px] font-black text-gray-500 w-4">${idx + 1}.</span>
-                                <span class="${s.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait'}"></span>
-                                <img src="${logo}" class="w-5 h-5 rounded object-contain bg-black shrink-0">
-                                <span class="font-bold text-white truncate">${s.nombre}</span>
-                            </div>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <span class="text-[10px] font-black text-everGold">${s.extra || '-'}</span>
-                                ${badge}
-                            </div>
-                        </div>`;
+                    return '<div class="flex items-center justify-between py-1.5 px-2.5 border-b border-white/5 text-xs">' +
+                            '<div class="flex items-center gap-2 truncate">' +
+                                '<span class="text-[10px] font-black text-gray-500 w-4">' + (idx + 1) + '.</span>' +
+                                '<span class="' + (s.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait') + '"></span>' +
+                                '<img src="' + logo + '" class="w-5 h-5 rounded object-contain bg-black shrink-0">' +
+                                '<span class="font-bold text-white truncate">' + s.nombre + '</span>' +
+                            '</div>' +
+                            '<div class="flex items-center gap-2 shrink-0">' +
+                                '<span class="text-[10px] font-black text-everGold">' + (s.extra || '-') + '</span>' +
+                                badge +
+                            '</div>' +
+                        '</div>';
                 }).join('');
-                return `
-                    <div class="bg-[#0c0e16] border border-white/10 rounded-lg overflow-hidden">
-                        <div class="${colorTit} py-1.5 px-3 font-black text-[10px] uppercase text-white flex justify-between">
-                            <span>GRUPO ${letra}</span><span>PTS / ESTADO</span>
-                        </div>
-                        <div class="p-2">${filas}</div>
-                    </div>`;
+                return '<div class="bg-[#0c0e16] border border-white/10 rounded-lg overflow-hidden">' +
+                        '<div class="' + colorTit + ' py-1.5 px-3 font-black text-[10px] uppercase text-white flex justify-between">' +
+                            '<span>GRUPO ' + letra + '</span><span>PTS / ESTADO</span>' +
+                        '</div>' +
+                        '<div class="p-2">' + filas + '</div>' +
+                    '</div>';
             };
 
-            const f1Html = ['A','B','C','D'].map(g => renderTablaGrupo(g, estadoTorneoActual.fase1?.[g], 'bg-gradient-to-r from-red-800 to-red-600')).join('');
-            const f2Html = ['E','F'].map(g => renderTablaGrupo(g, estadoTorneoActual.fase2?.[g], 'bg-gradient-to-r from-blue-800 to-blue-600')).join('');
+            const f1Html = ['A','B','C','D'].map(function(g) { return renderTablaGrupo(g, estadoTorneoActual.fase1 && estadoTorneoActual.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600'); }).join('');
+            const f2Html = ['E','F'].map(function(g) { return renderTablaGrupo(g, estadoTorneoActual.fase2 && estadoTorneoActual.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600'); }).join('');
 
-            cont.innerHTML = `
-                <div>
-                    <h4 class="text-xs font-black uppercase text-vctRed tracking-widest mb-3">FASE 1 • GRUPOS INICIALES (24 EQUIPOS)</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">${f1Html}</div>
-                </div>
-                <div>
-                    <h4 class="text-xs font-black uppercase text-blue-400 tracking-widest mb-3">FASE 2 • SEGUNDA RONDA DE GRUPOS (12 EQUIPOS)</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${f2Html}</div>
-                </div>`;
+            cont.innerHTML = '<div><h4 class="text-xs font-black uppercase text-vctRed tracking-widest mb-3">FASE 1 • GRUPOS INICIALES (24 EQUIPOS)</h4><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">' + f1Html + '</div></div>' +
+                             '<div><h4 class="text-xs font-black uppercase text-blue-400 tracking-widest mb-3">FASE 2 • SEGUNDA RONDA DE GRUPOS (12 EQUIPOS)</h4><div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' + f2Html + '</div></div>';
             document.getElementById('modal-posiciones').classList.remove('hidden');
-        }
+        };
 
-        function abrirModalMVP() {
+        window.abrirModalMVP = function() {
             const m = estadoTorneoActual.mvp || {};
             const eq = encontrarEquipo(m.equipo);
             const logo = (eq && eq.logo_url) ? eq.logo_url : urlAvatar(m.equipo || 'MVP');
-            document.getElementById('contenido-modal-mvp').innerHTML = `
-                <div class="text-5xl mb-2">🌟</div>
-                <span class="text-[10px] text-everGold font-black uppercase tracking-[0.35em] block">JUGADOR MÁS VALIOSO DE LA JORNADA</span>
-                <h3 class="text-2xl md:text-3xl font-black uppercase gold-metallic-text mt-1 mb-4">${m.riot_id || 'MVP 5EVER'}</h3>
-                <div class="bg-black/60 border border-everGold/40 rounded-xl p-4 flex items-center justify-center gap-4 mb-4">
-                    <img src="${logo}" class="w-14 h-14 rounded object-contain bg-black p-1 border border-everGold/50">
-                    <div class="text-left">
-                        <span class="text-[9px] text-gray-400 font-bold uppercase block">Escuadra Oficial</span>
-                        <h4 class="text-base font-black text-white uppercase">${m.equipo || 'Copa 5EverMad'}</h4>
-                        <span class="text-xs font-black text-everGold block mt-0.5">KDA / ACS: ${m.kda || 'Destacado'} • Agente: ${m.agente || 'Valorant'}</span>
-                    </div>
-                </div>
-                <p class="text-[10px] text-gray-300 uppercase tracking-widest font-bold">Reconocimiento Oficial • Copa 5EverMad</p>`;
+            document.getElementById('contenido-modal-mvp').innerHTML =
+                '<div class="text-5xl mb-2">🌟</div>' +
+                '<span class="text-[10px] text-everGold font-black uppercase tracking-[0.35em] block">JUGADOR MÁS VALIOSO DE LA JORNADA</span>' +
+                '<h3 class="text-2xl md:text-3xl font-black uppercase gold-metallic-text mt-1 mb-4">' + (m.riot_id || 'MVP 5EVER') + '</h3>' +
+                '<div class="bg-black/60 border border-everGold/40 rounded-xl p-4 flex items-center justify-center gap-4 mb-4">' +
+                    '<img src="' + logo + '" class="w-14 h-14 rounded object-contain bg-black p-1 border border-everGold/50">' +
+                    '<div class="text-left">' +
+                        '<span class="text-[9px] text-gray-400 font-bold uppercase block">Escuadra Oficial</span>' +
+                        '<h4 class="text-base font-black text-white uppercase">' + (m.equipo || 'Copa 5EverMad') + '</h4>' +
+                        '<span class="text-xs font-black text-everGold block mt-0.5">KDA / ACS: ' + (m.kda || 'Destacado') + ' • Agente: ' + (m.agente || 'Valorant') + '</span>' +
+                    '</div>' +
+                '</div>' +
+                '<p class="text-[10px] text-gray-300 uppercase tracking-widest font-bold">Reconocimiento Oficial • Copa 5EverMad</p>';
             document.getElementById('modal-mvp').classList.remove('hidden');
-        }
+        };
 
         function obtenerPrediccionDuelo(key) {
             if (!prediccionesMap[key]) {
@@ -1106,11 +1105,11 @@
                 'Authorization': 'Bearer pase-vip-temporal-5ever'
             };
             if (prediccionesNoticiaId) {
-                await fetch(`${API_URL}/noticias?id=${prediccionesNoticiaId}`, { method: 'DELETE', headers }).catch(() => null);
+                await fetch(API_URL + '/noticias?id=' + prediccionesNoticiaId, { method: 'DELETE', headers: headers }).catch(function() { return null; });
             }
-            const resPost = await fetch(`${API_URL}/noticias`, {
+            const resPost = await fetch(API_URL + '/noticias', {
                 method: 'POST',
-                headers,
+                headers: headers,
                 body: JSON.stringify({
                     titulo: '[PREDICCIONES_DATA]',
                     descripcion: JSON.stringify(prediccionesMap),
@@ -1123,10 +1122,9 @@
             }
         }
 
-        async function votarEquipoVS(lado) {
+        window.votarEquipoVS = async function(lado) {
             if (votandoEnCurso) return;
             votandoEnCurso = true;
-
             try {
                 const p = obtenerPrediccionDuelo(dueloActualKey);
                 const votoPrevio = misVotosLocal[dueloActualKey];
@@ -1142,10 +1140,10 @@
 
                 if (lado === 1) {
                     p.votos1 = (p.votos1 || 1) + 1;
-                    mostrarToast(`🔥 Voto en vivo registrado para ${dueloActualDatos.nom1}`);
+                    mostrarToast('🔥 Voto en vivo registrado para ' + dueloActualDatos.nom1);
                 } else {
                     p.votos2 = (p.votos2 || 1) + 1;
-                    mostrarToast(`⚡ Voto en vivo registrado para ${dueloActualDatos.nom2}`);
+                    mostrarToast('⚡ Voto en vivo registrado para ' + dueloActualDatos.nom2);
                 }
 
                 misVotosLocal[dueloActualKey] = lado;
@@ -1157,20 +1155,20 @@
             } catch (e) {} finally {
                 votandoEnCurso = false;
             }
-        }
+        };
 
-        async function enviarReaccionDuelo(tipo) {
+        window.enviarReaccionDuelo = async function(tipo) {
             const p = obtenerPrediccionDuelo(dueloActualKey);
             p.reac[tipo] = (p.reac[tipo] || 0) + 1;
             localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap));
             renderizarBarraPrediccion();
             try { await sincronizarPrediccionesConServidor(); } catch (e) {}
-        }
+        };
 
-        function toggleModoPoster() {
+        window.toggleModoPoster = function() {
             document.getElementById('modal-vs-box').classList.toggle('modo-poster');
             mostrarToast('📸 Modo Póster alternado (Toma tu captura)');
-        }
+        };
 
         function renderizarBarraPrediccion() {
             const cont = document.getElementById('panel-prediccion-dinamico');
@@ -1185,113 +1183,113 @@
             const miVoto = misVotosLocal[dueloActualKey];
             const r = p.reac || { hype: 0, clutch: 0, stomp: 0, partidazo: 0 };
 
-            cont.innerHTML = `
-                <div class="mb-4 bg-[#0b0d14]/95 border border-white/15 rounded-xl p-3.5 shadow-lg">
-                    <div class="flex flex-wrap justify-between items-center gap-2 text-[10px] font-black uppercase tracking-wider mb-2">
-                        <button onclick="votarEquipoVS(1)" class="${miVoto === 1 ? 'bg-vctRed text-white' : 'bg-vctRed/15 text-vctRed'} hover:bg-vctRed hover:text-white border border-vctRed/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">
-                            🔥 ${dueloActualDatos.nom1} <span class="font-extrabold">${pct1}% (${v1})</span>
-                        </button>
-                        <span class="text-[9px] text-emerald-400 tracking-[0.18em] flex items-center gap-1.5 ocultar-en-poster">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> VOTOS EN TIEMPO REAL (${totalVotos})
-                        </span>
-                        <button onclick="votarEquipoVS(2)" class="${miVoto === 2 ? 'bg-everGold text-black' : 'bg-everGold/15 text-everGold'} hover:bg-everGold hover:text-black border border-everGold/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">
-                            <span class="font-extrabold">${pct2}% (${v2})</span> ${dueloActualDatos.nom2} ⚡
-                        </button>
-                    </div>
-                    <div class="w-full h-2.5 bg-black rounded-full overflow-hidden flex border border-white/10 p-0.5">
-                        <div style="width:${pct1}%" class="bg-gradient-to-r from-red-700 to-vctRed rounded-l-full transition-all duration-500"></div>
-                        <div style="width:${pct2}%" class="bg-gradient-to-r from-amber-500 to-everGold rounded-r-full transition-all duration-500"></div>
-                    </div>
-
-                    <div class="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap justify-center items-center gap-2 ocultar-en-poster">
-                        <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest mr-1">REACCIONES EN VIVO:</span>
-                        <button onclick="enviarReaccionDuelo('hype')" class="bg-white/5 hover:bg-vctRed/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🔥 Hype (${r.hype || 0})</button>
-                        <button onclick="enviarReaccionDuelo('clutch')" class="bg-white/5 hover:bg-everGold/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">👑 Clutch (${r.clutch || 0})</button>
-                        <button onclick="enviarReaccionDuelo('stomp')" class="bg-white/5 hover:bg-purple-500/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">💀 Stomp (${r.stomp || 0})</button>
-                        <button onclick="enviarReaccionDuelo('partidazo')" class="bg-white/5 hover:bg-emerald-500/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🍿 Partidazo (${r.partidazo || 0})</button>
-                    </div>
-                </div>
-            `;
+            cont.innerHTML =
+                '<div class="mb-4 bg-[#0b0d14]/95 border border-white/15 rounded-xl p-3.5 shadow-lg">' +
+                    '<div class="flex flex-wrap justify-between items-center gap-2 text-[10px] font-black uppercase tracking-wider mb-2">' +
+                        '<button onclick="votarEquipoVS(1)" class="' + (miVoto === 1 ? 'bg-vctRed text-white' : 'bg-vctRed/15 text-vctRed') + ' hover:bg-vctRed hover:text-white border border-vctRed/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">' +
+                            '🔥 ' + dueloActualDatos.nom1 + ' <span class="font-extrabold">' + pct1 + '% (' + v1 + ')</span>' +
+                        '</button>' +
+                        '<span class="text-[9px] text-emerald-400 tracking-[0.18em] flex items-center gap-1.5 ocultar-en-poster">' +
+                            '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> VOTOS EN TIEMPO REAL (' + totalVotos + ')' +
+                        '</span>' +
+                        '<button onclick="votarEquipoVS(2)" class="' + (miVoto === 2 ? 'bg-everGold text-black' : 'bg-everGold/15 text-everGold') + ' hover:bg-everGold hover:text-black border border-everGold/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">' +
+                            '<span class="font-extrabold">' + pct2 + '% (' + v2 + ')</span> ' + dueloActualDatos.nom2 + ' ⚡' +
+                        '</button>' +
+                    '</div>' +
+                    '<div class="w-full h-2.5 bg-black rounded-full overflow-hidden flex border border-white/10 p-0.5">' +
+                        '<div style="width:' + pct1 + '%" class="bg-gradient-to-r from-red-700 to-vctRed rounded-l-full transition-all duration-500"></div>' +
+                        '<div style="width:' + pct2 + '%" class="bg-gradient-to-r from-amber-500 to-everGold rounded-r-full transition-all duration-500"></div>' +
+                    '</div>' +
+                    '<div class="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap justify-center items-center gap-2 ocultar-en-poster">' +
+                        '<span class="text-[9px] text-gray-400 font-black uppercase tracking-widest mr-1">REACCIONES EN VIVO:</span>' +
+                        '<button onclick="enviarReaccionDuelo(\'hype\')" class="bg-white/5 hover:bg-vctRed/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🔥 Hype (' + (r.hype || 0) + ')</button>' +
+                        '<button onclick="enviarReaccionDuelo(\'clutch\')" class="bg-white/5 hover:bg-everGold/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">👑 Clutch (' + (r.clutch || 0) + ')</button>' +
+                        '<button onclick="enviarReaccionDuelo(\'stomp\')" class="bg-white/5 hover:bg-purple-500/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">💀 Stomp (' + (r.stomp || 0) + ')</button>' +
+                        '<button onclick="enviarReaccionDuelo(\'partidazo\')" class="bg-white/5 hover:bg-emerald-500/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🍿 Partidazo (' + (r.partidazo || 0) + ')</button>' +
+                    '</div>' +
+                '</div>';
         }
 
         function actualizarRelojTorneo() {
-            const ahora = new Date();
-            const cdmxStr = ahora.toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
-            const ahoraCDMX = new Date(cdmxStr);
+            try {
+                const ahora = new Date();
+                const cdmxStr = ahora.toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
+                const ahoraCDMX = new Date(cdmxStr);
 
-            const diaSemana = ahoraCDMX.getDay();
-            const hora = ahoraCDMX.getHours();
+                const diaSemana = ahoraCDMX.getDay();
+                const hora = ahoraCDMX.getHours();
 
-            if (diaSemana === 1 && hora >= 20) {
-                document.getElementById('reloj-label').innerText = 'ESTADO:';
-                document.getElementById('reloj-numeros').innerHTML = '<span class="bg-vctRed text-white px-3 py-0.5 rounded animate-pulse">🔴 EN VIVO AHORA</span>';
-            } else {
-                let diasFaltantes = (1 - diaSemana + 7) % 7;
-                if (diasFaltantes === 0 && hora >= 20) diasFaltantes = 7;
+                if (diaSemana === 1 && hora >= 20) {
+                    document.getElementById('reloj-label').innerText = 'ESTADO:';
+                    document.getElementById('reloj-numeros').innerHTML = '<span class="bg-vctRed text-white px-3 py-0.5 rounded animate-pulse">🔴 EN VIVO AHORA</span>';
+                } else {
+                    let diasFaltantes = (1 - diaSemana + 7) % 7;
+                    if (diasFaltantes === 0 && hora >= 20) diasFaltantes = 7;
 
-                const proximoLunes = new Date(ahoraCDMX);
-                proximoLunes.setDate(ahoraCDMX.getDate() + diasFaltantes);
-                proximoLunes.setHours(20, 0, 0, 0);
+                    const proximoLunes = new Date(ahoraCDMX);
+                    proximoLunes.setDate(ahoraCDMX.getDate() + diasFaltantes);
+                    proximoLunes.setHours(20, 0, 0, 0);
 
-                const diff = Math.max(0, proximoLunes - ahoraCDMX);
-                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const m = Math.floor((diff / (1000 * 60)) % 60);
-                const s = Math.floor((diff / 1000) % 60);
+                    const diff = Math.max(0, proximoLunes - ahoraCDMX);
+                    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                    const m = Math.floor((diff / (1000 * 60)) % 60);
+                    const s = Math.floor((diff / 1000) % 60);
 
-                const elD = document.getElementById('cd-d');
-                if (elD) {
-                    elD.innerText = String(d).padStart(2, '0') + 'd';
-                    document.getElementById('cd-h').innerText = String(h).padStart(2, '0') + 'h';
-                    document.getElementById('cd-m').innerText = String(m).padStart(2, '0') + 'm';
-                    document.getElementById('cd-s').innerText = String(s).padStart(2, '0') + 's';
+                    const elD = document.getElementById('cd-d');
+                    if (elD) {
+                        elD.innerText = String(d).padStart(2, '0') + 'd';
+                        document.getElementById('cd-h').innerText = String(h).padStart(2, '0') + 'h';
+                        document.getElementById('cd-m').innerText = String(m).padStart(2, '0') + 'm';
+                        document.getElementById('cd-s').innerText = String(s).padStart(2, '0') + 's';
+                    }
                 }
-            }
 
-            const barraTol = document.getElementById('barra-tolerancia-oficial');
-            const finTol = Number(estadoTorneoActual.toleranciaFin || 0);
-            if (finTol > 0) {
-                const rest = finTol - Date.now();
-                if (rest > 0) {
-                    barraTol.classList.remove('hidden');
-                    const min = Math.floor(rest / 60000);
-                    const seg = Math.floor((rest % 60000) / 1000);
-                    document.getElementById('reloj-tolerancia-txt').innerText = `${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')} RESTANTES`;
-                } else if (rest > -600000) {
-                    barraTol.classList.remove('hidden');
-                    document.getElementById('reloj-tolerancia-txt').innerText = `⛔ TIEMPO LÍMITE AGOTADO (NO-SHOW HABILITADO)`;
+                const barraTol = document.getElementById('barra-tolerancia-oficial');
+                const finTol = Number(estadoTorneoActual.toleranciaFin || 0);
+                if (finTol > 0) {
+                    const rest = finTol - Date.now();
+                    if (rest > 0) {
+                        barraTol.classList.remove('hidden');
+                        const min = Math.floor(rest / 60000);
+                        const seg = Math.floor((rest % 60000) / 1000);
+                        document.getElementById('reloj-tolerancia-txt').innerText = String(min).padStart(2, '0') + ':' + String(seg).padStart(2, '0') + ' RESTANTES';
+                    } else if (rest > -600000) {
+                        barraTol.classList.remove('hidden');
+                        document.getElementById('reloj-tolerancia-txt').innerText = '⛔ TIEMPO LÍMITE AGOTADO (NO-SHOW HABILITADO)';
+                    } else {
+                        barraTol.classList.add('hidden');
+                    }
                 } else {
                     barraTol.classList.add('hidden');
                 }
-            } else {
-                barraTol.classList.add('hidden');
-            }
+            } catch (e) {}
         }
         setInterval(actualizarRelojTorneo, 1000);
         actualizarRelojTorneo();
 
-        function toggleStream() {
+        window.toggleStream = function() {
             const panel = document.getElementById('panel-stream');
             const iframe = document.getElementById('iframe-stream');
             panel.classList.toggle('hidden');
             if (!panel.classList.contains('hidden') && !iframe.src.includes('twitch.tv')) {
                 const parentHost = window.location.hostname || 'localhost';
-                iframe.src = `https://player.twitch.tv/?channel=${CANAL_TWITCH_DEFECTO}&parent=${parentHost}&muted=false`;
+                iframe.src = 'https://player.twitch.tv/?channel=' + CANAL_TWITCH_DEFECTO + '&parent=' + parentHost + '&muted=false';
             }
-        }
+        };
 
-        function cambiarCanalStream() {
+        window.cambiarCanalStream = function() {
             const val = document.getElementById('input-canal-twitch').value.trim();
             if (!val) return;
             CANAL_TWITCH_DEFECTO = val;
             const parentHost = window.location.hostname || 'localhost';
-            document.getElementById('iframe-stream').src = `https://player.twitch.tv/?channel=${encodeURIComponent(val)}&parent=${parentHost}`;
-        }
+            document.getElementById('iframe-stream').src = 'https://player.twitch.tv/?channel=' + encodeURIComponent(val) + '&parent=' + parentHost;
+        };
 
-        function filtrarPorBotonGrupo(grupo) {
+        window.filtrarPorBotonGrupo = function(grupo) {
             document.getElementById('buscador-equipos').value = grupo;
             filtrarTarjetasEquipos(grupo);
-            document.querySelectorAll('.btn-filtro-grupo').forEach(btn => {
+            document.querySelectorAll('.btn-filtro-grupo').forEach(function(btn) {
                 const txt = btn.innerText.trim();
                 if ((grupo === '' && txt === 'TODOS') || txt === grupo) {
                     btn.className = 'btn-filtro-grupo bg-vctRed text-white text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all';
@@ -1299,17 +1297,17 @@
                     btn.className = 'btn-filtro-grupo bg-[#0b0d13] hover:bg-white/10 border border-white/10 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all';
                 }
             });
-        }
+        };
 
-        function filtrarTarjetasEquipos(query) {
+        window.filtrarTarjetasEquipos = function(query) {
             const q = String(query || '').toLowerCase().trim();
-            document.querySelectorAll('.card-equipo').forEach(card => {
+            document.querySelectorAll('.card-equipo').forEach(function(card) {
                 const teamName = (card.getAttribute('data-team') || '').toLowerCase();
                 const groupName = (card.getAttribute('data-group') || '').toLowerCase();
                 const eqObj = encontrarEquipo(teamName);
-                const tieneJugador = eqObj && Array.isArray(eqObj.jugadores) && eqObj.jugadores.some(j =>
-                    String(j.riot_id || '').toLowerCase().includes(q) || String(j.dc || '').toLowerCase().includes(q)
-                );
+                const tieneJugador = eqObj && Array.isArray(eqObj.jugadores) && eqObj.jugadores.some(function(j) {
+                    return String(j.riot_id || '').toLowerCase().includes(q) || String(j.dc || '').toLowerCase().includes(q);
+                });
 
                 if (!q || teamName.includes(q) || groupName.includes(q) || tieneJugador) {
                     card.classList.remove('hidden');
@@ -1319,10 +1317,10 @@
                     card.classList.remove('flex');
                 }
             });
-        }
+        };
 
         function inyectarLogosEnDOM() {
-            document.querySelectorAll('img[data-logo]').forEach(img => {
+            document.querySelectorAll('img[data-logo]').forEach(function(img) {
                 const eq = encontrarEquipo(img.getAttribute('data-logo'));
                 if (eq && eq.logo_url) {
                     img.src = eq.logo_url;
@@ -1337,44 +1335,41 @@
             const mostrarIcono = !esSlotPlaceholder(nombre);
             const esLider = slot.estado === 'clasificado' || String(slot.extra || '').includes('2-0') || String(slot.extra || '').includes('3-0');
 
-            return `
-                <div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 pr-10 ${est}">
-                    <div class="flex items-center gap-1.5 truncate">
-                        ${mostrarIcono ? `<span class="${slot.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait'}" title="${slot.checkin ? 'Check-in OK en Canal' : 'Check-in Pendiente'}"></span>` : ''}
-                        ${mostrarIcono ? `<img data-logo="${nSeg}" src="${urlAvatar(nSeg)}" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0">` : ''}
-                        <span class="text-[11px] font-bold ${mostrarIcono ? 'text-white' : 'text-gray-300'} truncate">${nombre}</span>
-                        ${esLider ? `<span class="text-[10px]" title="Invicto / Clasificado">🔥</span>` : ''}
-                    </div>
-                    ${slot.extra ? `<span class="text-[9px] font-black text-everGold shrink-0">${slot.extra}</span>` : ''}
-                </div>`;
+            return '<div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 pr-10 ' + est + '">' +
+                    '<div class="flex items-center gap-1.5 truncate">' +
+                        (mostrarIcono ? '<span class="' + (slot.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait') + '"></span>' : '') +
+                        (mostrarIcono ? '<img data-logo="' + nSeg + '" src="' + urlAvatar(nSeg) + '" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0">' : '') +
+                        '<span class="text-[11px] font-bold ' + (mostrarIcono ? 'text-white' : 'text-gray-300') + ' truncate">' + nombre + '</span>' +
+                        (esLider ? '<span class="text-[10px]">🔥</span>' : '') +
+                    '</div>' +
+                    (slot.extra ? '<span class="text-[9px] font-black text-everGold shrink-0">' + slot.extra + '</span>' : '') +
+                '</div>';
         }
 
         function construirGrupoLlamativo(letra, slots, headerGradient) {
             let duelos = '';
             for (let i = 0; i < slots.length; i += 2) {
-                const s1 = slots[i] || { nombre: `${letra}${i + 1}`, extra: '', estado: 'normal', checkin: false };
-                const s2 = slots[i + 1] || { nombre: `${letra}${i + 2}`, extra: '', estado: 'normal', checkin: false };
+                const s1 = slots[i] || { nombre: letra + (i + 1), extra: '', estado: 'normal', checkin: false };
+                const s2 = slots[i + 1] || { nombre: letra + (i + 2), extra: '', estado: 'normal', checkin: false };
                 const n1 = textoSeguro(s1.nombre);
                 const n2 = textoSeguro(s2.nombre);
                 const enVivo = esDueloEnStream(n1, n2);
 
-                duelos += `
-                    <div onclick="verVS('${n1}','${n2}','GRUPO ${letra} • BO3')" class="match-pair ${enVivo ? 'match-stream-active' : ''} cursor-pointer">
-                        <span class="${enVivo ? 'live-pill-inline' : 'vs-pill-inline'}">${enVivo ? '🔴 LIVE' : 'VS'}</span>
-                        ${htmlFilaEquipo(s1)}
-                        ${htmlFilaEquipo(s2)}
-                    </div>`;
+                duelos += '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'GRUPO ' + letra + ' • BO3\')" class="match-pair ' + (enVivo ? 'match-stream-active' : '') + ' cursor-pointer">' +
+                        '<span class="' + (enVivo ? 'live-pill-inline' : 'vs-pill-inline') + '">' + (enVivo ? '🔴 LIVE' : 'VS') + '</span>' +
+                        htmlFilaEquipo(s1) +
+                        htmlFilaEquipo(s2) +
+                    '</div>';
             }
-            return `
-                <div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">
-                    <div class="${headerGradient} py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase text-white">
-                        <span>GRUPO ${letra}</span><span class="text-[8px] opacity-85">BO3</span>
-                    </div>
-                    <div class="p-1.5 space-y-1.5">${duelos}</div>
-                </div>`;
+            return '<div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">' +
+                    '<div class="' + headerGradient + ' py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase text-white">' +
+                        '<span>GRUPO ' + letra + '</span><span class="text-[8px] opacity-85">BO3</span>' +
+                    '</div>' +
+                    '<div class="p-1.5 space-y-1.5">' + duelos + '</div>' +
+                '</div>';
         }
 
-        function aplicarDatosDeBracketEnPantalla(d, esActualizacionEnVivo = false) {
+        function aplicarDatosDeBracketEnPantalla(d, esActualizacionEnVivo) {
             if (esActualizacionEnVivo && d.aviso && d.aviso !== estadoTorneoActual.aviso) {
                 dispararAlertaBroadcast(d.aviso);
             }
@@ -1397,89 +1392,83 @@
             }
 
             if (d.fase1) {
-                document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(g => construirGrupoLlamativo(g, d.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600')).join('');
+                document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(function(g) { return construirGrupoLlamativo(g, d.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600'); }).join('');
             }
             if (d.fase2) {
-                document.getElementById('contenedor-fase2').innerHTML = ['E','F'].map(g => construirGrupoLlamativo(g, d.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600')).join('');
+                document.getElementById('contenedor-fase2').innerHTML = ['E','F'].map(function(g) { return construirGrupoLlamativo(g, d.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600'); }).join('');
             }
             if (Array.isArray(d.fase3)) {
-                document.getElementById('contenedor-fase3').innerHTML = d.fase3.map((r, i) => {
+                document.getElementById('contenedor-fase3').innerHTML = d.fase3.map(function(r, i) {
                     const elim = i >= 4 || r.eliminado;
                     const nomSeg = textoSeguro(r.nombre);
                     const tieneEq = !esSlotPlaceholder(r.nombre);
-                    return `
-                        <div onclick="verVS('${nomSeg}','','FASE 3 • CLASIFICADOS')" class="flex items-center justify-between gap-2 p-2 rounded border ${elim ? 'border-red-500/35 bg-red-950/20' : 'border-emerald-500/35 bg-emerald-950/20'} cursor-pointer hover:border-white/40">
-                            <div class="flex items-center gap-2 truncate">
-                                <span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs ${elim ? 'bg-gradient-to-b from-red-600 to-red-800' : 'bg-gradient-to-b from-emerald-500 to-emerald-700'} text-white shrink-0 shadow">${i + 1}</span>
-                                ${tieneEq ? `<img data-logo="${nomSeg}" src="${urlAvatar(nomSeg)}" class="w-5 h-5 rounded object-contain bg-black shrink-0">` : ''}
-                                <span class="text-xs font-bold ${elim ? 'text-gray-400' : 'text-white'} truncate">${tieneEq ? r.nombre : 'Clasificado #' + (i + 1)}</span>
-                            </div>
-                            <span class="text-[8px] font-black ${elim ? 'text-red-400' : 'text-emerald-400'} shrink-0">${r.rd || (elim ? 'ELIM' : '')}</span>
-                        </div>`;
+                    return '<div onclick="verVS(\'' + nomSeg + '\',\'\',\'FASE 3 • CLASIFICADOS\')" class="flex items-center justify-between gap-2 p-2 rounded border ' + (elim ? 'border-red-500/35 bg-red-950/20' : 'border-emerald-500/35 bg-emerald-950/20') + ' cursor-pointer hover:border-white/40">' +
+                            '<div class="flex items-center gap-2 truncate">' +
+                                '<span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs ' + (elim ? 'bg-gradient-to-b from-red-600 to-red-800' : 'bg-gradient-to-b from-emerald-500 to-emerald-700') + ' text-white shrink-0 shadow">' + (i + 1) + '</span>' +
+                                (tieneEq ? '<img data-logo="' + nomSeg + '" src="' + urlAvatar(nomSeg) + '" class="w-5 h-5 rounded object-contain bg-black shrink-0">' : '') +
+                                '<span class="text-xs font-bold ' + (elim ? 'text-gray-400' : 'text-white') + ' truncate">' + (tieneEq ? r.nombre : 'Clasificado #' + (i + 1)) + '</span>' +
+                            '</div>' +
+                            '<span class="text-[8px] font-black ' + (elim ? 'text-red-400' : 'text-emerald-400') + ' shrink-0">' + (r.rd || (elim ? 'ELIM' : '')) + '</span>' +
+                        '</div>';
                 }).join('');
             }
             if (d.fase4) {
-                const cardBO5 = (tit, m) => {
+                const cardBO5 = function(tit, m) {
                     const n1 = textoSeguro(m.eq1);
                     const n2 = textoSeguro(m.eq2);
                     const enVivo = esDueloEnStream(n1, n2);
-                    return `
-                        <div onclick="verVS('${n1}','${n2}','${tit} • BO5')" class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5 cursor-pointer hover:border-vctRed transition-all">
-                            <div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">${tit} • BO5</div>
-                            <div class="match-pair ${enVivo ? 'match-stream-active' : ''}">
-                                <span class="${enVivo ? 'live-pill-inline' : 'vs-pill-inline'}">${enVivo ? '🔴 LIVE' : 'VS'}</span>
-                                ${htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal', checkin: true })}
-                                ${htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal', checkin: true })}
-                            </div>
-                        </div>`;
+                    return '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'' + tit + ' • BO5\')" class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5 cursor-pointer hover:border-vctRed transition-all">' +
+                            '<div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">' + tit + ' • BO5</div>' +
+                            '<div class="match-pair ' + (enVivo ? 'match-stream-active' : '') + '">' +
+                                '<span class="' + (enVivo ? 'live-pill-inline' : 'vs-pill-inline') + '">' + (enVivo ? '🔴 LIVE' : 'VS') + '</span>' +
+                                htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal', checkin: true }) +
+                                htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal', checkin: true }) +
+                            '</div>' +
+                        '</div>';
                 };
                 document.getElementById('contenedor-fase4').innerHTML = cardBO5('SEMIFINAL 1', d.fase4.sf1) + cardBO5('SEMIFINAL 2', d.fase4.sf2);
                 if (d.final) {
                     document.getElementById('contenedor-fase5-final').innerHTML = cardBO5('GRAN FINAL', d.final);
                     const campSeg = textoSeguro(d.final.campeon || 'CAMPEÓN');
                     const tieneCamp = !esSlotPlaceholder(d.final.campeon);
-                    document.getElementById('contenedor-fase5-campeon').innerHTML = `
-                        <div onclick="verVS('${campSeg}','','CAMPEÓN COPA 5EVERMAD')" class="cursor-pointer">
-                            <div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>
-                            ${tieneCamp ? `<img data-logo="${campSeg}" src="${urlAvatar(campSeg)}" class="w-14 h-14 mx-auto mb-2 rounded object-contain bg-black border border-everGold">` : ''}
-                            <span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span>
-                            <h3 class="text-base font-black uppercase tracking-wider gold-metallic-text mt-0.5 truncate">${d.final.campeon || 'CAMPEÓN'}</h3>
-                        </div>`;
+                    document.getElementById('contenedor-fase5-campeon').innerHTML =
+                        '<div onclick="verVS(\'' + campSeg + '\',\'\',\'CAMPEÓN COPA 5EVERMAD\')" class="cursor-pointer">' +
+                            '<div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>' +
+                            (tieneCamp ? '<img data-logo="' + campSeg + '" src="' + urlAvatar(campSeg) + '" class="w-14 h-14 mx-auto mb-2 rounded object-contain bg-black border border-everGold">' : '') +
+                            '<span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span>' +
+                            '<h3 class="text-base font-black uppercase tracking-wider gold-metallic-text mt-0.5 truncate">' + (d.final.campeon || 'CAMPEÓN') + '</h3>' +
+                        '</div>';
                 }
             }
             inyectarLogosEnDOM();
         }
 
-        // =============================================================
-        // CARGA RÁPIDA CON CACHÉ Y REFRESCO AUTOMÁTICO SI EL MODAL ESTÁ ABIERTO
-        // =============================================================
         async function cargarEquiposIniciales() {
             if (equiposCargados.length > 0) {
                 inyectarLogosEnDOM();
             }
             try {
                 const res = await fetch(API_URL + '/equipos');
+                if (!res.ok) throw new Error('Render despertando');
                 const data = await res.json();
                 if (Array.isArray(data) && data.length > 0) {
                     equiposCargados = data;
                     inyectarLogosEnDOM();
+                    const ind = document.getElementById('indicador-carga-equipos');
+                    if (ind) ind.innerText = '✔ 24 Escuadras sincronizadas • Haz clic en cualquier VS para abrir el Cara a Cara';
 
-                    // Guardar copia ligera en sessionStorage para aperturas en 0.0s
                     try { sessionStorage.setItem('5ever_equipos_cache', JSON.stringify(data)); } catch (e) {}
 
-                    // Si el usuario ya tenía abierto el Cara a Cara esperando los rosters, actualizarlo de inmediato
                     if (!document.getElementById('modal-vs').classList.contains('hidden') && dueloActualDatos.nom1) {
-                        verVS(dueloActualDatos.nom1, dueloActualDatos.nom2, dueloActualDatos.fase);
+                        window.verVS(dueloActualDatos.nom1, dueloActualDatos.nom2, dueloActualDatos.fase);
                     }
+                    pulsoEnTiempoReal();
                 } else {
-                    setTimeout(cargarEquiposIniciales, 3500);
+                    setTimeout(cargarEquiposIniciales, 2500);
                 }
             } catch (err) {
-                setTimeout(cargarEquiposIniciales, 3500);
+                setTimeout(cargarEquiposIniciales, 2500);
             }
-
-            // Iniciar sincronización de marcadores y votos una vez lista la petición de equipos
-            pulsoEnTiempoReal();
         }
 
         async function pulsoEnTiempoReal() {
@@ -1490,9 +1479,9 @@
                 const noticias = await resNot.json();
                 if (!Array.isArray(noticias)) return;
 
-                noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+                noticias.sort(function(a, b) { return new Date(b.fecha || 0) - new Date(a.fecha || 0); });
 
-                const pNot = noticias.find(n => n && n.titulo === '[PREDICCIONES_DATA]');
+                const pNot = noticias.find(function(n) { return n && n.titulo === '[PREDICCIONES_DATA]'; });
                 if (pNot && pNot.descripcion) {
                     prediccionesNoticiaId = pNot.id;
                     if (pNot.descripcion !== ultimasPrediccionesJSON) {
@@ -1507,7 +1496,7 @@
                     }
                 }
 
-                const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
+                const bd = noticias.find(function(n) { return n && n.titulo === '[BRACKET_DATA]'; });
                 if (bd && bd.descripcion && bd.descripcion !== ultimoBracketJSON) {
                     const eraPrimeraCarga = ultimoBracketJSON === '';
                     ultimoBracketJSON = bd.descripcion;
@@ -1519,7 +1508,7 @@
             } catch (e) {}
         }
 
-        function verVS(nom1, nom2, fase) {
+        window.verVS = function(nom1, nom2, fase) {
             const info = buscarInfoSlotDuelo(nom1, nom2);
             dueloActualDatos = { nom1: nom1 || 'Equipo 1', nom2: nom2 || 'Equipo 2', fase: fase || 'DUELO OFICIAL', s1: info.s1, s2: info.s2, c1: info.c1, c2: info.c2 };
             dueloActualKey = claveDuelo(dueloActualDatos.nom1, dueloActualDatos.nom2);
@@ -1533,58 +1522,56 @@
             const gana2 = !isNaN(num1) && !isNaN(num2) && num2 > num1;
 
             const todosNombres = equiposCargados.length > 0
-                ? equiposCargados.map(e => e.nombre)
+                ? equiposCargados.map(function(e) { return e.nombre; })
                 : ['7z Esports','Abismus','Nönsense by Bear','Thalyra','Xiao Shīzi 北','Akari esports','ULTRADIFF ESPORTS','Clarity Velvet','Ancestral E-Sports','RYUJINN','5EverMad','Storm of Thorns','Cruel Karma','AERION ACADEMY','Kaizen Esports','Ryujinn Lotus','YOSORA ESPORTS','Howlers BLX','Platano Power Esports','Kings Aztek','Black Roses Esports','Howlers Esports','MOONRISE ESPORTS','Hydra'];
 
-            let opcionesRival = `<option value="">-- Cambiar rival para comparar VS --</option>`;
-            todosNombres.forEach(n => {
+            let opcionesRival = '<option value="">-- Cambiar rival para comparar VS --</option>';
+            todosNombres.forEach(function(n) {
                 const eqRival = eq2 ? eq2.nombre : nom2;
                 const sel = (eqRival && limpiarNombre(n) === limpiarNombre(eqRival)) ? 'selected' : '';
-                opcionesRival += `<option value="${textoSeguro(n)}" ${sel}>${n}</option>`;
+                opcionesRival += '<option value="' + textoSeguro(n) + '" ' + sel + '>' + n + '</option>';
             });
 
-            const dibujarCol = (nombreTxt, eq, colorBorde, colorGlow, esGanador, checkinOk) => {
+            const dibujarCol = function(nombreTxt, eq, colorBorde, colorGlow, esGanador, checkinOk) {
                 const foto = (eq && eq.logo_url) ? eq.logo_url : urlAvatar(nombreTxt);
                 const rango = (eq && eq.rango) ? eq.rango : 'Escuadra Confirmada';
                 const capitan = (eq && eq.discord) ? eq.discord : 'Verificado';
                 const capSeguro = textoSeguro(capitan);
 
                 const listaJug = (eq && Array.isArray(eq.jugadores) && eq.jugadores.length > 0)
-                    ? eq.jugadores.map(j => {
+                    ? eq.jugadores.map(function(j) {
                         const idSeg = textoSeguro(j.riot_id || '');
-                        return `
-                        <div class="bg-[#121520]/90 border-l-2 ${colorBorde} p-2.5 rounded-r flex justify-between items-center gap-2 mb-2 relative z-10">
-                            <div class="truncate cursor-pointer" onclick="copiarDato('${idSeg}')">
-                                <span class="text-[8px] text-everGold font-black uppercase block">${j.role || 'TITULAR'}</span>
-                                <span class="text-xs font-black text-white hover:text-everGold truncate block">${j.riot_id || ''} 📋</span>
-                            </div>
-                            <div class="flex items-center gap-1.5 shrink-0 ocultar-en-poster">
-                                <button onclick="copiarDato('${idSeg}')" class="bg-white/5 hover:bg-everGold hover:text-black text-gray-300 text-[9px] font-black uppercase px-2 py-1.5 rounded">COPIAR</button>
-                                <a href="${j.tracker_url || '#'}" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded">TRACKER ↗</a>
-                            </div>
-                        </div>`;
+                        return '<div class="bg-[#121520]/90 border-l-2 ' + colorBorde + ' p-2.5 rounded-r flex justify-between items-center gap-2 mb-2 relative z-10">' +
+                            '<div class="truncate cursor-pointer" onclick="copiarDato(\'' + idSeg + '\')">' +
+                                '<span class="text-[8px] text-everGold font-black uppercase block">' + (j.role || 'TITULAR') + '</span>' +
+                                '<span class="text-xs font-black text-white hover:text-everGold truncate block">' + (j.riot_id || '') + ' 📋</span>' +
+                            '</div>' +
+                            '<div class="flex items-center gap-1.5 shrink-0 ocultar-en-poster">' +
+                                '<button onclick="copiarDato(\'' + idSeg + '\')" class="bg-white/5 hover:bg-everGold hover:text-black text-gray-300 text-[9px] font-black uppercase px-2 py-1.5 rounded">COPIAR</button>' +
+                                '<a href="' + (j.tracker_url || '#') + '" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded">TRACKER ↗</a>' +
+                            '</div>' +
+                        '</div>';
                     }).join('')
-                    : `<p class="text-[10px] text-gray-400 uppercase tracking-widest py-6 text-center relative z-10">Sincronizando integrantes del roster...</p>`;
+                    : '<p class="text-[10px] text-gray-400 uppercase tracking-widest py-6 text-center relative z-10">Sincronizando roster con Render...</p>';
 
-                return `
-                    <div class="bg-[#0b0d15]/90 border ${esGanador ? 'border-everGold shadow-[0_0_25px_rgba(229,192,92,0.25)]' : colorGlow} rounded-xl p-5 relative overflow-hidden">
-                        ${esGanador ? `<div class="bg-everGold text-black text-[9px] font-black uppercase tracking-widest px-3 py-0.5 rounded-bl-lg absolute top-0 right-0 z-20">👑 VICTORIA</div>` : ''}
-                        <img src="${foto}" class="absolute -right-6 -bottom-6 w-44 h-44 object-contain opacity-[0.07] pointer-events-none select-none">
-                        <div class="flex items-center gap-4 mb-4 pb-3 border-b border-white/10 relative z-10">
-                            <img src="${foto}" class="w-16 h-16 object-contain bg-black p-1.5 rounded-lg border border-white/25 shrink-0 shadow-lg">
-                            <div class="truncate">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="${checkinOk ? 'dot-checkin-ok' : 'dot-checkin-wait'}"></span>
-                                    <span class="text-[9px] ${checkinOk ? 'text-emerald-400' : 'text-everGold'} font-black uppercase tracking-widest block">${checkinOk ? 'CHECK-IN LISTO' : rango}</span>
-                                </div>
-                                <h4 class="text-lg font-black uppercase text-white truncate">${eq ? eq.nombre : (nombreTxt || 'POR DEFINIR')}</h4>
-                                <button onclick="copiarDato('${capSeguro}')" class="text-[9px] text-gray-400 hover:text-white font-bold uppercase block mt-0.5">
-                                    Capitán DC: <span class="text-everGold underline">${capitan}</span> 📋
-                                </button>
-                            </div>
-                        </div>
-                        <div class="max-h-[250px] overflow-y-auto pr-1 relative z-10">${listaJug}</div>
-                    </div>`;
+                return '<div class="bg-[#0b0d15]/90 border ' + (esGanador ? 'border-everGold shadow-[0_0_25px_rgba(229,192,92,0.25)]' : colorGlow) + ' rounded-xl p-5 relative overflow-hidden">' +
+                        (esGanador ? '<div class="bg-everGold text-black text-[9px] font-black uppercase tracking-widest px-3 py-0.5 rounded-bl-lg absolute top-0 right-0 z-20">👑 VICTORIA</div>' : '') +
+                        '<img src="' + foto + '" class="absolute -right-6 -bottom-6 w-44 h-44 object-contain opacity-[0.07] pointer-events-none select-none">' +
+                        '<div class="flex items-center gap-4 mb-4 pb-3 border-b border-white/10 relative z-10">' +
+                            '<img src="' + foto + '" class="w-16 h-16 object-contain bg-black p-1.5 rounded-lg border border-white/25 shrink-0 shadow-lg">' +
+                            '<div class="truncate">' +
+                                '<div class="flex items-center gap-1.5">' +
+                                    '<span class="' + (checkinOk ? 'dot-checkin-ok' : 'dot-checkin-wait') + '"></span>' +
+                                    '<span class="text-[9px] ' + (checkinOk ? 'text-emerald-400' : 'text-everGold') + ' font-black uppercase tracking-widest block">' + (checkinOk ? 'CHECK-IN LISTO' : rango) + '</span>' +
+                                '</div>' +
+                                '<h4 class="text-lg font-black uppercase text-white truncate">' + (eq ? eq.nombre : (nombreTxt || 'POR DEFINIR')) + '</h4>' +
+                                '<button onclick="copiarDato(\'' + capSeguro + '\')" class="text-[9px] text-gray-400 hover:text-white font-bold uppercase block mt-0.5">' +
+                                    'Capitán DC: <span class="text-everGold underline">' + capitan + '</span> 📋' +
+                                '</button>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="max-h-[250px] overflow-y-auto pr-1 relative z-10">' + listaJug + '</div>' +
+                    '</div>';
             };
 
             const n1Seg = textoSeguro(nom1);
@@ -1594,46 +1581,39 @@
             const count1 = (eq1 && Array.isArray(eq1.jugadores)) ? eq1.jugadores.length : 5;
             const count2 = (eq2 && Array.isArray(eq2.jugadores)) ? eq2.jugadores.length : 5;
 
-            document.getElementById('modal-vs-content').innerHTML = `
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 pb-3 border-b border-white/15 pr-8">
-                    <div>
-                        <span class="text-[10px] text-vctRed font-black uppercase tracking-[0.3em] block">${fase} • 8:00 PM CDMX</span>
-                        <h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider">⚔️ ${nom1} <span class="text-vctRed mx-2">VS</span> ${nom2 || 'RIVAL'}</h3>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto ocultar-en-poster">
-                        <button onclick="toggleModoPoster()" class="bg-white/5 hover:bg-white/15 border border-white/20 text-white text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0">
-                            📸 Modo Póster
-                        </button>
-                        <select onchange="verVS('${n1Seg}', this.value, '${faseSeg}')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-56 outline-none">
-                            ${opcionesRival}
-                        </select>
-                    </div>
-                </div>
-
-                <!-- COMPARATIVA TÁCTICA -->
-                <div class="grid grid-cols-3 gap-2 bg-black/60 border border-white/10 rounded-lg p-2.5 mb-4 text-center text-[10px] font-bold">
-                    <div class="${info.c1 ? 'text-emerald-400' : 'text-yellow-400'}">${info.c1 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente'} • ${count1} Jug.</div>
-                    <div class="text-gray-400 font-black uppercase tracking-widest">⚡ COMPARATIVA TÁCTICA</div>
-                    <div class="${info.c2 ? 'text-emerald-400' : 'text-yellow-400'}">${info.c2 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente'} • ${count2} Jug.</div>
-                </div>
-
-                <!-- BARRA DE PREDICCIÓN Y HYPE METER -->
-                <div id="panel-prediccion-dinamico"></div>
-
-                <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
-                    <div class="md:col-span-5">${dibujarCol(nom1, eq1, 'border-vctRed', 'border-vctRed/40', gana1, info.c1)}</div>
-                    <div class="md:col-span-1 flex flex-col items-center justify-center py-2">
-                        ${tieneMarcador ? `<div class="mb-2 bg-black border border-everGold/50 px-3 py-1 rounded text-sm font-black text-everGold shadow-lg">${info.s1 \vert{}\vert{} '0'} :${info.s2 || '0'}</div>` : ''}
-                        <div class="vs-neon-badge w-14 h-14 rounded-full bg-gradient-to-br from-vctRed to-red-900 border-2 border-white flex items-center justify-center font-black text-sm text-white">
-                            VS
-                        </div>
-                    </div>
-                    <div class="md:col-span-5">${dibujarCol(nom2, eq2, 'border-everGold', 'border-everGold/40', gana2, info.c2)}</div>
-                </div>`;
+            document.getElementById('modal-vs-content').innerHTML =
+                '<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 pb-3 border-b border-white/15 pr-8">' +
+                    '<div>' +
+                        '<span class="text-[10px] text-vctRed font-black uppercase tracking-[0.3em] block">' + fase + ' • 8:00 PM CDMX</span>' +
+                        '<h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider">⚔️ ' + nom1 + ' <span class="text-vctRed mx-2">VS</span> ' + (nom2 || 'RIVAL') + '</h3>' +
+                    '</div>' +
+                    '<div class="flex flex-wrap items-center gap-2 w-full md:w-auto ocultar-en-poster">' +
+                        '<button onclick="toggleModoPoster()" class="bg-white/5 hover:bg-white/15 border border-white/20 text-white text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0">' +
+                            '📸 Modo Póster' +
+                        '</button>' +
+                        '<select onchange="verVS(\'' + n1Seg + '\', this.value, \'' + faseSeg + '\')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-56 outline-none">' +
+                            opcionesRival +
+                        '</select>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="grid grid-cols-3 gap-2 bg-black/60 border border-white/10 rounded-lg p-2.5 mb-4 text-center text-[10px] font-bold">' +
+                    '<div class="' + (info.c1 ? 'text-emerald-400' : 'text-yellow-400') + '">' + (info.c1 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente') + ' • ' + count1 + ' Jug.</div>' +
+                    '<div class="text-gray-400 font-black uppercase tracking-widest">⚡ COMPARATIVA TÁCTICA</div>' +
+                    '<div class="' + (info.c2 ? 'text-emerald-400' : 'text-yellow-400') + '">' + (info.c2 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente') + ' • ' + count2 + ' Jug.</div>' +
+                '</div>' +
+                '<div id="panel-prediccion-dinamico"></div>' +
+                '<div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">' +
+                    '<div class="md:col-span-5">' + dibujarCol(nom1, eq1, 'border-vctRed', 'border-vctRed/40', gana1, info.c1) + '</div>' +
+                    '<div class="md:col-span-1 flex flex-col items-center justify-center py-2">' +
+                        (tieneMarcador ? '<div class="mb-2 bg-black border border-everGold/50 px-3 py-1 rounded text-sm font-black text-everGold shadow-lg">' + (info.s1 || '0') + ' : ' + (info.s2 || '0') + '</div>' : '') +
+                        '<div class="vs-neon-badge w-14 h-14 rounded-full bg-gradient-to-br from-vctRed to-red-900 border-2 border-white flex items-center justify-center font-black text-sm text-white">VS</div>' +
+                    '</div>' +
+                    '<div class="md:col-span-5">' + dibujarCol(nom2, eq2, 'border-everGold', 'border-everGold/40', gana2, info.c2) + '</div>' +
+                '</div>';
 
             renderizarBarraPrediccion();
             document.getElementById('modal-vs').classList.remove('hidden');
-        }
+        };
 
         cargarEquiposIniciales();
         setInterval(pulsoEnTiempoReal, 8000);
