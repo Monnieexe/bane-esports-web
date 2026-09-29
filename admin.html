@@ -31,7 +31,7 @@
             </div>
             <div class="flex flex-wrap items-center gap-2.5">
                 <a href="#seccion-equipos-registrados" class="bg-everGold/15 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded transition-all">
-                    👥 VER EQUIPOS REGISTRADOS (<span id="badge-total-eq">0</span>/24)
+                    👥 EQUIPOS REGISTRADOS (<span id="badge-total-eq">0</span>/24)
                 </a>
                 <a href="sorteo.html" target="_blank" class="bg-white/10 hover:bg-white/20 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded">
                     VER TABLERO PÚBLICO ↗
@@ -163,19 +163,22 @@
             </section>
         </div>
 
-        <!-- 4. EQUIPOS REGISTRADOS EN LA BASE DE DATOS -->
+        <!-- 4. EQUIPOS REGISTRADOS EN LA BASE DE DATOS (CON EDITOR DE ROSTER, SUPLENTES Y COACH) -->
         <section id="seccion-equipos-registrados" class="panel-box p-6 border-t-4 border-t-vctRed scroll-mt-24">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-white/10">
                 <div>
-                    <span class="text-[10px] text-everGold font-black uppercase tracking-[0.25em] block">BASE DE DATOS DE INSCRIPCIONES</span>
+                    <span class="text-[10px] text-everGold font-black uppercase tracking-[0.25em] block">BASE DE DATOS DE INSCRIPCIONES • GESTIÓN DE ROSTERS</span>
                     <h2 class="text-xl font-black uppercase tracking-wider text-white mt-0.5">
                         👥 EQUIPOS REGISTRADOS (<span id="contador-equipos-db" class="text-vctRed">0 / 24</span>)
                     </h2>
                 </div>
-                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                    <input type="text" id="buscador-admin-equipos" oninput="filtrarEquiposAdmin(this.value)" placeholder="🔍 Buscar equipo, capitán o Riot ID..." class="bg-[#080a10] border border-white/15 focus:border-vctRed px-4 py-2.5 text-xs font-bold text-white rounded w-full sm:w-72 outline-none">
+                <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+                    <input type="text" id="buscador-admin-equipos" oninput="filtrarEquiposAdmin(this.value)" placeholder="🔍 Buscar equipo, capitán o Riot ID..." class="bg-[#080a10] border border-white/15 focus:border-vctRed px-4 py-2.5 text-xs font-bold text-white rounded w-full sm:w-64 outline-none">
+                    <button onclick="abrirModalNuevoEquipo()" class="bg-everGold hover:bg-white text-black text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded shrink-0 transition-all">
+                        ➕ Nuevo Equipo
+                    </button>
                     <button onclick="cargarEquiposRegistrados()" class="bg-white/10 hover:bg-white/20 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded shrink-0">
-                        🔄 Recargar Lista
+                        🔄 Recargar
                     </button>
                 </div>
             </div>
@@ -187,15 +190,84 @@
 
     </main>
 
+    <!-- MODAL PARA EDITAR EQUIPO / AGREGAR SUPLENTE O COACH -->
+    <div id="modal-editar-equipo" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-[#0b0d14] border border-white/25 rounded-xl w-full max-w-3xl p-6 md:p-7 max-h-[92vh] overflow-y-auto relative shadow-2xl">
+            <button onclick="cerrarModalEditarEquipo()" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black">✕</button>
+
+            <div class="mb-5 pb-3 border-b border-white/10">
+                <span class="text-[10px] text-everGold font-black uppercase tracking-[0.25em] block">EDITOR OFICIAL DE ESCUADRA Y PLANTILLA</span>
+                <h3 id="titulo-modal-equipo" class="text-xl font-black uppercase text-white mt-0.5">✏️ EDITAR EQUIPO</h3>
+            </div>
+
+            <!-- Datos Generales del Equipo -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5 bg-black/50 border border-white/10 p-4 rounded-lg">
+                <div>
+                    <label class="text-[9px] text-gray-400 font-black uppercase block mb-1">Nombre del Equipo</label>
+                    <input id="edit-eq-nombre" type="text" class="w-full bg-[#0c0e16] border border-white/15 focus:border-everGold p-2 rounded text-xs font-bold text-white outline-none">
+                </div>
+                <div>
+                    <label class="text-[9px] text-gray-400 font-black uppercase block mb-1">Discord del Capitán / Manager</label>
+                    <input id="edit-eq-discord" type="text" class="w-full bg-[#0c0e16] border border-white/15 focus:border-everGold p-2 rounded text-xs font-bold text-everGold outline-none">
+                </div>
+                <div>
+                    <label class="text-[9px] text-gray-400 font-black uppercase block mb-1">Rango Promedio</label>
+                    <input id="edit-eq-rango" type="text" placeholder="Ej. Ascendente / Inmortal" class="w-full bg-[#0c0e16] border border-white/15 focus:border-everGold p-2 rounded text-xs font-bold text-white outline-none">
+                </div>
+                <div class="sm:col-span-3">
+                    <label class="text-[9px] text-gray-400 font-black uppercase block mb-1">Logo del Equipo (URL o subir imagen nueva)</label>
+                    <div class="flex flex-wrap sm:flex-nowrap items-center gap-2">
+                        <input id="edit-eq-logo" type="text" placeholder="URL del logo o Base64..." class="flex-1 bg-[#0c0e16] border border-white/15 p-2 rounded text-xs font-semibold text-gray-300 outline-none">
+                        <label class="bg-white/10 hover:bg-white/20 text-white text-[10px] font-black uppercase px-3 py-2 rounded cursor-pointer shrink-0">
+                            📁 Subir Archivo
+                            <input type="file" accept="image/*" class="hidden" onchange="procesarNuevoLogoEquipo(this)">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones Rápidos para Agregar Suplente / Coach / Titular -->
+            <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                <span class="text-xs font-black uppercase tracking-wider text-white">👥 INTEGRANTES DEL ROSTER (<span id=" edit-count-jug">0</span>)</span>
+                <div class="flex flex-wrap gap-1.5">
+                    <button onclick="agregarFilaJugadorEditor('SUPLENTE')" class="bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[10px] font-black uppercase px-3 py-1.5 rounded transition-all">
+                        + Agregar Suplente
+                    </button>
+                    <button onclick="agregarFilaJugadorEditor('COACH')" class="bg-purple-600/30 hover:bg-purple-600 text-purple-200 hover:text-white border border-purple-400/50 text-[10px] font-black uppercase px-3 py-1.5 rounded transition-all">
+                        + Agregar Coach
+                    </button>
+                    <button onclick="agregarFilaJugadorEditor('HEAD COACH')" class="bg-blue-600/30 hover:bg-blue-600 text-blue-200 hover:text-white border border-blue-400/50 text-[10px] font-black uppercase px-3 py-1.5 rounded transition-all">
+                        + Head Coach
+                    </button>
+                    <button onclick="agregarFilaJugadorEditor('TITULAR')" class="bg-vctRed/20 hover:bg-vctRed text-vctRed hover:text-white border border-vctRed/50 text-[10px] font-black uppercase px-3 py-1.5 rounded transition-all">
+                        + Agregar Titular
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lista Editable de Jugadores -->
+            <div id="lista-jugadores-editor" class="space-y-2 max-h-[300px] overflow-y-auto pr-1 mb-6"></div>
+
+            <div class="flex justify-end items-center gap-3 pt-4 border-t border-white/10">
+                <button onclick="cerrarModalEditarEquipo()" class="bg-white/10 hover:bg-white/20 text-gray-300 text-xs font-black uppercase tracking-widest px-5 py-2.5 rounded">
+                    Cancelar
+                </button>
+                <button id="btn-guardar-equipo-modal" onclick="guardarCambiosEquipoDB()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black uppercase tracking-widest px-6 py-2.5 rounded shadow-lg">
+                    💾 Guardar Cambios del Equipo
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- BARRA FLOTANTE DE GUARDADO -->
-    <div class="fixed bottom-0 inset-x-0 bg-[#08090f]/95 border-t border-white/15 py-3 px-6 z-50 flex justify-between items-center backdrop-blur-md">
-        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Todos los cambios se reflejan en sorteo.html en menos de 3.5 segundos</span>
+    <div class="fixed bottom-0 inset-x-0 bg-[#08090f]/95 border-t border-white/15 py-3 px-6 z-40 flex justify-between items-center backdrop-blur-md">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Todos los cambios de fases y marcadores se reflejan en sorteo.html al instante</span>
         <button onclick="guardarTodoEnVivo()" class="bg-vctRed hover:bg-white text-white hover:text-black text-xs font-black uppercase tracking-widest px-8 py-3 rounded transition-all shadow-[0_0_20px_rgba(255,42,63,0.5)]">
             💾 GUARDAR Y PUBLICAR EN VIVO AHORA
         </button>
     </div>
 
-    <!-- TOAST DE COPIADO -->
+    <!-- TOAST DE COPIADO / AVISOS -->
     <div id="toast-admin" class="fixed bottom-20 right-[-450px] z-50 bg-[#0b0d14] border-l-4 border-everGold px-5 py-3 shadow-2xl transition-all duration-300">
         <p id="toast-admin-txt" class="text-xs font-black uppercase tracking-widest text-white">✔ Copiado</p>
     </div>
@@ -204,6 +276,10 @@
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
         let bracketNoticiaId = null;
         let listaEquiposDB = [];
+
+        // Estado temporal del equipo que se está editando en el modal
+        let equipoEditandoActual = null;
+        let jugadoresEditorTemp = [];
 
         let datos = {
             version: '24_grupos_v1',
@@ -241,7 +317,7 @@
             const t = document.getElementById('toast-admin');
             document.getElementById('toast-admin-txt').innerText = msg;
             t.style.right = '24px';
-            setTimeout(() => { t.style.right = '-450px'; }, 2600);
+            setTimeout(() => { t.style.right = '-450px'; }, 2800);
         }
 
         function copiarTextoAdmin(txt) {
@@ -351,17 +427,17 @@
         }
 
         // =============================================================
-        // EQUIPOS REGISTRADOS (24/24)
+        // EQUIPOS REGISTRADOS + EDITOR DE ROSTERS (SUPLENTES / COACH)
         // =============================================================
         async function cargarEquiposRegistrados() {
             try {
-                const res = await fetch(`${API_URL}/equipos?t=${Date.now()}`, { cache: 'no-store' });
+                const res = await fetch(API_URL + '/equipos');
                 const data = await res.json();
                 if (Array.isArray(data)) {
                     listaEquiposDB = data.filter(Boolean);
                     document.getElementById('contador-equipos-db').innerText = `${listaEquiposDB.length} / 24`;
                     document.getElementById('badge-total-eq').innerText = listaEquiposDB.length;
-                    dibujarTarjetasEquiposAdmin('');
+                    dibujarTarjetasEquiposAdmin(document.getElementById('buscador-admin-equipos').value);
                 }
             } catch (e) {
                 setTimeout(cargarEquiposRegistrados, 4000);
@@ -395,13 +471,16 @@
                 const logo = eq.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(ini)}&background=111&color=e5c05c&bold=true`;
                 const capSeg = textoSeguro(eq.discord || '');
                 const nomSeg = textoSeguro(eq.nombre || '');
+                const realIdx = listaEquiposDB.indexOf(eq);
 
                 const jugadoresHtml = (eq.jugadores || []).map(j => {
                     const idSeg = textoSeguro(j.riot_id || '');
+                    const rolTxt = String(j.role || 'TITULAR').toUpperCase();
+                    const colorRol = rolTxt.includes('COACH') ? 'text-purple-400' : (rolTxt.includes('SUP') ? 'text-emerald-400' : 'text-everGold');
                     return `
                         <div class="flex items-center justify-between gap-2 bg-black/50 border border-white/5 px-2.5 py-1.5 rounded text-[11px]">
                             <div class="truncate">
-                                <span class="text-[8px] text-everGold font-black uppercase mr-1.5">[${j.role || 'TIT'}]</span>
+                                <span class="text-[8px] ${colorRol} font-black uppercase mr-1.5">[${rolTxt}]</span>
                                 <button onclick="copiarTextoAdmin('${idSeg}')" class="font-bold text-white hover:text-everGold truncate">${j.riot_id || 'Sin ID'} 📋</button>
                                 ${j.dc ? `<span class="text-[9px] text-gray-400 ml-1">(${j.dc})</span>` : ''}
                             </div>
@@ -412,7 +491,7 @@
                 return `
                     <div class="bg-[#080a10] border border-white/10 hover:border-white/25 rounded-lg p-4 flex flex-col justify-between gap-3">
                         <div>
-                            <div class="flex items-start justify-between gap-3 mb-3 pb-3 border-b border-white/10">
+                            <div class="flex items-start justify-between gap-2 mb-3 pb-3 border-b border-white/10">
                                 <div class="flex items-center gap-3 truncate">
                                     <img src="${logo}" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15 shrink-0">
                                     <div class="truncate">
@@ -423,16 +502,238 @@
                                         </button>
                                     </div>
                                 </div>
-                                <button onclick="eliminarEquipoDB('${eq.id}', '${nomSeg}')" class="bg-red-950/50 hover:bg-vctRed text-red-300 hover:text-white border border-red-500/30 text-[9px] font-black uppercase px-2.5 py-1.5 rounded shrink-0 transition-all">
-                                    🗑️ Baja
-                                </button>
+                                <div class="flex flex-col gap-1.5 shrink-0">
+                                    <button onclick="abrirModalEditarEquipo(${realIdx})" class="bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-all">
+                                        ✏️ Editar / +Staff
+                                    </button>
+                                    <button onclick="eliminarEquipoDB('${eq.id}', '${nomSeg}')" class="bg-red-950/50 hover:bg-vctRed text-red-300 hover:text-white border border-red-500/30 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">
+                                        🗑️ Baja
+                                    </button>
+                                </div>
                             </div>
-                            <div class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+                            <div class="space-y-1.5 max-h-56 overflow-y-auto pr-1">
                                 ${jugadoresHtml}
                             </div>
                         </div>
                     </div>`;
             }).join('');
+        }
+
+        // Abrir modal para editar un equipo existente
+        function abrirModalEditarEquipo(index) {
+            const eq = listaEquiposDB[index];
+            if (!eq) return;
+            equipoEditandoActual = eq;
+            document.getElementById('titulo-modal-equipo').innerText = `✏️ EDITAR: ${eq.nombre}`;
+            document.getElementById('edit-eq-nombre').value = eq.nombre || '';
+            document.getElementById('edit-eq-discord').value = eq.discord || '';
+            document.getElementById('edit-eq-rango').value = eq.rango || '';
+            document.getElementById('edit-eq-logo').value = eq.logo_url || '';
+
+            jugadoresEditorTemp = Array.isArray(eq.jugadores)
+                ? eq.jugadores.map(j => ({
+                    role: j.role || 'TITULAR',
+                    riot_id: j.riot_id || '',
+                    dc: j.dc || '',
+                    tracker_url: j.tracker_url || ''
+                }))
+                : [];
+
+            renderizarFilasJugadoresEditor();
+            document.getElementById('modal-editar-equipo').classList.remove('hidden');
+        }
+
+        // Abrir modal para crear un equipo desde cero
+        function abrirModalNuevoEquipo() {
+            equipoEditandoActual = null;
+            document.getElementById('titulo-modal-equipo').innerText = `➕ REGISTRAR NUEVO EQUIPO`;
+            document.getElementById('edit-eq-nombre').value = '';
+            document.getElementById('edit-eq-discord').value = '';
+            document.getElementById('edit-eq-rango').value = 'Ascendente / Inmortal';
+            document.getElementById('edit-eq-logo').value = '';
+
+            jugadoresEditorTemp = [
+                { role: 'TITULAR', riot_id: '', dc: '', tracker_url: '' },
+                { role: 'TITULAR', riot_id: '', dc: '', tracker_url: '' },
+                { role: 'TITULAR', riot_id: '', dc: '', tracker_url: '' },
+                { role: 'TITULAR', riot_id: '', dc: '', tracker_url: '' },
+                { role: 'TITULAR', riot_id: '', dc: '', tracker_url: '' }
+            ];
+            renderizarFilasJugadoresEditor();
+            document.getElementById('modal-editar-equipo').classList.remove('hidden');
+        }
+
+        function cerrarModalEditarEquipo() {
+            document.getElementById('modal-editar-equipo').classList.add('hidden');
+        }
+
+        function procesarNuevoLogoEquipo(input) {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const max = 220;
+                    let w = img.width, h = img.height;
+                    if (w > h && w > max) { h *= max / w; w = max; }
+                    else if (h > max) { w *= max / h; h = max; }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    document.getElementById('edit-eq-logo').value = canvas.toDataURL('image/webp', 0.85);
+                    mostrarToastAdmin('✔ Logo procesado listo para guardar');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function agregarFilaJugadorEditor(rolPorDefecto) {
+            jugadoresEditorTemp.push({
+                role: rolPorDefecto || 'SUPLENTE',
+                riot_id: '',
+                dc: '',
+                tracker_url: ''
+            });
+            renderizarFilasJugadoresEditor();
+            const cont = document.getElementById('lista-jugadores-editor');
+            cont.scrollTop = cont.scrollHeight;
+        }
+
+        function eliminarFilaJugadorEditor(idx) {
+            jugadoresEditorTemp.splice(idx, 1);
+            renderizarFilasJugadoresEditor();
+        }
+
+        function actualizarRiotIdEditor(idx, valor) {
+            jugadoresEditorTemp[idx].riot_id = valor;
+            if (valor.includes('#')) {
+                jugadoresEditorTemp[idx].tracker_url = 'https://tracker.gg/valorant/profile/riot/' + encodeURIComponent(valor.trim()) + '/overview';
+                const inpTracker = document.getElementById('inp-tracker-ed-' + idx);
+                if (inpTracker) inpTracker.value = jugadoresEditorTemp[idx].tracker_url;
+            }
+        }
+
+        function renderizarFilasJugadoresEditor() {
+            const cont = document.getElementById('lista-jugadores-editor');
+            const roles = ['TITULAR', 'SUPLENTE', 'COACH', 'HEAD COACH', 'MANAGER'];
+
+            cont.innerHTML = jugadoresEditorTemp.map((j, i) => {
+                const rolActual = String(j.role || 'TITULAR').toUpperCase();
+                const opcionesRol = roles.map(r => `<option value="${r}" ${rolActual === r ? 'selected' : ''}>${r}</option>`).join('');
+
+                return `
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-black/60 border border-white/10 p-2.5 rounded-lg">
+                        <div class="sm:col-span-3">
+                            <select onchange="jugadoresEditorTemp[${i}].role=this.value" class="w-full bg-[#0c0e16] border border-white/15 text-[10px] font-black text-everGold p-2 rounded outline-none">
+                                ${opcionesRol}
+                            </select>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <input type="text" value="${textoSeguro(j.riot_id)}" oninput="actualizarRiotIdEditor(${i}, this.value)" placeholder="Riot ID (Nombre#TAG)" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-xs font-bold text-white outline-none">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <input type="text" value="${textoSeguro(j.dc)}" oninput="jugadoresEditorTemp[${i}].dc=this.value" placeholder="Discord" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-xs font-semibold text-gray-300 outline-none">
+                        </div>
+                        <div class="sm:col-span-3">
+                            <input id="inp-tracker-ed-${i}" type="text" value="${textoSeguro(j.tracker_url)}" oninput="jugadoresEditorTemp[${i}].tracker_url=this.value" placeholder="URL Tracker.gg" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-[10px] text-gray-400 outline-none">
+                        </div>
+                        <div class="sm:col-span-1 flex justify-end">
+                            <button onclick="eliminarFilaJugadorEditor(${i})" class="bg-red-950/60 hover:bg-vctRed text-red-300 hover:text-white text-xs font-black px-2.5 py-1.5 rounded" title="Quitar integrante">
+                                ✕
+                            </button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        async function guardarCambiosEquipoDB() {
+            const btn = document.getElementById('btn-guardar-equipo-modal');
+            const nombre = document.getElementById('edit-eq-nombre').value.trim();
+            const discord = document.getElementById('edit-eq-discord').value.trim();
+            const rango = document.getElementById('edit-eq-rango').value.trim() || 'Confirmado';
+            const logo_url = document.getElementById('edit-eq-logo').value.trim();
+
+            if (!nombre) {
+                alert('Escribe el nombre del equipo.');
+                return;
+            }
+
+            const jugadoresLimpios = jugadoresEditorTemp.filter(j => String(j.riot_id || '').trim() !== '' || String(j.dc || '').trim() !== '');
+            const payload = { nombre, discord, rango, logo_url, jugadores: jugadoresLimpios };
+
+            btn.disabled = true;
+            btn.innerText = '⏳ Guardando en Render...';
+
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + (localStorage.getItem('idToken') || 'pase-vip-temporal-5ever')
+            };
+
+            try {
+                let actualizadoOK = false;
+
+                // 1. Si estamos editando un equipo existente, intentamos PUT directo
+                if (equipoEditandoActual && equipoEditandoActual.id) {
+                    const idViejo = equipoEditandoActual.id;
+                    let resPut = await fetch(`${API_URL}/equipos/${idViejo}`, {
+                        method: 'PUT',
+                        headers,
+                        body: JSON.stringify(payload)
+                    }).catch(() => null);
+
+                    if (!resPut || !resPut.ok) {
+                        resPut = await fetch(`${API_URL}/equipos?id=${idViejo}`, {
+                            method: 'PUT',
+                            headers,
+                            body: JSON.stringify(payload)
+                        }).catch(() => null);
+                    }
+
+                    if (resPut && resPut.ok) {
+                        actualizadoOK = true;
+                    } else {
+                        // Fallback infalible si el backend no tiene ruta PUT: Crear el actualizado con POST y borrar el registro anterior
+                        const resPost = await fetch(`${API_URL}/equipos`, {
+                            method: 'POST',
+                            headers,
+                            body: JSON.stringify(payload)
+                        });
+                        if (resPost.ok) {
+                            actualizadoOK = true;
+                            let del = await fetch(`${API_URL}/equipos?id=${idViejo}`, { method: 'DELETE', headers }).catch(() => null);
+                            if (!del || !del.ok) {
+                                await fetch(`${API_URL}/equipos/${idViejo}`, { method: 'DELETE', headers }).catch(() => null);
+                            }
+                        }
+                    }
+                } else {
+                    // Crear equipo nuevo
+                    const resPost = await fetch(`${API_URL}/equipos`, {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify(payload)
+                    });
+                    if (resPost.ok) actualizadoOK = true;
+                }
+
+                // Limpiar caché de sesión para que sorteo.html descargue el nuevo suplente/coach de inmediato
+                try { sessionStorage.removeItem('5ever_equipos_cache'); } catch (e) {}
+
+                if (actualizadoOK) {
+                    mostrarToastAdmin(`✔ Escuadra "${nombre}" actualizada correctamente`);
+                    cerrarModalEditarEquipo();
+                    await cargarEquiposRegistrados();
+                } else {
+                    alert('No se pudo guardar en el servidor. Intenta de nuevo.');
+                }
+            } catch (e) {
+                alert('Error de conexión con Render.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '💾 Guardar Cambios del Equipo';
+            }
         }
 
         async function eliminarEquipoDB(id, nombre) {
@@ -447,6 +748,7 @@
                 if (!res.ok) {
                     res = await fetch(`${API_URL}/equipos/${id}`, { method: 'DELETE', headers });
                 }
+                try { sessionStorage.removeItem('5ever_equipos_cache'); } catch (e) {}
                 mostrarToastAdmin(`🗑️ Equipo ${nombre} eliminado`);
                 cargarEquiposRegistrados();
             } catch (e) {
@@ -504,7 +806,7 @@
 
         async function cargarEstadoDesdeRender() {
             try {
-                const res = await fetch(`${API_URL}/noticias?t=${Date.now()}`, { cache: 'no-store' });
+                const res = await fetch(API_URL + '/noticias');
                 const noticias = await res.json();
                 if (Array.isArray(noticias)) {
                     noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
