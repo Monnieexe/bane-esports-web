@@ -163,17 +163,20 @@
             </section>
         </div>
 
-        <!-- 4. EQUIPOS REGISTRADOS EN LA BASE DE DATOS (CON EDITOR DE ROSTER, SUPLENTES Y COACH) -->
+        <!-- 4. EQUIPOS REGISTRADOS EN LA BASE DE DATOS (CON DESCARGA DE LOGOS PNG Y EDITOR DE ROSTER) -->
         <section id="seccion-equipos-registrados" class="panel-box p-6 border-t-4 border-t-vctRed scroll-mt-24">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-white/10">
                 <div>
-                    <span class="text-[10px] text-everGold font-black uppercase tracking-[0.25em] block">BASE DE DATOS DE INSCRIPCIONES • GESTIÓN DE ROSTERS</span>
+                    <span class="text-[10px] text-everGold font-black uppercase tracking-[0.25em] block">BASE DE DATOS DE INSCRIPCIONES • GESTIÓN DE ROSTERS Y LOGOS</span>
                     <h2 class="text-xl font-black uppercase tracking-wider text-white mt-0.5">
                         👥 EQUIPOS REGISTRADOS (<span id="contador-equipos-db" class="text-vctRed">0 / 24</span>)
                     </h2>
                 </div>
                 <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
-                    <input type="text" id="buscador-admin-equipos" oninput="filtrarEquiposAdmin(this.value)" placeholder="🔍 Buscar equipo, capitán o Riot ID..." class="bg-[#080a10] border border-white/15 focus:border-vctRed px-4 py-2.5 text-xs font-bold text-white rounded w-full sm:w-64 outline-none">
+                    <input type="text" id="buscador-admin-equipos" oninput="filtrarEquiposAdmin(this.value)" placeholder="🔍 Buscar equipo, capitán o Riot ID..." class="bg-[#080a10] border border-white/15 focus:border-vctRed px-4 py-2.5 text-xs font-bold text-white rounded w-full sm:w-60 outline-none">
+                    <button onclick="descargarTodosLosLogosPNG()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded shrink-0 transition-all shadow">
+                        📦 Descargar Todos los Logos
+                    </button>
                     <button onclick="abrirModalNuevoEquipo()" class="bg-everGold hover:bg-white text-black text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded shrink-0 transition-all">
                         ➕ Nuevo Equipo
                     </button>
@@ -228,7 +231,7 @@
 
             <!-- Botones Rápidos para Agregar Suplente / Coach / Titular -->
             <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
-                <span class="text-xs font-black uppercase tracking-wider text-white">👥 INTEGRANTES DEL ROSTER (<span id=" edit-count-jug">0</span>)</span>
+                <span class="text-xs font-black uppercase tracking-wider text-white">👥 INTEGRANTES DEL ROSTER</span>
                 <div class="flex flex-wrap gap-1.5">
                     <button onclick="agregarFilaJugadorEditor('SUPLENTE')" class="bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[10px] font-black uppercase px-3 py-1.5 rounded transition-all">
                         + Agregar Suplente
@@ -277,7 +280,6 @@
         let bracketNoticiaId = null;
         let listaEquiposDB = [];
 
-        // Estado temporal del equipo que se está editando en el modal
         let equipoEditandoActual = null;
         let jugadoresEditorTemp = [];
 
@@ -328,6 +330,69 @@
 
         function textoSeguro(txt) {
             return String(txt || '').replace(/['"\\]/g, '');
+        }
+
+        // =============================================================
+        // DESCARGADOR DE LOGOS DE EQUIPOS EN FORMATO PNG
+        // =============================================================
+        function descargarLogoPNG(index) {
+            const eq = listaEquiposDB[index];
+            if (!eq) return;
+
+            const nombreLimpio = String(eq.nombre || 'Equipo').replace(/[^a-zA-Z0-9_-]/g, '_');
+            const ini = String(eq.nombre || '?').substring(0, 2).toUpperCase();
+            const urlLogo = eq.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(ini)}&background=111&color=e5c05c&bold=true&size=512`;
+
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = function() {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.naturalWidth || 512;
+                    canvas.height = img.naturalHeight || 512;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    const a = document.createElement('a');
+                    a.href = canvas.toDataURL('image/png');
+                    a.download = `Logo_${nombreLimpio}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    mostrarToastAdmin(`📥 Descargado: Logo_${nombreLimpio}.png`);
+                } catch (err) {
+                    // Fallback directo si la imagen externa tiene restricción CORS
+                    const a = document.createElement('a');
+                    a.href = urlLogo;
+                    a.download = `Logo_${nombreLimpio}.png`;
+                    a.target = '_blank';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+            };
+            img.onerror = function() {
+                const a = document.createElement('a');
+                a.href = urlLogo;
+                a.download = `Logo_${nombreLimpio}.png`;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+            img.src = urlLogo;
+        }
+
+        async function descargarTodosLosLogosPNG() {
+            if (!listaEquiposDB.length) {
+                alert('Aún no se han cargado los equipos.');
+                return;
+            }
+            mostrarToastAdmin(`📦 Descargando los ${listaEquiposDB.length} logos en PNG...`);
+            for (let i = 0; i < listaEquiposDB.length; i++) {
+                descargarLogoPNG(i);
+                await new Promise(r => setTimeout(r, 350));
+            }
         }
 
         function iniciarRelojTolerancia10Min() {
@@ -427,7 +492,7 @@
         }
 
         // =============================================================
-        // EQUIPOS REGISTRADOS + EDITOR DE ROSTERS (SUPLENTES / COACH)
+        // EQUIPOS REGISTRADOS + EDITOR DE ROSTERS
         // =============================================================
         async function cargarEquiposRegistrados() {
             try {
@@ -493,7 +558,7 @@
                         <div>
                             <div class="flex items-start justify-between gap-2 mb-3 pb-3 border-b border-white/10">
                                 <div class="flex items-center gap-3 truncate">
-                                    <img src="${logo}" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15 shrink-0">
+                                    <img onclick="descargarLogoPNG(${realIdx})" title="Clic para descargar logo en PNG" src="${logo}" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15 hover:border-everGold cursor-pointer shrink-0 transition-all">
                                     <div class="truncate">
                                         <span class="text-[9px] text-everGold font-black uppercase block">ESCUADRA #${idx + 1} • ${eq.rango || 'Rango Oficial'}</span>
                                         <h3 class="text-sm font-black uppercase text-white truncate">${eq.nombre}</h3>
@@ -502,8 +567,11 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="flex flex-col gap-1.5 shrink-0">
-                                    <button onclick="abrirModalEditarEquipo(${realIdx})" class="bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-all">
+                                <div class="flex flex-col gap-1 shrink-0">
+                                    <button onclick="descargarLogoPNG(${realIdx})" class="bg-indigo-600/25 hover:bg-indigo-600 text-indigo-200 hover:text-white border border-indigo-400/40 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">
+                                        📥 Logo PNG
+                                    </button>
+                                    <button onclick="abrirModalEditarEquipo(${realIdx})" class="bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">
                                         ✏️ Editar / +Staff
                                     </button>
                                     <button onclick="eliminarEquipoDB('${eq.id}', '${nomSeg}')" class="bg-red-950/50 hover:bg-vctRed text-red-300 hover:text-white border border-red-500/30 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">
@@ -519,7 +587,6 @@
             }).join('');
         }
 
-        // Abrir modal para editar un equipo existente
         function abrirModalEditarEquipo(index) {
             const eq = listaEquiposDB[index];
             if (!eq) return;
@@ -543,7 +610,6 @@
             document.getElementById('modal-editar-equipo').classList.remove('hidden');
         }
 
-        // Abrir modal para crear un equipo desde cero
         function abrirModalNuevoEquipo() {
             equipoEditandoActual = null;
             document.getElementById('titulo-modal-equipo').innerText = `➕ REGISTRAR NUEVO EQUIPO`;
@@ -674,7 +740,6 @@
             try {
                 let actualizadoOK = false;
 
-                // 1. Si estamos editando un equipo existente, intentamos PUT directo
                 if (equipoEditandoActual && equipoEditandoActual.id) {
                     const idViejo = equipoEditandoActual.id;
                     let resPut = await fetch(`${API_URL}/equipos/${idViejo}`, {
@@ -694,7 +759,6 @@
                     if (resPut && resPut.ok) {
                         actualizadoOK = true;
                     } else {
-                        // Fallback infalible si el backend no tiene ruta PUT: Crear el actualizado con POST y borrar el registro anterior
                         const resPost = await fetch(`${API_URL}/equipos`, {
                             method: 'POST',
                             headers,
@@ -709,7 +773,6 @@
                         }
                     }
                 } else {
-                    // Crear equipo nuevo
                     const resPost = await fetch(`${API_URL}/equipos`, {
                         method: 'POST',
                         headers,
@@ -718,7 +781,6 @@
                     if (resPost.ok) actualizadoOK = true;
                 }
 
-                // Limpiar caché de sesión para que sorteo.html descargue el nuevo suplente/coach de inmediato
                 try { sessionStorage.removeItem('5ever_equipos_cache'); } catch (e) {}
 
                 if (actualizadoOK) {
