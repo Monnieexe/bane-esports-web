@@ -51,6 +51,55 @@
         .board-scroll::-webkit-scrollbar-track { background: #0a0b10; }
         .board-scroll::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #ff2a3f, #e5c05c); border-radius: 3px; }
 
+        /* ESTILOS PREMIUM DE CARTELERA DE TRANSMISIONES */
+        .stream-broadcast-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(18, 14, 30, 0.95) 0%, rgba(9, 11, 18, 0.98) 50%, rgba(20, 12, 24, 0.95) 100%);
+            border: 1px solid rgba(145, 70, 255, 0.28);
+            border-radius: 10px;
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+        }
+        .stream-broadcast-card:hover {
+            border-color: #9146FF;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(145, 70, 255, 0.28), 0 0 15px rgba(255, 42, 63, 0.15);
+        }
+        .stream-broadcast-card.stream-card-playing {
+            border-color: #e5c05c !important;
+            box-shadow: 0 0 25px rgba(229, 192, 92, 0.35), inset 0 0 20px rgba(145, 70, 255, 0.15) !important;
+        }
+        .stream-card-bg-logo-left {
+            position: absolute;
+            left: -18px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-8deg);
+            width: 95px;
+            height: 95px;
+            object-fit: contain;
+            opacity: 0.06;
+            pointer-events: none;
+            transition: all 0.35s ease;
+        }
+        .stream-card-bg-logo-right {
+            position: absolute;
+            right: -18px;
+            top: 50%;
+            transform: translateY(-50%) rotate(8deg);
+            width: 95px;
+            height: 95px;
+            object-fit: contain;
+            opacity: 0.06;
+            pointer-events: none;
+            transition: all 0.35s ease;
+        }
+        .stream-broadcast-card:hover .stream-card-bg-logo-left,
+        .stream-broadcast-card:hover .stream-card-bg-logo-right {
+            opacity: 0.14;
+            transform: translateY(-50%) scale(1.1);
+        }
+
         .phase-col {
             position: relative;
             background: linear-gradient(180deg, rgba(16, 19, 29, 0.96) 0%, rgba(8, 10, 15, 0.98) 100%);
@@ -90,6 +139,7 @@
             border: 1px solid rgba(255, 255, 255, 0.09);
             border-radius: 6px;
             transition: all 0.2s ease;
+            overflow: hidden;
         }
         .match-pair:hover {
             border-color: #ff2a3f;
@@ -98,8 +148,8 @@
             box-shadow: 0 5px 15px rgba(255, 42, 63, 0.2);
         }
         .match-stream-active {
-            border-color: #9146FF !important;
-            box-shadow: 0 0 18px rgba(145, 70, 255, 0.35) !important;
+            border-color: rgba(145, 70, 255, 0.55) !important;
+            box-shadow: 0 0 16px rgba(145, 70, 255, 0.22) !important;
         }
         .team-row + .team-row {
             border-top: 1px solid rgba(255, 255, 255, 0.07);
@@ -107,7 +157,7 @@
         .vs-pill-inline {
             position: absolute;
             right: 8px;
-            top: 50%;
+            top: 26px;
             transform: translateY(-50%);
             background: #ff2a3f;
             color: #fff;
@@ -118,22 +168,6 @@
             letter-spacing: 0.08em;
             box-shadow: 0 0 8px rgba(255, 42, 63, 0.6);
             pointer-events: none;
-            z-index: 5;
-        }
-        .live-pill-inline {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #9146FF;
-            border: 1px solid #d8b4fe;
-            color: #fff;
-            font-size: 7.5px;
-            font-weight: 900;
-            padding: 1px 5px;
-            border-radius: 3px;
-            letter-spacing: 0.06em;
-            box-shadow: 0 0 12px rgba(145, 70, 255, 0.9);
             z-index: 5;
         }
 
@@ -272,8 +306,8 @@
                 <button onclick="abrirModalReglas()" class="bg-[#12141d] hover:bg-everGold text-everGold hover:text-black border border-everGold/60 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card">
                     📜 REGLAS
                 </button>
-                <button onclick="toggleStream()" class="bg-twitchPurple/20 hover:bg-twitchPurple text-white border border-twitchPurple font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card flex items-center gap-1.5 shadow-[0_0_15px_rgba(145,70,255,0.35)]">
-                    <span class="w-2 h-2 rounded-full bg-purple-300 animate-ping"></span> MULTISTREAM (6)
+                <button onclick="toggleStream()" class="bg-gradient-to-r from-twitchPurple to-purple-700 hover:from-purple-500 hover:to-twitchPurple text-white border border-purple-300/50 font-black text-[10px] uppercase tracking-[0.14em] px-4 py-2.5 transition-all clip-card flex items-center gap-2 shadow-[0_0_20px_rgba(145,70,255,0.45)]">
+                    <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> 📺 CENTRO DE STREAMS (6)
                 </button>
                 <button onclick="toggleModoOBS()" class="bg-[#12141d] hover:bg-purple-600 text-gray-300 hover:text-white border border-white/15 font-black text-[10px] uppercase tracking-[0.12em] px-3 py-2.5 transition-all clip-card" title="Modo transparente para OBS / Casters">
                     🎥 OBS
@@ -303,6 +337,103 @@
 
     <main class="max-w-[1640px] mx-auto px-4 md:px-6 mt-5 relative z-10">
 
+        <!-- ========================================================= -->
+        <!-- BROADCAST HUB: CARTELERA OFICIAL DE LAS 6 TRANSMISIONES   -->
+        <!-- ========================================================= -->
+        <section class="mb-6 bg-gradient-to-b from-[#110c22]/90 via-[#090b12]/95 to-[#07080e]/95 border border-twitchPurple/40 rounded-2xl p-4 md:p-5 shadow-[0_12px_40px_rgba(0,0,0,0.8)] relative overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-72 h-72 bg-twitchPurple/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-vctRed/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Cabecera de Transmisiones -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 pb-3 border-b border-white/10 relative z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-twitchPurple/20 border border-twitchPurple flex items-center justify-center text-lg shadow-[0_0_15px_rgba(145,70,255,0.5)]">
+                        📡
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-red-600 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded tracking-widest flex items-center gap-1 shadow-[0_0_10px_rgba(220,38,38,0.8)]">
+                                <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> EN VIVO
+                            </span>
+                            <span class="text-[10px] text-purple-300 font-black uppercase tracking-[0.22em]">BROADCAST HUB • FASE 2 (BO3)</span>
+                        </div>
+                        <h2 class="text-sm md:text-lg font-black uppercase tracking-wider text-white mt-0.5">
+                            CARTELERA OFICIAL DE TRANSMISIONES <span class="text-everGold">• 6 CANALES SIMULTÁNEOS</span>
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                    <button onclick="abrirTeatroConModo('single')" class="bg-twitchPurple hover:bg-purple-500 text-white text-[10px] font-black uppercase tracking-wider px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(145,70,255,0.4)]">
+                        🎬 Reproductor + Chat
+                    </button>
+                    <button onclick="abrirTeatroConModo('multi')" class="bg-[#141724] hover:bg-everGold hover:text-black text-everGold border border-everGold/50 text-[10px] font-black uppercase tracking-wider px-3.5 py-2 rounded-lg transition-all flex items-center gap-1.5">
+                        🎛️ Modo Multi-Stream (4 Pantallas)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid 3x2 de Tarjetas de Partida en Vivo -->
+            <div id="grid-cartelera-streams" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5 relative z-10"></div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TEATRO DESPLEGABLE: STREAM + CHAT EN VIVO / MULTI-STREAM  -->
+        <!-- ========================================================= -->
+        <section id="panel-stream" class="hidden mb-7 bg-[#080a11] border-2 border-twitchPurple/70 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(145,70,255,0.28)]">
+            <!-- Barra Superior del Teatro -->
+            <div class="bg-gradient-to-r from-[#140d26] via-[#0d101b] to-[#140d26] px-4 py-3 border-b border-white/10 flex flex-wrap justify-between items-center gap-3">
+                <div id="info-duelo-teatro" class="flex items-center gap-3"></div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <button id="btn-modo-single" onclick="cambiarModoTeatro('single')" class="bg-twitchPurple text-white text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded border border-purple-300/40 transition-all">
+                        🎬 1 Canal + Chat
+                    </button>
+                    <button id="btn-modo-multi" onclick="cambiarModoTeatro('multi')" class="bg-white/5 hover:bg-white/10 text-gray-300 text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded border border-white/10 transition-all">
+                        🎛️ Mosaico 4 Streams
+                    </button>
+                    <button id="btn-toggle-chat" onclick="toggleChatTwitch()" class="bg-white/5 hover:bg-white/15 text-purple-300 text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded border border-twitchPurple/40 transition-all">
+                        💬 Ocultar Chat
+                    </button>
+                    <div class="flex items-center gap-1 bg-black/80 border border-white/15 rounded px-2 py-1">
+                        <input type="text" id="input-canal-twitch" placeholder="Otro canal..." class="bg-transparent text-[10px] font-bold text-white outline-none w-24">
+                        <button onclick="cambiarCanalStream()" class="bg-vctRed hover:bg-red-500 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded">Ir</button>
+                    </div>
+                    <button onclick="toggleStream()" class="bg-red-500/20 hover:bg-vctRed text-red-300 hover:text-white border border-red-500/40 text-xs font-black px-2.5 py-1 rounded transition-all" title="Cerrar Reproductor">
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pestañas Rápidas de los 6 Canales -->
+            <div id="botones-selector-streams" class="bg-[#06070c] px-4 py-2.5 border-b border-white/10 flex flex-wrap items-center gap-2"></div>
+
+            <!-- VISTA 1: REPRODUCTOR PRINCIPAL + CHAT DE TWITCH -->
+            <div id="vista-teatro-single" class="grid grid-cols-1 lg:grid-cols-12 bg-black">
+                <div id="col-video-principal" class="lg:col-span-9 aspect-video w-full bg-black relative">
+                    <iframe id="iframe-stream" src="" class="w-full h-full" allowfullscreen></iframe>
+                </div>
+                <div id="col-chat-principal" class="lg:col-span-3 h-[380px] lg:h-auto bg-[#0e0c13] border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col">
+                    <div class="bg-[#181522] py-1.5 px-3 text-[9px] font-black uppercase tracking-widest text-purple-300 border-b border-white/10 flex justify-between items-center">
+                        <span>💬 CHAT EN DIRECTO</span>
+                        <a id="link-chat-canal" href="https://www.twitch.tv/5evermad" target="_blank" class="text-everGold hover:underline">Abrir en Twitch ↗</a>
+                    </div>
+                    <iframe id="iframe-chat" src="" class="w-full flex-1 bg-black"></iframe>
+                </div>
+            </div>
+
+            <!-- VISTA 2: MOSAICO MULTISTREAM (4 PANTALLAS SIMULTÁNEAS) -->
+            <div id="vista-teatro-multi" class="hidden p-3 bg-[#05060a]">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-2.5 px-1">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-everGold">
+                        🎛️ CENTRO DE MONITOREO MULTI-STREAM • SELECCIONA QUÉ CANAL VER EN CADA PANTALLA:
+                    </span>
+                    <span class="text-[9px] text-gray-400 font-bold">Puedes activar el audio del canal que prefieras en cada reproductor</span>
+                </div>
+                <div id="grid-multistream-quad" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+            </div>
+        </section>
+
         <!-- LEYENDA RÁPIDA DEL SEMÁFORO DE CHECK-IN -->
         <div class="mb-4 flex flex-wrap justify-between items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
             <div class="flex items-center gap-4 bg-[#0b0d14]/90 border border-white/10 px-3.5 py-1.5 rounded-md">
@@ -312,42 +443,6 @@
                 <span class="text-everGold">🔥 Invicto / Líder</span>
             </div>
             <span id="indicador-carga-equipos" class="text-everGold font-black">⚡ Haz clic en cualquier enfrentamiento VS para abrir el Cara a Cara</span>
-        </div>
-
-        <!-- CARTELERA DE STREAMS EN VIVO (LOS 6 DUELOS) -->
-        <div class="mb-5 bg-gradient-to-r from-[#0c0918]/95 via-[#0b0d14]/95 to-[#0c0918]/95 border border-twitchPurple/40 rounded-xl p-3.5 shadow-[0_0_30px_rgba(145,70,255,0.12)]">
-            <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-white/10">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-twitchPurple animate-ping"></span>
-                    <h3 class="text-xs font-black uppercase tracking-[0.2em] text-white">
-                        🟣 CARTELERA DE STREAMS EN VIVO • <span class="text-everGold">6 CANALES OFICIALES TWITCH</span>
-                    </h3>
-                </div>
-                <button onclick="toggleStream()" class="text-[9px] font-black uppercase tracking-widest bg-twitchPurple/20 hover:bg-twitchPurple text-purple-200 hover:text-white border border-twitchPurple/50 px-3 py-1 rounded transition-all">
-                    📺 Abrir / Cerrar Reproductor Integrado
-                </button>
-            </div>
-            <div id="grid-cartelera-streams" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2.5"></div>
-        </div>
-
-        <!-- PANEL DESPLEGABLE DE STREAM -->
-        <div id="panel-stream" class="hidden mb-6 bg-[#0b0d14] border border-twitchPurple/60 rounded-xl p-4 shadow-2xl">
-            <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-white/10">
-                <div class="flex items-center gap-2">
-                    <span class="text-xs font-black uppercase tracking-widest text-white">🔴 Reproductor Oficial Copa 5EverMad:</span>
-                    <a id="link-externo-stream-activo" href="https://www.twitch.tv/5evermad" target="_blank" class="text-xs font-black text-purple-400 hover:text-everGold underline uppercase">twitch.tv/5evermad ↗</a>
-                </div>
-                <div class="flex items-center gap-2">
-                    <input type="text" id="input-canal-twitch" placeholder="Otro canal de Twitch..." class="bg-black border border-white/15 px-2.5 py-1 text-[10px] font-bold text-white rounded outline-none">
-                    <button onclick="cambiarCanalStream()" class="bg-vctRed text-white text-[9px] font-black uppercase px-3 py-1 rounded">Cargar</button>
-                    <button onclick="toggleStream()" class="text-gray-400 hover:text-white text-xs font-black ml-2">✕</button>
-                </div>
-            </div>
-            <!-- BOTONES DE CAMBIO RÁPIDO ENTRE LOS 6 STREAMS -->
-            <div id="botones-selector-streams" class="flex flex-wrap gap-1.5 mb-3"></div>
-            <div class="aspect-video w-full max-h-[460px] bg-black rounded overflow-hidden border border-white/10">
-                <iframe id="iframe-stream" src="" class="w-full h-full" allowfullscreen></iframe>
-            </div>
         </div>
 
         <!-- TABLERO DE LAS 5 FASES -->
@@ -738,17 +833,20 @@
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
         let CANAL_TWITCH_DEFECTO = '5evermad';
+        let modoTeatroActual = 'single'; // 'single' | 'multi'
+        let chatVisible = true;
+        let canalesMultiStream = ['5evermad', 'dunnker', 'yuqiiban', 'charly4r'];
 
         // =============================================================
         // CARTELERA OFICIAL DE STREAMS (6 PARTIDAS EN VIVO)
         // =============================================================
         const STREAMS_OFICIALES = [
-            { eq1: '5EverMad', eq2: 'MOONRISE ESPORTS', canal: '5evermad', url: 'https://www.twitch.tv/5evermad', grupo: 'GRUPO E' },
-            { eq1: '7z Esports', eq2: 'Cruel Karma', canal: 'dunnker', url: 'https://www.twitch.tv/dunnker', grupo: 'GRUPO E' },
-            { eq1: 'Platano Power Esports', eq2: 'ULTRADIFF ESPORTS', canal: 'yuqiiban', url: 'https://www.twitch.tv/yuqiiban', grupo: 'GRUPO E' },
-            { eq1: 'Xiao Shīzi 北', eq2: 'YOSORA ESPORTS', canal: 'charly4r', url: 'https://www.twitch.tv/charly4r', grupo: 'GRUPO F' },
-            { eq1: 'Nönsense by Bear', eq2: 'Kaizen Esports', canal: 'eliszea', url: 'https://www.twitch.tv/eliszea', grupo: 'GRUPO F' },
-            { eq1: 'RYUJINN', eq2: 'Howlers Esports', canal: 'chocopantera', url: 'https://www.twitch.tv/chocopantera', grupo: 'GRUPO F' }
+            { eq1: '5EverMad', eq2: 'MOONRISE ESPORTS', canal: '5evermad', url: 'https://www.twitch.tv/5evermad', grupo: 'GRUPO E', destacado: true, etiqueta: 'MAIN STREAM' },
+            { eq1: '7z Esports', eq2: 'Cruel Karma', canal: 'dunnker', url: 'https://www.twitch.tv/dunnker', grupo: 'GRUPO E', destacado: false, etiqueta: 'STREAM B' },
+            { eq1: 'Platano Power Esports', eq2: 'ULTRADIFF ESPORTS', canal: 'yuqiiban', url: 'https://www.twitch.tv/yuqiiban', grupo: 'GRUPO E', destacado: false, etiqueta: 'STREAM C' },
+            { eq1: 'Xiao Shīzi 北', eq2: 'YOSORA ESPORTS', canal: 'charly4r', url: 'https://www.twitch.tv/charly4r', grupo: 'GRUPO F', destacado: false, etiqueta: 'STREAM D' },
+            { eq1: 'Nönsense by Bear', eq2: 'Kaizen Esports', canal: 'eliszea', url: 'https://www.twitch.tv/eliszea', grupo: 'GRUPO F', destacado: false, etiqueta: 'STREAM E' },
+            { eq1: 'RYUJINN', eq2: 'Howlers Esports', canal: 'chocopantera', url: 'https://www.twitch.tv/chocopantera', grupo: 'GRUPO F', destacado: false, etiqueta: 'STREAM F' }
         ];
 
         function leerJSONSeguro(storage, key, fallback) {
@@ -984,71 +1082,273 @@
         };
 
         // =============================================================
-        // RENDERIZADO DE LA CARTELERA DE STREAMS Y REPRODUCTOR
+        // TARJETAS DE TRANSMISIÓN ESTILO VCT BROADCAST & TEATRO
         // =============================================================
         function renderizarCarteleraStreams() {
             const grid = document.getElementById('grid-cartelera-streams');
             const selector = document.getElementById('botones-selector-streams');
+            const infoTeatro = document.getElementById('info-duelo-teatro');
             if (!grid || !selector) return;
+
+            const panelAbierto = !document.getElementById('panel-stream').classList.contains('hidden');
 
             grid.innerHTML = STREAMS_OFICIALES.map(function(s) {
                 const n1 = textoSeguro(s.eq1);
                 const n2 = textoSeguro(s.eq2);
-                const activo = CANAL_TWITCH_DEFECTO.toLowerCase() === s.canal.toLowerCase();
-                return '<div class="bg-[#0b0d16] border ' + (activo ? 'border-twitchPurple shadow-[0_0_15px_rgba(145,70,255,0.35)]' : 'border-white/10 hover:border-twitchPurple/60') + ' rounded-lg p-2.5 flex flex-col justify-between transition-all">' +
-                    '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'FASE 2 • ' + s.grupo + '\')" class="cursor-pointer mb-2">' +
-                        '<div class="flex justify-between items-center text-[8px] font-black uppercase tracking-wider mb-1.5">' +
-                            '<span class="text-purple-300 bg-twitchPurple/20 border border-twitchPurple/40 px-1.5 py-0.5 rounded">🟣 /' + s.canal + '</span>' +
-                            '<span class="text-everGold">' + s.grupo + '</span>' +
+                const activo = panelAbierto && CANAL_TWITCH_DEFECTO.toLowerCase() === s.canal.toLowerCase();
+                const info = buscarInfoSlotDuelo(s.eq1, s.eq2);
+                const tieneScore = info.s1 !== '' || info.s2 !== '';
+
+                return '<div class="stream-broadcast-card ' + (activo ? 'stream-card-playing' : '') + ' p-3.5 flex flex-col justify-between">' +
+                    '<img data-logo="' + n1 + '" src="' + urlAvatar(n1) + '" class="stream-card-bg-logo-left">' +
+                    '<img data-logo="' + n2 + '" src="' + urlAvatar(n2) + '" class="stream-card-bg-logo-right">' +
+
+                    '<!-- Barra Superior de la Tarjeta -->' +
+                    '<div class="flex justify-between items-center gap-2 pb-2.5 mb-2.5 border-b border-white/10 relative z-10">' +
+                        '<div class="flex items-center gap-1.5">' +
+                            '<span class="bg-red-600/90 border border-red-400/50 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded flex items-center gap-1 shadow-[0_0_8px_rgba(220,38,38,0.8)]">' +
+                                '<span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> LIVE' +
+                            '</span>' +
+                            '<span class="bg-twitchPurple/25 border border-twitchPurple/60 text-purple-200 text-[9px] font-black uppercase px-2 py-0.5 rounded tracking-wider">' +
+                                '🟣 @' + s.canal +
+                            '</span>' +
                         '</div>' +
-                        '<div class="flex items-center gap-1.5 py-0.5">' +
-                            '<img data-logo="' + n1 + '" src="' + urlAvatar(n1) + '" class="w-4 h-4 rounded object-contain bg-black shrink-0">' +
-                            '<span class="text-[10px] font-black text-white truncate">' + s.eq1 + '</span>' +
-                        '</div>' +
-                        '<div class="flex items-center gap-1.5 py-0.5">' +
-                            '<img data-logo="' + n2 + '" src="' + urlAvatar(n2) + '" class="w-4 h-4 rounded object-contain bg-black shrink-0">' +
-                            '<span class="text-[10px] font-black text-white truncate">' + s.eq2 + '</span>' +
+                        '<div class="flex items-center gap-1.5">' +
+                            (s.destacado ? '<span class="bg-everGold/20 border border-everGold text-everGold text-[8px] font-black uppercase px-2 py-0.5 rounded">⭐ OFICIAL</span>' : '') +
+                            '<span class="bg-blue-500/15 border border-blue-400/40 text-blue-300 text-[8px] font-black uppercase px-2 py-0.5 rounded">' + s.grupo + ' • BO3</span>' +
                         '</div>' +
                     '</div>' +
-                    '<div class="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-white/10">' +
-                        '<button onclick="verStreamEnPagina(\'' + s.canal + '\')" class="bg-twitchPurple hover:bg-purple-500 text-white text-[8px] font-black uppercase py-1 px-1.5 rounded transition-all text-center">▶ VER AQUÍ</button>' +
-                        '<a href="' + s.url + '" target="_blank" class="bg-white/5 hover:bg-everGold hover:text-black text-gray-200 text-[8px] font-black uppercase py-1 px-1.5 rounded transition-all text-center">TWITCH ↗</a>' +
+
+                    '<!-- Enfrentamiento Central (Equipos y Logos Grandes) -->' +
+                    '<div onclick="verStreamEnPagina(\'' + s.canal + '\')" class="grid grid-cols-11 items-center gap-2 py-1.5 cursor-pointer relative z-10 group">' +
+                        '<div class="col-span-5 flex items-center gap-2.5">' +
+                            '<div class="relative shrink-0">' +
+                                '<img data-logo="' + n1 + '" src="' + urlAvatar(n1) + '" class="w-11 h-11 rounded-lg object-contain bg-black p-1 border border-white/20 group-hover:border-vctRed transition-all shadow-md">' +
+                                '<span class="' + (info.c1 ? 'dot-checkin-ok' : 'dot-checkin-wait') + ' absolute -top-1 -left-1 border border-black"></span>' +
+                            '</div>' +
+                            '<div class="truncate">' +
+                                '<span class="text-[8px] text-gray-400 font-bold uppercase block">ESCUADRA 1</span>' +
+                                '<h4 class="text-xs font-black text-white uppercase truncate group-hover:text-everGold transition-all">' + s.eq1 + '</h4>' +
+                            '</div>' +
+                        '</div>' +
+
+                        '<div class="col-span-1 flex flex-col items-center justify-center">' +
+                            (tieneScore
+                                ? '<span class="bg-black border border-everGold text-everGold text-[10px] font-black px-1.5 py-0.5 rounded">' + (info.s1 || '0') + '-' + (info.s2 || '0') + '</span>'
+                                : '<div class="w-7 h-7 rounded-full bg-gradient-to-br from-vctRed to-purple-800 border border-white/40 flex items-center justify-center text-[9px] font-black text-white shadow-[0_0_12px_rgba(255,42,63,0.6)]">VS</div>') +
+                        '</div>' +
+
+                        '<div class="col-span-5 flex items-center justify-end gap-2.5 text-right">' +
+                            '<div class="truncate">' +
+                                '<span class="text-[8px] text-gray-400 font-bold uppercase block">ESCUADRA 2</span>' +
+                                '<h4 class="text-xs font-black text-white uppercase truncate group-hover:text-everGold transition-all">' + s.eq2 + '</h4>' +
+                            '</div>' +
+                            '<div class="relative shrink-0">' +
+                                '<img data-logo="' + n2 + '" src="' + urlAvatar(n2) + '" class="w-11 h-11 rounded-lg object-contain bg-black p-1 border border-white/20 group-hover:border-everGold transition-all shadow-md">' +
+                                '<span class="' + (info.c2 ? 'dot-checkin-ok' : 'dot-checkin-wait') + ' absolute -top-1 -right-1 border border-black"></span>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+
+                    '<!-- Barra Inferior de Botones de Acción -->' +
+                    '<div class="grid grid-cols-12 gap-1.5 pt-2.5 mt-2.5 border-t border-white/10 relative z-10">' +
+                        '<button onclick="verStreamEnPagina(\'' + s.canal + '\')" class="col-span-6 ' + (activo ? 'bg-everGold text-black' : 'bg-gradient-to-r from-twitchPurple to-purple-700 hover:from-purple-500 hover:to-twitchPurple text-white') + ' text-[9px] font-black uppercase tracking-wider py-2 px-2 rounded transition-all flex items-center justify-center gap-1.5 shadow">' +
+                            '<span>' + (activo ? '🔊 REPRODUCIENDO' : '▶ VER EN PANTALLA') + '</span>' +
+                        '</button>' +
+                        '<button onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'FASE 2 • ' + s.grupo + '\')" class="col-span-3 bg-white/5 hover:bg-vctRed text-gray-200 hover:text-white border border-white/10 text-[9px] font-black uppercase py-2 px-1.5 rounded transition-all text-center" title="Ver Rosters y Votar">' +
+                            '⚔️ ROSTERS' +
+                        '</button>' +
+                        '<a href="' + s.url + '" target="_blank" class="col-span-3 bg-black/70 hover:bg-white hover:text-black text-purple-300 border border-twitchPurple/40 text-[9px] font-black uppercase py-2 px-1.5 rounded transition-all flex items-center justify-center gap-1">' +
+                            'TWITCH ↗' +
+                        '</a>' +
                     '</div>' +
                 '</div>';
             }).join('');
 
+            // Selector de canales en el reproductor desplegable
             selector.innerHTML = STREAMS_OFICIALES.map(function(s) {
+                const n1 = textoSeguro(s.eq1);
+                const n2 = textoSeguro(s.eq2);
                 const activo = CANAL_TWITCH_DEFECTO.toLowerCase() === s.canal.toLowerCase();
-                return '<button onclick="verStreamEnPagina(\'' + s.canal + '\')" class="' + (activo ? 'bg-twitchPurple text-white border-white' : 'bg-black/70 hover:bg-twitchPurple/30 text-gray-300 border-twitchPurple/40') + ' border text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-all flex items-center gap-1.5">' +
-                    '<span>🟣 ' + s.canal + '</span>' +
-                    '<span class="text-[8px] opacity-75">(' + s.eq1 + ' vs ' + s.eq2 + ')</span>' +
+                return '<button onclick="verStreamEnPagina(\'' + s.canal + '\')" class="' + (activo ? 'bg-gradient-to-r from-twitchPurple to-purple-700 text-white border-everGold shadow-[0_0_12px_rgba(145,70,255,0.6)]' : 'bg-[#0c0e17] hover:bg-white/10 text-gray-300 border-white/15') + ' border text-[9px] font-black uppercase px-3 py-1.5 rounded-lg transition-all flex items-center gap-2">' +
+                    '<span class="w-1.5 h-1.5 rounded-full ' + (activo ? 'bg-everGold animate-ping' : 'bg-purple-400') + '"></span>' +
+                    '<img data-logo="' + n1 + '" src="' + urlAvatar(n1) + '" class="w-4 h-4 rounded object-contain bg-black">' +
+                    '<span>' + s.eq1 + ' <span class="text-vctRed">vs</span> ' + s.eq2 + '</span>' +
+                    '<img data-logo="' + n2 + '" src="' + urlAvatar(n2) + '" class="w-4 h-4 rounded object-contain bg-black">' +
+                    '<span class="text-[8px] px-1.5 py-0.5 rounded bg-black/50 text-purple-200">@' + s.canal + '</span>' +
                 '</button>';
             }).join('');
 
+            // Info del duelo activo en la barra del Teatro
+            if (infoTeatro) {
+                const streamObj = STREAMS_OFICIALES.find(function(x) { return x.canal.toLowerCase() === CANAL_TWITCH_DEFECTO.toLowerCase(); });
+                if (streamObj) {
+                    const n1 = textoSeguro(streamObj.eq1);
+                    const n2 = textoSeguro(streamObj.eq2);
+                    infoTeatro.innerHTML =
+                        '<span class="bg-red-600 text-white text-[9px] font-black uppercase px-2 py-1 rounded flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> EN DIRECTO</span>' +
+                        '<div class="flex items-center gap-2">' +
+                            '<img data-logo="' + n1 + '" src="' + urlAvatar(n1) + '" class="w-6 h-6 rounded object-contain bg-black border border-white/20">' +
+                            '<span class="text-xs md:text-sm font-black uppercase text-white">' + streamObj.eq1 + ' <span class="text-vctRed mx-1">VS</span> ' + streamObj.eq2 + '</span>' +
+                            '<img data-logo="' + n2 + '" src="' + urlAvatar(n2) + '" class="w-6 h-6 rounded object-contain bg-black border border-white/20">' +
+                        '</div>' +
+                        '<a href="' + streamObj.url + '" target="_blank" class="text-[10px] font-black text-everGold hover:underline uppercase bg-black/60 px-2.5 py-1 rounded border border-everGold/40">🟣 twitch.tv/' + streamObj.canal + ' ↗</a>';
+                } else {
+                    infoTeatro.innerHTML =
+                        '<span class="bg-red-600 text-white text-[9px] font-black uppercase px-2 py-1 rounded">🔴 STREAM ACTIVO</span>' +
+                        '<a href="https://www.twitch.tv/' + encodeURIComponent(CANAL_TWITCH_DEFECTO) + '" target="_blank" class="text-xs font-black text-everGold hover:underline uppercase">twitch.tv/' + CANAL_TWITCH_DEFECTO + ' ↗</a>';
+                }
+            }
+
             inyectarLogosEnDOM();
         }
+
+        function cargarIframesSingle(canal) {
+            const parentHost = window.location.hostname || 'localhost';
+            const iframeVideo = document.getElementById('iframe-stream');
+            const iframeChat = document.getElementById('iframe-chat');
+            const linkChat = document.getElementById('link-chat-canal');
+
+            if (iframeVideo) {
+                iframeVideo.src = 'https://player.twitch.tv/?channel=' + encodeURIComponent(canal) + '&parent=' + parentHost + '&muted=false';
+            }
+            if (iframeChat && chatVisible) {
+                iframeChat.src = 'https://www.twitch.tv/embed/' + encodeURIComponent(canal) + '/chat?darkpopout&parent=' + parentHost;
+            }
+            if (linkChat) {
+                linkChat.href = 'https://www.twitch.tv/' + encodeURIComponent(canal);
+            }
+        }
+
+        function renderizarMosaicoMultiStream() {
+            const cont = document.getElementById('grid-multistream-quad');
+            if (!cont) return;
+            const parentHost = window.location.hostname || 'localhost';
+
+            cont.innerHTML = canalesMultiStream.map(function(canalSlot, idx) {
+                const opciones = STREAMS_OFICIALES.map(function(s) {
+                    const sel = s.canal.toLowerCase() === canalSlot.toLowerCase() ? 'selected' : '';
+                    return '<option value="' + s.canal + '" ' + sel + '>🟣 @' + s.canal + ' — ' + s.eq1 + ' vs ' + s.eq2 + '</option>';
+                }).join('');
+
+                const datosSlot = STREAMS_OFICIALES.find(function(s) { return s.canal.toLowerCase() === canalSlot.toLowerCase(); }) || { eq1: canalSlot, eq2: '', url: 'https://www.twitch.tv/' + canalSlot };
+
+                return '<div class="bg-[#0b0d15] border border-twitchPurple/40 rounded-xl overflow-hidden shadow-lg">' +
+                    '<div class="bg-[#12101e] px-3 py-1.5 border-b border-white/10 flex flex-wrap justify-between items-center gap-2">' +
+                        '<div class="flex items-center gap-2">' +
+                            '<span class="bg-twitchPurple text-white text-[8px] font-black uppercase px-1.5 py-0.5 rounded">CAM ' + (idx + 1) + '</span>' +
+                            '<select onchange="cambiarSlotMultiStream(' + idx + ', this.value)" class="bg-black border border-white/20 text-white text-[10px] font-bold px-2 py-1 rounded outline-none">' +
+                                opciones +
+                            '</select>' +
+                        '</div>' +
+                        '<a href="' + datosSlot.url + '" target="_blank" class="text-[9px] font-black text-everGold hover:underline uppercase">Twitch ↗</a>' +
+                    '</div>' +
+                    '<div class="aspect-video w-full bg-black">' +
+                        '<iframe src="https://player.twitch.tv/?channel=' + encodeURIComponent(canalSlot) + '&parent=' + parentHost + '&muted=' + (idx === 0 ? 'false' : 'true') + '" class="w-full h-full" allowfullscreen></iframe>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        window.cambiarSlotMultiStream = function(slotIdx, nuevoCanal) {
+            canalesMultiStream[slotIdx] = nuevoCanal;
+            renderizarMosaicoMultiStream();
+        };
+
+        window.cambiarModoTeatro = function(modo) {
+            modoTeatroActual = modo;
+            const vSingle = document.getElementById('vista-teatro-single');
+            const vMulti = document.getElementById('vista-teatro-multi');
+            const bSingle = document.getElementById('btn-modo-single');
+            const bMulti = document.getElementById('btn-modo-multi');
+            const bChat = document.getElementById('btn-toggle-chat');
+
+            if (modo === 'multi') {
+                vSingle.classList.add('hidden');
+                vMulti.classList.remove('hidden');
+                bChat.classList.add('hidden');
+                bMulti.className = 'bg-everGold text-black text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded border border-everGold transition-all';
+                bSingle.className = 'bg-white/5 hover:bg-white/10 text-gray-300 text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded border border-white/10 transition-all';
+                document.getElementById('iframe-stream').src = '';
+                renderizarMosaicoMultiStream();
+            } else {
+                vMulti.classList.add('hidden');
+                vSingle.classList.remove('hidden');
+                bChat.classList.remove('hidden');
+                bSingle.className = 'bg-twitchPurple text-white text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded border border-purple-300/40 transition-all';
+                bMulti.className = 'bg-white/5 hover:bg-white/10 text-gray-300 text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded border border-white/10 transition-all';
+                document.getElementById('grid-multistream-quad').innerHTML = '';
+                cargarIframesSingle(CANAL_TWITCH_DEFECTO);
+            }
+        };
+
+        window.abrirTeatroConModo = function(modo) {
+            const panel = document.getElementById('panel-stream');
+            panel.classList.remove('hidden');
+            cambiarModoTeatro(modo);
+            renderizarCarteleraStreams();
+            panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
+
+        window.toggleChatTwitch = function() {
+            chatVisible = !chatVisible;
+            const colVideo = document.getElementById('col-video-principal');
+            const colChat = document.getElementById('col-chat-principal');
+            const btn = document.getElementById('btn-toggle-chat');
+
+            if (chatVisible) {
+                colVideo.className = 'lg:col-span-9 aspect-video w-full bg-black relative';
+                colChat.classList.remove('hidden');
+                btn.innerText = '💬 Ocultar Chat';
+                const parentHost = window.location.hostname || 'localhost';
+                document.getElementById('iframe-chat').src = 'https://www.twitch.tv/embed/' + encodeURIComponent(CANAL_TWITCH_DEFECTO) + '/chat?darkpopout&parent=' + parentHost;
+            } else {
+                colVideo.className = 'lg:col-span-12 aspect-video w-full bg-black relative';
+                colChat.classList.add('hidden');
+                btn.innerText = '💬 Mostrar Chat';
+            }
+        };
 
         window.verStreamEnPagina = function(canal) {
             if (!canal) return;
             CANAL_TWITCH_DEFECTO = canal;
             const panel = document.getElementById('panel-stream');
-            const iframe = document.getElementById('iframe-stream');
             const input = document.getElementById('input-canal-twitch');
-            const linkExt = document.getElementById('link-externo-stream-activo');
 
             if (input) input.value = canal;
-            if (linkExt) {
-                linkExt.href = 'https://www.twitch.tv/' + encodeURIComponent(canal);
-                linkExt.innerText = 'twitch.tv/' + canal + ' ↗';
-            }
-
             panel.classList.remove('hidden');
-            const parentHost = window.location.hostname || 'localhost';
-            iframe.src = 'https://player.twitch.tv/?channel=' + encodeURIComponent(canal) + '&parent=' + parentHost + '&muted=false';
+
+            if (modoTeatroActual !== 'single') {
+                cambiarModoTeatro('single');
+            } else {
+                cargarIframesSingle(canal);
+            }
 
             renderizarCarteleraStreams();
             panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            mostrarToast('📺 Cargando transmisión: twitch.tv/' + canal);
+            mostrarToast('📺 Reproduciendo canal: @' + canal);
+        };
+
+        window.toggleStream = function() {
+            const panel = document.getElementById('panel-stream');
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) {
+                if (modoTeatroActual === 'multi') {
+                    renderizarMosaicoMultiStream();
+                } else {
+                    cargarIframesSingle(CANAL_TWITCH_DEFECTO);
+                }
+            } else {
+                document.getElementById('iframe-stream').src = '';
+                document.getElementById('grid-multistream-quad').innerHTML = '';
+            }
+            renderizarCarteleraStreams();
+        };
+
+        window.cambiarCanalStream = function() {
+            const val = document.getElementById('input-canal-twitch').value.trim();
+            if (!val) return;
+            verStreamEnPagina(val);
         };
 
         window.abrirModalReglas = function() { document.getElementById('modal-reglas').classList.remove('hidden'); };
@@ -1308,22 +1608,6 @@
         setInterval(actualizarRelojTorneo, 1000);
         actualizarRelojTorneo();
 
-        window.toggleStream = function() {
-            const panel = document.getElementById('panel-stream');
-            const iframe = document.getElementById('iframe-stream');
-            panel.classList.toggle('hidden');
-            if (!panel.classList.contains('hidden') && !iframe.src.includes('twitch.tv')) {
-                const parentHost = window.location.hostname || 'localhost';
-                iframe.src = 'https://player.twitch.tv/?channel=' + CANAL_TWITCH_DEFECTO + '&parent=' + parentHost + '&muted=false';
-            }
-        };
-
-        window.cambiarCanalStream = function() {
-            const val = document.getElementById('input-canal-twitch').value.trim();
-            if (!val) return;
-            verStreamEnPagina(val);
-        };
-
         window.filtrarPorBotonGrupo = function(grupo) {
             document.getElementById('buscador-equipos').value = grupo;
             filtrarTarjetasEquipos(grupo);
@@ -1373,7 +1657,7 @@
             const mostrarIcono = !esSlotPlaceholder(nombre);
             const esLider = slot.estado === 'clasificado' || String(slot.extra || '').includes('2-0') || String(slot.extra || '').includes('3-0');
 
-            return '<div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 pr-16 ' + est + '">' +
+            return '<div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 pr-9 ' + est + '">' +
                     '<div class="flex items-center gap-1.5 truncate">' +
                         (mostrarIcono ? '<span class="' + (slot.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait') + '"></span>' : '') +
                         (mostrarIcono ? '<img data-logo="' + nSeg + '" src="' + urlAvatar(nSeg) + '" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0">' : '') +
@@ -1394,14 +1678,20 @@
                 const streamObj = obtenerStreamDuelo(n1, n2);
                 const enVivo = Boolean(streamObj) || esDueloEnStream(n1, n2);
 
-                const badgeHtml = streamObj
-                    ? '<a href="' + streamObj.url + '" target="_blank" onclick="event.stopPropagation();" title="Ver en Twitch: ' + streamObj.canal + '" class="live-pill-inline hover:bg-everGold hover:text-black transition-all">🟣 ' + streamObj.canal.toUpperCase() + '</a>'
-                    : '<span class="' + (enVivo ? 'live-pill-inline' : 'vs-pill-inline') + '">' + (enVivo ? '🔴 LIVE' : 'VS') + '</span>';
+                const barraStreamInferior = streamObj
+                    ? '<div class="bg-[#130d24] border-t border-twitchPurple/40 px-2 py-1 flex justify-between items-center">' +
+                        '<button onclick="event.stopPropagation(); verStreamEnPagina(\'' + streamObj.canal + '\');" class="text-[8px] font-black uppercase text-purple-300 hover:text-everGold flex items-center gap-1">' +
+                            '<span class="w-1.5 h-1.5 rounded-full bg-twitchPurple animate-ping"></span> ▶ @' + streamObj.canal +
+                        '</button>' +
+                        '<a href="' + streamObj.url + '" target="_blank" onclick="event.stopPropagation();" class="text-[8px] font-black uppercase text-everGold hover:underline">TWITCH ↗</a>' +
+                      '</div>'
+                    : '';
 
                 duelos += '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'GRUPO ' + letra + ' • BO3\')" class="match-pair ' + (enVivo ? 'match-stream-active' : '') + ' cursor-pointer">' +
-                        badgeHtml +
+                        '<span class="vs-pill-inline">VS</span>' +
                         htmlFilaEquipo(s1) +
                         htmlFilaEquipo(s2) +
+                        barraStreamInferior +
                     '</div>';
             }
             return '<div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">' +
@@ -1422,7 +1712,6 @@
                 dispararAlertaBroadcast(d.aviso);
             }
 
-            // Si el backend envía Fase 2 aún con placeholders (E1..E6, F1..F6), conservamos los 6 duelos oficiales con stream
             if (d.fase2) {
                 if (todosSonPlaceholdersFase2(d.fase2.E)) {
                     d.fase2.E = estadoTorneoActual.fase2.E;
@@ -1479,7 +1768,7 @@
                     return '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'' + tit + ' • BO5\')" class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5 cursor-pointer hover:border-vctRed transition-all">' +
                             '<div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">' + tit + ' • BO5</div>' +
                             '<div class="match-pair ' + (enVivo ? 'match-stream-active' : '') + '">' +
-                                '<span class="' + (enVivo ? 'live-pill-inline' : 'vs-pill-inline') + '">' + (enVivo ? '🔴 LIVE' : 'VS') + '</span>' +
+                                '<span class="vs-pill-inline">VS</span>' +
                                 htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal', checkin: true }) +
                                 htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal', checkin: true }) +
                             '</div>' +
@@ -1595,16 +1884,16 @@
             });
 
             const bannerStreamModal = streamDuelo
-                ? '<div class="mb-4 bg-gradient-to-r from-purple-950/80 via-[#150d2a] to-purple-950/80 border border-twitchPurple rounded-xl p-3 flex flex-wrap justify-between items-center gap-3 shadow-[0_0_25px_rgba(145,70,255,0.25)]">' +
-                    '<div class="flex items-center gap-2.5">' +
-                        '<span class="w-2.5 h-2.5 rounded-full bg-twitchPurple animate-ping"></span>' +
+                ? '<div class="mb-4 bg-gradient-to-r from-purple-950/90 via-[#150d2a] to-purple-950/90 border border-twitchPurple rounded-xl p-3.5 flex flex-wrap justify-between items-center gap-3 shadow-[0_0_25px_rgba(145,70,255,0.25)]">' +
+                    '<div class="flex items-center gap-3">' +
+                        '<span class="bg-red-600 text-white text-[9px] font-black uppercase px-2 py-1 rounded flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> LIVE</span>' +
                         '<div>' +
-                            '<span class="text-[9px] text-purple-300 font-black uppercase tracking-widest block">TRANSMISIÓN OFICIAL EN TWITCH</span>' +
+                            '<span class="text-[9px] text-purple-300 font-black uppercase tracking-widest block">CANAL OFICIAL DEL ENCUENTRO (@' + streamDuelo.canal + ')</span>' +
                             '<a href="' + streamDuelo.url + '" target="_blank" class="text-xs md:text-sm font-black text-white hover:text-everGold underline">' + streamDuelo.url + ' ↗</a>' +
                         '</div>' +
                     '</div>' +
                     '<div class="flex items-center gap-2 ocultar-en-poster">' +
-                        '<button onclick="document.getElementById(\'modal-vs\').classList.add(\'hidden\'); verStreamEnPagina(\'' + streamDuelo.canal + '\');" class="bg-twitchPurple hover:bg-purple-500 text-white text-[9px] font-black uppercase tracking-wider px-3.5 py-2 rounded transition-all">▶ Reproducir en la Web</button>' +
+                        '<button onclick="document.getElementById(\'modal-vs\').classList.add(\'hidden\'); verStreamEnPagina(\'' + streamDuelo.canal + '\');" class="bg-twitchPurple hover:bg-purple-500 text-white text-[9px] font-black uppercase tracking-wider px-3.5 py-2 rounded transition-all shadow">▶ Reproducir en la Web</button>' +
                         '<a href="' + streamDuelo.url + '" target="_blank" class="bg-everGold hover:bg-white text-black text-[9px] font-black uppercase tracking-wider px-3.5 py-2 rounded transition-all">Abrir Twitch ↗</a>' +
                     '</div>' +
                   '</div>'
