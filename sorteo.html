@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#05060a' } } }
+            theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', bgDark: '#05060a', twitchPurple: '#9146FF' } } }
         };
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -98,8 +98,8 @@
             box-shadow: 0 5px 15px rgba(255, 42, 63, 0.2);
         }
         .match-stream-active {
-            border-color: #ff2a3f !important;
-            box-shadow: 0 0 18px rgba(255, 42, 63, 0.35) !important;
+            border-color: #9146FF !important;
+            box-shadow: 0 0 18px rgba(145, 70, 255, 0.35) !important;
         }
         .team-row + .team-row {
             border-top: 1px solid rgba(255, 255, 255, 0.07);
@@ -125,17 +125,15 @@
             right: 6px;
             top: 50%;
             transform: translateY(-50%);
-            background: #dc2626;
-            border: 1px solid #fca5a5;
+            background: #9146FF;
+            border: 1px solid #d8b4fe;
             color: #fff;
             font-size: 7.5px;
             font-weight: 900;
             padding: 1px 5px;
             border-radius: 3px;
-            letter-spacing: 0.08em;
-            box-shadow: 0 0 12px rgba(255, 42, 63, 0.95);
-            animation: pulse 1.4s infinite;
-            pointer-events: none;
+            letter-spacing: 0.06em;
+            box-shadow: 0 0 12px rgba(145, 70, 255, 0.9);
             z-index: 5;
         }
 
@@ -274,8 +272,8 @@
                 <button onclick="abrirModalReglas()" class="bg-[#12141d] hover:bg-everGold text-everGold hover:text-black border border-everGold/60 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card">
                     📜 REGLAS
                 </button>
-                <button onclick="toggleStream()" class="bg-[#12141d] hover:bg-vctRed text-white border border-vctRed/50 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-vctRed animate-ping"></span> STREAM
+                <button onclick="toggleStream()" class="bg-twitchPurple/20 hover:bg-twitchPurple text-white border border-twitchPurple font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card flex items-center gap-1.5 shadow-[0_0_15px_rgba(145,70,255,0.35)]">
+                    <span class="w-2 h-2 rounded-full bg-purple-300 animate-ping"></span> MULTISTREAM (6)
                 </button>
                 <button onclick="toggleModoOBS()" class="bg-[#12141d] hover:bg-purple-600 text-gray-300 hover:text-white border border-white/15 font-black text-[10px] uppercase tracking-[0.12em] px-3 py-2.5 transition-all clip-card" title="Modo transparente para OBS / Casters">
                     🎥 OBS
@@ -310,22 +308,44 @@
             <div class="flex items-center gap-4 bg-[#0b0d14]/90 border border-white/10 px-3.5 py-1.5 rounded-md">
                 <span class="flex items-center gap-1.5 text-emerald-400"><span class="dot-checkin-ok"></span> Check-in OK en Canal</span>
                 <span class="flex items-center gap-1.5 text-yellow-400/80"><span class="dot-checkin-wait"></span> Check-in Pendiente</span>
+                <span class="text-purple-400">🟣 Partida con Stream Oficial</span>
                 <span class="text-everGold">🔥 Invicto / Líder</span>
             </div>
             <span id="indicador-carga-equipos" class="text-everGold font-black">⚡ Haz clic en cualquier enfrentamiento VS para abrir el Cara a Cara</span>
         </div>
 
-        <!-- PANEL DESPLEGABLE DE STREAM -->
-        <div id="panel-stream" class="hidden mb-6 bg-[#0b0d14] border border-vctRed/40 rounded-xl p-4 shadow-2xl">
+        <!-- CARTELERA DE STREAMS EN VIVO (LOS 6 DUELOS) -->
+        <div class="mb-5 bg-gradient-to-r from-[#0c0918]/95 via-[#0b0d14]/95 to-[#0c0918]/95 border border-twitchPurple/40 rounded-xl p-3.5 shadow-[0_0_30px_rgba(145,70,255,0.12)]">
             <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-white/10">
-                <span class="text-xs font-black uppercase tracking-widest text-white">🔴 Transmisión Oficial Copa 5EverMad • 8:00 PM CDMX</span>
                 <div class="flex items-center gap-2">
-                    <input type="text" id="input-canal-twitch" placeholder="Canal de Twitch" class="bg-black border border-white/15 px-2.5 py-1 text-[10px] font-bold text-white rounded outline-none">
+                    <span class="w-2.5 h-2.5 rounded-full bg-twitchPurple animate-ping"></span>
+                    <h3 class="text-xs font-black uppercase tracking-[0.2em] text-white">
+                        🟣 CARTELERA DE STREAMS EN VIVO • <span class="text-everGold">6 CANALES OFICIALES TWITCH</span>
+                    </h3>
+                </div>
+                <button onclick="toggleStream()" class="text-[9px] font-black uppercase tracking-widest bg-twitchPurple/20 hover:bg-twitchPurple text-purple-200 hover:text-white border border-twitchPurple/50 px-3 py-1 rounded transition-all">
+                    📺 Abrir / Cerrar Reproductor Integrado
+                </button>
+            </div>
+            <div id="grid-cartelera-streams" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2.5"></div>
+        </div>
+
+        <!-- PANEL DESPLEGABLE DE STREAM -->
+        <div id="panel-stream" class="hidden mb-6 bg-[#0b0d14] border border-twitchPurple/60 rounded-xl p-4 shadow-2xl">
+            <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-white/10">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-black uppercase tracking-widest text-white">🔴 Reproductor Oficial Copa 5EverMad:</span>
+                    <a id="link-externo-stream-activo" href="https://www.twitch.tv/5evermad" target="_blank" class="text-xs font-black text-purple-400 hover:text-everGold underline uppercase">twitch.tv/5evermad ↗</a>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="input-canal-twitch" placeholder="Otro canal de Twitch..." class="bg-black border border-white/15 px-2.5 py-1 text-[10px] font-bold text-white rounded outline-none">
                     <button onclick="cambiarCanalStream()" class="bg-vctRed text-white text-[9px] font-black uppercase px-3 py-1 rounded">Cargar</button>
                     <button onclick="toggleStream()" class="text-gray-400 hover:text-white text-xs font-black ml-2">✕</button>
                 </div>
             </div>
-            <div class="aspect-video w-full max-h-[440px] bg-black rounded overflow-hidden">
+            <!-- BOTONES DE CAMBIO RÁPIDO ENTRE LOS 6 STREAMS -->
+            <div id="botones-selector-streams" class="flex flex-wrap gap-1.5 mb-3"></div>
+            <div class="aspect-video w-full max-h-[460px] bg-black rounded overflow-hidden border border-white/10">
                 <iframe id="iframe-stream" src="" class="w-full h-full" allowfullscreen></iframe>
             </div>
         </div>
@@ -335,11 +355,7 @@
             <div class="grid grid-cols-12 gap-3.5 min-w-[1320px] items-stretch">
 
                 <!-- ================= FASE 1 (4 Columnas) ================= -->
-                <div class="col-span-4 phase-col phase-active p-3.5 flex flex-col justify-between">
-                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-vctRed via-red-500 to-vctRed text-white text-[9px] font-black uppercase tracking-[0.2em] px-3.5 py-0.5 rounded-full shadow-[0_0_15px_rgba(255,42,63,0.85)] border border-white/30 flex items-center gap-1.5 whitespace-nowrap">
-                        <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> 🔥 FASE EN CURSO
-                    </div>
-
+                <div class="col-span-4 phase-col p-3.5 flex flex-col justify-between">
                     <div class="mt-1">
                         <div class="text-center mb-2.5">
                             <span class="text-[9px] font-black uppercase tracking-[0.22em] text-everGold block">LUNES 28 DE SEPTIEMBRE</span>
@@ -353,103 +369,7 @@
                             </div>
                         </div>
 
-                        <div id="contenedor-fase1" class="grid grid-cols-2 gap-2.5">
-                            <!-- GRUPO A -->
-                            <div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">
-                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase">
-                                    <span>GRUPO A</span><span class="text-[8px] opacity-85">BO3</span>
-                                </div>
-                                <div class="p-1.5 space-y-1.5">
-                                    <div onclick="verVS('7z Esports','Abismus','GRUPO A • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">7z Esports</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Abismus</span></div>
-                                    </div>
-                                    <div onclick="verVS('Nönsense by Bear','Thalyra','GRUPO A • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Nönsense by Bear</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Thalyra</span></div>
-                                    </div>
-                                    <div onclick="verVS('Xiao Shīzi 北','Akari esports','GRUPO A • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Xiao Shīzi 北</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Akari esports</span></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- GRUPO B -->
-                            <div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">
-                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase">
-                                    <span>GRUPO B</span><span class="text-[8px] opacity-85">BO3</span>
-                                </div>
-                                <div class="p-1.5 space-y-1.5">
-                                    <div onclick="verVS('ULTRADIFF ESPORTS','Clarity Velvet','GRUPO B • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">ULTRADIFF ESPORTS</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Clarity Velvet</span></div>
-                                    </div>
-                                    <div onclick="verVS('Ancestral E-Sports','RYUJINN','GRUPO B • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Ancestral E-Sports</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">RYUJINN</span></div>
-                                    </div>
-                                    <div onclick="verVS('5EverMad','Storm of Thorns','GRUPO B • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">5EverMad</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Storm of Thorns</span></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- GRUPO C -->
-                            <div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">
-                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase">
-                                    <span>GRUPO C</span><span class="text-[8px] opacity-85">BO3</span>
-                                </div>
-                                <div class="p-1.5 space-y-1.5">
-                                    <div onclick="verVS('Cruel Karma','AERION ACADEMY','GRUPO C • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Cruel Karma</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">AERION ACADEMY</span></div>
-                                    </div>
-                                    <div onclick="verVS('Kaizen Esports','Ryujinn Lotus','GRUPO C • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Kaizen Esports</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Ryujinn Lotus</span></div>
-                                    </div>
-                                    <div onclick="verVS('YOSORA ESPORTS','Howlers BLX','GRUPO C • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">YOSORA ESPORTS</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Howlers BLX</span></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- GRUPO D -->
-                            <div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">
-                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase">
-                                    <span>GRUPO D</span><span class="text-[8px] opacity-85">BO3</span>
-                                </div>
-                                <div class="p-1.5 space-y-1.5">
-                                    <div onclick="verVS('Platano Power Esports','Kings Aztek','GRUPO D • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Platano Power Esports</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">King's Aztek</span></div>
-                                    </div>
-                                    <div onclick="verVS('Black Roses Esports','Howlers Esports','GRUPO D • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Black Roses Esports</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Howlers Esports</span></div>
-                                    </div>
-                                    <div onclick="verVS('MOONRISE ESPORTS','Hydra','GRUPO D • LUNES 28 SEP')" class="match-pair cursor-pointer">
-                                        <span class="vs-pill-inline">VS</span>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">MOONRISE ESPORTS</span></div>
-                                        <div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="dot-checkin-wait"></span><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0"><span class="text-[11px] font-bold text-white truncate">Hydra</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="contenedor-fase1" class="grid grid-cols-2 gap-2.5"></div>
                     </div>
 
                     <div class="mt-3 bg-red-950/30 border border-red-500/30 rounded py-1.5 px-2 text-center">
@@ -458,8 +378,12 @@
                 </div>
 
                 <!-- ================= FASE 2 (2 Columnas) ================= -->
-                <div class="col-span-2 phase-col p-3.5 flex flex-col justify-between">
-                    <div>
+                <div class="col-span-2 phase-col phase-active p-3.5 flex flex-col justify-between">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-vctRed via-twitchPurple to-vctRed text-white text-[9px] font-black uppercase tracking-[0.2em] px-3.5 py-0.5 rounded-full shadow-[0_0_15px_rgba(255,42,63,0.85)] border border-white/30 flex items-center gap-1.5 whitespace-nowrap">
+                        <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> 🔥 FASE EN CURSO
+                    </div>
+
+                    <div class="mt-1">
                         <div class="text-center mb-2.5">
                             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-400 block">LUNES 5 DE OCTUBRE</span>
                             <h2 class="text-base font-black uppercase text-white tracking-wider">FASE 2 (12 EQ)</h2>
@@ -472,28 +396,7 @@
                             </div>
                         </div>
 
-                        <div id="contenedor-fase2" class="space-y-2.5">
-                            <div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">
-                                <div class="bg-gradient-to-r from-blue-800 to-blue-600 py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase">
-                                    <span>GRUPO E</span><span class="text-[8px] opacity-85">BO3</span>
-                                </div>
-                                <div class="p-1.5 space-y-1.5 text-[11px] text-gray-300 font-semibold">
-                                    <div class="match-pair"><span class="vs-pill-inline">VS</span><div class="team-row px-2.5 py-1.5">E1</div><div class="team-row px-2.5 py-1.5">E2</div></div>
-                                    <div class="match-pair"><span class="vs-pill-inline">VS</span><div class="team-row px-2.5 py-1.5">E3</div><div class="team-row px-2.5 py-1.5">E4</div></div>
-                                    <div class="match-pair"><span class="vs-pill-inline">VS</span><div class="team-row px-2.5 py-1.5">E5</div><div class="team-row px-2.5 py-1.5">E6</div></div>
-                                </div>
-                            </div>
-                            <div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">
-                                <div class="bg-gradient-to-r from-blue-800 to-blue-600 py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase">
-                                    <span>GRUPO F</span><span class="text-[8px] opacity-85">BO3</span>
-                                </div>
-                                <div class="p-1.5 space-y-1.5 text-[11px] text-gray-300 font-semibold">
-                                    <div class="match-pair"><span class="vs-pill-inline">VS</span><div class="team-row px-2.5 py-1.5">F1</div><div class="team-row px-2.5 py-1.5">F2</div></div>
-                                    <div class="match-pair"><span class="vs-pill-inline">VS</span><div class="team-row px-2.5 py-1.5">F3</div><div class="team-row px-2.5 py-1.5">F4</div></div>
-                                    <div class="match-pair"><span class="vs-pill-inline">VS</span><div class="team-row px-2.5 py-1.5">F5</div><div class="team-row px-2.5 py-1.5">F6</div></div>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="contenedor-fase2" class="space-y-2.5"></div>
                     </div>
 
                     <div class="mt-3 bg-blue-950/30 border border-blue-500/30 rounded py-1.5 px-2 text-center">
@@ -638,29 +541,29 @@
             </div>
 
             <div id="grid-equipos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
-                <div data-team="7z Esports" data-group="GRUPO A" onclick="verVS('7z Esports','Abismus','GRUPO A')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-xs font-black text-white uppercase">7z Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="7z Esports" data-group="GRUPO A" onclick="verVS('7z Esports','Cruel Karma','FASE 2 • GRUPO E')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="7z Esports" src="https://ui-avatars.com/api/?name=7Z&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A • 🟣 DUNNKER</span><h3 class="text-xs font-black text-white uppercase">7z Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Abismus" data-group="GRUPO A" onclick="verVS('Abismus','7z Esports','GRUPO A')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Abismus" src="https://ui-avatars.com/api/?name=AB&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-xs font-black text-white uppercase">Abismus</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Nönsense by Bear" data-group="GRUPO A" onclick="verVS('Nönsense by Bear','Thalyra','GRUPO A')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-xs font-black text-white uppercase">Nönsense by Bear</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="Nönsense by Bear" data-group="GRUPO A" onclick="verVS('Nönsense by Bear','Kaizen Esports','FASE 2 • GRUPO F')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Nönsense by Bear" src="https://ui-avatars.com/api/?name=NB&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A • 🟣 ELISZEA</span><h3 class="text-xs font-black text-white uppercase">Nönsense by Bear</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Thalyra" data-group="GRUPO A" onclick="verVS('Thalyra','Nönsense by Bear','GRUPO A')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Thalyra" src="https://ui-avatars.com/api/?name=TH&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-xs font-black text-white uppercase">Thalyra</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Xiao Shīzi 北" data-group="GRUPO A" onclick="verVS('Xiao Shīzi 北','Akari esports','GRUPO A')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-xs font-black text-white uppercase">Xiao Shīzi 北</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="Xiao Shīzi 北" data-group="GRUPO A" onclick="verVS('Xiao Shīzi 北','YOSORA ESPORTS','FASE 2 • GRUPO F')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Xiao Shīzi 北" src="https://ui-avatars.com/api/?name=XS&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A • 🟣 CHARLY4R</span><h3 class="text-xs font-black text-white uppercase">Xiao Shīzi 北</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Akari esports" data-group="GRUPO A" onclick="verVS('Akari esports','Xiao Shīzi 北','GRUPO A')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Akari esports" src="https://ui-avatars.com/api/?name=AK&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO A</span><h3 class="text-xs font-black text-white uppercase">Akari esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="ULTRADIFF ESPORTS" data-group="GRUPO B" onclick="verVS('ULTRADIFF ESPORTS','Clarity Velvet','GRUPO B')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-xs font-black text-white uppercase">ULTRADIFF ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="ULTRADIFF ESPORTS" data-group="GRUPO B" onclick="verVS('Platano Power Esports','ULTRADIFF ESPORTS','FASE 2 • GRUPO E')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="ULTRADIFF ESPORTS" src="https://ui-avatars.com/api/?name=UL&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B • 🟣 YUQIIBAN</span><h3 class="text-xs font-black text-white uppercase">ULTRADIFF ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Clarity Velvet" data-group="GRUPO B" onclick="verVS('Clarity Velvet','ULTRADIFF ESPORTS','GRUPO B')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Clarity Velvet" src="https://ui-avatars.com/api/?name=CV&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-xs font-black text-white uppercase">Clarity Velvet</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Ancestral E-Sports" data-group="GRUPO B" onclick="verVS('Ancestral E-Sports','RYUJINN','GRUPO B')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Ancestral E-Sports" src="https://ui-avatars.com/api/?name=AN&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-xs font-black text-white uppercase">Ancestral E-Sports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="RYUJINN" data-group="GRUPO B" onclick="verVS('RYUJINN','Ancestral E-Sports','GRUPO B')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-xs font-black text-white uppercase">RYUJINN</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="5EverMad" data-group="GRUPO B" onclick="verVS('5EverMad','Storm of Thorns','GRUPO B')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-xs font-black text-white uppercase">5EverMad</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="RYUJINN" data-group="GRUPO B" onclick="verVS('RYUJINN','Howlers Esports','FASE 2 • GRUPO F')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="RYUJINN" src="https://ui-avatars.com/api/?name=RY&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B • 🟣 CHOCOPANTERA</span><h3 class="text-xs font-black text-white uppercase">RYUJINN</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="5EverMad" data-group="GRUPO B" onclick="verVS('5EverMad','MOONRISE ESPORTS','FASE 2 • GRUPO E')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="5EverMad" src="https://ui-avatars.com/api/?name=5E&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B • 🟣 5EVERMAD</span><h3 class="text-xs font-black text-white uppercase">5EverMad</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Storm of Thorns" data-group="GRUPO B" onclick="verVS('Storm of Thorns','5EverMad','GRUPO B')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Storm of Thorns" src="https://ui-avatars.com/api/?name=ST&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO B</span><h3 class="text-xs font-black text-white uppercase">Storm of Thorns</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Cruel Karma" data-group="GRUPO C" onclick="verVS('Cruel Karma','AERION ACADEMY','GRUPO C')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-xs font-black text-white uppercase">Cruel Karma</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="Cruel Karma" data-group="GRUPO C" onclick="verVS('7z Esports','Cruel Karma','FASE 2 • GRUPO E')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Cruel Karma" src="https://ui-avatars.com/api/?name=CK&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C • 🟣 DUNNKER</span><h3 class="text-xs font-black text-white uppercase">Cruel Karma</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="AERION ACADEMY" data-group="GRUPO C" onclick="verVS('AERION ACADEMY','Cruel Karma','GRUPO C')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="AERION ACADEMY" src="https://ui-avatars.com/api/?name=AA&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-xs font-black text-white uppercase">AERION ACADEMY</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Kaizen Esports" data-group="GRUPO C" onclick="verVS('Kaizen Esports','Ryujinn Lotus','GRUPO C')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-xs font-black text-white uppercase">Kaizen Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="Kaizen Esports" data-group="GRUPO C" onclick="verVS('Nönsense by Bear','Kaizen Esports','FASE 2 • GRUPO F')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Kaizen Esports" src="https://ui-avatars.com/api/?name=KE&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C • 🟣 ELISZEA</span><h3 class="text-xs font-black text-white uppercase">Kaizen Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Ryujinn Lotus" data-group="GRUPO C" onclick="verVS('Ryujinn Lotus','Kaizen Esports','GRUPO C')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Ryujinn Lotus" src="https://ui-avatars.com/api/?name=RL&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-xs font-black text-white uppercase">Ryujinn Lotus</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="YOSORA ESPORTS" data-group="GRUPO C" onclick="verVS('YOSORA ESPORTS','Howlers BLX','GRUPO C')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-xs font-black text-white uppercase">YOSORA ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="YOSORA ESPORTS" data-group="GRUPO C" onclick="verVS('Xiao Shīzi 北','YOSORA ESPORTS','FASE 2 • GRUPO F')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="YOSORA ESPORTS" src="https://ui-avatars.com/api/?name=YE&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C • 🟣 CHARLY4R</span><h3 class="text-xs font-black text-white uppercase">YOSORA ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Howlers BLX" data-group="GRUPO C" onclick="verVS('Howlers BLX','YOSORA ESPORTS','GRUPO C')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Howlers BLX" src="https://ui-avatars.com/api/?name=HB&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO C</span><h3 class="text-xs font-black text-white uppercase">Howlers BLX</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Platano Power Esports" data-group="GRUPO D" onclick="verVS('Platano Power Esports','Kings Aztek','GRUPO D')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-xs font-black text-white uppercase">Platano Power Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="Platano Power Esports" data-group="GRUPO D" onclick="verVS('Platano Power Esports','ULTRADIFF ESPORTS','FASE 2 • GRUPO E')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Platano Power Esports" src="https://ui-avatars.com/api/?name=PP&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D • 🟣 YUQIIBAN</span><h3 class="text-xs font-black text-white uppercase">Platano Power Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Kings Aztek" data-group="GRUPO D" onclick="verVS('Kings Aztek','Platano Power Esports','GRUPO D')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Kings Aztek" src="https://ui-avatars.com/api/?name=KA&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-xs font-black text-white uppercase">King's Aztek</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Black Roses Esports" data-group="GRUPO D" onclick="verVS('Black Roses Esports','Howlers Esports','GRUPO D')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Black Roses Esports" src="https://ui-avatars.com/api/?name=BR&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-xs font-black text-white uppercase">Black Roses Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="Howlers Esports" data-group="GRUPO D" onclick="verVS('Howlers Esports','Black Roses Esports','GRUPO D')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-xs font-black text-white uppercase">Howlers Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
-                <div data-team="MOONRISE ESPORTS" data-group="GRUPO D" onclick="verVS('MOONRISE ESPORTS','Hydra','GRUPO D')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-xs font-black text-white uppercase">MOONRISE ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="Howlers Esports" data-group="GRUPO D" onclick="verVS('RYUJINN','Howlers Esports','FASE 2 • GRUPO F')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Howlers Esports" src="https://ui-avatars.com/api/?name=HE&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D • 🟣 CHOCOPANTERA</span><h3 class="text-xs font-black text-white uppercase">Howlers Esports</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
+                <div data-team="MOONRISE ESPORTS" data-group="GRUPO D" onclick="verVS('5EverMad','MOONRISE ESPORTS','FASE 2 • GRUPO E')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="MOONRISE ESPORTS" src="https://ui-avatars.com/api/?name=ME&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D • 🟣 5EVERMAD</span><h3 class="text-xs font-black text-white uppercase">MOONRISE ESPORTS</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
                 <div data-team="Hydra" data-group="GRUPO D" onclick="verVS('Hydra','MOONRISE ESPORTS','GRUPO D')" class="card-equipo p-3.5 clip-card cursor-pointer flex items-center justify-between"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="watermark-logo"><div class="flex items-center gap-3 relative z-10"><img data-logo="Hydra" src="https://ui-avatars.com/api/?name=HY&background=111&color=e5c05c&bold=true" class="w-11 h-11 rounded object-contain bg-black p-1 border border-white/15"><div><span class="text-[8px] text-everGold font-black tracking-widest block">GRUPO D</span><h3 class="text-xs font-black text-white uppercase">Hydra</h3></div></div><span class="text-[10px] text-vctRed font-black relative z-10">VS ➔</span></div>
             </div>
         </div>
@@ -834,7 +737,19 @@
 
     <script>
         const API_URL = 'https://bane-esports-web-1.onrender.com/api';
-        let CANAL_TWITCH_DEFECTO = 'valorant_la';
+        let CANAL_TWITCH_DEFECTO = '5evermad';
+
+        // =============================================================
+        // CARTELERA OFICIAL DE STREAMS (6 PARTIDAS EN VIVO)
+        // =============================================================
+        const STREAMS_OFICIALES = [
+            { eq1: '5EverMad', eq2: 'MOONRISE ESPORTS', canal: '5evermad', url: 'https://www.twitch.tv/5evermad', grupo: 'GRUPO E' },
+            { eq1: '7z Esports', eq2: 'Cruel Karma', canal: 'dunnker', url: 'https://www.twitch.tv/dunnker', grupo: 'GRUPO E' },
+            { eq1: 'Platano Power Esports', eq2: 'ULTRADIFF ESPORTS', canal: 'yuqiiban', url: 'https://www.twitch.tv/yuqiiban', grupo: 'GRUPO E' },
+            { eq1: 'Xiao Shīzi 北', eq2: 'YOSORA ESPORTS', canal: 'charly4r', url: 'https://www.twitch.tv/charly4r', grupo: 'GRUPO F' },
+            { eq1: 'Nönsense by Bear', eq2: 'Kaizen Esports', canal: 'eliszea', url: 'https://www.twitch.tv/eliszea', grupo: 'GRUPO F' },
+            { eq1: 'RYUJINN', eq2: 'Howlers Esports', canal: 'chocopantera', url: 'https://www.twitch.tv/chocopantera', grupo: 'GRUPO F' }
+        ];
 
         function leerJSONSeguro(storage, key, fallback) {
             try {
@@ -855,17 +770,59 @@
             aviso: '',
             toleranciaFin: 0,
             partidoStream: '',
-            canalTwitch: 'valorant_la',
+            canalTwitch: '5evermad',
             mvp: { activo: false, riot_id: '', equipo: '', kda: '', agente: 'Jett' },
             fase1: {
-                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
-                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
-                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
-                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false }))
+                A: [
+                    { nombre: '7z Esports', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: 'Abismus', extra: '', estado: 'eliminado', checkin: false },
+                    { nombre: 'Nönsense by Bear', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: 'Thalyra', extra: '', estado: 'eliminado', checkin: false },
+                    { nombre: 'Xiao Shīzi 北', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: 'Akari esports', extra: '', estado: 'eliminado', checkin: false }
+                ],
+                B: [
+                    { nombre: 'ULTRADIFF ESPORTS', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: 'Clarity Velvet', extra: '', estado: 'eliminado', checkin: false },
+                    { nombre: 'Ancestral E-Sports', extra: '', estado: 'eliminado', checkin: false },
+                    { nombre: 'RYUJINN', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: '5EverMad', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: 'Storm of Thorns', extra: '', estado: 'eliminado', checkin: false }
+                ],
+                C: [
+                    { nombre: 'Cruel Karma', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: 'AERION ACADEMY', extra: '', estado: 'eliminado', checkin: false },
+                    { nombre: 'Kaizen Esports', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: 'Ryujinn Lotus', extra: '', estado: 'eliminado', checkin: false },
+                    { nombre: 'YOSORA ESPORTS', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: 'Howlers BLX', extra: '', estado: 'eliminado', checkin: false }
+                ],
+                D: [
+                    { nombre: 'Platano Power Esports', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: "King's Aztek", extra: '', estado: 'eliminado', checkin: false },
+                    { nombre: 'Black Roses Esports', extra: '', estado: 'eliminado', checkin: false },
+                    { nombre: 'Howlers Esports', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: 'MOONRISE ESPORTS', extra: '', estado: 'clasificado', checkin: true },
+                    { nombre: 'Hydra', extra: '', estado: 'eliminado', checkin: false }
+                ]
             },
             fase2: {
-                E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
-                F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false }))
+                E: [
+                    { nombre: '5EverMad', extra: '', estado: 'normal', checkin: true },
+                    { nombre: 'MOONRISE ESPORTS', extra: '', estado: 'normal', checkin: true },
+                    { nombre: '7z Esports', extra: '', estado: 'normal', checkin: true },
+                    { nombre: 'Cruel Karma', extra: '', estado: 'normal', checkin: true },
+                    { nombre: 'Platano Power Esports', extra: '', estado: 'normal', checkin: true },
+                    { nombre: 'ULTRADIFF ESPORTS', extra: '', estado: 'normal', checkin: true }
+                ],
+                F: [
+                    { nombre: 'Xiao Shīzi 北', extra: '', estado: 'normal', checkin: true },
+                    { nombre: 'YOSORA ESPORTS', extra: '', estado: 'normal', checkin: true },
+                    { nombre: 'Nönsense by Bear', extra: '', estado: 'normal', checkin: true },
+                    { nombre: 'Kaizen Esports', extra: '', estado: 'normal', checkin: true },
+                    { nombre: 'RYUJINN', extra: '', estado: 'normal', checkin: true },
+                    { nombre: 'Howlers Esports', extra: '', estado: 'normal', checkin: true }
+                ]
             },
             fase3: [
                 { pos: 1, nombre: 'Clasificado #1', rd: '', eliminado: false },
@@ -916,7 +873,22 @@
             return [a, b].sort().join('_vs_');
         }
 
+        function obtenerStreamDuelo(n1, n2) {
+            const a = limpiarNombre(n1);
+            const b = limpiarNombre(n2);
+            if (!a && !b) return null;
+            return STREAMS_OFICIALES.find(function(s) {
+                const s1 = limpiarNombre(s.eq1);
+                const s2 = limpiarNombre(s.eq2);
+                if (a && b) {
+                    return (s1 === a && s2 === b) || (s1 === b && s2 === a);
+                }
+                return s1 === a || s2 === a;
+            }) || null;
+        }
+
         function esDueloEnStream(n1, n2) {
+            if (obtenerStreamDuelo(n1, n2)) return true;
             const st = limpiarNombre(estadoTorneoActual.partidoStream || '');
             if (!st) return false;
             const a = limpiarNombre(n1);
@@ -1009,6 +981,74 @@
             if (!texto) return;
             navigator.clipboard.writeText(texto);
             mostrarToast('✔ Copiado: ' + texto);
+        };
+
+        // =============================================================
+        // RENDERIZADO DE LA CARTELERA DE STREAMS Y REPRODUCTOR
+        // =============================================================
+        function renderizarCarteleraStreams() {
+            const grid = document.getElementById('grid-cartelera-streams');
+            const selector = document.getElementById('botones-selector-streams');
+            if (!grid || !selector) return;
+
+            grid.innerHTML = STREAMS_OFICIALES.map(function(s) {
+                const n1 = textoSeguro(s.eq1);
+                const n2 = textoSeguro(s.eq2);
+                const activo = CANAL_TWITCH_DEFECTO.toLowerCase() === s.canal.toLowerCase();
+                return '<div class="bg-[#0b0d16] border ' + (activo ? 'border-twitchPurple shadow-[0_0_15px_rgba(145,70,255,0.35)]' : 'border-white/10 hover:border-twitchPurple/60') + ' rounded-lg p-2.5 flex flex-col justify-between transition-all">' +
+                    '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'FASE 2 • ' + s.grupo + '\')" class="cursor-pointer mb-2">' +
+                        '<div class="flex justify-between items-center text-[8px] font-black uppercase tracking-wider mb-1.5">' +
+                            '<span class="text-purple-300 bg-twitchPurple/20 border border-twitchPurple/40 px-1.5 py-0.5 rounded">🟣 /' + s.canal + '</span>' +
+                            '<span class="text-everGold">' + s.grupo + '</span>' +
+                        '</div>' +
+                        '<div class="flex items-center gap-1.5 py-0.5">' +
+                            '<img data-logo="' + n1 + '" src="' + urlAvatar(n1) + '" class="w-4 h-4 rounded object-contain bg-black shrink-0">' +
+                            '<span class="text-[10px] font-black text-white truncate">' + s.eq1 + '</span>' +
+                        '</div>' +
+                        '<div class="flex items-center gap-1.5 py-0.5">' +
+                            '<img data-logo="' + n2 + '" src="' + urlAvatar(n2) + '" class="w-4 h-4 rounded object-contain bg-black shrink-0">' +
+                            '<span class="text-[10px] font-black text-white truncate">' + s.eq2 + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-white/10">' +
+                        '<button onclick="verStreamEnPagina(\'' + s.canal + '\')" class="bg-twitchPurple hover:bg-purple-500 text-white text-[8px] font-black uppercase py-1 px-1.5 rounded transition-all text-center">▶ VER AQUÍ</button>' +
+                        '<a href="' + s.url + '" target="_blank" class="bg-white/5 hover:bg-everGold hover:text-black text-gray-200 text-[8px] font-black uppercase py-1 px-1.5 rounded transition-all text-center">TWITCH ↗</a>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+
+            selector.innerHTML = STREAMS_OFICIALES.map(function(s) {
+                const activo = CANAL_TWITCH_DEFECTO.toLowerCase() === s.canal.toLowerCase();
+                return '<button onclick="verStreamEnPagina(\'' + s.canal + '\')" class="' + (activo ? 'bg-twitchPurple text-white border-white' : 'bg-black/70 hover:bg-twitchPurple/30 text-gray-300 border-twitchPurple/40') + ' border text-[9px] font-black uppercase px-2.5 py-1.5 rounded transition-all flex items-center gap-1.5">' +
+                    '<span>🟣 ' + s.canal + '</span>' +
+                    '<span class="text-[8px] opacity-75">(' + s.eq1 + ' vs ' + s.eq2 + ')</span>' +
+                '</button>';
+            }).join('');
+
+            inyectarLogosEnDOM();
+        }
+
+        window.verStreamEnPagina = function(canal) {
+            if (!canal) return;
+            CANAL_TWITCH_DEFECTO = canal;
+            const panel = document.getElementById('panel-stream');
+            const iframe = document.getElementById('iframe-stream');
+            const input = document.getElementById('input-canal-twitch');
+            const linkExt = document.getElementById('link-externo-stream-activo');
+
+            if (input) input.value = canal;
+            if (linkExt) {
+                linkExt.href = 'https://www.twitch.tv/' + encodeURIComponent(canal);
+                linkExt.innerText = 'twitch.tv/' + canal + ' ↗';
+            }
+
+            panel.classList.remove('hidden');
+            const parentHost = window.location.hostname || 'localhost';
+            iframe.src = 'https://player.twitch.tv/?channel=' + encodeURIComponent(canal) + '&parent=' + parentHost + '&muted=false';
+
+            renderizarCarteleraStreams();
+            panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            mostrarToast('📺 Cargando transmisión: twitch.tv/' + canal);
         };
 
         window.abrirModalReglas = function() { document.getElementById('modal-reglas').classList.remove('hidden'); };
@@ -1281,9 +1321,7 @@
         window.cambiarCanalStream = function() {
             const val = document.getElementById('input-canal-twitch').value.trim();
             if (!val) return;
-            CANAL_TWITCH_DEFECTO = val;
-            const parentHost = window.location.hostname || 'localhost';
-            document.getElementById('iframe-stream').src = 'https://player.twitch.tv/?channel=' + encodeURIComponent(val) + '&parent=' + parentHost;
+            verStreamEnPagina(val);
         };
 
         window.filtrarPorBotonGrupo = function(grupo) {
@@ -1335,7 +1373,7 @@
             const mostrarIcono = !esSlotPlaceholder(nombre);
             const esLider = slot.estado === 'clasificado' || String(slot.extra || '').includes('2-0') || String(slot.extra || '').includes('3-0');
 
-            return '<div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 pr-10 ' + est + '">' +
+            return '<div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 pr-16 ' + est + '">' +
                     '<div class="flex items-center gap-1.5 truncate">' +
                         (mostrarIcono ? '<span class="' + (slot.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait') + '"></span>' : '') +
                         (mostrarIcono ? '<img data-logo="' + nSeg + '" src="' + urlAvatar(nSeg) + '" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0">' : '') +
@@ -1353,10 +1391,15 @@
                 const s2 = slots[i + 1] || { nombre: letra + (i + 2), extra: '', estado: 'normal', checkin: false };
                 const n1 = textoSeguro(s1.nombre);
                 const n2 = textoSeguro(s2.nombre);
-                const enVivo = esDueloEnStream(n1, n2);
+                const streamObj = obtenerStreamDuelo(n1, n2);
+                const enVivo = Boolean(streamObj) || esDueloEnStream(n1, n2);
+
+                const badgeHtml = streamObj
+                    ? '<a href="' + streamObj.url + '" target="_blank" onclick="event.stopPropagation();" title="Ver en Twitch: ' + streamObj.canal + '" class="live-pill-inline hover:bg-everGold hover:text-black transition-all">🟣 ' + streamObj.canal.toUpperCase() + '</a>'
+                    : '<span class="' + (enVivo ? 'live-pill-inline' : 'vs-pill-inline') + '">' + (enVivo ? '🔴 LIVE' : 'VS') + '</span>';
 
                 duelos += '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'GRUPO ' + letra + ' • BO3\')" class="match-pair ' + (enVivo ? 'match-stream-active' : '') + ' cursor-pointer">' +
-                        '<span class="' + (enVivo ? 'live-pill-inline' : 'vs-pill-inline') + '">' + (enVivo ? '🔴 LIVE' : 'VS') + '</span>' +
+                        badgeHtml +
                         htmlFilaEquipo(s1) +
                         htmlFilaEquipo(s2) +
                     '</div>';
@@ -1369,10 +1412,26 @@
                 '</div>';
         }
 
+        function todosSonPlaceholdersFase2(grupoArr) {
+            if (!Array.isArray(grupoArr) || grupoArr.length === 0) return true;
+            return grupoArr.every(function(s) { return !s || esSlotPlaceholder(s.nombre); });
+        }
+
         function aplicarDatosDeBracketEnPantalla(d, esActualizacionEnVivo) {
             if (esActualizacionEnVivo && d.aviso && d.aviso !== estadoTorneoActual.aviso) {
                 dispararAlertaBroadcast(d.aviso);
             }
+
+            // Si el backend envía Fase 2 aún con placeholders (E1..E6, F1..F6), conservamos los 6 duelos oficiales con stream
+            if (d.fase2) {
+                if (todosSonPlaceholdersFase2(d.fase2.E)) {
+                    d.fase2.E = estadoTorneoActual.fase2.E;
+                }
+                if (todosSonPlaceholdersFase2(d.fase2.F)) {
+                    d.fase2.F = estadoTorneoActual.fase2.F;
+                }
+            }
+
             estadoTorneoActual = Object.assign({}, estadoTorneoActual, d);
 
             const bannerAviso = document.getElementById('banner-aviso-admin');
@@ -1383,7 +1442,7 @@
                 bannerAviso.classList.add('hidden');
             }
 
-            if (d.canalTwitch) CANAL_TWITCH_DEFECTO = d.canalTwitch;
+            if (d.canalTwitch && d.canalTwitch !== 'valorant_la') CANAL_TWITCH_DEFECTO = d.canalTwitch;
             const btnMvp = document.getElementById('btn-mvp-header');
             if (d.mvp && d.mvp.activo && d.mvp.riot_id) {
                 btnMvp.classList.remove('hidden');
@@ -1391,14 +1450,14 @@
                 btnMvp.classList.add('hidden');
             }
 
-            if (d.fase1) {
-                document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(function(g) { return construirGrupoLlamativo(g, d.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600'); }).join('');
+            if (estadoTorneoActual.fase1) {
+                document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(function(g) { return construirGrupoLlamativo(g, estadoTorneoActual.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600'); }).join('');
             }
-            if (d.fase2) {
-                document.getElementById('contenedor-fase2').innerHTML = ['E','F'].map(function(g) { return construirGrupoLlamativo(g, d.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600'); }).join('');
+            if (estadoTorneoActual.fase2) {
+                document.getElementById('contenedor-fase2').innerHTML = ['E','F'].map(function(g) { return construirGrupoLlamativo(g, estadoTorneoActual.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600'); }).join('');
             }
-            if (Array.isArray(d.fase3)) {
-                document.getElementById('contenedor-fase3').innerHTML = d.fase3.map(function(r, i) {
+            if (Array.isArray(estadoTorneoActual.fase3)) {
+                document.getElementById('contenedor-fase3').innerHTML = estadoTorneoActual.fase3.map(function(r, i) {
                     const elim = i >= 4 || r.eliminado;
                     const nomSeg = textoSeguro(r.nombre);
                     const tieneEq = !esSlotPlaceholder(r.nombre);
@@ -1412,7 +1471,7 @@
                         '</div>';
                 }).join('');
             }
-            if (d.fase4) {
+            if (estadoTorneoActual.fase4) {
                 const cardBO5 = function(tit, m) {
                     const n1 = textoSeguro(m.eq1);
                     const n2 = textoSeguro(m.eq2);
@@ -1426,20 +1485,21 @@
                             '</div>' +
                         '</div>';
                 };
-                document.getElementById('contenedor-fase4').innerHTML = cardBO5('SEMIFINAL 1', d.fase4.sf1) + cardBO5('SEMIFINAL 2', d.fase4.sf2);
-                if (d.final) {
-                    document.getElementById('contenedor-fase5-final').innerHTML = cardBO5('GRAN FINAL', d.final);
-                    const campSeg = textoSeguro(d.final.campeon || 'CAMPEÓN');
-                    const tieneCamp = !esSlotPlaceholder(d.final.campeon);
+                document.getElementById('contenedor-fase4').innerHTML = cardBO5('SEMIFINAL 1', estadoTorneoActual.fase4.sf1) + cardBO5('SEMIFINAL 2', estadoTorneoActual.fase4.sf2);
+                if (estadoTorneoActual.final) {
+                    document.getElementById('contenedor-fase5-final').innerHTML = cardBO5('GRAN FINAL', estadoTorneoActual.final);
+                    const campSeg = textoSeguro(estadoTorneoActual.final.campeon || 'CAMPEÓN');
+                    const tieneCamp = !esSlotPlaceholder(estadoTorneoActual.final.campeon);
                     document.getElementById('contenedor-fase5-campeon').innerHTML =
                         '<div onclick="verVS(\'' + campSeg + '\',\'\',\'CAMPEÓN COPA 5EVERMAD\')" class="cursor-pointer">' +
                             '<div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>' +
                             (tieneCamp ? '<img data-logo="' + campSeg + '" src="' + urlAvatar(campSeg) + '" class="w-14 h-14 mx-auto mb-2 rounded object-contain bg-black border border-everGold">' : '') +
                             '<span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span>' +
-                            '<h3 class="text-base font-black uppercase tracking-wider gold-metallic-text mt-0.5 truncate">' + (d.final.campeon || 'CAMPEÓN') + '</h3>' +
+                            '<h3 class="text-base font-black uppercase tracking-wider gold-metallic-text mt-0.5 truncate">' + (estadoTorneoActual.final.campeon || 'CAMPEÓN') + '</h3>' +
                         '</div>';
                 }
             }
+            renderizarCarteleraStreams();
             inyectarLogosEnDOM();
         }
 
@@ -1454,8 +1514,9 @@
                 if (Array.isArray(data) && data.length > 0) {
                     equiposCargados = data;
                     inyectarLogosEnDOM();
+                    renderizarCarteleraStreams();
                     const ind = document.getElementById('indicador-carga-equipos');
-                    if (ind) ind.innerText = '✔ 24 Escuadras sincronizadas • Haz clic en cualquier VS para abrir el Cara a Cara';
+                    if (ind) ind.innerText = '✔ 24 Escuadras y 6 Streams sincronizados • Haz clic en cualquier VS para abrir el Cara a Cara';
 
                     try { sessionStorage.setItem('5ever_equipos_cache', JSON.stringify(data)); } catch (e) {}
 
@@ -1515,6 +1576,7 @@
 
             const eq1 = encontrarEquipo(nom1);
             const eq2 = encontrarEquipo(nom2);
+            const streamDuelo = obtenerStreamDuelo(nom1, nom2);
 
             const num1 = parseFloat(info.s1);
             const num2 = parseFloat(info.s2);
@@ -1531,6 +1593,22 @@
                 const sel = (eqRival && limpiarNombre(n) === limpiarNombre(eqRival)) ? 'selected' : '';
                 opcionesRival += '<option value="' + textoSeguro(n) + '" ' + sel + '>' + n + '</option>';
             });
+
+            const bannerStreamModal = streamDuelo
+                ? '<div class="mb-4 bg-gradient-to-r from-purple-950/80 via-[#150d2a] to-purple-950/80 border border-twitchPurple rounded-xl p-3 flex flex-wrap justify-between items-center gap-3 shadow-[0_0_25px_rgba(145,70,255,0.25)]">' +
+                    '<div class="flex items-center gap-2.5">' +
+                        '<span class="w-2.5 h-2.5 rounded-full bg-twitchPurple animate-ping"></span>' +
+                        '<div>' +
+                            '<span class="text-[9px] text-purple-300 font-black uppercase tracking-widest block">TRANSMISIÓN OFICIAL EN TWITCH</span>' +
+                            '<a href="' + streamDuelo.url + '" target="_blank" class="text-xs md:text-sm font-black text-white hover:text-everGold underline">' + streamDuelo.url + ' ↗</a>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="flex items-center gap-2 ocultar-en-poster">' +
+                        '<button onclick="document.getElementById(\'modal-vs\').classList.add(\'hidden\'); verStreamEnPagina(\'' + streamDuelo.canal + '\');" class="bg-twitchPurple hover:bg-purple-500 text-white text-[9px] font-black uppercase tracking-wider px-3.5 py-2 rounded transition-all">▶ Reproducir en la Web</button>' +
+                        '<a href="' + streamDuelo.url + '" target="_blank" class="bg-everGold hover:bg-white text-black text-[9px] font-black uppercase tracking-wider px-3.5 py-2 rounded transition-all">Abrir Twitch ↗</a>' +
+                    '</div>' +
+                  '</div>'
+                : '';
 
             const dibujarCol = function(nombreTxt, eq, colorBorde, colorGlow, esGanador, checkinOk) {
                 const foto = (eq && eq.logo_url) ? eq.logo_url : urlAvatar(nombreTxt);
@@ -1596,6 +1674,7 @@
                         '</select>' +
                     '</div>' +
                 '</div>' +
+                bannerStreamModal +
                 '<div class="grid grid-cols-3 gap-2 bg-black/60 border border-white/10 rounded-lg p-2.5 mb-4 text-center text-[10px] font-bold">' +
                     '<div class="' + (info.c1 ? 'text-emerald-400' : 'text-yellow-400') + '">' + (info.c1 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente') + ' • ' + count1 + ' Jug.</div>' +
                     '<div class="text-gray-400 font-black uppercase tracking-widest">⚡ COMPARATIVA TÁCTICA</div>' +
@@ -1615,6 +1694,8 @@
             document.getElementById('modal-vs').classList.remove('hidden');
         };
 
+        // Inicializar tablero, cartelera de streams y sincronización
+        aplicarDatosDeBracketEnPantalla(estadoTorneoActual, false);
         cargarEquiposIniciales();
         setInterval(pulsoEnTiempoReal, 8000);
     </script>
