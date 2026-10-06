@@ -157,7 +157,7 @@
         .vs-pill-inline {
             position: absolute;
             right: 8px;
-            top: 26px;
+            top: 50%;
             transform: translateY(-50%);
             background: #ff2a3f;
             color: #fff;
@@ -383,7 +383,7 @@
         <section id="panel-stream" class="hidden mb-7 bg-[#080a11] border-2 border-twitchPurple/70 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(145,70,255,0.28)]">
             <!-- Barra Superior del Teatro -->
             <div class="bg-gradient-to-r from-[#140d26] via-[#0d101b] to-[#140d26] px-4 py-3 border-b border-white/10 flex flex-wrap justify-between items-center gap-3">
-                <div id="info-duelo-teatro" class="flex items-center gap-3"></div>
+                <div id="info-duelo-teatro" class="flex flex-wrap items-center gap-3"></div>
 
                 <div class="flex flex-wrap items-center gap-2">
                     <button id="btn-modo-single" onclick="cambiarModoTeatro('single')" class="bg-twitchPurple text-white text-[9px] font-black uppercase tracking-wider px-3 py-1.5 rounded border border-purple-300/40 transition-all">
@@ -545,17 +545,21 @@
                             <div class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5">
                                 <div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 1 • BO5</div>
                                 <div class="match-pair text-xs font-bold text-white cursor-pointer" onclick="verVS('Equipo 1','Equipo 2','SEMIFINAL 1 • BO5')">
-                                    <span class="vs-pill-inline">VS</span>
-                                    <div class="team-row px-3 py-2.5">Equipo 1</div>
-                                    <div class="team-row px-3 py-2.5">Equipo 2</div>
+                                    <div class="relative">
+                                        <span class="vs-pill-inline">VS</span>
+                                        <div class="team-row px-3 py-2.5">Equipo 1</div>
+                                        <div class="team-row px-3 py-2.5">Equipo 2</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5">
                                 <div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 2 • BO5</div>
                                 <div class="match-pair text-xs font-bold text-white cursor-pointer" onclick="verVS('Equipo 3','Equipo 4','SEMIFINAL 2 • BO5')">
-                                    <span class="vs-pill-inline">VS</span>
-                                    <div class="team-row px-3 py-2.5">Equipo 3</div>
-                                    <div class="team-row px-3 py-2.5">Equipo 4</div>
+                                    <div class="relative">
+                                        <span class="vs-pill-inline">VS</span>
+                                        <div class="team-row px-3 py-2.5">Equipo 3</div>
+                                        <div class="team-row px-3 py-2.5">Equipo 4</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -582,9 +586,11 @@
                             <div class="bg-[#080a10] border border-white/20 rounded-lg p-2.5">
                                 <div class="text-center text-[9px] font-black uppercase text-vctRed mb-2 pb-1 border-b border-white/10">POR EL TÍTULO</div>
                                 <div class="match-pair text-xs font-bold text-white cursor-pointer" onclick="verVS('Ganador SF1','Ganador SF2','GRAN FINAL • BO5')">
-                                    <span class="vs-pill-inline">VS</span>
-                                    <div class="team-row px-3 py-3">Ganador SF1</div>
-                                    <div class="team-row px-3 py-3">Ganador SF2</div>
+                                    <div class="relative">
+                                        <span class="vs-pill-inline">VS</span>
+                                        <div class="team-row px-3 py-3">Ganador SF1</div>
+                                        <div class="team-row px-3 py-3">Ganador SF2</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1156,7 +1162,7 @@
                             '<span>' + (activo ? '🔊 REPRODUCIENDO' : '▶ VER EN PANTALLA') + '</span>' +
                         '</button>' +
                         '<button onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'FASE 2 • ' + s.grupo + '\')" class="col-span-3 bg-white/5 hover:bg-vctRed text-gray-200 hover:text-white border border-white/10 text-[9px] font-black uppercase py-2 px-1.5 rounded transition-all text-center" title="Ver Rosters y Votar">' +
-                            '⚔️ ROSTERS' +
+                            '⚔️️ ROSTERS' +
                         '</button>' +
                         '<a href="' + s.url + '" target="_blank" class="col-span-3 bg-black/70 hover:bg-white hover:text-black text-purple-300 border border-twitchPurple/40 text-[9px] font-black uppercase py-2 px-1.5 rounded transition-all flex items-center justify-center gap-1">' +
                             'TWITCH ↗' +
@@ -1688,9 +1694,11 @@
                     : '';
 
                 duelos += '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'GRUPO ' + letra + ' • BO3\')" class="match-pair ' + (enVivo ? 'match-stream-active' : '') + ' cursor-pointer">' +
-                        '<span class="vs-pill-inline">VS</span>' +
-                        htmlFilaEquipo(s1) +
-                        htmlFilaEquipo(s2) +
+                        '<div class="relative">' +
+                            '<span class="vs-pill-inline">VS</span>' +
+                            htmlFilaEquipo(s1) +
+                            htmlFilaEquipo(s2) +
+                        '</div>' +
                         barraStreamInferior +
                     '</div>';
             }
@@ -1768,9 +1776,11 @@
                     return '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'' + tit + ' • BO5\')" class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5 cursor-pointer hover:border-vctRed transition-all">' +
                             '<div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">' + tit + ' • BO5</div>' +
                             '<div class="match-pair ' + (enVivo ? 'match-stream-active' : '') + '">' +
-                                '<span class="vs-pill-inline">VS</span>' +
-                                htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal', checkin: true }) +
-                                htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal', checkin: true }) +
+                                '<div class="relative">' +
+                                    '<span class="vs-pill-inline">VS</span>' +
+                                    htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal', checkin: true }) +
+                                    htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal', checkin: true }) +
+                                '</div>' +
                             '</div>' +
                         '</div>';
                 };
