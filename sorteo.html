@@ -301,7 +301,7 @@
                 <button onclick="abrirModalReglas()" class="bg-[#12141d] hover:bg-everGold text-everGold hover:text-black border border-everGold/60 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card">
                     📜 REGLAS
                 </button>
-                <button onclick="toggleStream()" class="bg-[#12141d] hover:bg-vctRed text-white border border-vctRed/50 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card flex items-center gap-1.5 shadow-[0_0_15px_rgba(255,42,63,0.35)]">
+                <button onclick="toggleStream()" class="bg-[#12141d] hover:bg-vctRed text-white border border-vctRed/50 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-vctRed animate-ping"></span> STREAM
                 </button>
                 <button onclick="toggleModoOBS()" class="bg-[#12141d] hover:bg-purple-600 text-gray-300 hover:text-white border border-white/15 font-black text-[10px] uppercase tracking-[0.12em] px-3 py-2.5 transition-all clip-card" title="Modo transparente para OBS / Casters">
@@ -704,11 +704,11 @@
         let equiposCargados = leerJSONSeguro(sessionStorage, '5ever_equipos_cache', []);
         if (!Array.isArray(equiposCargados)) equiposCargados = [];
 
-        // Estado con Semifinales ya preparadas según imagen
         let estadoTorneoActual = {
             version: '24_grupos_v1',
             aviso: '',
             toleranciaFin: 0,
+            partidoStream: '',
             canalTwitch: 'valorant_la',
             mvp: { activo: false, riot_id: '', equipo: '', kda: '', agente: 'Jett' },
             fase1: {
@@ -722,16 +722,16 @@
                 F: ['F1','F2','F3','F4','F5','F6'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; })
             },
             fase3: [
-                { pos: 1, nombre: 'Platano Power Esports', rd: '', eliminado: false },
-                { pos: 2, nombre: 'Cruel Karma', rd: '', eliminado: false },
-                { pos: 3, nombre: 'YOSORA ESPORTS', rd: '', eliminado: false },
-                { pos: 4, nombre: '5EverMad', rd: '', eliminado: false },
+                { pos: 1, nombre: 'Clasificado #1', rd: '', eliminado: false },
+                { pos: 2, nombre: 'Clasificado #2', rd: '', eliminado: false },
+                { pos: 3, nombre: 'Clasificado #3', rd: '', eliminado: false },
+                { pos: 4, nombre: 'Clasificado #4', rd: '', eliminado: false },
                 { pos: 5, nombre: 'Puesto #5', rd: 'ELIM', eliminado: true },
                 { pos: 6, nombre: 'Puesto #6', rd: 'ELIM', eliminado: true }
             ],
             fase4: {
-                sf1: { eq1: 'Platano Power Esports', eq2: 'YOSORA ESPORTS', score1: '', score2: '', stream: '' },
-                sf2: { eq1: 'Cruel Karma', eq2: '5EverMad', score1: '', score2: '', stream: '' }
+                sf1: { eq1: 'Equipo 1', eq2: 'Equipo 2', score1: '', score2: '', stream: '' },
+                sf2: { eq1: 'Equipo 3', eq2: 'Equipo 4', score1: '', score2: '', stream: '' }
             },
             final: { eq1: 'Ganador SF1', eq2: 'Ganador SF2', score1: '', score2: '', campeon: 'CAMPEÓN', stream: '' }
         };
@@ -1194,7 +1194,7 @@
 
             return '<div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 pr-10 ' + est + '">' +
                     '<div class="flex items-center gap-1.5 truncate">' +
-                        (mostrarIcono ? '<span class="' + (slot.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait') + '" title="' + (slot.checkin ? 'Check-in OK' : 'Pendiente') + '"></span>' : '') +
+                        (mostrarIcono ? '<span class="' + (slot.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait') + '" title="' + (slot.checkin ? 'Check-in OK en Canal' : 'Check-in Pendiente') + '"></span>' : '') +
                         (mostrarIcono ? '<img data-logo="' + nSeg + '" src="' + urlAvatar(nSeg) + '" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0">' : '') +
                         '<span class="text-[11px] font-bold ' + (mostrarIcono ? 'text-white' : 'text-gray-300') + ' truncate">' + nombre + '</span>' +
                         (esLider ? '<span class="text-[10px]" title="Invicto / Clasificado">🔥</span>' : '') +
@@ -1276,7 +1276,7 @@
                     const n2 = textoSeguro(m.eq2);
                     const canal = textoSeguro(m.stream || '');
                     const enVivo = !!canal;
-                    
+
                     const barraTwitchCard = enVivo
                         ? '<div class="bg-[#9146ff]/20 border-t border-[#9146ff]/40 px-2 py-1 flex items-center justify-between text-[8.5px] font-black">' +
                             '<span class="text-purple-200 truncate flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#9146ff] animate-ping"></span> 📺 twitch.tv/' + canal + '</span>' +
@@ -1302,7 +1302,7 @@
                     document.getElementById('contenedor-fase5-campeon').innerHTML =
                         '<div onclick="verVS(\'' + campSeg + '\',\'\',\'CAMPEÓN COPA 5EVERMAD\')" class="cursor-pointer">' +
                             '<div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>' +
-                            (tieneCamp ? '<img data-logo="' + campSeg + '" src="' + urlAvatar(campSeg) + '" class="w-14 h-14 mx-auto mb-2 rounded object-contain bg-black border border-everGold">` : '') +
+                            (tieneCamp ? '<img data-logo="' + campSeg + '" src="' + urlAvatar(campSeg) + '" class="w-14 h-14 mx-auto mb-2 rounded object-contain bg-black border border-everGold">' : '') +
                             '<span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span>' +
                             '<h3 class="text-base font-black uppercase tracking-wider gold-metallic-text mt-0.5 truncate">' + (estadoTorneoActual.final.campeon || 'CAMPEÓN') + '</h3>' +
                         '</div>';
@@ -1405,14 +1405,13 @@
                 opcionesRival += '<option value="' + textoSeguro(n) + '" ' + sel + '>' + n + '</option>';
             });
 
-            // Bloque del Stream Oficial de Twitch dentro del Match (Si se pasó un canal)
             const parentHost = window.location.hostname || 'localhost';
             const bloqueStreamEnMatch = canalTwitch
                 ? '<div class="mb-4 bg-[#120d24] border border-[#9146ff] rounded-xl overflow-hidden shadow-[0_0_25px_rgba(145,70,255,0.25)] ocultar-en-poster">' +
                     '<div class="bg-gradient-to-r from-[#9146ff] via-purple-700 to-[#120d24] px-4 py-2 flex flex-wrap justify-between items-center gap-2">' +
                         '<div class="flex items-center gap-2">' +
                             '<span class="w-2 h-2 rounded-full bg-white animate-ping"></span>' +
-                            '<span class="text-[10px] font-black uppercase tracking-widest text-white">🟣 TRANSMISIÓN EN VIVO DEL MATCH: TWITCH.TV/' + canalTwitch.toUpperCase() + '</span>' +
+                            '<span class="text-[10px] font-black uppercase tracking-widest text-white">🟣 TRANSMISIÓN EN VIVO: TWITCH.TV/' + canalTwitch.toUpperCase() + '</span>' +
                         '</div>' +
                         '<div class="flex items-center gap-2">' +
                             '<button onclick="togglePlayerEnModal()" class="bg-black/40 hover:bg-black/70 text-white text-[9px] font-black uppercase px-2.5 py-1 rounded border border-white/20">📺 Mostrar / Ocultar Video</button>' +
@@ -1485,7 +1484,7 @@
                         '<button onclick="toggleModoPoster()" class="bg-white/5 hover:bg-white/15 border border-white/20 text-white text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0">' +
                             '📸 Modo Póster' +
                         '</button>' +
-                        '<select onchange="verVS(\'' + n1Seg + '\', this.value, \'' + faseSeg + '\')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-52 outline-none">' +
+                        '<select onchange="verVS(\'' + n1Seg + '\', this.value, \'' + faseSeg + '\')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-56 outline-none">' +
                             opcionesRival +
                         '</select>' +
                     '</div>' +

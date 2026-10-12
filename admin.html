@@ -97,7 +97,7 @@
             </div>
         </section>
 
-        <!-- 2. FASE 1 (GRUPOS A, B, C, D) + SEMÁFORO CHECK-IN + AUTO-AVANCE -->
+        <!-- 2. FASE 1 (GRUPOS A, B, C, D) -->
         <section class="panel-box p-5 hidden">
             <!-- OCULTO PARA AHORRAR ESPACIO EN SEMIFINALES -->
             <div id="admin-fase1" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
@@ -265,7 +265,6 @@
         let equipoEditandoActual = null;
         let jugadoresEditorTemp = [];
 
-        // Estado con Semifinales ya preparadas según imagen
         let datos = {
             version: '24_grupos_v1',
             aviso: '',
@@ -273,14 +272,14 @@
             canalTwitch: 'valorant_la',
             mvp: { activo: false, riot_id: '', equipo: '', kda: '', agente: 'Jett' },
             fase1: {
-                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
-                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
-                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
-                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false }))
+                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; }),
+                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; }),
+                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; }),
+                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; })
             },
             fase2: {
-                E: ['E1','E2','E3','E4','E5','E6'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false })),
-                F: ['F1','F2','F3','F4','F5','F6'].map(n => ({ nombre: n, extra: '', estado: 'normal', checkin: false }))
+                E: ['E1','E2','E3','E4','E5','E6'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; }),
+                F: ['F1','F2','F3','F4','F5','F6'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; })
             },
             fase3: [
                 { pos: 1, nombre: 'Platano Power Esports', rd: '', eliminado: false },
@@ -301,7 +300,7 @@
             const t = document.getElementById('toast-admin');
             document.getElementById('toast-admin-txt').innerText = msg;
             t.style.right = '24px';
-            setTimeout(() => { t.style.right = '-450px'; }, 2800);
+            setTimeout(function() { t.style.right = '-450px'; }, 2800);
         }
 
         function copiarTextoAdmin(txt) {
@@ -323,7 +322,7 @@
 
             const nombreLimpio = String(eq.nombre || 'Equipo').replace(/[^a-zA-Z0-9_-]/g, '_');
             const ini = String(eq.nombre || '?').substring(0, 2).toUpperCase();
-            const urlLogo = eq.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(ini)}&background=111&color=e5c05c&bold=true&size=512`;
+            const urlLogo = eq.logo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(ini) + '&background=111&color=e5c05c&bold=true&size=512';
 
             const img = new Image();
             img.crossOrigin = 'anonymous';
@@ -337,15 +336,15 @@
 
                     const a = document.createElement('a');
                     a.href = canvas.toDataURL('image/png');
-                    a.download = `Logo_${nombreLimpio}.png`;
+                    a.download = 'Logo_' + nombreLimpio + '.png';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    mostrarToastAdmin(`📥 Descargado: Logo_${nombreLimpio}.png`);
+                    mostrarToastAdmin('📥 Descargado: Logo_' + nombreLimpio + '.png');
                 } catch (err) {
                     const a = document.createElement('a');
                     a.href = urlLogo;
-                    a.download = `Logo_${nombreLimpio}.png`;
+                    a.download = 'Logo_' + nombreLimpio + '.png';
                     a.target = '_blank';
                     document.body.appendChild(a);
                     a.click();
@@ -355,7 +354,7 @@
             img.onerror = function() {
                 const a = document.createElement('a');
                 a.href = urlLogo;
-                a.download = `Logo_${nombreLimpio}.png`;
+                a.download = 'Logo_' + nombreLimpio + '.png';
                 a.target = '_blank';
                 document.body.appendChild(a);
                 a.click();
@@ -369,10 +368,10 @@
                 alert('Aún no se han cargado los equipos.');
                 return;
             }
-            mostrarToastAdmin(`📦 Descargando los ${listaEquiposDB.length} logos en PNG...`);
+            mostrarToastAdmin('📦 Descargando los ' + listaEquiposDB.length + ' logos en PNG...');
             for (let i = 0; i < listaEquiposDB.length; i++) {
                 descargarLogoPNG(i);
-                await new Promise(r => setTimeout(r, 350));
+                await new Promise(function(r) { return setTimeout(r, 350); });
             }
         }
 
@@ -389,8 +388,8 @@
         }
 
         function marcarTodosCheckinFase1(estado) {
-            ['A','B','C','D'].forEach(g => {
-                (datos.fase1[g] || []).forEach(s => { s.checkin = estado; });
+            ['A','B','C','D'].forEach(function(g) {
+                (datos.fase1[g] || []).forEach(function(s) { s.checkin = estado; });
             });
             renderizarPanelesAdmin();
             mostrarToastAdmin(estado ? '🟢 Todos marcados con Check-in OK' : '🟡 Check-in reiniciado');
@@ -399,31 +398,29 @@
         function dibujarEditorGrupo(faseKey, letra, colorHeader) {
             const slots = datos[faseKey][letra] || [];
             let filas = '';
-            slots.forEach((s, i) => {
-                filas += `
-                    <div class="bg-black/60 border border-white/10 p-2 rounded mb-1.5">
-                        <div class="flex gap-1.5 mb-1.5">
-                            <input type="text" value="${s.nombre || ''}" onchange="datos.${faseKey}.${letra}[${i}].nombre=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-white">
-                            <input type="text" value="${s.extra || ''}" placeholder="Pts/2-0" onchange="datos.${faseKey}.${letra}[${i}].extra=this.value" class="w-16 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-everGold text-center">
-                        </div>
-                        <div class="flex items-center justify-between gap-2">
-                            <label class="flex items-center gap-1.5 text-[10px] font-bold ${s.checkin ? 'text-emerald-400' : 'text-gray-400'} cursor-pointer">
-                                <input type="checkbox" ${s.checkin ? 'checked' : ''} onchange="datos.${faseKey}.${letra}[${i}].checkin=this.checked; renderizarPanelesAdmin()">
-                                ${s.checkin ? '🟢 Check-in OK' : '🟡 Check-in'}
-                            </label>
-                            <select onchange="datos.${faseKey}.${letra}[${i}].estado=this.value" class="bg-[#0b0d14] border border-white/10 text-[10px] font-bold px-2 py-1 rounded text-gray-300">
-                                <option value="normal" ${s.estado === 'normal' ? 'selected' : ''}>⚪ En Juego</option>
-                                <option value="clasificado" ${s.estado === 'clasificado' ? 'selected' : ''}>🟢 ✔ Clasificado</option>
-                                <option value="eliminado" ${s.estado === 'eliminado' ? 'selected' : ''}>🔴 ✕ Eliminado</option>
-                            </select>
-                        </div>
-                    </div>`;
+            slots.forEach(function(s, i) {
+                filas += '<div class="bg-black/60 border border-white/10 p-2 rounded mb-1.5">' +
+                        '<div class="flex gap-1.5 mb-1.5">' +
+                            '<input type="text" value="' + (s.nombre || '') + '" onchange="datos.' + faseKey + '.' + letra + '[' + i + '].nombre=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-white">' +
+                            '<input type="text" value="' + (s.extra || '') + '" placeholder="Pts/2-0" onchange="datos.' + faseKey + '.' + letra + '[' + i + '].extra=this.value" class="w-16 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-everGold text-center">' +
+                        '</div>' +
+                        '<div class="flex items-center justify-between gap-2">' +
+                            '<label class="flex items-center gap-1.5 text-[10px] font-bold ' + (s.checkin ? 'text-emerald-400' : 'text-gray-400') + ' cursor-pointer">' +
+                                '<input type="checkbox" ' + (s.checkin ? 'checked' : '') + ' onchange="datos.' + faseKey + '.' + letra + '[' + i + '].checkin=this.checked; renderizarPanelesAdmin()">' +
+                                (s.checkin ? '🟢 Check-in OK' : '🟡 Check-in') +
+                            '</label>' +
+                            '<select onchange="datos.' + faseKey + '.' + letra + '[' + i + '].estado=this.value" class="bg-[#0b0d14] border border-white/10 text-[10px] font-bold px-2 py-1 rounded text-gray-300">' +
+                                '<option value="normal" ' + (s.estado === 'normal' ? 'selected' : '') + '>⚪ En Juego</option>' +
+                                '<option value="clasificado" ' + (s.estado === 'clasificado' ? 'selected' : '') + '>🟢 ✔ Clasificado</option>' +
+                                '<option value="eliminado" ' + (s.estado === 'eliminado' ? 'selected' : '') + '>🔴 ✕ Eliminado</option>' +
+                            '</select>' +
+                        '</div>' +
+                    '</div>';
             });
-            return `
-                <div class="bg-[#080a10] border border-white/10 rounded-lg overflow-hidden">
-                    <div class="${colorHeader} py-1.5 px-3 font-black text-xs uppercase">GRUPO ${letra}</div>
-                    <div class="p-2.5">${filas}</div>
-                </div>`;
+            return '<div class="bg-[#080a10] border border-white/10 rounded-lg overflow-hidden">' +
+                    '<div class="' + colorHeader + ' py-1.5 px-3 font-black text-xs uppercase">GRUPO ' + letra + '</div>' +
+                    '<div class="p-2.5">' + filas + '</div>' +
+                '</div>';
         }
 
         function renderizarPanelesAdmin() {
@@ -437,70 +434,69 @@
             document.getElementById('inp-mvp-kda').value = m.kda || '';
             document.getElementById('inp-mvp-ag').value = m.agente || '';
 
-            document.getElementById('admin-fase1').innerHTML = ['A','B','C','D'].map(g => dibujarEditorGrupo('fase1', g, 'bg-red-700')).join('');
-            document.getElementById('admin-fase2').innerHTML = ['E','F'].map(g => dibujarEditorGrupo('fase2', g, 'bg-blue-700')).join('');
+            document.getElementById('admin-fase1').innerHTML = ['A','B','C','D'].map(function(g) { return dibujarEditorGrupo('fase1', g, 'bg-red-700'); }).join('');
+            document.getElementById('admin-fase2').innerHTML = ['E','F'].map(function(g) { return dibujarEditorGrupo('fase2', g, 'bg-blue-700'); }).join('');
 
-            document.getElementById('admin-fase3').innerHTML = (datos.fase3 || []).map((r, i) => `
-                <div class="flex items-center gap-2 bg-black/60 border ${i >= 4 ? 'border-red-500/40' : 'border-emerald-500/40'} p-2 rounded">
-                    <span class="w-6 h-6 rounded flex items-center justify-center text-xs font-black ${i >= 4 ? 'bg-red-600' : 'bg-emerald-600'}">${i + 1}</span>
-                    <input type="text" value="${r.nombre || ''}" onchange="datos.fase3[${i}].nombre=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-white">
-                    <input type="text" value="${r.rd || ''}" placeholder="+12 RD" onchange="datos.fase3[${i}].rd=this.value" class="w-20 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-everGold text-center">
-                </div>`).join('');
+            document.getElementById('admin-fase3').innerHTML = (datos.fase3 || []).map(function(r, i) {
+                return '<div class="flex items-center gap-2 bg-black/60 border ' + (i >= 4 ? 'border-red-500/40' : 'border-emerald-500/40') + ' p-2 rounded">' +
+                    '<span class="w-6 h-6 rounded flex items-center justify-center text-xs font-black ' + (i >= 4 ? 'bg-red-600' : 'bg-emerald-600') + '">' + (i + 1) + '</span>' +
+                    '<input type="text" value="' + (r.nombre || '') + '" onchange="datos.fase3[' + i + '].nombre=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-white">' +
+                    '<input type="text" value="' + (r.rd || '') + '" placeholder="+12 RD" onchange="datos.fase3[' + i + '].rd=this.value" class="w-20 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-everGold text-center">' +
+                '</div>';
+            }).join('');
 
             const sf1 = datos.fase4.sf1 || { eq1: '', eq2: '', score1: '', score2: '', stream: '' };
             const sf2 = datos.fase4.sf2 || { eq1: '', eq2: '', score1: '', score2: '', stream: '' };
             const fin = datos.final || { eq1: '', eq2: '', score1: '', score2: '', campeon: '', stream: '' };
 
-            document.getElementById('admin-playoffs').innerHTML = `
-                <div class="bg-black/60 border border-everGold/40 p-3 rounded">
-                    <span class="text-[10px] font-black text-everGold block mb-2">SEMIFINAL 1 (BO5)</span>
-                    <div class="flex gap-1.5 mb-1.5">
-                        <input value="${sf1.eq1}" onchange="datos.fase4.sf1.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">
-                        <input value="${sf1.score1}" placeholder="0" onchange="datos.fase4.sf1.score1=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">
-                    </div>
-                    <div class="flex gap-1.5 mb-2">
-                        <input value="${sf1.eq2}" onchange="datos.fase4.sf1.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">
-                        <input value="${sf1.score2}" placeholder="0" onchange="datos.fase4.sf1.score2=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span>
-                        <input value="${sf1.stream || ''}" placeholder="Canal Twitch (Ej. dunnker)" onchange="datos.fase4.sf1.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-1.5 rounded text-[10px] font-bold text-white outline-none">
-                    </div>
-                </div>
-                
-                <div class="bg-black/60 border border-everGold/40 p-3 rounded">
-                    <span class="text-[10px] font-black text-everGold block mb-2">SEMIFINAL 2 (BO5)</span>
-                    <div class="flex gap-1.5 mb-1.5">
-                        <input value="${sf2.eq1}" onchange="datos.fase4.sf2.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">
-                        <input value="${sf2.score1}" placeholder="0" onchange="datos.fase4.sf2.score1=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">
-                    </div>
-                    <div class="flex gap-1.5 mb-2">
-                        <input value="${sf2.eq2}" onchange="datos.fase4.sf2.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">
-                        <input value="${sf2.score2}" placeholder="0" onchange="datos.fase4.sf2.score2=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span>
-                        <input value="${sf2.stream || ''}" placeholder="Canal Twitch (Ej. 5evermad)" onchange="datos.fase4.sf2.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-1.5 rounded text-[10px] font-bold text-white outline-none">
-                    </div>
-                </div>
-
-                <div class="bg-black/60 border border-vctRed/50 p-3 rounded">
-                    <span class="text-[10px] font-black text-vctRed block mb-2">🏆 GRAN FINAL (BO5)</span>
-                    <div class="flex gap-1.5 mb-1.5">
-                        <input value="${fin.eq1}" onchange="datos.final.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">
-                        <input value="${fin.score1}" placeholder="0" onchange="datos.final.score1=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">
-                    </div>
-                    <div class="flex gap-1.5 mb-2">
-                        <input value="${fin.eq2}" onchange="datos.final.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">
-                        <input value="${fin.score2}" placeholder="0" onchange="datos.final.score2=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">
-                    </div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span>
-                        <input value="${fin.stream || ''}" placeholder="Canal Twitch" onchange="datos.final.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-1.5 rounded text-[10px] font-bold text-white outline-none">
-                    </div>
-                    <label class="text-[9px] font-black uppercase text-everGold block mb-1">Campeón Oficial:</label>
-                    <input value="${fin.campeon}" onchange="datos.final.campeon=this.value" class="w-full bg-[#0b0d14] border border-everGold p-1.5 rounded text-xs font-black text-everGold text-center">
-                </div>`;
+            document.getElementById('admin-playoffs').innerHTML =
+                '<div class="bg-black/60 border border-everGold/40 p-3 rounded">' +
+                    '<span class="text-[10px] font-black text-everGold block mb-2">SEMIFINAL 1 (BO5)</span>' +
+                    '<div class="flex gap-1.5 mb-1.5">' +
+                        '<input value="' + sf1.eq1 + '" onchange="datos.fase4.sf1.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">' +
+                        '<input value="' + sf1.score1 + '" placeholder="0" onchange="datos.fase4.sf1.score1=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">' +
+                    '</div>' +
+                    '<div class="flex gap-1.5 mb-2">' +
+                        '<input value="' + sf1.eq2 + '" onchange="datos.fase4.sf1.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">' +
+                        '<input value="' + sf1.score2 + '" placeholder="0" onchange="datos.fase4.sf1.score2=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">' +
+                    '</div>' +
+                    '<div class="flex items-center gap-2">' +
+                        '<span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span>' +
+                        '<input value="' + (sf1.stream || '') + '" placeholder="Canal Twitch (Ej. dunnker)" onchange="datos.fase4.sf1.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-1.5 rounded text-[10px] font-bold text-white outline-none">' +
+                    '</div>' +
+                '</div>' +
+                '<div class="bg-black/60 border border-everGold/40 p-3 rounded">' +
+                    '<span class="text-[10px] font-black text-everGold block mb-2">SEMIFINAL 2 (BO5)</span>' +
+                    '<div class="flex gap-1.5 mb-1.5">' +
+                        '<input value="' + sf2.eq1 + '" onchange="datos.fase4.sf2.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">' +
+                        '<input value="' + sf2.score1 + '" placeholder="0" onchange="datos.fase4.sf2.score1=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">' +
+                    '</div>' +
+                    '<div class="flex gap-1.5 mb-2">' +
+                        '<input value="' + sf2.eq2 + '" onchange="datos.fase4.sf2.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">' +
+                        '<input value="' + sf2.score2 + '" placeholder="0" onchange="datos.fase4.sf2.score2=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">' +
+                    '</div>' +
+                    '<div class="flex items-center gap-2">' +
+                        '<span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span>' +
+                        '<input value="' + (sf2.stream || '') + '" placeholder="Canal Twitch (Ej. 5evermad)" onchange="datos.fase4.sf2.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-1.5 rounded text-[10px] font-bold text-white outline-none">' +
+                    '</div>' +
+                '</div>' +
+                '<div class="bg-black/60 border border-vctRed/50 p-3 rounded">' +
+                    '<span class="text-[10px] font-black text-vctRed block mb-2">🏆 GRAN FINAL (BO5)</span>' +
+                    '<div class="flex gap-1.5 mb-1.5">' +
+                        '<input value="' + fin.eq1 + '" onchange="datos.final.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">' +
+                        '<input value="' + fin.score1 + '" placeholder="0" onchange="datos.final.score1=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">' +
+                    '</div>' +
+                    '<div class="flex gap-1.5 mb-2">' +
+                        '<input value="' + fin.eq2 + '" onchange="datos.final.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold">' +
+                        '<input value="' + fin.score2 + '" placeholder="0" onchange="datos.final.score2=this.value" class="w-12 bg-[#0b0d14] border border-white/15 p-1.5 rounded text-xs font-bold text-center text-everGold">' +
+                    '</div>' +
+                    '<div class="flex items-center gap-2 mb-2">' +
+                        '<span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span>' +
+                        '<input value="' + (fin.stream || '') + '" placeholder="Canal Twitch" onchange="datos.final.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-1.5 rounded text-[10px] font-bold text-white outline-none">' +
+                    '</div>' +
+                    '<label class="text-[9px] font-black uppercase text-everGold block mb-1">Campeón Oficial:</label>' +
+                    '<input value="' + fin.campeon + '" onchange="datos.final.campeon=this.value" class="w-full bg-[#0b0d14] border border-everGold p-1.5 rounded text-xs font-black text-everGold text-center">' +
+                '</div>';
         }
 
         // =============================================================
@@ -508,11 +504,11 @@
         // =============================================================
         async function cargarEquiposRegistrados() {
             try {
-                const res = await fetch(`${API_URL}/equipos?t=${Date.now()}`, { cache: 'no-store' });
+                const res = await fetch(API_URL + '/equipos?t=' + Date.now(), { cache: 'no-store' });
                 const data = await res.json();
                 if (Array.isArray(data)) {
                     listaEquiposDB = data.filter(Boolean);
-                    document.getElementById('contador-equipos-db').innerText = `${listaEquiposDB.length} / 24`;
+                    document.getElementById('contador-equipos-db').innerText = listaEquiposDB.length + ' / 24';
                     document.getElementById('badge-total-eq').innerText = listaEquiposDB.length;
                     dibujarTarjetasEquiposAdmin(document.getElementById('buscador-admin-equipos').value);
                 }
@@ -525,106 +521,97 @@
             dibujarTarjetasEquiposAdmin(q);
         }
 
-        function dibujarTarjetasEquiposAdmin(filtro = '') {
+        function dibujarTarjetasEquiposAdmin(filtro) {
             const grid = document.getElementById('grid-admin-equipos');
             const q = String(filtro || '').toLowerCase().trim();
 
-            const filtrados = listaEquiposDB.filter(eq => {
+            const filtrados = listaEquiposDB.filter(function(eq) {
                 const nom = String(eq.nombre || '').toLowerCase();
                 const cap = String(eq.discord || '').toLowerCase();
-                const jug = Array.isArray(eq.jugadores) && eq.jugadores.some(j =>
-                    String(j.riot_id || '').toLowerCase().includes(q) || String(j.dc || '').toLowerCase().includes(q)
-                );
+                const jug = Array.isArray(eq.jugadores) && eq.jugadores.some(function(j) {
+                    return String(j.riot_id || '').toLowerCase().includes(q) || String(j.dc || '').toLowerCase().includes(q);
+                });
                 return !q || nom.includes(q) || cap.includes(q) || jug;
             });
 
             if (filtrados.length === 0) {
-                grid.innerHTML = `<p class="text-xs text-gray-400 uppercase tracking-widest py-8 text-center col-span-full">No se encontraron equipos con ese filtro.</p>`;
+                grid.innerHTML = '<p class="text-xs text-gray-400 uppercase tracking-widest py-8 text-center col-span-full">No se encontraron equipos con ese filtro.</p>';
                 return;
             }
 
-            grid.innerHTML = filtrados.map((eq, idx) => {
+            grid.innerHTML = filtrados.map(function(eq, idx) {
                 const ini = String(eq.nombre || '?').substring(0, 2).toUpperCase();
-                const logo = eq.logo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(ini)}&background=111&color=e5c05c&bold=true`;
+                const logo = eq.logo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(ini) + '&background=111&color=e5c05c&bold=true';
                 const capSeg = textoSeguro(eq.discord || '');
                 const nomSeg = textoSeguro(eq.nombre || '');
                 const realIdx = listaEquiposDB.indexOf(eq);
 
-                const jugadoresHtml = (eq.jugadores || []).map(j => {
+                const jugadoresHtml = (eq.jugadores || []).map(function(j) {
                     const idSeg = textoSeguro(j.riot_id || '');
                     const rolTxt = String(j.role || 'TITULAR').toUpperCase();
                     const colorRol = rolTxt.includes('COACH') ? 'text-purple-400' : (rolTxt.includes('SUP') ? 'text-emerald-400' : 'text-everGold');
-                    return `
-                        <div class="flex items-center justify-between gap-2 bg-black/50 border border-white/5 px-2.5 py-1.5 rounded text-[11px]">
-                            <div class="truncate">
-                                <span class="text-[8px] ${colorRol} font-black uppercase mr-1.5">[${rolTxt}]</span>
-                                <button onclick="copiarTextoAdmin('${idSeg}')" class="font-bold text-white hover:text-everGold truncate">${j.riot_id || 'Sin ID'} 📋</button>
-                                ${j.dc ? `<span class="text-[9px] text-gray-400 ml-1">(${j.dc})</span>` : ''}
-                            </div>
-                            <a href="${j.tracker_url || '#'}" target="_blank" class="text-[9px] font-black text-vctRed hover:underline shrink-0">TRACKER ↗</a>
-                        </div>`;
+                    return '<div class="flex items-center justify-between gap-2 bg-black/50 border border-white/5 px-2.5 py-1.5 rounded text-[11px]">' +
+                            '<div class="truncate">' +
+                                '<span class="text-[8px] ' + colorRol + ' font-black uppercase mr-1.5">[' + rolTxt + ']</span>' +
+                                '<button onclick="copiarTextoAdmin(\'' + idSeg + '\')" class="font-bold text-white hover:text-everGold truncate">' + (j.riot_id || 'Sin ID') + ' 📋</button>' +
+                                (j.dc ? '<span class="text-[9px] text-gray-400 ml-1">(' + j.dc + ')</span>' : '') +
+                            '</div>' +
+                            '<a href="' + (j.tracker_url || '#') + '" target="_blank" class="text-[9px] font-black text-vctRed hover:underline shrink-0">TRACKER ↗</a>' +
+                        '</div>';
                 }).join('');
 
-                return `
-                    <div class="bg-[#080a10] border border-white/10 hover:border-white/25 rounded-lg p-4 flex flex-col justify-between gap-3">
-                        <div>
-                            <div class="flex items-start justify-between gap-2 mb-3 pb-3 border-b border-white/10">
-                                <div class="flex items-center gap-3 truncate">
-                                    <img onclick="descargarLogoPNG(${realIdx})" title="Clic para descargar logo en PNG" src="${logo}" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15 hover:border-everGold cursor-pointer shrink-0 transition-all">
-                                    <div class="truncate">
-                                        <span class="text-[9px] text-everGold font-black uppercase block">ESCUADRA #${idx + 1} • ${eq.rango || 'Rango Oficial'}</span>
-                                        <h3 class="text-sm font-black uppercase text-white truncate">${eq.nombre}</h3>
-                                        <button onclick="copiarTextoAdmin('${capSeg}')" class="text-[10px] text-gray-300 hover:text-white font-bold block mt-0.5">
-                                            Capitán DC: <span class="text-everGold underline">${eq.discord || 'N/A'}</span> 📋
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col gap-1 shrink-0">
-                                    <button onclick="descargarLogoPNG(${realIdx})" class="bg-indigo-600/25 hover:bg-indigo-600 text-indigo-200 hover:text-white border border-indigo-400/40 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">
-                                        📥 Logo PNG
-                                    </button>
-                                    <button onclick="abrirModalEditarEquipo(${realIdx})" class="bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">
-                                        ✏️ Editar / +Staff
-                                    </button>
-                                    <button onclick="eliminarEquipoDB('${eq.id}', '${nomSeg}')" class="bg-red-950/50 hover:bg-vctRed text-red-300 hover:text-white border border-red-500/30 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">
-                                        🗑️ Baja
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="space-y-1.5 max-h-56 overflow-y-auto pr-1">
-                                ${jugadoresHtml}
-                            </div>
-                        </div>
-                    </div>`;
+                return '<div class="bg-[#080a10] border border-white/10 hover:border-white/25 rounded-lg p-4 flex flex-col justify-between gap-3">' +
+                        '<div>' +
+                            '<div class="flex items-start justify-between gap-2 mb-3 pb-3 border-b border-white/10">' +
+                                '<div class="flex items-center gap-3 truncate">' +
+                                    '<img onclick="descargarLogoPNG(' + realIdx + ')" title="Clic para descargar logo en PNG" src="' + logo + '" class="w-12 h-12 rounded object-contain bg-black p-1 border border-white/15 hover:border-everGold cursor-pointer shrink-0 transition-all">' +
+                                    '<div class="truncate">' +
+                                        '<span class="text-[9px] text-everGold font-black uppercase block">ESCUADRA #' + (idx + 1) + ' • ' + (eq.rango || 'Rango Oficial') + '</span>' +
+                                        '<h3 class="text-sm font-black uppercase text-white truncate">' + eq.nombre + '</h3>' +
+                                        '<button onclick="copiarTextoAdmin(\'' + capSeg + '\')" class="text-[10px] text-gray-300 hover:text-white font-bold block mt-0.5">' +
+                                            'Capitán DC: <span class="text-everGold underline">' + (eq.discord || 'N/A') + '</span> 📋' +
+                                        '</button>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="flex flex-col gap-1 shrink-0">' +
+                                    '<button onclick="descargarLogoPNG(' + realIdx + ')" class="bg-indigo-600/25 hover:bg-indigo-600 text-indigo-200 hover:text-white border border-indigo-400/40 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">' +
+                                        '📥 Logo PNG' +
+                                    '</button>' +
+                                    '<button onclick="abrirModalEditarEquipo(' + realIdx + ')" class="bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">' +
+                                        '✏️ Editar / +Staff' +
+                                    '</button>' +
+                                    '<button onclick="eliminarEquipoDB(\'' + eq.id + '\', \'' + nomSeg + '\')" class="bg-red-950/50 hover:bg-vctRed text-red-300 hover:text-white border border-red-500/30 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">' +
+                                        '🗑️ Baja' +
+                                    '</button>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="space-y-1.5 max-h-56 overflow-y-auto pr-1">' + jugadoresHtml + '</div>' +
+                        '</div>' +
+                    '</div>';
             }).join('');
         }
 
-        function abrirModalEditarEquipo(index) {
+        window.abrirModalEditarEquipo = function(index) {
             const eq = listaEquiposDB[index];
             if (!eq) return;
             equipoEditandoActual = eq;
-            document.getElementById('titulo-modal-equipo').innerText = `✏️ EDITAR: ${eq.nombre}`;
+            document.getElementById('titulo-modal-equipo').innerText = '✏️ EDITAR: ' + eq.nombre;
             document.getElementById('edit-eq-nombre').value = eq.nombre || '';
             document.getElementById('edit-eq-discord').value = eq.discord || '';
             document.getElementById('edit-eq-rango').value = eq.rango || '';
             document.getElementById('edit-eq-logo').value = eq.logo_url || '';
 
             jugadoresEditorTemp = Array.isArray(eq.jugadores)
-                ? eq.jugadores.map(j => ({
-                    role: j.role || 'TITULAR',
-                    riot_id: j.riot_id || '',
-                    dc: j.dc || '',
-                    tracker_url: j.tracker_url || ''
-                }))
+                ? eq.jugadores.map(function(j) { return { role: j.role || 'TITULAR', riot_id: j.riot_id || '', dc: j.dc || '', tracker_url: j.tracker_url || '' }; })
                 : [];
 
             renderizarFilasJugadoresEditor();
             document.getElementById('modal-editar-equipo').classList.remove('hidden');
-        }
+        };
 
-        function abrirModalNuevoEquipo() {
+        window.abrirModalNuevoEquipo = function() {
             equipoEditandoActual = null;
-            document.getElementById('titulo-modal-equipo').innerText = `➕ REGISTRAR NUEVO EQUIPO`;
+            document.getElementById('titulo-modal-equipo').innerText = '➕ REGISTRAR NUEVO EQUIPO';
             document.getElementById('edit-eq-nombre').value = '';
             document.getElementById('edit-eq-discord').value = '';
             document.getElementById('edit-eq-rango').value = 'Ascendente / Inmortal';
@@ -639,13 +626,13 @@
             ];
             renderizarFilasJugadoresEditor();
             document.getElementById('modal-editar-equipo').classList.remove('hidden');
-        }
+        };
 
-        function cerrarModalEditarEquipo() {
+        window.cerrarModalEditarEquipo = function() {
             document.getElementById('modal-editar-equipo').classList.add('hidden');
-        }
+        };
 
-        function procesarNuevoLogoEquipo(input) {
+        window.procesarNuevoLogoEquipo = function(input) {
             const file = input.files && input.files[0];
             if (!file) return;
             const reader = new FileReader();
@@ -665,81 +652,70 @@
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
-        }
+        };
 
-        function agregarFilaJugadorEditor(rolPorDefecto) {
-            jugadoresEditorTemp.push({
-                role: rolPorDefecto || 'SUPLENTE',
-                riot_id: '',
-                dc: '',
-                tracker_url: ''
-            });
+        window.agregarFilaJugadorEditor = function(rolPorDefecto) {
+            jugadoresEditorTemp.push({ role: rolPorDefecto || 'SUPLENTE', riot_id: '', dc: '', tracker_url: '' });
             renderizarFilasJugadoresEditor();
             const cont = document.getElementById('lista-jugadores-editor');
             cont.scrollTop = cont.scrollHeight;
-        }
+        };
 
-        function eliminarFilaJugadorEditor(idx) {
+        window.eliminarFilaJugadorEditor = function(idx) {
             jugadoresEditorTemp.splice(idx, 1);
             renderizarFilasJugadoresEditor();
-        }
+        };
 
-        function actualizarRiotIdEditor(idx, valor) {
+        window.actualizarRiotIdEditor = function(idx, valor) {
             jugadoresEditorTemp[idx].riot_id = valor;
             if (valor.includes('#')) {
                 jugadoresEditorTemp[idx].tracker_url = 'https://tracker.gg/valorant/profile/riot/' + encodeURIComponent(valor.trim()) + '/overview';
                 const inpTracker = document.getElementById('inp-tracker-ed-' + idx);
                 if (inpTracker) inpTracker.value = jugadoresEditorTemp[idx].tracker_url;
             }
-        }
+        };
 
         function renderizarFilasJugadoresEditor() {
             const cont = document.getElementById('lista-jugadores-editor');
             const roles = ['TITULAR', 'SUPLENTE', 'COACH', 'HEAD COACH', 'MANAGER'];
 
-            cont.innerHTML = jugadoresEditorTemp.map((j, i) => {
+            cont.innerHTML = jugadoresEditorTemp.map(function(j, i) {
                 const rolActual = String(j.role || 'TITULAR').toUpperCase();
-                const opcionesRol = roles.map(r => `<option value="${r}" ${rolActual === r ? 'selected' : ''}>${r}</option>`).join('');
+                const opcionesRol = roles.map(function(r) { return '<option value="' + r + '" ' + (rolActual === r ? 'selected' : '') + '>' + r + '</option>'; }).join('');
 
-                return `
-                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-black/60 border border-white/10 p-2.5 rounded-lg">
-                        <div class="sm:col-span-3">
-                            <select onchange="jugadoresEditorTemp[${i}].role=this.value" class="w-full bg-[#0c0e16] border border-white/15 text-[10px] font-black text-everGold p-2 rounded outline-none">
-                                ${opcionesRol}
-                            </select>
-                        </div>
-                        <div class="sm:col-span-3">
-                            <input type="text" value="${textoSeguro(j.riot_id)}" oninput="actualizarRiotIdEditor(${i}, this.value)" placeholder="Riot ID (Nombre#TAG)" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-xs font-bold text-white outline-none">
-                        </div>
-                        <div class="sm:col-span-2">
-                            <input type="text" value="${textoSeguro(j.dc)}" oninput="jugadoresEditorTemp[${i}].dc=this.value" placeholder="Discord" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-xs font-semibold text-gray-300 outline-none">
-                        </div>
-                        <div class="sm:col-span-3">
-                            <input id="inp-tracker-ed-${i}" type="text" value="${textoSeguro(j.tracker_url)}" oninput="jugadoresEditorTemp[${i}].tracker_url=this.value" placeholder="URL Tracker.gg" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-[10px] text-gray-400 outline-none">
-                        </div>
-                        <div class="sm:col-span-1 flex justify-end">
-                            <button onclick="eliminarFilaJugadorEditor(${i})" class="bg-red-950/60 hover:bg-vctRed text-red-300 hover:text-white text-xs font-black px-2.5 py-1.5 rounded" title="Quitar integrante">
-                                ✕
-                            </button>
-                        </div>
-                    </div>`;
+                return '<div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-black/60 border border-white/10 p-2.5 rounded-lg">' +
+                        '<div class="sm:col-span-3">' +
+                            '<select onchange="jugadoresEditorTemp[' + i + '].role=this.value" class="w-full bg-[#0c0e16] border border-white/15 text-[10px] font-black text-everGold p-2 rounded outline-none">' +
+                                opcionesRol +
+                            '</select>' +
+                        '</div>' +
+                        '<div class="sm:col-span-3">' +
+                            '<input type="text" value="' + textoSeguro(j.riot_id) + '" oninput="actualizarRiotIdEditor(' + i + ', this.value)" placeholder="Riot ID (Nombre#TAG)" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-xs font-bold text-white outline-none">' +
+                        '</div>' +
+                        '<div class="sm:col-span-2">' +
+                            '<input type="text" value="' + textoSeguro(j.dc) + '" oninput="jugadoresEditorTemp[' + i + '].dc=this.value" placeholder="Discord" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-xs font-semibold text-gray-300 outline-none">' +
+                        '</div>' +
+                        '<div class="sm:col-span-3">' +
+                            '<input id="inp-tracker-ed-' + i + '" type="text" value="' + textoSeguro(j.tracker_url) + '" oninput="jugadoresEditorTemp[' + i + '].tracker_url=this.value" placeholder="URL Tracker.gg" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-[10px] text-gray-400 outline-none">' +
+                        '</div>' +
+                        '<div class="sm:col-span-1 flex justify-end">' +
+                            '<button onclick="eliminarFilaJugadorEditor(' + i + ')" class="bg-red-950/60 hover:bg-vctRed text-red-300 hover:text-white text-xs font-black px-2.5 py-1.5 rounded" title="Quitar integrante">✕</button>' +
+                        '</div>' +
+                    '</div>';
             }).join('');
         }
 
-        async function guardarCambiosEquipoDB() {
+        window.guardarCambiosEquipoDB = async function() {
             const btn = document.getElementById('btn-guardar-equipo-modal');
             const nombre = document.getElementById('edit-eq-nombre').value.trim();
             const discord = document.getElementById('edit-eq-discord').value.trim();
             const rango = document.getElementById('edit-eq-rango').value.trim() || 'Confirmado';
             const logo_url = document.getElementById('edit-eq-logo').value.trim();
 
-            if (!nombre) {
-                alert('Escribe el nombre del equipo.');
-                return;
-            }
+            if (!nombre) { alert('Escribe el nombre del equipo.'); return; }
 
-            const jugadoresLimpios = jugadoresEditorTemp.filter(j => String(j.riot_id || '').trim() !== '' || String(j.dc || '').trim() !== '');
-            const payload = { nombre, discord, rango, logo_url, jugadores: jugadoresLimpios };
+            const jugadoresLimpios = jugadoresEditorTemp.filter(function(j) { return String(j.riot_id || '').trim() !== '' || String(j.dc || '').trim() !== ''; });
+            const payload = { nombre: nombre, discord: discord, rango: rango, logo_url: logo_url, jugadores: jugadoresLimpios };
 
             btn.disabled = true;
             btn.innerText = '⏳ Guardando en Render...';
@@ -754,49 +730,31 @@
 
                 if (equipoEditandoActual && equipoEditandoActual.id) {
                     const idViejo = equipoEditandoActual.id;
-                    let resPut = await fetch(`${API_URL}/equipos/${idViejo}`, {
-                        method: 'PUT',
-                        headers,
-                        body: JSON.stringify(payload)
-                    }).catch(() => null);
+                    let resPut = await fetch(API_URL + '/equipos/' + idViejo, { method: 'PUT', headers: headers, body: JSON.stringify(payload) }).catch(function() { return null; });
 
                     if (!resPut || !resPut.ok) {
-                        resPut = await fetch(`${API_URL}/equipos?id=${idViejo}`, {
-                            method: 'PUT',
-                            headers,
-                            body: JSON.stringify(payload)
-                        }).catch(() => null);
+                        resPut = await fetch(API_URL + '/equipos?id=' + idViejo, { method: 'PUT', headers: headers, body: JSON.stringify(payload) }).catch(function() { return null; });
                     }
 
                     if (resPut && resPut.ok) {
                         actualizadoOK = true;
                     } else {
-                        const resPost = await fetch(`${API_URL}/equipos`, {
-                            method: 'POST',
-                            headers,
-                            body: JSON.stringify(payload)
-                        });
+                        const resPost = await fetch(API_URL + '/equipos', { method: 'POST', headers: headers, body: JSON.stringify(payload) });
                         if (resPost.ok) {
                             actualizadoOK = true;
-                            let del = await fetch(`${API_URL}/equipos?id=${idViejo}`, { method: 'DELETE', headers }).catch(() => null);
-                            if (!del || !del.ok) {
-                                await fetch(`${API_URL}/equipos/${idViejo}`, { method: 'DELETE', headers }).catch(() => null);
-                            }
+                            let del = await fetch(API_URL + '/equipos?id=' + idViejo, { method: 'DELETE', headers: headers }).catch(function() { return null; });
+                            if (!del || !del.ok) { await fetch(API_URL + '/equipos/' + idViejo, { method: 'DELETE', headers: headers }).catch(function() { return null; }); }
                         }
                     }
                 } else {
-                    const resPost = await fetch(`${API_URL}/equipos`, {
-                        method: 'POST',
-                        headers,
-                        body: JSON.stringify(payload)
-                    });
+                    const resPost = await fetch(API_URL + '/equipos', { method: 'POST', headers: headers, body: JSON.stringify(payload) });
                     if (resPost.ok) actualizadoOK = true;
                 }
 
                 try { sessionStorage.removeItem('5ever_equipos_cache'); } catch (e) {}
 
                 if (actualizadoOK) {
-                    mostrarToastAdmin(`✔ Escuadra "${nombre}" actualizada correctamente`);
+                    mostrarToastAdmin('✔ Escuadra "' + nombre + '" actualizada');
                     cerrarModalEditarEquipo();
                     await cargarEquiposRegistrados();
                 } else {
@@ -808,15 +766,74 @@
                 btn.disabled = false;
                 btn.innerText = '💾 Guardar Cambios del Equipo';
             }
-        }
+        };
+
+        window.eliminarEquipoDB = async function(id, nombre) {
+            if (!id) return;
+            if (!confirm('⚠️ ¿Seguro que deseas eliminar al equipo "' + nombre + '" de la base de datos?')) return;
+
+            const headers = { 'Authorization': 'Bearer ' + (localStorage.getItem('idToken') || 'pase-vip-temporal-5ever') };
+            try {
+                let res = await fetch(API_URL + '/equipos?id=' + id, { method: 'DELETE', headers: headers });
+                if (!res.ok) { res = await fetch(API_URL + '/equipos/' + id, { method: 'DELETE', headers: headers }); }
+                try { sessionStorage.removeItem('5ever_equipos_cache'); } catch (e) {}
+                mostrarToastAdmin('🗑️ Equipo ' + nombre + ' eliminado');
+                cargarEquiposRegistrados();
+            } catch (e) {
+                alert('No se pudo eliminar el equipo.');
+            }
+        };
+
+        window.pasarClasificadosAFase2 = function() {
+            const clasAB = [...datos.fase1.A, ...datos.fase1.B].filter(function(s) { return s.estado === 'clasificado'; }).map(function(s) { return s.nombre; });
+            const clasCD = [...datos.fase1.C, ...datos.fase1.D].filter(function(s) { return s.estado === 'clasificado'; }).map(function(s) { return s.nombre; });
+
+            for (let i = 0; i < 6; i++) {
+                if (clasAB[i]) datos.fase2.E[i] = { nombre: clasAB[i], extra: '', estado: 'normal', checkin: false };
+                if (clasCD[i]) datos.fase2.F[i] = { nombre: clasCD[i], extra: '', estado: 'normal', checkin: false };
+            }
+            renderizarPanelesAdmin();
+            alert('✔ Clasificados enviados a los Grupos E y F de la Fase 2.');
+        };
+
+        window.pasarClasificadosAFase3 = function() {
+            const clasEF = [...datos.fase2.E, ...datos.fase2.F].filter(function(s) { return s.estado === 'clasificado'; });
+            for (let i = 0; i < 6; i++) {
+                if (clasEF[i]) {
+                    datos.fase3[i] = { pos: i + 1, nombre: clasEF[i].nombre, rd: clasEF[i].extra || '+0', eliminado: i >= 4 };
+                }
+            }
+            renderizarPanelesAdmin();
+            alert('✔ Clasificados de Fase 2 copiados a Fase 3 • Clasificados.');
+        };
+
+        window.ordenarFase3YPasarASemis = function() {
+            datos.fase3.sort(function(a, b) {
+                const numA = parseFloat(String(a.rd || '0').replace(/[^0-9.-]/g, '')) || -999;
+                const numB = parseFloat(String(b.rd || '0').replace(/[^0-9.-]/g, '')) || -999;
+                return numB - numA;
+            });
+            datos.fase3.forEach(function(r, idx) {
+                r.pos = idx + 1;
+                r.eliminado = idx >= 4;
+            });
+
+            if (datos.fase3[0]) datos.fase4.sf1.eq1 = datos.fase3[0].nombre;
+            if (datos.fase3[3]) datos.fase4.sf1.eq2 = datos.fase3[3].nombre;
+            if (datos.fase3[1]) datos.fase4.sf2.eq1 = datos.fase3[1].nombre;
+            if (datos.fase3[2]) datos.fase4.sf2.eq2 = datos.fase3[2].nombre;
+
+            renderizarPanelesAdmin();
+            alert('📊 Fase 3 • Clasificados ordenada por Diferencia de Rondas y Top 4 enviados a Semifinales.');
+        };
 
         async function cargarEstadoDesdeRender() {
             try {
-                const res = await fetch(`${API_URL}/noticias?t=${Date.now()}`, { cache: 'no-store' });
+                const res = await fetch(API_URL + '/noticias?t=' + Date.now(), { cache: 'no-store' });
                 const noticias = await res.json();
                 if (Array.isArray(noticias)) {
-                    noticias.sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
-                    const bd = noticias.find(n => n && n.titulo === '[BRACKET_DATA]');
+                    noticias.sort(function(a, b) { return new Date(b.fecha || 0) - new Date(a.fecha || 0); });
+                    const bd = noticias.find(function(n) { return n && n.titulo === '[BRACKET_DATA]'; });
                     if (bd && bd.descripcion) {
                         bracketNoticiaId = bd.id;
                         const parsed = JSON.parse(bd.descripcion);
@@ -832,7 +849,7 @@
             renderizarPanelesAdmin();
         }
 
-        async function guardarTodoEnVivo() {
+        window.guardarTodoEnVivo = async function() {
             datos.aviso = document.getElementById('inp-aviso').value.trim();
             datos.canalTwitch = document.getElementById('inp-stream-channel').value.trim() || 'valorant_la';
             datos.mvp = {
@@ -850,11 +867,11 @@
 
             try {
                 if (bracketNoticiaId) {
-                    await fetch(`${API_URL}/noticias?id=${bracketNoticiaId}`, { method: 'DELETE', headers }).catch(() => null);
+                    await fetch(API_URL + '/noticias?id=' + bracketNoticiaId, { method: 'DELETE', headers: headers }).catch(function() { return null; });
                 }
-                const res = await fetch(`${API_URL}/noticias`, {
+                const res = await fetch(API_URL + '/noticias', {
                     method: 'POST',
-                    headers,
+                    headers: headers,
                     body: JSON.stringify({
                         titulo: '[BRACKET_DATA]',
                         descripcion: JSON.stringify(datos),
@@ -869,55 +886,7 @@
             } catch (e) {
                 alert('Error de red al guardar, intenta de nuevo.');
             }
-        }
-
-        function pasarClasificadosAFase2() {
-            const clasAB = [...datos.fase1.A, ...datos.fase1.B].filter(s => s.estado === 'clasificado').map(s => s.nombre);
-            const clasCD = [...datos.fase1.C, ...datos.fase1.D].filter(s => s.estado === 'clasificado').map(s => s.nombre);
-
-            for (let i = 0; i < 6; i++) {
-                if (clasAB[i]) datos.fase2.E[i] = { nombre: clasAB[i], extra: '', estado: 'normal', checkin: false };
-                if (clasCD[i]) datos.fase2.F[i] = { nombre: clasCD[i], extra: '', estado: 'normal', checkin: false };
-            }
-            renderizarPanelesAdmin();
-            alert('✔ Clasificados enviados a los Grupos E y F de la Fase 2.');
-        }
-
-        function pasarClasificadosAFase3() {
-            const clasEF = [...datos.fase2.E, ...datos.fase2.F].filter(s => s.estado === 'clasificado');
-            for (let i = 0; i < 6; i++) {
-                if (clasEF[i]) {
-                    datos.fase3[i] = {
-                        pos: i + 1,
-                        nombre: clasEF[i].nombre,
-                        rd: clasEF[i].extra || '+0',
-                        eliminado: i >= 4
-                    };
-                }
-            }
-            renderizarPanelesAdmin();
-            alert('✔ Clasificados de Fase 2 copiados a Fase 3 • Clasificados.');
-        }
-
-        function ordenarFase3YPasarASemis() {
-            datos.fase3.sort((a, b) => {
-                const numA = parseFloat(String(a.rd || '0').replace(/[^0-9.-]/g, '')) || -999;
-                const numB = parseFloat(String(b.rd || '0').replace(/[^0-9.-]/g, '')) || -999;
-                return numB - numA;
-            });
-            datos.fase3.forEach((r, idx) => {
-                r.pos = idx + 1;
-                r.eliminado = idx >= 4;
-            });
-
-            if (datos.fase3[0]) datos.fase4.sf1.eq1 = datos.fase3[0].nombre;
-            if (datos.fase3[3]) datos.fase4.sf1.eq2 = datos.fase3[3].nombre;
-            if (datos.fase3[1]) datos.fase4.sf2.eq1 = datos.fase3[1].nombre;
-            if (datos.fase3[2]) datos.fase4.sf2.eq2 = datos.fase3[2].nombre;
-
-            renderizarPanelesAdmin();
-            alert('📊 Fase 3 • Clasificados ordenada por Diferencia de Rondas y Top 4 enviados a Semifinales.');
-        }
+        };
 
         cargarEstadoDesdeRender();
         cargarEquiposRegistrados();
