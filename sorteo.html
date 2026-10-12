@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Copa 5EverMad | Valorant Tournament 24 Equipos</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         tailwind.config = {
             theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', twitchPurple: '#9146ff', bgDark: '#05060a' } } }
@@ -26,10 +25,7 @@
             background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
         }
 
-        body.obs-transparent {
-            background: transparent !important;
-            background-image: none !important;
-        }
+        body.obs-transparent { background: transparent !important; background-image: none !important; }
 
         .vct-bg-watermark {
             position: fixed;
@@ -60,24 +56,12 @@
             box-shadow: 0 12px 35px rgba(0,0,0,0.75);
         }
         .phase-col::before {
-            content: '';
-            position: absolute;
-            top: -1px; left: -1px;
-            width: 14px; height: 14px;
-            border-top: 2px solid #e5c05c;
-            border-left: 2px solid #e5c05c;
-            border-top-left-radius: 9px;
-            pointer-events: none;
+            content: ''; position: absolute; top: -1px; left: -1px; width: 14px; height: 14px;
+            border-top: 2px solid #e5c05c; border-left: 2px solid #e5c05c; border-top-left-radius: 9px; pointer-events: none;
         }
         .phase-col::after {
-            content: '';
-            position: absolute;
-            bottom: -1px; right: -1px;
-            width: 14px; height: 14px;
-            border-bottom: 2px solid #ff2a3f;
-            border-right: 2px solid #ff2a3f;
-            border-bottom-right-radius: 9px;
-            pointer-events: none;
+            content: ''; position: absolute; bottom: -1px; right: -1px; width: 14px; height: 14px;
+            border-bottom: 2px solid #ff2a3f; border-right: 2px solid #ff2a3f; border-bottom-right-radius: 9px; pointer-events: none;
         }
 
         .phase-active {
@@ -103,153 +87,33 @@
             border-color: rgba(145, 70, 255, 0.45) !important;
             box-shadow: 0 0 14px rgba(145, 70, 255, 0.18);
         }
-        .match-twitch-card:hover {
-            border-color: #9146ff !important;
-            box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important;
-        }
-        .match-stream-active {
-            border-color: #ff2a3f !important;
-            box-shadow: 0 0 18px rgba(255, 42, 63, 0.35) !important;
-        }
-        .team-row + .team-row {
-            border-top: 1px solid rgba(255, 255, 255, 0.07);
-        }
-        .vs-pill-inline {
-            position: absolute;
-            right: 8px;
-            top: 26px;
-            transform: translateY(-50%);
-            background: #ff2a3f;
-            color: #fff;
-            font-size: 7.5px;
-            font-weight: 900;
-            padding: 1px 5px;
-            border-radius: 3px;
-            letter-spacing: 0.08em;
-            box-shadow: 0 0 8px rgba(255, 42, 63, 0.6);
-            pointer-events: none;
-            z-index: 5;
-        }
-        .twitch-pill-inline {
-            position: absolute;
-            right: 6px;
-            top: 26px;
-            transform: translateY(-50%);
-            background: #9146ff;
-            border: 1px solid #c4b5fd;
-            color: #fff;
-            font-size: 7px;
-            font-weight: 900;
-            padding: 1px 5px;
-            border-radius: 3px;
-            letter-spacing: 0.06em;
-            box-shadow: 0 0 10px rgba(145, 70, 255, 0.9);
-            pointer-events: none;
-            z-index: 5;
-        }
-        .live-pill-inline {
-            position: absolute;
-            right: 6px;
-            top: 26px;
-            transform: translateY(-50%);
-            background: #dc2626;
-            border: 1px solid #fca5a5;
-            color: #fff;
-            font-size: 7.5px;
-            font-weight: 900;
-            padding: 1px 5px;
-            border-radius: 3px;
-            letter-spacing: 0.08em;
-            box-shadow: 0 0 12px rgba(255, 42, 63, 0.95);
-            animation: pulse 1.4s infinite;
-            pointer-events: none;
-            z-index: 5;
-        }
+        .match-twitch-card:hover { border-color: #9146ff !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; }
+        .match-stream-active { border-color: #ff2a3f !important; box-shadow: 0 0 18px rgba(255, 42, 63, 0.35) !important; }
+        
+        .team-row + .team-row { border-top: 1px solid rgba(255, 255, 255, 0.07); }
+        
+        .vs-pill-inline { position: absolute; right: 8px; top: 26px; transform: translateY(-50%); background: #ff2a3f; color: #fff; font-size: 7.5px; font-weight: 900; padding: 1px 5px; border-radius: 3px; letter-spacing: 0.08em; box-shadow: 0 0 8px rgba(255, 42, 63, 0.6); pointer-events: none; z-index: 5; }
+        .twitch-pill-inline { position: absolute; right: 6px; top: 26px; transform: translateY(-50%); background: #9146ff; border: 1px solid #c4b5fd; color: #fff; font-size: 7px; font-weight: 900; padding: 1px 5px; border-radius: 3px; letter-spacing: 0.06em; box-shadow: 0 0 10px rgba(145, 70, 255, 0.9); pointer-events: none; z-index: 5; }
+        .live-pill-inline { position: absolute; right: 6px; top: 26px; transform: translateY(-50%); background: #dc2626; border: 1px solid #fca5a5; color: #fff; font-size: 7.5px; font-weight: 900; padding: 1px 5px; border-radius: 3px; letter-spacing: 0.08em; box-shadow: 0 0 12px rgba(255, 42, 63, 0.95); animation: pulse 1.4s infinite; pointer-events: none; z-index: 5; }
 
-        .dot-checkin-ok {
-            width: 6px;
-            height: 6px;
-            border-radius: 9999px;
-            background-color: #22c55e;
-            box-shadow: 0 0 8px #22c55e;
-            display: inline-block;
-            flex-shrink: 0;
-        }
-        .dot-checkin-wait {
-            width: 6px;
-            height: 6px;
-            border-radius: 9999px;
-            background-color: rgba(234, 179, 8, 0.45);
-            display: inline-block;
-            flex-shrink: 0;
-        }
+        .dot-checkin-ok { width: 6px; height: 6px; border-radius: 9999px; background-color: #22c55e; box-shadow: 0 0 8px #22c55e; display: inline-block; flex-shrink: 0; }
+        .dot-checkin-wait { width: 6px; height: 6px; border-radius: 9999px; background-color: rgba(234, 179, 8, 0.45); display: inline-block; flex-shrink: 0; }
 
-        .card-equipo {
-            position: relative;
-            overflow: hidden;
-            background: #0b0d14;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .card-equipo::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -120%;
-            width: 60%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.09), transparent);
-            transform: skewX(-25deg);
-            transition: left 0.55s ease;
-            pointer-events: none;
-            z-index: 2;
-        }
+        .card-equipo { position: relative; overflow: hidden; background: #0b0d14; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1); }
+        .card-equipo::before { content: ''; position: absolute; top: 0; left: -120%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.09), transparent); transform: skewX(-25deg); transition: left 0.55s ease; pointer-events: none; z-index: 2; }
         .card-equipo:hover::before { left: 140%; }
-        .card-equipo:hover {
-            border-color: #ff2a3f;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(255, 42, 63, 0.22);
-        }
-        .watermark-logo {
-            position: absolute;
-            right: -10px;
-            bottom: -10px;
-            width: 85px;
-            height: 85px;
-            object-fit: contain;
-            opacity: 0.07;
-            filter: grayscale(20%);
-            pointer-events: none;
-            transition: all 0.35s ease;
-            z-index: 0;
-        }
-        .card-equipo:hover .watermark-logo {
-            opacity: 0.18;
-            transform: scale(1.12) rotate(-5deg);
-            filter: grayscale(0%);
-        }
+        .card-equipo:hover { border-color: #ff2a3f; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255, 42, 63, 0.22); }
+        .watermark-logo { position: absolute; right: -10px; bottom: -10px; width: 85px; height: 85px; object-fit: contain; opacity: 0.07; filter: grayscale(20%); pointer-events: none; transition: all 0.35s ease; z-index: 0; }
+        .card-equipo:hover .watermark-logo { opacity: 0.18; transform: scale(1.12) rotate(-5deg); filter: grayscale(0%); }
 
-        @keyframes goldAura {
-            0%, 100% { box-shadow: 0 0 18px rgba(229, 192, 92, 0.22), inset 0 0 18px rgba(229, 192, 92, 0.1); }
-            50% { box-shadow: 0 0 36px rgba(229, 192, 92, 0.48), inset 0 0 30px rgba(229, 192, 92, 0.22); }
-        }
-        .champion-altar {
-            animation: goldAura 3s infinite ease-in-out;
-            background: radial-gradient(circle at 50% 25%, rgba(229, 192, 92, 0.26) 0%, rgba(11, 13, 20, 0.96) 75%);
-        }
-        .gold-metallic-text {
-            background: linear-gradient(to right, #fff6d6 0%, #e5c05c 45%, #b8860b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        @keyframes vsPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(255, 42, 63, 0.6); transform: scale(1); }
-            50% { box-shadow: 0 0 35px rgba(255, 42, 63, 0.95); transform: scale(1.07); }
-        }
+        @keyframes goldAura { 0%, 100% { box-shadow: 0 0 18px rgba(229, 192, 92, 0.22), inset 0 0 18px rgba(229, 192, 92, 0.1); } 50% { box-shadow: 0 0 36px rgba(229, 192, 92, 0.48), inset 0 0 30px rgba(229, 192, 92, 0.22); } }
+        .champion-altar { animation: goldAura 3s infinite ease-in-out; background: radial-gradient(circle at 50% 25%, rgba(229, 192, 92, 0.26) 0%, rgba(11, 13, 20, 0.96) 75%); }
+        .gold-metallic-text { background: linear-gradient(to right, #fff6d6 0%, #e5c05c 45%, #b8860b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        @keyframes vsPulse { 0%, 100% { box-shadow: 0 0 20px rgba(255, 42, 63, 0.6); transform: scale(1); } 50% { box-shadow: 0 0 35px rgba(255, 42, 63, 0.95); transform: scale(1.07); } }
         .vs-neon-badge { animation: vsPulse 2s infinite ease-in-out; }
 
         .slot-qualified { border-left: 3px solid #22c55e !important; background: rgba(34, 197, 94, 0.1) !important; }
         .slot-eliminated { border-left: 3px solid #ef4444 !important; opacity: 0.45; }
-
         .modo-poster .ocultar-en-poster { display: none !important; }
     </style>
 </head>
@@ -257,10 +121,8 @@
 
     <div class="vct-bg-watermark">COPA 5EVERMAD // VALORANT</div>
 
-    <!-- HEADER PRINCIPAL -->
     <header class="border-b border-white/10 bg-[#06070b]/95 backdrop-blur-md sticky top-0 z-30">
         <div class="max-w-[1640px] mx-auto px-4 md:px-6 py-3 flex flex-wrap justify-between items-center gap-3">
-            
             <div class="flex items-center gap-3.5">
                 <div class="w-10 h-10 bg-vctRed/15 border border-vctRed flex items-center justify-center font-black text-vctRed text-xl shadow-[0_0_15px_rgba(255,42,63,0.4)]">V</div>
                 <div>
@@ -279,7 +141,6 @@
                 </div>
             </div>
 
-            <!-- CONTADOR REGRESIVO -->
             <div class="flex items-center gap-3 bg-[#0c0e16] border border-white/15 px-3.5 py-1.5 rounded-lg shadow-inner">
                 <span id="reloj-label" class="text-[9px] text-gray-400 font-black uppercase tracking-widest">PRÓXIMA JORNADA:</span>
                 <div id="reloj-numeros" class="flex items-center gap-1 text-xs font-black text-everGold tracking-wider">
@@ -290,31 +151,18 @@
                 </div>
             </div>
 
-            <!-- BOTONES DE ACCIÓN -->
             <div class="flex flex-wrap items-center gap-2">
-                <button onclick="abrirModalPosiciones()" class="bg-[#12141d] hover:bg-white text-white hover:text-black border border-white/20 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card">
-                    📊 POSICIONES
-                </button>
-                <button id="btn-mvp-header" onclick="abrirModalMVP()" class="hidden bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card shadow-[0_0_15px_rgba(229,192,92,0.3)]">
-                    🌟 MVP JORNADA
-                </button>
-                <button onclick="abrirModalReglas()" class="bg-[#12141d] hover:bg-everGold text-everGold hover:text-black border border-everGold/60 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card">
-                    📜 REGLAS
-                </button>
-                <button onclick="toggleStream()" class="bg-[#12141d] hover:bg-vctRed text-white border border-vctRed/50 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card flex items-center gap-1.5">
+                <button onclick="abrirModalPosiciones()" class="bg-[#12141d] hover:bg-white text-white hover:text-black border border-white/20 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card">📊 POSICIONES</button>
+                <button id="btn-mvp-header" onclick="abrirModalMVP()" class="hidden bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card shadow-[0_0_15px_rgba(229,192,92,0.3)]">🌟 MVP JORNADA</button>
+                <button onclick="abrirModalReglas()" class="bg-[#12141d] hover:bg-everGold text-everGold hover:text-black border border-everGold/60 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card">📜 REGLAS</button>
+                <button onclick="toggleStream()" class="bg-[#12141d] hover:bg-vctRed text-white border border-vctRed/50 font-black text-[10px] uppercase tracking-[0.14em] px-3.5 py-2.5 transition-all clip-card flex items-center gap-1.5 shadow-[0_0_15px_rgba(255,42,63,0.35)]">
                     <span class="w-2 h-2 rounded-full bg-vctRed animate-ping"></span> STREAM
                 </button>
-                <button onclick="toggleModoOBS()" class="bg-[#12141d] hover:bg-purple-600 text-gray-300 hover:text-white border border-white/15 font-black text-[10px] uppercase tracking-[0.12em] px-3 py-2.5 transition-all clip-card" title="Modo transparente para OBS / Casters">
-                    🎥 OBS
-                </button>
-                <span id="btn-cupo-header" class="bg-everGold/15 border border-everGold text-everGold font-black text-[10px] uppercase tracking-[0.14em] px-3 py-2.5 clip-card cursor-default">
-                    🔒 24/24
-                </span>
+                <button onclick="toggleModoOBS()" class="bg-[#12141d] hover:bg-purple-600 text-gray-300 hover:text-white border border-white/15 font-black text-[10px] uppercase tracking-[0.12em] px-3 py-2.5 transition-all clip-card" title="Modo transparente para OBS / Casters">🎥 OBS</button>
+                <span id="btn-cupo-header" class="bg-everGold/15 border border-everGold text-everGold font-black text-[10px] uppercase tracking-[0.14em] px-3 py-2.5 clip-card cursor-default">🔒 24/24</span>
             </div>
-
         </div>
 
-        <!-- CRONÓMETRO OFICIAL DE TOLERANCIA 10 MINUTOS -->
         <div id="barra-tolerancia-oficial" class="hidden bg-gradient-to-r from-amber-600/95 via-red-600/95 to-amber-600/95 border-t border-white/25 py-2 px-4 text-center shadow-lg">
             <p class="text-xs font-black uppercase tracking-[0.2em] text-white flex items-center justify-center gap-2">
                 <span>🚨 RELOJ OFICIAL DE TOLERANCIA (ANTI NO-SHOW):</span>
@@ -322,7 +170,6 @@
             </p>
         </div>
 
-        <!-- BANNER DE AVISO EN VIVO DEL ADMIN -->
         <div id="banner-aviso-admin" class="hidden bg-gradient-to-r from-vctRed/90 via-red-700/90 to-vctRed/90 border-t border-white/20 py-1.5 px-4 text-center shadow-lg">
             <p class="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-white flex items-center justify-center gap-2">
                 <span class="animate-bounce">📢</span> <span id="texto-aviso-admin"></span>
@@ -332,7 +179,6 @@
 
     <main class="max-w-[1640px] mx-auto px-4 md:px-6 mt-5 relative z-10">
 
-        <!-- LEYENDA RÁPIDA DEL SEMÁFORO DE CHECK-IN -->
         <div class="mb-4 flex flex-wrap justify-between items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
             <div class="flex flex-wrap items-center gap-4 bg-[#0b0d14]/90 border border-white/10 px-3.5 py-1.5 rounded-md">
                 <span class="flex items-center gap-1.5 text-emerald-400"><span class="dot-checkin-ok"></span> Check-in OK</span>
@@ -342,7 +188,6 @@
             <span id="indicador-carga-equipos" class="text-everGold font-black">⚡ Haz clic en cualquier enfrentamiento para abrir el Cara a Cara y votar</span>
         </div>
 
-        <!-- PANEL DESPLEGABLE DE STREAM GENÉRICO -->
         <div id="panel-stream" class="hidden mb-6 bg-[#0b0d14] border border-vctRed/40 rounded-xl p-4 shadow-2xl">
             <div class="flex flex-wrap justify-between items-center gap-2 mb-3 pb-2 border-b border-white/10">
                 <span class="text-xs font-black uppercase tracking-widest text-white">🔴 Transmisión Oficial Copa 5EverMad • 8:00 PM CDMX</span>
@@ -357,118 +202,101 @@
             </div>
         </div>
 
-        <!-- TABLERO DE LAS 5 FASES -->
         <div class="board-scroll overflow-x-auto pb-4 pt-3">
             <div class="grid grid-cols-12 gap-3.5 min-w-[1320px] items-stretch">
 
-                <!-- ================= FASE 1 (4 Columnas) ================= -->
+                <!-- FASE 1 -->
                 <div class="col-span-4 phase-col p-3.5 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-2.5">
                             <span class="text-[9px] font-black uppercase tracking-[0.22em] text-everGold block">LUNES 28 DE SEPTIEMBRE</span>
                             <h2 class="text-base font-black uppercase text-white tracking-wider">FASE 1 • GRUPOS (24 EQUIPOS)</h2>
                         </div>
-
                         <div class="bg-gradient-to-r from-red-900/85 via-red-700/85 to-red-900/85 border border-red-500/40 rounded p-1.5 text-center mb-3">
                             <div class="flex justify-center items-center gap-2 text-[9px] font-black uppercase tracking-wider">
                                 <span>4 GRUPOS DE 6 • AVANZAN 3 POR GRUPO</span>
                                 <span class="bg-black/60 px-2 py-0.5 rounded text-red-200">BO3</span>
                             </div>
                         </div>
-
                         <div id="contenedor-fase1" class="grid grid-cols-2 gap-2.5"></div>
                     </div>
-
                     <div class="mt-3 bg-red-950/30 border border-red-500/30 rounded py-1.5 px-2 text-center">
                         <span class="text-[9px] font-black uppercase text-red-200 tracking-wider">12 AVANZAN • 12 ELIMINADOS</span>
                     </div>
                 </div>
 
-                <!-- ================= FASE 2 (2 Columnas) ================= -->
+                <!-- FASE 2 -->
                 <div class="col-span-2 phase-col p-3.5 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-2.5">
                             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-400 block">LUNES 5 DE OCTUBRE</span>
                             <h2 class="text-base font-black uppercase text-white tracking-wider">FASE 2 (12 EQ)</h2>
                         </div>
-
                         <div class="bg-gradient-to-r from-blue-900/85 via-blue-700/85 to-blue-900/85 border border-blue-400/40 rounded p-1.5 text-center mb-3">
                             <div class="flex justify-center items-center gap-1.5 text-[9px] font-black uppercase">
                                 <span>2 GRUPOS DE 6</span>
                                 <span class="bg-black/60 px-1.5 py-0.5 rounded text-blue-200">BO3</span>
                             </div>
                         </div>
-
                         <div id="contenedor-fase2" class="space-y-2.5"></div>
                     </div>
-
                     <div class="mt-3 bg-blue-950/30 border border-blue-500/30 rounded py-1.5 px-2 text-center">
                         <span class="text-[9px] font-black uppercase text-blue-200">AVANZAN 3 POR GRUPO (6)</span>
                     </div>
                 </div>
 
-                <!-- ================= FASE 3 • CLASIFICADOS (2 Columnas) ================= -->
+                <!-- FASE 3 -->
                 <div class="col-span-2 phase-col p-3.5 flex flex-col justify-between">
                     <div>
                         <div class="text-center mb-2.5">
                             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-purple-400 block">LUNES 12 DE OCTUBRE</span>
                             <h2 class="text-sm md:text-base font-black uppercase text-white tracking-wider">FASE 3 • CLASIFICADOS</h2>
                         </div>
-
                         <div class="bg-gradient-to-r from-indigo-900/85 via-purple-800/85 to-indigo-900/85 border border-purple-400/40 rounded p-1.5 text-center mb-3">
                             <span class="text-[9px] font-black uppercase text-white block">RANKING X DIF. DE RONDAS</span>
                         </div>
-
                         <div id="contenedor-fase3" class="space-y-2 my-2"></div>
                     </div>
-
                     <div class="mt-3 bg-red-950/30 border border-red-500/30 rounded py-1.5 px-2 text-center">
                         <span class="text-[9px] font-black uppercase text-red-200">2 ELIMINADOS X RONDAS</span>
                     </div>
                 </div>
 
-                <!-- ================= SEMIFINALES (2 Columnas) ================= -->
+                <!-- SEMIFINALES -->
                 <div class="col-span-2 phase-col phase-active p-3.5 flex flex-col justify-between">
                     <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-everGold via-amber-400 to-everGold text-black text-[9px] font-black uppercase tracking-[0.18em] px-3 py-0.5 rounded-full shadow-[0_0_15px_rgba(229,192,92,0.85)] border border-white/30 flex items-center gap-1.5 whitespace-nowrap">
                         <span class="w-1.5 h-1.5 rounded-full bg-black animate-ping"></span> 🔥 SEMIFINALES EN VIVO
                     </div>
-
                     <div class="mt-1">
                         <div class="text-center mb-2.5">
                             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-everGold block">LUNES 12 DE OCTUBRE</span>
                             <h2 class="text-base font-black uppercase text-white tracking-wider">SEMIFINALES</h2>
                         </div>
-
                         <div class="bg-gradient-to-r from-amber-700/85 via-yellow-600/85 to-amber-700/85 border border-everGold/50 rounded p-1.5 text-center mb-4">
                             <div class="flex justify-center items-center gap-1.5 text-[9px] font-black uppercase">
                                 <span>2 GRUPOS DE 2</span>
                                 <span class="bg-black/60 px-1.5 py-0.5 rounded text-everGold">BO5</span>
                             </div>
                         </div>
-
                         <div id="contenedor-fase4" class="space-y-4"></div>
                     </div>
-
                     <div class="mt-3 bg-amber-950/30 border border-everGold/30 rounded py-1.5 px-2 text-center">
                         <span class="text-[9px] font-black uppercase text-everGold">PASA 1 POR GRUPO</span>
                     </div>
                 </div>
 
-                <!-- ================= GRAN FINAL (2 Columnas) ================= -->
+                <!-- GRAN FINAL -->
                 <div class="col-span-2 phase-col p-3.5 flex flex-col justify-between border-vctRed/50">
                     <div>
                         <div class="text-center mb-2.5">
                             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-everGold block">LUNES 19 DE OCTUBRE</span>
                             <h2 class="text-base font-black uppercase text-vctRed tracking-wider">GRAN FINAL</h2>
                         </div>
-
                         <div class="bg-gradient-to-r from-red-800 via-vctRed to-red-800 border border-red-400/40 rounded py-1.5 text-center font-black text-[10px] uppercase mb-4 shadow-[0_0_15px_rgba(255,42,63,0.3)]">
                             BO5 • DUELO FINAL
                         </div>
-
                         <div id="contenedor-fase5-final"></div>
                     </div>
-
                     <div id="contenedor-fase5-campeon" class="champion-altar border border-everGold/60 rounded-xl p-4 text-center mt-4">
                         <div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>
                         <span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span>
@@ -479,7 +307,6 @@
             </div>
         </div>
 
-        <!-- BARRA INFERIOR DE PROGRESIÓN -->
         <div class="mt-3 mb-12 bg-[#0a0c12]/90 border border-white/10 rounded-lg py-3.5 px-6 flex flex-wrap justify-center items-center gap-4 md:gap-8 text-center shadow-lg">
             <div><span class="text-lg font-black text-white block">24</span><span class="text-[8px] text-gray-400 font-bold uppercase">28 Sep • Iniciales</span></div>
             <span class="text-vctRed font-black">&gt;</span>
@@ -494,7 +321,6 @@
             <div><span class="text-lg font-black gold-metallic-text block">1</span><span class="text-[8px] text-everGold font-bold uppercase">Campeón</span></div>
         </div>
 
-        <!-- GALERÍA DE ESCUADRAS -->
         <div class="border-t border-white/10 pt-10">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
                 <div>
@@ -503,7 +329,6 @@
                         Inscritos en el sistema: <span id="cupo-contador" class="text-everGold">24 / 24 EQUIPOS</span>
                     </p>
                 </div>
-
                 <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
                     <button onclick="filtrarPorBotonGrupo('')" class="btn-filtro-grupo bg-vctRed text-white text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all">TODOS</button>
                     <button onclick="filtrarPorBotonGrupo('GRUPO A')" class="btn-filtro-grupo bg-[#0b0d13] hover:bg-white/10 border border-white/10 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all">GRUPO A</button>
@@ -513,7 +338,6 @@
                     <input type="text" id="buscador-equipos" oninput="filtrarTarjetasEquipos(this.value)" placeholder="🔍 Buscar equipo o Riot ID..." class="bg-[#0b0d13] border border-white/15 focus:border-vctRed px-3.5 py-2 text-xs font-bold text-white w-full sm:w-60 outline-none rounded ml-auto">
                 </div>
             </div>
-
             <div id="grid-equipos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
                 <p class="text-xs text-gray-400 uppercase tracking-widest py-8 text-center col-span-full">Cargando escuadras inscritas desde Render...</p>
             </div>
@@ -521,7 +345,6 @@
 
     </main>
 
-    <!-- MODAL CARA A CARA (VS) CON STREAM DE TWITCH INTEGRADO -->
     <div id="modal-vs" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div id="modal-vs-box" style="background: linear-gradient(125deg, rgba(255,42,63,0.14) 0%, #08090f 45%, #08090f 55%, rgba(229,192,92,0.14) 100%);" class="border border-white/25 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[94vh] overflow-y-auto relative shadow-[0_0_60px_rgba(0,0,0,0.95)]">
             <button onclick="cerrarModalVS()" class="ocultar-en-poster absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
@@ -529,7 +352,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE TABLA DE POSICIONES Y RONDAS -->
     <div id="modal-posiciones" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-[#08090f] border border-white/25 w-full max-w-5xl p-6 md:p-8 clip-card max-h-[92vh] overflow-y-auto relative shadow-2xl">
             <button onclick="document.getElementById('modal-posiciones').classList.add('hidden')" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
@@ -541,7 +363,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE MVP DE LA JORNADA -->
     <div id="modal-mvp" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="champion-altar border-2 border-everGold w-full max-w-xl p-8 clip-card relative text-center shadow-2xl">
             <button onclick="document.getElementById('modal-mvp').classList.add('hidden')" class="absolute top-4 right-5 text-gray-300 hover:text-vctRed text-xl font-black z-20">✕</button>
@@ -549,139 +370,36 @@
         </div>
     </div>
 
-    <!-- MODAL OFICIAL DE COMUNICADOS, FECHAS, MAP POOL Y REGLAS -->
     <div id="modal-reglas" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div style="background: linear-gradient(135deg, rgba(255,42,63,0.12) 0%, #07080d 50%, rgba(229,192,92,0.12) 100%);" class="border border-white/25 w-full max-w-4xl p-6 md:p-8 clip-card max-h-[92vh] overflow-y-auto relative shadow-[0_0_60px_rgba(0,0,0,0.95)]">
             <button onclick="cerrarModalReglas()" class="absolute top-4 right-5 text-gray-400 hover:text-vctRed text-xl font-black z-20">✕</button>
             <div class="mb-5 pb-4 border-b border-white/15">
-                <span class="text-[10px] text-vctRed font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD • FORMATO OFICIAL 24 EQUIPOS</span>
-                <h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider mt-1">📜 COMUNICADOS OFICIALES, MAP POOL Y PROTOCOLO</h3>
+                <span class="text-[10px] text-vctRed font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD • FORMATO OFICIAL</span>
+                <h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider mt-1">📜 REGLAMENTO Y MAP POOL</h3>
             </div>
-
-            <div class="flex flex-wrap gap-2 mb-6 border-b border-white/10 pb-3">
-                <button onclick="cambiarTabReglas('tab-fechas')" id="btn-tab-fechas" class="bg-vctRed text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded transition-all">
-                    1. FECHAS, FASES Y MAP POOL
-                </button>
-                <button onclick="cambiarTabReglas('tab-canales')" id="btn-tab-canales" class="bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded transition-all">
-                    2. ORGANIZACIÓN DE CANALES Y LLAMADAS
-                </button>
-            </div>
-
-            <div id="tab-fechas" class="space-y-5">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div class="bg-[#0b0d15] border border-red-500/40 border-t-2 border-t-vctRed p-3.5 rounded">
-                        <span class="text-[9px] text-vctRed font-black uppercase block">LUNES 28 DE SEPTIEMBRE</span>
-                        <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 1</h5>
-                        <ul class="text-[11px] text-gray-300 space-y-1">
-                            <li>• 4 grupos de 6 equipos.</li>
-                            <li>• Partidas <b class="text-white">BO3</b>.</li>
-                            <li>• Avanzan los <b class="text-emerald-400">3 mejores</b> por grupo (12 equipos).</li>
-                        </ul>
-                    </div>
-                    <div class="bg-[#0b0d15] border border-blue-500/40 border-t-2 border-t-blue-400 p-3.5 rounded">
-                        <span class="text-[9px] text-blue-400 font-black uppercase block">LUNES 5 DE OCTUBRE</span>
-                        <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 2</h5>
-                        <ul class="text-[11px] text-gray-300 space-y-1">
-                            <li>• 2 grupos de 6 equipos.</li>
-                            <li>• Partidas <b class="text-white">BO3</b>.</li>
-                            <li>• Avanzan los <b class="text-emerald-400">3 mejores</b> por grupo (6 equipos).</li>
-                        </ul>
-                    </div>
-                    <div class="bg-[#0b0d15] border border-purple-500/40 border-t-2 border-t-purple-400 p-3.5 rounded">
-                        <span class="text-[9px] text-purple-400 font-black uppercase block">LUNES 12 DE OCTUBRE</span>
-                        <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">FASE 3 • CLASIFICADOS</h5>
-                        <ul class="text-[11px] text-gray-300 space-y-1">
-                            <li>• <b class="text-red-400">2 eliminados</b> por diferencia de rondas.</li>
-                            <li>• Los 4 restantes en <b class="text-white">2 grupos de 2</b>.</li>
-                            <li>• Partidas <b class="text-everGold">BO5</b> (Avanza 1 por grupo).</li>
-                        </ul>
-                    </div>
-                    <div class="bg-[#0b0d15] border border-everGold/50 border-t-2 border-t-everGold p-3.5 rounded">
-                        <span class="text-[9px] text-everGold font-black uppercase block">LUNES 19 DE OCTUBRE</span>
-                        <h5 class="text-xs font-black uppercase text-white mt-0.5 mb-2">🏆 GRAN FINAL</h5>
-                        <ul class="text-[11px] text-gray-300 space-y-1">
-                            <li>• Los 2 ganadores de los BO5 se enfrentan entre sí.</li>
-                            <li>• Última jornada de la <b class="text-everGold">Copa 5EverMad</b>.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="bg-[#0b0d15] border border-white/10 p-4 rounded-lg">
-                    <h4 class="text-xs font-black uppercase tracking-widest text-white mb-3">🗺️ MAP POOL OFICIAL (7 MAPAS DISPONIBLES)</h4>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-center">
-                        <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Abyss</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Ascent</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Haven</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Sunset</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Split</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Summit</div>
-                        <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Lotus</div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-[#0b0d15] border border-white/10 border-l-4 border-l-everGold p-4 rounded">
-                        <span class="text-[10px] text-everGold font-black uppercase block mb-2">⏰ HORARIO Y TOLERANCIA</span>
-                        <div class="grid grid-cols-3 gap-2 text-center bg-black/50 p-2.5 rounded border border-white/5">
-                            <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Hora Inicio</span><span class="text-xs font-black text-white">8:00 PM</span></div>
-                            <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Tolerancia</span><span class="text-xs font-black text-everGold">10 MIN</span></div>
-                            <div><span class="text-[9px] text-gray-400 uppercase font-bold block">Hora Límite</span><span class="text-xs font-black text-vctRed">8:10 PM</span></div>
-                        </div>
-                    </div>
-                    <div class="bg-red-950/20 border border-vctRed/40 border-l-4 border-l-vctRed p-4 rounded">
-                        <span class="text-[10px] text-vctRed font-black uppercase block mb-1">⚠️ SANCIÓN POR NO-SHOW</span>
-                        <p class="text-[11px] text-gray-200 leading-relaxed">
-                            Si a las <b class="text-white">8:10 PM</b> un equipo no se encuentra completo, el equipo contrario podrá solicitar que se declare <b class="text-vctRed">No-Show</b> (Forfeit del mapa al equipo incompleto).
-                        </p>
-                    </div>
+            <div class="text-[11px] text-gray-300 space-y-4">
+                <p>Las partidas son formato BO3 (BO5 Semis y Final). Tolerancia de 10 min. Check-in 7:45 PM.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-center mt-4">
+                    <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Abyss</div>
+                    <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Ascent</div>
+                    <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Haven</div>
+                    <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Sunset</div>
+                    <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Split</div>
+                    <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Summit</div>
+                    <div class="bg-black/70 border border-everGold/40 py-2 px-2 rounded font-black text-xs text-white uppercase">Lotus</div>
                 </div>
             </div>
-
-            <div id="tab-canales" class="hidden space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-[#0b0d15] border border-white/10 border-t-2 border-t-vctRed p-4 rounded">
-                        <span class="text-[9px] text-vctRed font-black uppercase block mb-1">01 // CREACIÓN DEL CANAL</span>
-                        <h4 class="text-xs font-black uppercase text-white mb-2">Manager o Capitán</h4>
-                        <p class="text-[11px] text-gray-300">Cada organización designará a su <b class="text-white">Manager o Capitán</b> para crear y nombrar un único canal oficial para su equipo.</p>
-                    </div>
-                    <div class="bg-[#0b0d15] border border-white/10 border-t-2 border-t-emerald-400 p-4 rounded">
-                        <span class="text-[9px] text-emerald-400 font-black uppercase block mb-1">02 // INTEGRANTES EN LLAMADA</span>
-                        <h4 class="text-xs font-black uppercase text-white mb-2">Acceso Exclusivo</h4>
-                        <ul class="text-[11px] text-white font-bold space-y-1">
-                            <li>• 5 Jugadores Titulares</li>
-                            <li>• Coach</li>
-                            <li>• Head Coach (si cuentan con uno)</li>
-                        </ul>
-                    </div>
-                    <div class="bg-[#0b0d15] border border-white/10 border-t-2 border-t-everGold p-4 rounded">
-                        <span class="text-[9px] text-everGold font-black uppercase block mb-1">03 // CITA PREVIA</span>
-                        <h4 class="text-xs font-black uppercase text-white mb-2">Desde las 7:45 PM</h4>
-                        <p class="text-[11px] text-gray-300">El Manager o Capitán deberá estar disponible desde las <b class="text-everGold">7:45 PM</b> (15 min antes) para crear y organizar el canal con tiempo.</p>
-                    </div>
-                </div>
-                <div class="bg-amber-950/25 border border-everGold/40 p-4 rounded-lg text-[11px] text-gray-200">
-                    <b class="text-everGold">IMPORTANTE:</b> Una vez que los 5 jugadores y el staff se encuentren dentro de su canal, deberán permanecer ahí hasta que el encuentro haya finalizado.
-                </div>
-            </div>
-
-            <div class="mt-6 pt-4 border-t border-white/10 flex flex-wrap justify-between items-center gap-3">
-                <span class="text-[10px] text-everGold font-black uppercase tracking-[0.2em]">
-                    🔥 Cuatro jornadas. Una Copa. Un solo campeón. Que comience la batalla.
-                </span>
-                <button onclick="cerrarModalReglas()" class="bg-vctRed hover:bg-white text-white hover:text-black text-[10px] font-black uppercase tracking-widest px-6 py-2.5 clip-card transition-all">
-                    ENTENDIDO
-                </button>
+            <div class="mt-6 pt-4 border-t border-white/10 text-right">
+                <button onclick="cerrarModalReglas()" class="bg-vctRed hover:bg-white text-white hover:text-black text-[10px] font-black uppercase tracking-widest px-6 py-2.5 clip-card transition-all">ENTENDIDO</button>
             </div>
         </div>
     </div>
 
-    <!-- ALERTA FLOTANTE DE TRANSMISIÓN EN VIVO -->
     <div id="alerta-broadcast" class="fixed bottom-6 left-[-500px] z-50 bg-gradient-to-r from-[#0b0d14] to-[#160b11] border-l-4 border-vctRed border border-white/20 px-5 py-3.5 rounded shadow-2xl transition-all duration-500">
         <span class="text-[9px] text-vctRed font-black uppercase tracking-[0.25em] block">⚡ ACTUALIZACIÓN EN VIVO</span>
         <p id="alerta-broadcast-txt" class="text-xs font-black uppercase text-white mt-0.5"></p>
     </div>
 
-    <!-- TOAST DE COPIADO / AVISOS -->
     <div id="toast-copy" class="fixed bottom-6 right-[-450px] z-50 bg-[#0b0d14] border-l-4 border-everGold px-5 py-3.5 shadow-2xl transition-all duration-300">
         <p id="toast-copy-text" class="text-xs font-black uppercase tracking-widest text-white">✔ Copiado</p>
     </div>
@@ -696,9 +414,7 @@
                 if (!raw) return fallback;
                 const parsed = JSON.parse(raw);
                 return parsed && typeof parsed === 'object' ? parsed : fallback;
-            } catch (e) {
-                return fallback;
-            }
+            } catch (e) { return fallback; }
         }
 
         let equiposCargados = leerJSONSeguro(sessionStorage, '5ever_equipos_cache', []);
@@ -745,39 +461,19 @@
         let dueloActualDatos = { nom1: '', nom2: '', fase: '', s1: '', s2: '', c1: false, c2: false };
         let votandoEnCurso = false;
 
-        try {
-            if (new URLSearchParams(window.location.search).get('obs') === '1') {
-                document.body.classList.add('obs-transparent');
-            }
-        } catch (e) {}
+        try { if (new URLSearchParams(window.location.search).get('obs') === '1') document.body.classList.add('obs-transparent'); } catch (e) {}
 
-        window.toggleModoOBS = function() {
-            document.body.classList.toggle('obs-transparent');
-            mostrarToast('🎥 Modo OBS / Caster alternado');
-        };
+        window.toggleModoOBS = function() { document.body.classList.toggle('obs-transparent'); mostrarToast('🎥 Modo OBS alternado'); };
 
-        function limpiarNombre(txt) {
-            return String(txt || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
-        }
-
-        function textoSeguro(txt) {
-            return String(txt || '').replace(/['"\\]/g, '');
-        }
-
-        function claveDuelo(n1, n2) {
-            const a = limpiarNombre(n1);
-            const b = limpiarNombre(n2);
-            return [a, b].sort().join('_vs_');
-        }
+        function limpiarNombre(txt) { return String(txt || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, ''); }
+        function textoSeguro(txt) { return String(txt || '').replace(/['"\\]/g, ''); }
+        function claveDuelo(n1, n2) { const a = limpiarNombre(n1); const b = limpiarNombre(n2); return [a, b].sort().join('_vs_'); }
 
         function esSlotPlaceholder(nombre) {
             const n = limpiarNombre(nombre);
             return !n || /^[a-f][1-6]$/.test(n) || n.startsWith('equipo') || n.startsWith('ganador') || n.startsWith('clasificado') || n.startsWith('puesto') || n === 'campeon';
         }
 
-        // =============================================================
-        // BUSCADOR EXACTO: SEPARA RYUJINN DE RYUJINN LOTUS
-        // =============================================================
         function encontrarEquipo(nombre) {
             if (esSlotPlaceholder(nombre)) return null;
             const buscado = limpiarNombre(nombre);
@@ -800,10 +496,7 @@
             match = candidatos.find(function(e) { return limpiarNombre(e.nombre).replace(/n+/g, 'n') === bSimple; });
             if (match) return match;
 
-            return candidatos.find(function(e) {
-                const actual = limpiarNombre(e.nombre);
-                return actual.includes(buscado) || buscado.includes(actual);
-            }) || null;
+            return candidatos.find(function(e) { const actual = limpiarNombre(e.nombre); return actual.includes(buscado) || buscado.includes(actual); }) || null;
         }
 
         function buscarInfoSlotDuelo(n1, n2) {
@@ -823,8 +516,8 @@
                 ['E','F'].forEach(function(g) { revisarGrupo(estadoTorneoActual.fase2 && estadoTorneoActual.fase2[g]); });
                 [estadoTorneoActual.fase4 && estadoTorneoActual.fase4.sf1, estadoTorneoActual.fase4 && estadoTorneoActual.fase4.sf2, estadoTorneoActual.final].forEach(function(m) {
                     if (!m) return;
-                    if (limpiarNombre(m.eq1).replace(/n+/g, 'n') === a && m.score1) s1 = m.score1;
-                    if (limpiarNombre(m.eq2).replace(/n+/g, 'n') === b && m.score2) s2 = m.score2;
+                    if (limpiarNombre(m.eq1 || '').replace(/n+/g, 'n') === a && m.score1) s1 = m.score1;
+                    if (limpiarNombre(m.eq2 || '').replace(/n+/g, 'n') === b && m.score2) s2 = m.score2;
                 });
             } catch (e) {}
             return { s1: s1, s2: s2, c1: c1, c2: c2 };
@@ -851,23 +544,9 @@
             setTimeout(function() { b.style.left = '-500px'; }, 4500);
         }
 
-        window.copiarDato = function(texto) {
-            if (!texto) return;
-            navigator.clipboard.writeText(texto);
-            mostrarToast('✔ Copiado: ' + texto);
-        };
-
-        window.cerrarModalVS = function() {
-            const iframeModal = document.getElementById('iframe-stream-modal');
-            if (iframeModal) iframeModal.src = '';
-            document.getElementById('modal-vs').classList.add('hidden');
-        };
-
-        window.togglePlayerEnModal = function() {
-            const wrap = document.getElementById('wrap-player-modal');
-            if (wrap) wrap.classList.toggle('hidden');
-        };
-
+        window.copiarDato = function(texto) { if (!texto) return; navigator.clipboard.writeText(texto); mostrarToast('✔ Copiado: ' + texto); };
+        window.cerrarModalVS = function() { const ifr = document.getElementById('iframe-stream-modal'); if (ifr) ifr.src = ''; document.getElementById('modal-vs').classList.add('hidden'); };
+        window.togglePlayerEnModal = function() { const wrap = document.getElementById('wrap-player-modal'); if (wrap) wrap.classList.toggle('hidden'); };
         window.abrirModalReglas = function() { document.getElementById('modal-reglas').classList.remove('hidden'); };
         window.cerrarModalReglas = function() { document.getElementById('modal-reglas').classList.add('hidden'); };
 
@@ -875,54 +554,20 @@
             document.getElementById('tab-fechas').classList.add('hidden');
             document.getElementById('tab-canales').classList.add('hidden');
             document.getElementById(tabId).classList.remove('hidden');
-
-            const b1 = document.getElementById('btn-tab-fechas');
-            const b2 = document.getElementById('btn-tab-canales');
-            if (tabId === 'tab-fechas') {
-                b1.className = 'bg-vctRed text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded transition-all';
-                b2.className = 'bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded transition-all';
-            } else {
-                b2.className = 'bg-vctRed text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded transition-all';
-                b1.className = 'bg-white/5 hover:bg-white/10 text-gray-300 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded transition-all';
-            }
         };
 
         window.abrirModalPosiciones = function() {
             const cont = document.getElementById('contenido-tabla-posiciones');
             const renderTablaGrupo = function(letra, slots, colorTit) {
                 const filas = (slots || []).map(function(s, idx) {
-                    const badge = s.estado === 'clasificado'
-                        ? '<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[8px] font-black px-2 py-0.5 rounded uppercase">✔ Avanza</span>'
-                        : (s.estado === 'eliminado' ? '<span class="bg-red-500/20 text-red-400 border border-red-500/40 text-[8px] font-black px-2 py-0.5 rounded uppercase">✕ Elim</span>' : '<span class="text-[8px] text-gray-500 font-bold uppercase">En juego</span>');
                     const nSeg = textoSeguro(s.nombre);
                     const eq = encontrarEquipo(s.nombre);
                     const logo = (eq && eq.logo_url) ? eq.logo_url : urlAvatar(nSeg);
-                    return '<div class="flex items-center justify-between py-1.5 px-2.5 border-b border-white/5 text-xs">' +
-                            '<div class="flex items-center gap-2 truncate">' +
-                                '<span class="text-[10px] font-black text-gray-500 w-4">' + (idx + 1) + '.</span>' +
-                                '<span class="' + (s.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait') + '"></span>' +
-                                '<img src="' + logo + '" class="w-5 h-5 rounded object-contain bg-black shrink-0">' +
-                                '<span class="font-bold text-white truncate">' + s.nombre + '</span>' +
-                            '</div>' +
-                            '<div class="flex items-center gap-2 shrink-0">' +
-                                '<span class="text-[10px] font-black text-everGold">' + (s.extra || '-') + '</span>' +
-                                badge +
-                            '</div>' +
-                        '</div>';
+                    return '<div class="flex items-center justify-between py-1.5 px-2.5 border-b border-white/5 text-xs"><div class="flex items-center gap-2 truncate"><span class="text-[10px] font-black text-gray-500 w-4">' + (idx + 1) + '.</span><span class="' + (s.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait') + '"></span><img src="' + logo + '" class="w-5 h-5 rounded object-contain bg-black shrink-0"><span class="font-bold text-white truncate">' + s.nombre + '</span></div><div class="flex items-center gap-2 shrink-0"><span class="text-[10px] font-black text-everGold">' + (s.extra || '-') + '</span></div></div>';
                 }).join('');
-                return '<div class="bg-[#0c0e16] border border-white/10 rounded-lg overflow-hidden">' +
-                        '<div class="' + colorTit + ' py-1.5 px-3 font-black text-[10px] uppercase text-white flex justify-between">' +
-                            '<span>GRUPO ' + letra + '</span><span>PTS / ESTADO</span>' +
-                        '</div>' +
-                        '<div class="p-2">' + filas + '</div>' +
-                    '</div>';
+                return '<div class="bg-[#0c0e16] border border-white/10 rounded-lg overflow-hidden"><div class="' + colorTit + ' py-1.5 px-3 font-black text-[10px] uppercase text-white flex justify-between"><span>GRUPO ' + letra + '</span><span>PTS / ESTADO</span></div><div class="p-2">' + filas + '</div></div>';
             };
-
-            const f1Html = ['A','B','C','D'].map(function(g) { return renderTablaGrupo(g, estadoTorneoActual.fase1 && estadoTorneoActual.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600'); }).join('');
-            const f2Html = ['E','F'].map(function(g) { return renderTablaGrupo(g, estadoTorneoActual.fase2 && estadoTorneoActual.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600'); }).join('');
-
-            cont.innerHTML = '<div><h4 class="text-xs font-black uppercase text-vctRed tracking-widest mb-3">FASE 1 • GRUPOS INICIALES (24 EQUIPOS)</h4><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">' + f1Html + '</div></div>' +
-                             '<div><h4 class="text-xs font-black uppercase text-blue-400 tracking-widest mb-3">FASE 2 • SEGUNDA RONDA DE GRUPOS (12 EQUIPOS)</h4><div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' + f2Html + '</div></div>';
+            cont.innerHTML = '<div><h4 class="text-xs font-black uppercase text-vctRed tracking-widest mb-3">FASE 1 • GRUPOS INICIALES (24 EQUIPOS)</h4><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">' + ['A','B','C','D'].map(function(g) { return renderTablaGrupo(g, estadoTorneoActual.fase1 && estadoTorneoActual.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600'); }).join('') + '</div></div>';
             document.getElementById('modal-posiciones').classList.remove('hidden');
         };
 
@@ -930,53 +575,21 @@
             const m = estadoTorneoActual.mvp || {};
             const eq = encontrarEquipo(m.equipo);
             const logo = (eq && eq.logo_url) ? eq.logo_url : urlAvatar(m.equipo || 'MVP');
-            document.getElementById('contenido-modal-mvp').innerHTML =
-                '<div class="text-5xl mb-2">🌟</div>' +
-                '<span class="text-[10px] text-everGold font-black uppercase tracking-[0.35em] block">JUGADOR MÁS VALIOSO DE LA JORNADA</span>' +
-                '<h3 class="text-2xl md:text-3xl font-black uppercase gold-metallic-text mt-1 mb-4">' + (m.riot_id || 'MVP 5EVER') + '</h3>' +
-                '<div class="bg-black/60 border border-everGold/40 rounded-xl p-4 flex items-center justify-center gap-4 mb-4">' +
-                    '<img src="' + logo + '" class="w-14 h-14 rounded object-contain bg-black p-1 border border-everGold/50">' +
-                    '<div class="text-left">' +
-                        '<span class="text-[9px] text-gray-400 font-bold uppercase block">Escuadra Oficial</span>' +
-                        '<h4 class="text-base font-black text-white uppercase">' + (m.equipo || 'Copa 5EverMad') + '</h4>' +
-                        '<span class="text-xs font-black text-everGold block mt-0.5">KDA / ACS: ' + (m.kda || 'Destacado') + ' • Agente: ' + (m.agente || 'Valorant') + '</span>' +
-                    '</div>' +
-                '</div>' +
-                '<p class="text-[10px] text-gray-300 uppercase tracking-widest font-bold">Reconocimiento Oficial • Copa 5EverMad</p>';
+            document.getElementById('contenido-modal-mvp').innerHTML = '<div class="text-5xl mb-2">🌟</div><span class="text-[10px] text-everGold font-black uppercase tracking-[0.35em] block">JUGADOR MÁS VALIOSO DE LA JORNADA</span><h3 class="text-2xl md:text-3xl font-black uppercase gold-metallic-text mt-1 mb-4">' + (m.riot_id || 'MVP 5EVER') + '</h3><div class="bg-black/60 border border-everGold/40 rounded-xl p-4 flex items-center justify-center gap-4 mb-4"><img src="' + logo + '" class="w-14 h-14 rounded object-contain bg-black p-1 border border-everGold/50"><div class="text-left"><span class="text-[9px] text-gray-400 font-bold uppercase block">Escuadra Oficial</span><h4 class="text-base font-black text-white uppercase">' + (m.equipo || 'Copa 5EverMad') + '</h4><span class="text-xs font-black text-everGold block mt-0.5">KDA / ACS: ' + (m.kda || 'Destacado') + ' • Agente: ' + (m.agente || 'Valorant') + '</span></div></div><p class="text-[10px] text-gray-300 uppercase tracking-widest font-bold">Reconocimiento Oficial • Copa 5EverMad</p>';
             document.getElementById('modal-mvp').classList.remove('hidden');
         };
 
         function obtenerPrediccionDuelo(key) {
-            if (!prediccionesMap[key]) {
-                prediccionesMap[key] = { votos1: 1, votos2: 1, reac: { hype: 0, clutch: 0, stomp: 0, partidazo: 0 } };
-            }
-            if (!prediccionesMap[key].reac) {
-                prediccionesMap[key].reac = { hype: 0, clutch: 0, stomp: 0, partidazo: 0 };
-            }
+            if (!prediccionesMap[key]) prediccionesMap[key] = { votos1: 1, votos2: 1, reac: { hype: 0, clutch: 0, stomp: 0, partidazo: 0 } };
+            if (!prediccionesMap[key].reac) prediccionesMap[key].reac = { hype: 0, clutch: 0, stomp: 0, partidazo: 0 };
             return prediccionesMap[key];
         }
 
         async function sincronizarPrediccionesConServidor() {
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer pase-vip-temporal-5ever'
-            };
-            if (prediccionesNoticiaId) {
-                await fetch(API_URL + '/noticias?id=' + prediccionesNoticiaId, { method: 'DELETE', headers: headers }).catch(function() { return null; });
-            }
-            const resPost = await fetch(API_URL + '/noticias', {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify({
-                    titulo: '[PREDICCIONES_DATA]',
-                    descripcion: JSON.stringify(prediccionesMap),
-                    imagen_url: 'HIDDEN'
-                })
-            });
-            if (resPost.ok) {
-                const creada = await resPost.json();
-                if (creada && creada.id) prediccionesNoticiaId = creada.id;
-            }
+            const headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer pase-vip-temporal-5ever' };
+            if (prediccionesNoticiaId) await fetch(API_URL + '/noticias?id=' + prediccionesNoticiaId, { method: 'DELETE', headers: headers }).catch(function() { return null; });
+            const resPost = await fetch(API_URL + '/noticias', { method: 'POST', headers: headers, body: JSON.stringify({ titulo: '[PREDICCIONES_DATA]', descripcion: JSON.stringify(prediccionesMap), imagen_url: 'HIDDEN' }) });
+            if (resPost.ok) { const creada = await resPost.json(); if (creada && creada.id) prediccionesNoticiaId = creada.id; }
         }
 
         window.votarEquipoVS = async function(lado) {
@@ -985,33 +598,18 @@
             try {
                 const p = obtenerPrediccionDuelo(dueloActualKey);
                 const votoPrevio = misVotosLocal[dueloActualKey];
-
-                if (votoPrevio === lado) {
-                    mostrarToast('⚡ Ya habías registrado tu apoyo por este equipo');
-                    votandoEnCurso = false;
-                    return;
-                }
-
+                if (votoPrevio === lado) { mostrarToast('⚡ Ya habías registrado tu apoyo por este equipo'); votandoEnCurso = false; return; }
                 if (votoPrevio === 1 && p.votos1 > 1) p.votos1--;
                 if (votoPrevio === 2 && p.votos2 > 1) p.votos2--;
-
-                if (lado === 1) {
-                    p.votos1 = (p.votos1 || 1) + 1;
-                    mostrarToast('🔥 Voto en vivo registrado para ' + dueloActualDatos.nom1);
-                } else {
-                    p.votos2 = (p.votos2 || 1) + 1;
-                    mostrarToast('⚡ Voto en vivo registrado para ' + dueloActualDatos.nom2);
-                }
-
+                if (lado === 1) { p.votos1 = (p.votos1 || 1) + 1; mostrarToast('🔥 Voto en vivo registrado para ' + dueloActualDatos.nom1); } 
+                else { p.votos2 = (p.votos2 || 1) + 1; mostrarToast('⚡ Voto en vivo registrado para ' + dueloActualDatos.nom2); }
                 misVotosLocal[dueloActualKey] = lado;
                 localStorage.setItem('5ever_mis_votos', JSON.stringify(misVotosLocal));
                 localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap));
                 ultimasPrediccionesJSON = JSON.stringify(prediccionesMap);
                 renderizarBarraPrediccion();
                 await sincronizarPrediccionesConServidor();
-            } catch (e) {} finally {
-                votandoEnCurso = false;
-            }
+            } catch (e) {} finally { votandoEnCurso = false; }
         };
 
         window.enviarReaccionDuelo = async function(tipo) {
@@ -1022,323 +620,132 @@
             try { await sincronizarPrediccionesConServidor(); } catch (e) {}
         };
 
-        window.toggleModoPoster = function() {
-            document.getElementById('modal-vs-box').classList.toggle('modo-poster');
-            mostrarToast('📸 Modo Póster alternado (Toma tu captura)');
-        };
+        window.toggleModoPoster = function() { document.getElementById('modal-vs-box').classList.toggle('modo-poster'); mostrarToast('📸 Modo Póster alternado (Toma tu captura)'); };
 
         function renderizarBarraPrediccion() {
             const cont = document.getElementById('panel-prediccion-dinamico');
             if (!cont) return;
-
             const p = obtenerPrediccionDuelo(dueloActualKey);
-            const v1 = p.votos1 || 1;
-            const v2 = p.votos2 || 1;
-            const totalVotos = v1 + v2;
-            const pct1 = Math.round((v1 / totalVotos) * 100);
-            const pct2 = 100 - pct1;
+            const v1 = p.votos1 || 1; const v2 = p.votos2 || 1; const totalVotos = v1 + v2;
+            const pct1 = Math.round((v1 / totalVotos) * 100); const pct2 = 100 - pct1;
             const miVoto = misVotosLocal[dueloActualKey];
             const r = p.reac || { hype: 0, clutch: 0, stomp: 0, partidazo: 0 };
-
-            cont.innerHTML =
-                '<div class="mb-4 bg-[#0b0d14]/95 border border-white/15 rounded-xl p-3.5 shadow-lg">' +
-                    '<div class="flex flex-wrap justify-between items-center gap-2 text-[10px] font-black uppercase tracking-wider mb-2">' +
-                        '<button onclick="votarEquipoVS(1)" class="' + (miVoto === 1 ? 'bg-vctRed text-white' : 'bg-vctRed/15 text-vctRed') + ' hover:bg-vctRed hover:text-white border border-vctRed/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">' +
-                            '🔥 ' + dueloActualDatos.nom1 + ' <span class="font-extrabold">' + pct1 + '% (' + v1 + ')</span>' +
-                        '</button>' +
-                        '<span class="text-[9px] text-emerald-400 tracking-[0.18em] flex items-center gap-1.5 ocultar-en-poster">' +
-                            '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> VOTOS EN TIEMPO REAL (' + totalVotos + ')' +
-                        '</span>' +
-                        '<button onclick="votarEquipoVS(2)" class="' + (miVoto === 2 ? 'bg-everGold text-black' : 'bg-everGold/15 text-everGold') + ' hover:bg-everGold hover:text-black border border-everGold/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">' +
-                            '<span class="font-extrabold">' + pct2 + '% (' + v2 + ')</span> ' + dueloActualDatos.nom2 + ' ⚡' +
-                        '</button>' +
-                    '</div>' +
-                    '<div class="w-full h-2.5 bg-black rounded-full overflow-hidden flex border border-white/10 p-0.5">' +
-                        '<div style="width:' + pct1 + '%" class="bg-gradient-to-r from-red-700 to-vctRed rounded-l-full transition-all duration-500"></div>' +
-                        '<div style="width:' + pct2 + '%" class="bg-gradient-to-r from-amber-500 to-everGold rounded-r-full transition-all duration-500"></div>' +
-                    '</div>' +
-                    '<div class="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap justify-center items-center gap-2 ocultar-en-poster">' +
-                        '<span class="text-[9px] text-gray-400 font-black uppercase tracking-widest mr-1">REACCIONES EN VIVO:</span>' +
-                        '<button onclick="enviarReaccionDuelo(\'hype\')" class="bg-white/5 hover:bg-vctRed/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🔥 Hype (' + (r.hype || 0) + ')</button>' +
-                        '<button onclick="enviarReaccionDuelo(\'clutch\')" class="bg-white/5 hover:bg-everGold/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">👑 Clutch (' + (r.clutch || 0) + ')</button>' +
-                        '<button onclick="enviarReaccionDuelo(\'stomp\')" class="bg-white/5 hover:bg-purple-500/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">💀 Stomp (' + (r.stomp || 0) + ')</button>' +
-                        '<button onclick="enviarReaccionDuelo(\'partidazo\')" class="bg-white/5 hover:bg-emerald-500/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🍿 Partidazo (' + (r.partidazo || 0) + ')</button>' +
-                    '</div>' +
-                '</div>';
+            cont.innerHTML = '<div class="mb-4 bg-[#0b0d14]/95 border border-white/15 rounded-xl p-3.5 shadow-lg"><div class="flex flex-wrap justify-between items-center gap-2 text-[10px] font-black uppercase tracking-wider mb-2"><button onclick="votarEquipoVS(1)" class="' + (miVoto === 1 ? 'bg-vctRed text-white' : 'bg-vctRed/15 text-vctRed') + ' hover:bg-vctRed hover:text-white border border-vctRed/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5">🔥 ' + dueloActualDatos.nom1 + ' <span class="font-extrabold">' + pct1 + '% (' + v1 + ')</span></button><span class="text-[9px] text-emerald-400 tracking-[0.18em] flex items-center gap-1.5 ocultar-en-poster"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> VOTOS EN TIEMPO REAL (' + totalVotos + ')</span><button onclick="votarEquipoVS(2)" class="' + (miVoto === 2 ? 'bg-everGold text-black' : 'bg-everGold/15 text-everGold') + ' hover:bg-everGold hover:text-black border border-everGold/50 px-3 py-1.5 rounded transition-all flex items-center gap-1.5"><span class="font-extrabold">' + pct2 + '% (' + v2 + ')</span> ' + dueloActualDatos.nom2 + ' ⚡</button></div><div class="w-full h-2.5 bg-black rounded-full overflow-hidden flex border border-white/10 p-0.5"><div style="width:' + pct1 + '%" class="bg-gradient-to-r from-red-700 to-vctRed rounded-l-full transition-all duration-500"></div><div style="width:' + pct2 + '%" class="bg-gradient-to-r from-amber-500 to-everGold rounded-r-full transition-all duration-500"></div></div><div class="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap justify-center items-center gap-2 ocultar-en-poster"><span class="text-[9px] text-gray-400 font-black uppercase tracking-widest mr-1">REACCIONES EN VIVO:</span><button onclick="enviarReaccionDuelo(\'hype\')" class="bg-white/5 hover:bg-vctRed/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🔥 Hype (' + (r.hype || 0) + ')</button><button onclick="enviarReaccionDuelo(\'clutch\')" class="bg-white/5 hover:bg-everGold/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">👑 Clutch (' + (r.clutch || 0) + ')</button><button onclick="enviarReaccionDuelo(\'stomp\')" class="bg-white/5 hover:bg-purple-500/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">💀 Stomp (' + (r.stomp || 0) + ')</button><button onclick="enviarReaccionDuelo(\'partidazo\')" class="bg-white/5 hover:bg-emerald-500/30 border border-white/10 px-2.5 py-1 rounded text-[10px] font-black text-white transition-all">🍿 Partidazo (' + (r.partidazo || 0) + ')</button></div></div>';
         }
 
         function actualizarRelojTorneo() {
             try {
-                const ahora = new Date();
-                const cdmxStr = ahora.toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
-                const ahoraCDMX = new Date(cdmxStr);
-
-                const diaSemana = ahoraCDMX.getDay();
-                const hora = ahoraCDMX.getHours();
-
+                const ahora = new Date(); const cdmxStr = ahora.toLocaleString('en-US', { timeZone: 'America/Mexico_City' }); const ahoraCDMX = new Date(cdmxStr);
+                const diaSemana = ahoraCDMX.getDay(); const hora = ahoraCDMX.getHours();
                 if (diaSemana === 1 && hora >= 20) {
-                    document.getElementById('reloj-label').innerText = 'ESTADO:';
-                    document.getElementById('reloj-numeros').innerHTML = '<span class="bg-vctRed text-white px-3 py-0.5 rounded animate-pulse">🔴 EN VIVO AHORA</span>';
+                    document.getElementById('reloj-label').innerText = 'ESTADO:'; document.getElementById('reloj-numeros').innerHTML = '<span class="bg-vctRed text-white px-3 py-0.5 rounded animate-pulse">🔴 EN VIVO AHORA</span>';
                 } else {
-                    let diasFaltantes = (1 - diaSemana + 7) % 7;
-                    if (diasFaltantes === 0 && hora >= 20) diasFaltantes = 7;
-
-                    const proximoLunes = new Date(ahoraCDMX);
-                    proximoLunes.setDate(ahoraCDMX.getDate() + diasFaltantes);
-                    proximoLunes.setHours(20, 0, 0, 0);
-
-                    const diff = Math.max(0, proximoLunes - ahoraCDMX);
-                    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                    const m = Math.floor((diff / (1000 * 60)) % 60);
-                    const s = Math.floor((diff / 1000) % 60);
-
-                    const elD = document.getElementById('cd-d');
-                    if (elD) {
-                        elD.innerText = String(d).padStart(2, '0') + 'd';
-                        document.getElementById('cd-h').innerText = String(h).padStart(2, '0') + 'h';
-                        document.getElementById('cd-m').innerText = String(m).padStart(2, '0') + 'm';
-                        document.getElementById('cd-s').innerText = String(s).padStart(2, '0') + 's';
-                    }
+                    let diasFaltantes = (1 - diaSemana + 7) % 7; if (diasFaltantes === 0 && hora >= 20) diasFaltantes = 7;
+                    const proximoLunes = new Date(ahoraCDMX); proximoLunes.setDate(ahoraCDMX.getDate() + diasFaltantes); proximoLunes.setHours(20, 0, 0, 0);
+                    const diff = Math.max(0, proximoLunes - ahoraCDMX); const d = Math.floor(diff / (1000 * 60 * 60 * 24)); const h = Math.floor((diff / (1000 * 60 * 60)) % 24); const m = Math.floor((diff / (1000 * 60)) % 60); const s = Math.floor((diff / 1000) % 60);
+                    const elD = document.getElementById('cd-d'); if (elD) { elD.innerText = String(d).padStart(2, '0') + 'd'; document.getElementById('cd-h').innerText = String(h).padStart(2, '0') + 'h'; document.getElementById('cd-m').innerText = String(m).padStart(2, '0') + 'm'; document.getElementById('cd-s').innerText = String(s).padStart(2, '0') + 's'; }
                 }
-
-                const barraTol = document.getElementById('barra-tolerancia-oficial');
-                const finTol = Number(estadoTorneoActual.toleranciaFin || 0);
+                const barraTol = document.getElementById('barra-tolerancia-oficial'); const finTol = Number(estadoTorneoActual.toleranciaFin || 0);
                 if (finTol > 0) {
                     const rest = finTol - Date.now();
-                    if (rest > 0) {
-                        barraTol.classList.remove('hidden');
-                        const min = Math.floor(rest / 60000);
-                        const seg = Math.floor((rest % 60000) / 1000);
-                        document.getElementById('reloj-tolerancia-txt').innerText = String(min).padStart(2, '0') + ':' + String(seg).padStart(2, '0') + ' RESTANTES';
-                    } else if (rest > -600000) {
-                        barraTol.classList.remove('hidden');
-                        document.getElementById('reloj-tolerancia-txt').innerText = '⛔ TIEMPO LÍMITE AGOTADO (NO-SHOW HABILITADO)';
-                    } else {
-                        barraTol.classList.add('hidden');
-                    }
-                } else {
-                    barraTol.classList.add('hidden');
-                }
+                    if (rest > 0) { barraTol.classList.remove('hidden'); const min = Math.floor(rest / 60000); const seg = Math.floor((rest % 60000) / 1000); document.getElementById('reloj-tolerancia-txt').innerText = String(min).padStart(2, '0') + ':' + String(seg).padStart(2, '0') + ' RESTANTES'; } 
+                    else if (rest > -600000) { barraTol.classList.remove('hidden'); document.getElementById('reloj-tolerancia-txt').innerText = '⛔ TIEMPO LÍMITE AGOTADO (NO-SHOW HABILITADO)'; } 
+                    else { barraTol.classList.add('hidden'); }
+                } else { barraTol.classList.add('hidden'); }
             } catch (e) {}
         }
-        setInterval(actualizarRelojTorneo, 1000);
-        actualizarRelojTorneo();
+        setInterval(actualizarRelojTorneo, 1000); actualizarRelojTorneo();
 
-        window.toggleStream = function() {
-            const panel = document.getElementById('panel-stream');
-            const iframe = document.getElementById('iframe-stream');
-            panel.classList.toggle('hidden');
-            if (!panel.classList.contains('hidden') && !iframe.src.includes('twitch.tv')) {
-                const parentHost = window.location.hostname || 'localhost';
-                iframe.src = 'https://player.twitch.tv/?channel=' + CANAL_TWITCH_DEFECTO + '&parent=' + parentHost + '&muted=false';
-            }
-        };
+        window.toggleStream = function() { const panel = document.getElementById('panel-stream'); const iframe = document.getElementById('iframe-stream'); panel.classList.toggle('hidden'); if (!panel.classList.contains('hidden') && !iframe.src.includes('twitch.tv')) { const parentHost = window.location.hostname || 'localhost'; iframe.src = 'https://player.twitch.tv/?channel=' + CANAL_TWITCH_DEFECTO + '&parent=' + parentHost + '&muted=false'; } };
+        window.cambiarCanalStream = function() { const val = document.getElementById('input-canal-twitch').value.trim(); if (!val) return; CANAL_TWITCH_DEFECTO = val; const parentHost = window.location.hostname || 'localhost'; document.getElementById('iframe-stream').src = 'https://player.twitch.tv/?channel=' + encodeURIComponent(val) + '&parent=' + parentHost; };
+        window.filtrarPorBotonGrupo = function(grupo) { document.getElementById('buscador-equipos').value = grupo; window.filtrarTarjetasEquipos(grupo); document.querySelectorAll('.btn-filtro-grupo').forEach(function(btn) { const txt = btn.innerText.trim(); if ((grupo === '' && txt === 'TODOS') || txt === grupo) { btn.className = 'btn-filtro-grupo bg-vctRed text-white text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all'; } else { btn.className = 'btn-filtro-grupo bg-[#0b0d13] hover:bg-white/10 border border-white/10 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all'; } }); };
+        window.filtrarTarjetasEquipos = function(query) { const q = String(query || '').toLowerCase().trim(); document.querySelectorAll('.card-equipo').forEach(function(card) { const teamName = (card.getAttribute('data-team') || '').toLowerCase(); const groupName = (card.getAttribute('data-group') || '').toLowerCase(); const eqObj = encontrarEquipo(teamName); const tieneJugador = eqObj && Array.isArray(eqObj.jugadores) && eqObj.jugadores.some(function(j) { return String(j.riot_id || '').toLowerCase().includes(q) || String(j.dc || '').toLowerCase().includes(q); }); if (!q || teamName.includes(q) || groupName.includes(q) || tieneJugador) { card.classList.remove('hidden'); card.classList.add('flex'); } else { card.classList.add('hidden'); card.classList.remove('flex'); } }); };
 
-        window.cambiarCanalStream = function() {
-            const val = document.getElementById('input-canal-twitch').value.trim();
-            if (!val) return;
-            CANAL_TWITCH_DEFECTO = val;
-            const parentHost = window.location.hostname || 'localhost';
-            document.getElementById('iframe-stream').src = 'https://player.twitch.tv/?channel=' + encodeURIComponent(val) + '&parent=' + parentHost;
-        };
-
-        window.filtrarPorBotonGrupo = function(grupo) {
-            document.getElementById('buscador-equipos').value = grupo;
-            filtrarTarjetasEquipos(grupo);
-            document.querySelectorAll('.btn-filtro-grupo').forEach(function(btn) {
-                const txt = btn.innerText.trim();
-                if ((grupo === '' && txt === 'TODOS') || txt === grupo) {
-                    btn.className = 'btn-filtro-grupo bg-vctRed text-white text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all';
-                } else {
-                    btn.className = 'btn-filtro-grupo bg-[#0b0d13] hover:bg-white/10 border border-white/10 text-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded transition-all';
-                }
-            });
-        };
-
-        window.filtrarTarjetasEquipos = function(query) {
-            const q = String(query || '').toLowerCase().trim();
-            document.querySelectorAll('.card-equipo').forEach(function(card) {
-                const teamName = (card.getAttribute('data-team') || '').toLowerCase();
-                const groupName = (card.getAttribute('data-group') || '').toLowerCase();
-                const eqObj = encontrarEquipo(teamName);
-                const tieneJugador = eqObj && Array.isArray(eqObj.jugadores) && eqObj.jugadores.some(function(j) {
-                    return String(j.riot_id || '').toLowerCase().includes(q) || String(j.dc || '').toLowerCase().includes(q);
-                });
-
-                if (!q || teamName.includes(q) || groupName.includes(q) || tieneJugador) {
-                    card.classList.remove('hidden');
-                    card.classList.add('flex');
-                } else {
-                    card.classList.add('hidden');
-                    card.classList.remove('flex');
-                }
-            });
-        };
-
-        function inyectarLogosEnDOM() {
-            document.querySelectorAll('img[data-logo]').forEach(function(img) {
-                const eq = encontrarEquipo(img.getAttribute('data-logo'));
-                if (eq && eq.logo_url) {
-                    img.src = eq.logo_url;
-                }
-            });
-        }
+        function inyectarLogosEnDOM() { document.querySelectorAll('img[data-logo]').forEach(function(img) { const eq = encontrarEquipo(img.getAttribute('data-logo')); if (eq && eq.logo_url) { img.src = eq.logo_url; } }); }
 
         function htmlFilaEquipo(slot) {
-            const nombre = slot.nombre || 'Por definir';
-            const est = slot.estado === 'clasificado' ? 'slot-qualified' : (slot.estado === 'eliminado' ? 'slot-eliminated' : '');
-            const nSeg = textoSeguro(nombre);
-            const mostrarIcono = !esSlotPlaceholder(nombre);
-            const esLider = slot.estado === 'clasificado' || String(slot.extra || '').includes('2-0') || String(slot.extra || '').includes('3-0');
-
-            return '<div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 pr-10 ' + est + '">' +
-                    '<div class="flex items-center gap-1.5 truncate">' +
-                        (mostrarIcono ? '<span class="' + (slot.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait') + '" title="' + (slot.checkin ? 'Check-in OK en Canal' : 'Check-in Pendiente') + '"></span>' : '') +
-                        (mostrarIcono ? '<img data-logo="' + nSeg + '" src="' + urlAvatar(nSeg) + '" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0">' : '') +
-                        '<span class="text-[11px] font-bold ' + (mostrarIcono ? 'text-white' : 'text-gray-300') + ' truncate">' + nombre + '</span>' +
-                        (esLider ? '<span class="text-[10px]" title="Invicto / Clasificado">🔥</span>' : '') +
-                    '</div>' +
-                    (slot.extra ? '<span class="text-[9px] font-black text-everGold shrink-0">' + slot.extra + '</span>' : '') +
-                '</div>';
+            const nombre = slot.nombre || 'Por definir'; const est = slot.estado === 'clasificado' ? 'slot-qualified' : (slot.estado === 'eliminado' ? 'slot-eliminated' : ''); const nSeg = textoSeguro(nombre); const mostrarIcono = !esSlotPlaceholder(nombre);
+            return '<div class="team-row flex items-center justify-between gap-1.5 px-2 py-1.5 pr-10 ' + est + '"><div class="flex items-center gap-1.5 truncate">' + (mostrarIcono ? '<span class="' + (slot.checkin ? 'dot-checkin-ok' : 'dot-checkin-wait') + '" title="' + (slot.checkin ? 'Check-in OK en Canal' : 'Check-in Pendiente') + '"></span>' : '') + (mostrarIcono ? '<img data-logo="' + nSeg + '" src="' + urlAvatar(nSeg) + '" class="w-5 h-5 rounded object-contain bg-black border border-white/15 shrink-0">' : '') + '<span class="text-[11px] font-bold ' + (mostrarIcono ? 'text-white' : 'text-gray-300') + ' truncate">' + nombre + '</span></div>' + (slot.extra ? '<span class="text-[9px] font-black text-everGold shrink-0">' + slot.extra + '</span>' : '') + '</div>';
         }
 
         function construirGrupoLlamativo(letra, slots, headerGradient) {
             let duelos = '';
             for (let i = 0; i < slots.length; i += 2) {
-                const s1 = slots[i] || { nombre: letra + (i + 1), extra: '', estado: 'normal', checkin: false };
-                const s2 = slots[i + 1] || { nombre: letra + (i + 2), extra: '', estado: 'normal', checkin: false };
-                const n1 = textoSeguro(s1.nombre);
-                const n2 = textoSeguro(s2.nombre);
-                const contexto = 'GRUPO ' + letra + ' • BO3';
-                const enVivo = esDueloEnStream(n1, n2);
-
-                duelos += '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'' + contexto + '\')" class="match-pair ' + (enVivo ? 'match-stream-active' : '') + ' cursor-pointer">' +
-                        '<span class="' + (enVivo ? 'live-pill-inline' : 'vs-pill-inline') + '">' + (enVivo ? '🔴 LIVE' : 'VS') + '</span>' +
-                        htmlFilaEquipo(s1) +
-                        htmlFilaEquipo(s2) +
-                    '</div>';
+                const s1 = slots[i] || { nombre: letra + (i + 1), extra: '', estado: 'normal', checkin: false }; const s2 = slots[i + 1] || { nombre: letra + (i + 2), extra: '', estado: 'normal', checkin: false };
+                const n1 = textoSeguro(s1.nombre); const n2 = textoSeguro(s2.nombre); const contexto = 'GRUPO ' + letra + ' • BO3'; const enVivo = esDueloEnStream(n1, n2);
+                duelos += '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'' + contexto + '\')" class="match-pair ' + (enVivo ? 'match-stream-active' : '') + ' cursor-pointer"><span class="' + (enVivo ? 'live-pill-inline' : 'vs-pill-inline') + '">' + (enVivo ? '🔴 LIVE' : 'VS') + '</span>' + htmlFilaEquipo(s1) + htmlFilaEquipo(s2) + '</div>';
             }
-            return '<div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">' +
-                    '<div class="' + headerGradient + ' py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase text-white">' +
-                        '<span>GRUPO ' + letra + '</span><span class="text-[8px] opacity-85">BO3</span>' +
-                    '</div>' +
-                    '<div class="p-1.5 space-y-1.5">' + duelos + '</div>' +
-                '</div>';
+            return '<div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden"><div class="' + headerGradient + ' py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase text-white"><span>GRUPO ' + letra + '</span><span class="text-[8px] opacity-85">BO3</span></div><div class="p-1.5 space-y-1.5">' + duelos + '</div></div>';
         }
 
         function aplicarDatosDeBracketEnPantalla(d, esActualizacionEnVivo) {
-            if (esActualizacionEnVivo && d.aviso && d.aviso !== estadoTorneoActual.aviso) {
-                dispararAlertaBroadcast(d.aviso);
-            }
+            if (!d) return;
+            if (esActualizacionEnVivo && d.aviso && d.aviso !== estadoTorneoActual.aviso) { dispararAlertaBroadcast(d.aviso); }
             estadoTorneoActual = Object.assign({}, estadoTorneoActual, d);
 
-            const bannerAviso = document.getElementById('banner-aviso-admin');
-            if (d.aviso && String(d.aviso).trim() !== '') {
-                document.getElementById('texto-aviso-admin').innerText = d.aviso;
-                bannerAviso.classList.remove('hidden');
-            } else {
-                bannerAviso.classList.add('hidden');
-            }
+            try {
+                const bannerAviso = document.getElementById('banner-aviso-admin');
+                if (d.aviso && String(d.aviso).trim() !== '') { document.getElementById('texto-aviso-admin').innerText = d.aviso; bannerAviso.classList.remove('hidden'); } else { bannerAviso.classList.add('hidden'); }
+                if (d.canalTwitch) CANAL_TWITCH_DEFECTO = d.canalTwitch;
+                const btnMvp = document.getElementById('btn-mvp-header');
+                if (d.mvp && d.mvp.activo && d.mvp.riot_id) { btnMvp.classList.remove('hidden'); } else { btnMvp.classList.add('hidden'); }
+            } catch(e) {}
 
-            if (d.canalTwitch) CANAL_TWITCH_DEFECTO = d.canalTwitch;
-            const btnMvp = document.getElementById('btn-mvp-header');
-            if (d.mvp && d.mvp.activo && d.mvp.riot_id) {
-                btnMvp.classList.remove('hidden');
-            } else {
-                btnMvp.classList.add('hidden');
-            }
-
-            if (estadoTorneoActual.fase1) {
-                document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(function(g) { return construirGrupoLlamativo(g, estadoTorneoActual.fase1[g], 'bg-gradient-to-r from-red-800 to-red-600'); }).join('');
-            }
-            if (estadoTorneoActual.fase2) {
-                document.getElementById('contenedor-fase2').innerHTML = ['E','F'].map(function(g) { return construirGrupoLlamativo(g, estadoTorneoActual.fase2[g], 'bg-gradient-to-r from-blue-800 to-blue-600'); }).join('');
-            }
-            if (Array.isArray(estadoTorneoActual.fase3)) {
-                document.getElementById('contenedor-fase3').innerHTML = estadoTorneoActual.fase3.map(function(r, i) {
-                    const elim = i >= 4 || r.eliminado;
-                    const nomSeg = textoSeguro(r.nombre);
-                    const tieneEq = !esSlotPlaceholder(r.nombre);
-                    return '<div onclick="verVS(\'' + nomSeg + '\',\'\',\'FASE 3 • CLASIFICADOS\')" class="flex items-center justify-between gap-2 p-2 rounded border ' + (elim ? 'border-red-500/35 bg-red-950/20' : 'border-emerald-500/35 bg-emerald-950/20') + ' cursor-pointer hover:border-white/40">' +
-                            '<div class="flex items-center gap-2 truncate">' +
-                                '<span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs ' + (elim ? 'bg-gradient-to-b from-red-600 to-red-800' : 'bg-gradient-to-b from-emerald-500 to-emerald-700') + ' text-white shrink-0 shadow">' + (i + 1) + '</span>' +
-                                (tieneEq ? '<img data-logo="' + nomSeg + '" src="' + urlAvatar(nomSeg) + '" class="w-5 h-5 rounded object-contain bg-black shrink-0">' : '') +
-                                '<span class="text-xs font-bold ' + (elim ? 'text-gray-400' : 'text-white') + ' truncate">' + (tieneEq ? r.nombre : 'Clasificado #' + (i + 1)) + '</span>' +
-                            '</div>' +
-                            '<span class="text-[8px] font-black ' + (elim ? 'text-red-400' : 'text-emerald-400') + ' shrink-0">' + (r.rd || (elim ? 'ELIM' : '')) + '</span>' +
-                        '</div>';
-                }).join('');
-            }
-            if (estadoTorneoActual.fase4) {
-                const cardBO5 = function(tit, m) {
-                    const n1 = textoSeguro(m.eq1);
-                    const n2 = textoSeguro(m.eq2);
-                    const canal = textoSeguro(m.stream || '');
-                    const enVivo = !!canal;
-
-                    const barraTwitchCard = enVivo
-                        ? '<div class="bg-[#9146ff]/20 border-t border-[#9146ff]/40 px-2 py-1 flex items-center justify-between text-[8.5px] font-black">' +
-                            '<span class="text-purple-200 truncate flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#9146ff] animate-ping"></span> 📺 twitch.tv/' + canal + '</span>' +
-                            '<a href="https://www.twitch.tv/' + canal + '" target="_blank" onclick="event.stopPropagation()" class="bg-[#9146ff] hover:bg-white text-white hover:text-black px-1.5 py-0.2 rounded uppercase shrink-0">VER ↗</a>' +
-                          '</div>'
-                        : '';
-
-                    return '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'' + tit + ' • BO5\', \'' + canal + '\')" class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5 cursor-pointer hover:border-vctRed transition-all">' +
-                            '<div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">' + tit + ' • BO5</div>' +
-                            '<div class="match-pair ' + (enVivo ? 'match-twitch-card' : '') + '">' +
-                                '<span class="' + (enVivo ? 'twitch-pill-inline' : 'vs-pill-inline') + '">' + (enVivo ? '🟣 LIVE' : 'VS') + '</span>' +
-                                htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal', checkin: true }) +
-                                htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal', checkin: true }) +
-                                barraTwitchCard +
-                            '</div>' +
-                        '</div>';
-                };
-                document.getElementById('contenedor-fase4').innerHTML = cardBO5('SEMIFINAL 1', estadoTorneoActual.fase4.sf1) + cardBO5('SEMIFINAL 2', estadoTorneoActual.fase4.sf2);
-                if (estadoTorneoActual.final) {
-                    document.getElementById('contenedor-fase5-final').innerHTML = cardBO5('GRAN FINAL', estadoTorneoActual.final);
-                    const campSeg = textoSeguro(estadoTorneoActual.final.campeon || 'CAMPEÓN');
-                    const tieneCamp = !esSlotPlaceholder(estadoTorneoActual.final.campeon);
-                    document.getElementById('contenedor-fase5-campeon').innerHTML =
-                        '<div onclick="verVS(\'' + campSeg + '\',\'\',\'CAMPEÓN COPA 5EVERMAD\')" class="cursor-pointer">' +
-                            '<div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>' +
-                            (tieneCamp ? '<img data-logo="' + campSeg + '" src="' + urlAvatar(campSeg) + '" class="w-14 h-14 mx-auto mb-2 rounded object-contain bg-black border border-everGold">' : '') +
-                            '<span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span>' +
-                            '<h3 class="text-base font-black uppercase tracking-wider gold-metallic-text mt-0.5 truncate">' + (estadoTorneoActual.final.campeon || 'CAMPEÓN') + '</h3>' +
-                        '</div>';
+            try { if (d.fase1 && document.getElementById('contenedor-fase1')) { document.getElementById('contenedor-fase1').innerHTML = ['A','B','C','D'].map(function(g) { return construirGrupoLlamativo(g, d.fase1[g] || [], 'bg-gradient-to-r from-red-800 to-red-600'); }).join(''); } } catch(e) {}
+            try { if (d.fase2 && document.getElementById('contenedor-fase2')) { document.getElementById('contenedor-fase2').innerHTML = ['E','F'].map(function(g) { return construirGrupoLlamativo(g, d.fase2[g] || [], 'bg-gradient-to-r from-blue-800 to-blue-600'); }).join(''); } } catch(e) {}
+            
+            try {
+                if (Array.isArray(d.fase3) && document.getElementById('contenedor-fase3')) {
+                    document.getElementById('contenedor-fase3').innerHTML = d.fase3.map(function(r, i) {
+                        if(!r) return '';
+                        const elim = i >= 4 || r.eliminado; const nomSeg = textoSeguro(r.nombre); const tieneEq = !esSlotPlaceholder(r.nombre);
+                        return '<div onclick="verVS(\'' + nomSeg + '\',\'\',\'FASE 3 • CLASIFICADOS\')" class="flex items-center justify-between gap-2 p-2 rounded border ' + (elim ? 'border-red-500/35 bg-red-950/20' : 'border-emerald-500/35 bg-emerald-950/20') + ' cursor-pointer hover:border-white/40"><div class="flex items-center gap-2 truncate"><span class="w-6 h-6 rounded flex items-center justify-center font-black text-xs ' + (elim ? 'bg-gradient-to-b from-red-600 to-red-800' : 'bg-gradient-to-b from-emerald-500 to-emerald-700') + ' text-white shrink-0 shadow">' + (i + 1) + '</span>' + (tieneEq ? '<img data-logo="' + nomSeg + '" src="' + urlAvatar(nomSeg) + '" class="w-5 h-5 rounded object-contain bg-black shrink-0">' : '') + '<span class="text-xs font-bold ' + (elim ? 'text-gray-400' : 'text-white') + ' truncate">' + (tieneEq ? r.nombre : 'Clasificado #' + (i + 1)) + '</span></div><span class="text-[8px] font-black ' + (elim ? 'text-red-400' : 'text-emerald-400') + ' shrink-0">' + (r.rd || (elim ? 'ELIM' : '')) + '</span></div>';
+                    }).join('');
                 }
-            }
-            inyectarLogosEnDOM();
+            } catch(e) {}
+
+            try {
+                if (document.getElementById('contenedor-fase4')) {
+                    const cardBO5 = function(tit, m) {
+                        if (!m) m = { eq1: 'Por Definir', eq2: 'Por Definir', score1: '', score2: '', stream: '' };
+                        const n1 = textoSeguro(m.eq1); const n2 = textoSeguro(m.eq2); const canal = textoSeguro(m.stream || ''); const enVivo = !!canal;
+                        const barraTwitchCard = enVivo ? '<div class="bg-[#9146ff]/20 border-t border-[#9146ff]/40 px-2 py-1 flex items-center justify-between text-[8.5px] font-black"><span class="text-purple-200 truncate flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#9146ff] animate-ping"></span> 📺 twitch.tv/' + canal + '</span><a href="https://www.twitch.tv/' + canal + '" target="_blank" onclick="event.stopPropagation()" class="bg-[#9146ff] hover:bg-white text-white hover:text-black px-1.5 py-0.2 rounded uppercase shrink-0">VER ↗</a></div>' : '';
+                        return '<div onclick="verVS(\'' + n1 + '\',\'' + n2 + '\',\'' + tit + ' • BO5\', \'' + canal + '\')" class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5 cursor-pointer hover:border-vctRed transition-all"><div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">' + tit + ' • BO5</div><div class="match-pair ' + (enVivo ? 'match-twitch-card' : '') + '"><span class="' + (enVivo ? 'twitch-pill-inline' : 'vs-pill-inline') + '">' + (enVivo ? '🟣 LIVE' : 'VS') + '</span>' + htmlFilaEquipo({ nombre: m.eq1, extra: m.score1, estado: 'normal', checkin: true }) + htmlFilaEquipo({ nombre: m.eq2, extra: m.score2, estado: 'normal', checkin: true }) + barraTwitchCard + '</div></div>';
+                    };
+
+                    const sf1 = (d.fase4 && d.fase4.sf1) ? d.fase4.sf1 : { eq1: 'Platano Power Esports', eq2: 'YOSORA ESPORTS', score1: '', score2: '', stream: '' };
+                    const sf2 = (d.fase4 && d.fase4.sf2) ? d.fase4.sf2 : { eq1: 'Cruel Karma', eq2: '5EverMad', score1: '', score2: '', stream: '' };
+                    document.getElementById('contenedor-fase4').innerHTML = cardBO5('SEMIFINAL 1', sf1) + cardBO5('SEMIFINAL 2', sf2);
+                    
+                    if (document.getElementById('contenedor-fase5-final')) {
+                        const finalData = d.final || { eq1: 'Ganador SF1', eq2: 'Ganador SF2', score1: '', score2: '', campeon: 'CAMPEÓN', stream: '' };
+                        document.getElementById('contenedor-fase5-final').innerHTML = cardBO5('GRAN FINAL', finalData);
+                        const campSeg = textoSeguro(finalData.campeon || 'CAMPEÓN'); const tieneCamp = !esSlotPlaceholder(finalData.campeon);
+                        const champBox = document.getElementById('contenedor-fase5-campeon');
+                        if (champBox) { champBox.innerHTML = '<div onclick="verVS(\'' + campSeg + '\',\'\',\'CAMPEÓN COPA 5EVERMAD\')" class="cursor-pointer"><div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>' + (tieneCamp ? '<img data-logo="' + campSeg + '" src="' + urlAvatar(campSeg) + '" class="w-14 h-14 mx-auto mb-2 rounded object-contain bg-black border border-everGold">' : '') + '<span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span><h3 class="text-base font-black uppercase tracking-wider gold-metallic-text mt-0.5 truncate">' + (finalData.campeon || 'CAMPEÓN') + '</h3></div>'; }
+                    }
+                }
+            } catch(e) {}
+            
+            try { inyectarLogosEnDOM(); } catch(e) {}
         }
 
         async function cargarEquiposIniciales() {
             aplicarDatosDeBracketEnPantalla(estadoTorneoActual, false);
-
-            if (equiposCargados.length > 0) {
-                inyectarLogosEnDOM();
-            }
+            if (equiposCargados.length > 0) { inyectarLogosEnDOM(); }
             try {
                 const res = await fetch(API_URL + '/equipos');
                 if (!res.ok) throw new Error('Render despertando');
                 const data = await res.json();
                 if (Array.isArray(data) && data.length > 0) {
-                    equiposCargados = data;
-                    inyectarLogosEnDOM();
+                    equiposCargados = data; inyectarLogosEnDOM();
                     const ind = document.getElementById('indicador-carga-equipos');
                     if (ind) ind.innerText = '✔ 24 Escuadras sincronizadas • Haz clic en cualquier duelo para ver detalles';
-
                     try { sessionStorage.setItem('5ever_equipos_cache', JSON.stringify(data)); } catch (e) {}
-
-                    if (!document.getElementById('modal-vs').classList.contains('hidden') && dueloActualDatos.nom1) {
-                        window.verVS(dueloActualDatos.nom1, dueloActualDatos.nom2, dueloActualDatos.fase);
-                    }
+                    if (!document.getElementById('modal-vs').classList.contains('hidden') && dueloActualDatos.nom1) { window.verVS(dueloActualDatos.nom1, dueloActualDatos.nom2, dueloActualDatos.fase); }
                     pulsoEnTiempoReal();
-                } else {
-                    setTimeout(cargarEquiposIniciales, 2500);
-                }
-            } catch (err) {
-                setTimeout(cargarEquiposIniciales, 2500);
-            }
+                } else { setTimeout(cargarEquiposIniciales, 2500); }
+            } catch (err) { setTimeout(cargarEquiposIniciales, 2500); }
         }
 
         async function pulsoEnTiempoReal() {
@@ -1356,72 +763,34 @@
                     prediccionesNoticiaId = pNot.id;
                     if (pNot.descripcion !== ultimasPrediccionesJSON) {
                         ultimasPrediccionesJSON = pNot.descripcion;
-                        try {
-                            prediccionesMap = Object.assign({}, prediccionesMap, JSON.parse(pNot.descripcion));
-                            localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap));
-                            if (!document.getElementById('modal-vs').classList.contains('hidden')) {
-                                renderizarBarraPrediccion();
-                            }
-                        } catch (e) {}
+                        try { prediccionesMap = Object.assign({}, prediccionesMap, JSON.parse(pNot.descripcion)); localStorage.setItem('5ever_predicciones_map', JSON.stringify(prediccionesMap)); if (!document.getElementById('modal-vs').classList.contains('hidden')) { renderizarBarraPrediccion(); } } catch (e) {}
                     }
                 }
 
                 const bd = noticias.find(function(n) { return n && n.titulo === '[BRACKET_DATA]'; });
                 if (bd && bd.descripcion && bd.descripcion !== ultimoBracketJSON) {
-                    const eraPrimeraCarga = ultimoBracketJSON === '';
-                    ultimoBracketJSON = bd.descripcion;
-                    const d = JSON.parse(bd.descripcion);
-                    if (d && d.version === '24_grupos_v1') {
-                        aplicarDatosDeBracketEnPantalla(d, !eraPrimeraCarga);
-                    }
+                    const eraPrimeraCarga = ultimoBracketJSON === ''; ultimoBracketJSON = bd.descripcion;
+                    try { const d = JSON.parse(bd.descripcion); if (d && d.version === '24_grupos_v1') { aplicarDatosDeBracketEnPantalla(d, !eraPrimeraCarga); } } catch (e) {}
                 }
             } catch (e) {}
         }
 
-        // =============================================================
-        // MODAL CARA A CARA (VS) CON REPRODUCTOR DE TWITCH DINÁMICO
-        // =============================================================
         window.verVS = function(nom1, nom2, fase, canalTwitch) {
             const info = buscarInfoSlotDuelo(nom1, nom2);
             dueloActualDatos = { nom1: nom1 || 'Equipo 1', nom2: nom2 || 'Equipo 2', fase: fase || 'DUELO OFICIAL', s1: info.s1, s2: info.s2, c1: info.c1, c2: info.c2 };
             dueloActualKey = claveDuelo(dueloActualDatos.nom1, dueloActualDatos.nom2);
 
-            const eq1 = encontrarEquipo(nom1);
-            const eq2 = encontrarEquipo(nom2);
+            const eq1 = encontrarEquipo(nom1); const eq2 = encontrarEquipo(nom2);
+            const num1 = parseFloat(info.s1); const num2 = parseFloat(info.s2);
+            const gana1 = !isNaN(num1) && !isNaN(num2) && num1 > num2; const gana2 = !isNaN(num1) && !isNaN(num2) && num2 > num1;
 
-            const num1 = parseFloat(info.s1);
-            const num2 = parseFloat(info.s2);
-            const gana1 = !isNaN(num1) && !isNaN(num2) && num1 > num2;
-            const gana2 = !isNaN(num1) && !isNaN(num2) && num2 > num1;
-
-            const todosNombres = equiposCargados.length > 0
-                ? equiposCargados.map(function(e) { return e.nombre; })
-                : ['Platano Power Esports','YOSORA ESPORTS','Cruel Karma','5EverMad'];
-
+            const todosNombres = equiposCargados.length > 0 ? equiposCargados.map(function(e) { return e.nombre; }) : ['Platano Power Esports','YOSORA ESPORTS','Cruel Karma','5EverMad'];
             let opcionesRival = '<option value="">-- Cambiar rival para comparar VS --</option>';
-            todosNombres.forEach(function(n) {
-                const eqRival = eq2 ? eq2.nombre : nom2;
-                const sel = (eqRival && limpiarNombre(n) === limpiarNombre(eqRival)) ? 'selected' : '';
-                opcionesRival += '<option value="' + textoSeguro(n) + '" ' + sel + '>' + n + '</option>';
-            });
+            todosNombres.forEach(function(n) { const eqRival = eq2 ? eq2.nombre : nom2; const sel = (eqRival && limpiarNombre(n) === limpiarNombre(eqRival)) ? 'selected' : ''; opcionesRival += '<option value="' + textoSeguro(n) + '" ' + sel + '>' + n + '</option>'; });
 
             const parentHost = window.location.hostname || 'localhost';
             const bloqueStreamEnMatch = canalTwitch
-                ? '<div class="mb-4 bg-[#120d24] border border-[#9146ff] rounded-xl overflow-hidden shadow-[0_0_25px_rgba(145,70,255,0.25)] ocultar-en-poster">' +
-                    '<div class="bg-gradient-to-r from-[#9146ff] via-purple-700 to-[#120d24] px-4 py-2 flex flex-wrap justify-between items-center gap-2">' +
-                        '<div class="flex items-center gap-2">' +
-                            '<span class="w-2 h-2 rounded-full bg-white animate-ping"></span>' +
-                            '<span class="text-[10px] font-black uppercase tracking-widest text-white">🟣 TRANSMISIÓN EN VIVO: TWITCH.TV/' + canalTwitch.toUpperCase() + '</span>' +
-                        '</div>' +
-                        '<div class="flex items-center gap-2">' +
-                            '<button onclick="togglePlayerEnModal()" class="bg-black/40 hover:bg-black/70 text-white text-[9px] font-black uppercase px-2.5 py-1 rounded border border-white/20">📺 Mostrar / Ocultar Video</button>' +
-                            '<a href="https://www.twitch.tv/' + canalTwitch + '" target="_blank" class="bg-white text-black hover:bg-everGold text-[9px] font-black uppercase px-3 py-1 rounded transition-all">ABRIR EN TWITCH ↗</a>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div id="wrap-player-modal" class="aspect-video w-full max-h-[340px] bg-black">' +
-                        '<iframe id="iframe-stream-modal" src="https://player.twitch.tv/?channel=' + encodeURIComponent(canalTwitch) + '&parent=' + parentHost + '&muted=false" class="w-full h-full" allowfullscreen></iframe>' +
-                    '</div>' +
-                  '</div>'
+                ? '<div class="mb-4 bg-[#120d24] border border-[#9146ff] rounded-xl overflow-hidden shadow-[0_0_25px_rgba(145,70,255,0.25)] ocultar-en-poster"><div class="bg-gradient-to-r from-[#9146ff] via-purple-700 to-[#120d24] px-4 py-2 flex flex-wrap justify-between items-center gap-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-white animate-ping"></span><span class="text-[10px] font-black uppercase tracking-widest text-white">🟣 TRANSMISIÓN EN VIVO: TWITCH.TV/' + canalTwitch.toUpperCase() + '</span></div><div class="flex items-center gap-2"><button onclick="togglePlayerEnModal()" class="bg-black/40 hover:bg-black/70 text-white text-[9px] font-black uppercase px-2.5 py-1 rounded border border-white/20">📺 Mostrar / Ocultar Video</button><a href="https://www.twitch.tv/' + canalTwitch + '" target="_blank" class="bg-white text-black hover:bg-everGold text-[9px] font-black uppercase px-3 py-1 rounded transition-all">ABRIR EN TWITCH ↗</a></div></div><div id="wrap-player-modal" class="aspect-video w-full max-h-[340px] bg-black"><iframe id="iframe-stream-modal" src="https://player.twitch.tv/?channel=' + encodeURIComponent(canalTwitch) + '&parent=' + parentHost + '&muted=false" class="w-full h-full" allowfullscreen></iframe></div></div>'
                 : '';
 
             const dibujarCol = function(nombreTxt, eq, colorBorde, colorGlow, esGanador, checkinOk) {
@@ -1433,84 +802,26 @@
                 const listaJug = (eq && Array.isArray(eq.jugadores) && eq.jugadores.length > 0)
                     ? eq.jugadores.map(function(j) {
                         const idSeg = textoSeguro(j.riot_id || '');
-                        return '<div class="bg-[#121520]/90 border-l-2 ' + colorBorde + ' p-2.5 rounded-r flex justify-between items-center gap-2 mb-2 relative z-10">' +
-                            '<div class="truncate cursor-pointer" onclick="copiarDato(\'' + idSeg + '\')">' +
-                                '<span class="text-[8px] text-everGold font-black uppercase block">' + (j.role || 'TITULAR') + '</span>' +
-                                '<span class="text-xs font-black text-white hover:text-everGold truncate block">' + (j.riot_id || '') + ' 📋</span>' +
-                            '</div>' +
-                            '<div class="flex items-center gap-1.5 shrink-0 ocultar-en-poster">' +
-                                '<button onclick="copiarDato(\'' + idSeg + '\')" class="bg-white/5 hover:bg-everGold hover:text-black text-gray-300 text-[9px] font-black uppercase px-2 py-1.5 rounded">COPIAR</button>' +
-                                '<a href="' + (j.tracker_url || '#') + '" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded">TRACKER ↗</a>' +
-                            '</div>' +
-                        '</div>';
+                        return '<div class="bg-[#121520]/90 border-l-2 ' + colorBorde + ' p-2.5 rounded-r flex justify-between items-center gap-2 mb-2 relative z-10"><div class="truncate cursor-pointer" onclick="copiarDato(\'' + idSeg + '\')"><span class="text-[8px] text-everGold font-black uppercase block">' + (j.role || 'TITULAR') + '</span><span class="text-xs font-black text-white hover:text-everGold truncate block">' + (j.riot_id || '') + ' 📋</span></div><div class="flex items-center gap-1.5 shrink-0 ocultar-en-poster"><button onclick="copiarDato(\'' + idSeg + '\')" class="bg-white/5 hover:bg-everGold hover:text-black text-gray-300 text-[9px] font-black uppercase px-2 py-1.5 rounded">COPIAR</button><a href="' + (j.tracker_url || '#') + '" target="_blank" class="bg-white/5 hover:bg-vctRed text-white text-[9px] font-black uppercase px-2.5 py-1.5 rounded">TRACKER ↗</a></div></div>';
                     }).join('')
                     : '<p class="text-[10px] text-gray-400 uppercase tracking-widest py-6 text-center relative z-10">Sincronizando roster con Render...</p>';
 
-                return '<div class="bg-[#0b0d15]/90 border ' + (esGanador ? 'border-everGold shadow-[0_0_25px_rgba(229,192,92,0.25)]' : colorGlow) + ' rounded-xl p-5 relative overflow-hidden">' +
-                        (esGanador ? '<div class="bg-everGold text-black text-[9px] font-black uppercase tracking-widest px-3 py-0.5 rounded-bl-lg absolute top-0 right-0 z-20">👑 VICTORIA</div>' : '') +
-                        '<img src="' + foto + '" class="absolute -right-6 -bottom-6 w-44 h-44 object-contain opacity-[0.07] pointer-events-none select-none">' +
-                        '<div class="flex items-center gap-4 mb-4 pb-3 border-b border-white/10 relative z-10">' +
-                            '<img src="' + foto + '" class="w-16 h-16 object-contain bg-black p-1.5 rounded-lg border border-white/25 shrink-0 shadow-lg">' +
-                            '<div class="truncate">' +
-                                '<div class="flex items-center gap-1.5">' +
-                                    '<span class="' + (checkinOk ? 'dot-checkin-ok' : 'dot-checkin-wait') + '"></span>' +
-                                    '<span class="text-[9px] ' + (checkinOk ? 'text-emerald-400' : 'text-everGold') + ' font-black uppercase tracking-widest block">' + (checkinOk ? 'CHECK-IN LISTO' : rango) + '</span>' +
-                                '</div>' +
-                                '<h4 class="text-lg font-black uppercase text-white truncate">' + (eq ? eq.nombre : (nombreTxt || 'POR DEFINIR')) + '</h4>' +
-                                '<button onclick="copiarDato(\'' + capSeguro + '\')" class="text-[9px] text-gray-400 hover:text-white font-bold uppercase block mt-0.5">' +
-                                    'Capitán DC: <span class="text-everGold underline">' + capitan + '</span> 📋' +
-                                '</button>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="max-h-[250px] overflow-y-auto pr-1 relative z-10">' + listaJug + '</div>' +
-                    '</div>';
+                return '<div class="bg-[#0b0d15]/90 border ' + (esGanador ? 'border-everGold shadow-[0_0_25px_rgba(229,192,92,0.25)]' : colorGlow) + ' rounded-xl p-5 relative overflow-hidden">' + (esGanador ? '<div class="bg-everGold text-black text-[9px] font-black uppercase tracking-widest px-3 py-0.5 rounded-bl-lg absolute top-0 right-0 z-20">👑 VICTORIA</div>' : '') + '<img src="' + foto + '" class="absolute -right-6 -bottom-6 w-44 h-44 object-contain opacity-[0.07] pointer-events-none select-none"><div class="flex items-center gap-4 mb-4 pb-3 border-b border-white/10 relative z-10"><img src="' + foto + '" class="w-16 h-16 object-contain bg-black p-1.5 rounded-lg border border-white/25 shrink-0 shadow-lg"><div class="truncate"><div class="flex items-center gap-1.5"><span class="' + (checkinOk ? 'dot-checkin-ok' : 'dot-checkin-wait') + '"></span><span class="text-[9px] ' + (checkinOk ? 'text-emerald-400' : 'text-everGold') + ' font-black uppercase tracking-widest block">' + (checkinOk ? 'CHECK-IN LISTO' : rango) + '</span></div><h4 class="text-lg font-black uppercase text-white truncate">' + (eq ? eq.nombre : (nombreTxt || 'POR DEFINIR')) + '</h4><button onclick="copiarDato(\'' + capSeguro + '\')" class="text-[9px] text-gray-400 hover:text-white font-bold uppercase block mt-0.5">Capitán DC: <span class="text-everGold underline">' + capitan + '</span> 📋</button></div></div><div class="max-h-[250px] overflow-y-auto pr-1 relative z-10">' + listaJug + '</div></div>';
             };
 
-            const n1Seg = textoSeguro(nom1);
-            const faseSeg = textoSeguro(fase);
-            const tieneMarcador = info.s1 !== '' || info.s2 !== '';
-
-            const count1 = (eq1 && Array.isArray(eq1.jugadores)) ? eq1.jugadores.length : 5;
-            const count2 = (eq2 && Array.isArray(eq2.jugadores)) ? eq2.jugadores.length : 5;
+            const n1Seg = textoSeguro(nom1); const faseSeg = textoSeguro(fase); const tieneMarcador = info.s1 !== '' || info.s2 !== '';
+            const count1 = (eq1 && Array.isArray(eq1.jugadores)) ? eq1.jugadores.length : 5; const count2 = (eq2 && Array.isArray(eq2.jugadores)) ? eq2.jugadores.length : 5;
 
             document.getElementById('modal-vs-content').innerHTML =
-                '<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 pb-3 border-b border-white/15 pr-8">' +
-                    '<div>' +
-                        '<span class="text-[10px] text-vctRed font-black uppercase tracking-[0.3em] block">' + fase + ' • 8:00 PM CDMX</span>' +
-                        '<h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider">⚔️ ' + nom1 + ' <span class="text-vctRed mx-2">VS</span> ' + (nom2 || 'RIVAL') + '</h3>' +
-                    '</div>' +
-                    '<div class="flex flex-wrap items-center gap-2 w-full md:w-auto ocultar-en-poster">' +
-                        (canalTwitch ? '<a href="https://www.twitch.tv/' + canalTwitch + '" target="_blank" class="bg-[#9146ff] hover:bg-purple-500 text-white text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0">🟣 Twitch/' + canalTwitch + ' ↗</a>' : '') +
-                        '<button onclick="toggleModoPoster()" class="bg-white/5 hover:bg-white/15 border border-white/20 text-white text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0">' +
-                            '📸 Modo Póster' +
-                        '</button>' +
-                        '<select onchange="verVS(\'' + n1Seg + '\', this.value, \'' + faseSeg + '\')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-56 outline-none">' +
-                            opcionesRival +
-                        '</select>' +
-                    '</div>' +
-                '</div>' +
+                '<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 pb-3 border-b border-white/15 pr-8"><div><span class="text-[10px] text-vctRed font-black uppercase tracking-[0.3em] block">' + fase + ' • 8:00 PM CDMX</span><h3 class="text-xl md:text-2xl font-black uppercase text-white tracking-wider">⚔️ ' + nom1 + ' <span class="text-vctRed mx-2">VS</span> ' + (nom2 || 'RIVAL') + '</h3></div><div class="flex flex-wrap items-center gap-2 w-full md:w-auto ocultar-en-poster">' + (canalTwitch ? '<a href="https://www.twitch.tv/' + canalTwitch + '" target="_blank" class="bg-[#9146ff] hover:bg-purple-500 text-white text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0">🟣 Twitch/' + canalTwitch + ' ↗</a>' : '') + '<button onclick="toggleModoPoster()" class="bg-white/5 hover:bg-white/15 border border-white/20 text-white text-[9px] font-black uppercase px-3 py-2.5 rounded shrink-0">📸 Modo Póster</button><select onchange="verVS(\'' + n1Seg + '\', this.value, \'' + faseSeg + '\')" class="bg-black border border-everGold/50 text-white text-xs font-bold p-2 rounded w-full md:w-56 outline-none">' + opcionesRival + '</select></div></div>' +
                 bloqueStreamEnMatch +
-                '<div class="grid grid-cols-3 gap-2 bg-black/60 border border-white/10 rounded-lg p-2.5 mb-4 text-center text-[10px] font-bold">' +
-                    '<div class="' + (info.c1 ? 'text-emerald-400' : 'text-yellow-400') + '">' + (info.c1 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente') + ' • ' + count1 + ' Jug.</div>' +
-                    '<div class="text-gray-400 font-black uppercase tracking-widest">⚡ COMPARATIVA TÁCTICA</div>' +
-                    '<div class="' + (info.c2 ? 'text-emerald-400' : 'text-yellow-400') + '">' + (info.c2 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente') + ' • ' + count2 + ' Jug.</div>' +
-                '</div>' +
-                '<div id="panel-prediccion-dinamico"></div>' +
-                '<div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">' +
-                    '<div class="md:col-span-5">' + dibujarCol(nom1, eq1, 'border-vctRed', 'border-vctRed/40', gana1, info.c1) + '</div>' +
-                    '<div class="md:col-span-1 flex flex-col items-center justify-center py-2">' +
-                        (tieneMarcador ? '<div class="mb-2 bg-black border border-everGold/50 px-3 py-1 rounded text-sm font-black text-everGold shadow-lg">' + (info.s1 || '0') + ' : ' + (info.s2 || '0') + '</div>' : '') +
-                        '<div class="vs-neon-badge w-14 h-14 rounded-full bg-gradient-to-br from-vctRed to-red-900 border-2 border-white flex items-center justify-center font-black text-sm text-white">VS</div>' +
-                    '</div>' +
-                    '<div class="md:col-span-5">' + dibujarCol(nom2, eq2, 'border-everGold', 'border-everGold/40', gana2, info.c2) + '</div>' +
-                '</div>';
+                '<div class="grid grid-cols-3 gap-2 bg-black/60 border border-white/10 rounded-lg p-2.5 mb-4 text-center text-[10px] font-bold"><div class="' + (info.c1 ? 'text-emerald-400' : 'text-yellow-400') + '">' + (info.c1 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente') + ' • ' + count1 + ' Jug.</div><div class="text-gray-400 font-black uppercase tracking-widest">⚡ COMPARATIVA TÁCTICA</div><div class="' + (info.c2 ? 'text-emerald-400' : 'text-yellow-400') + '">' + (info.c2 ? '🟢 En Canal Listo' : '🟡 Check-in Pendiente') + ' • ' + count2 + ' Jug.</div></div>' +
+                '<div id="panel-prediccion-dinamico"></div><div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center"><div class="md:col-span-5">' + dibujarCol(nom1, eq1, 'border-vctRed', 'border-vctRed/40', gana1, info.c1) + '</div><div class="md:col-span-1 flex flex-col items-center justify-center py-2">' + (tieneMarcador ? '<div class="mb-2 bg-black border border-everGold/50 px-3 py-1 rounded text-sm font-black text-everGold shadow-lg">' + (info.s1 || '0') + ' : ' + (info.s2 || '0') + '</div>' : '') + '<div class="vs-neon-badge w-14 h-14 rounded-full bg-gradient-to-br from-vctRed to-red-900 border-2 border-white flex items-center justify-center font-black text-sm text-white">VS</div></div><div class="md:col-span-5">' + dibujarCol(nom2, eq2, 'border-everGold', 'border-everGold/40', gana2, info.c2) + '</div></div>';
 
-            renderizarBarraPrediccion();
-            document.getElementById('modal-vs').classList.remove('hidden');
+            renderizarBarraPrediccion(); document.getElementById('modal-vs').classList.remove('hidden');
         };
 
-        cargarEquiposIniciales();
-        setInterval(pulsoEnTiempoReal, 8000);
+        cargarEquiposIniciales(); setInterval(pulsoEnTiempoReal, 8000);
     </script>
 </body>
 </html>
