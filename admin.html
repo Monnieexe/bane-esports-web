@@ -44,6 +44,7 @@
 
     <main class="max-w-[1600px] mx-auto px-6 mt-8 space-y-8">
 
+        <!-- 1. CONSOLA EN VIVO: AVISOS, RELOJ ANTI NO-SHOW Y MVP -->
         <section class="panel-box p-5 border-l-4 border-l-everGold">
             <h2 class="text-sm font-black uppercase tracking-widest text-everGold mb-4">📡 TRANSMISIÓN EN VIVO, RELOJ ANTI NO-SHOW (10 MIN), AVISOS Y MVP</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -81,30 +82,71 @@
             </div>
         </section>
 
-        <!-- Secciones Ocultas para Ahorrar Espacio en Semis -->
-        <section class="panel-box p-5 hidden"><div id="admin-fase1" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div></section>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <section class="lg:col-span-5 panel-box p-5 hidden"><div id="admin-fase2" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div></section>
-
-            <section class="lg:col-span-4 panel-box p-5 hidden">
-                <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-white/10">
-                    <div><span class="text-[10px] text-purple-400 font-black uppercase block">LUNES 12 DE OCTUBRE</span><h2 class="text-sm font-black uppercase">FASE 3 • CLASIFICADOS (RONDAS)</h2></div>
-                    <button onclick="ordenarFase3YPasarASemis()" class="bg-everGold text-black text-[9px] font-black uppercase px-3 py-2 rounded">📊 ORDENAR X RONDAS Y PASAR TOP 4</button>
+        <!-- 2. FASE 1 (GRUPOS A, B, C, D) -->
+        <section class="panel-box p-5">
+            <div class="flex flex-wrap justify-between items-center gap-3 mb-4 pb-3 border-b border-white/10">
+                <div>
+                    <span class="text-[10px] text-vctRed font-black uppercase tracking-widest block">LUNES 28 DE SEPTIEMBRE</span>
+                    <h2 class="text-base font-black uppercase">FASE 1 • 4 GRUPOS DE 6 EQUIPOS (BO3 + SEMÁFORO CHECK-IN)</h2>
                 </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="marcarTodosCheckinFase1(true)" class="bg-emerald-700 hover:bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded">
+                        🟢 Marcar Todos Check-in OK
+                    </button>
+                    <button onclick="marcarTodosCheckinFase1(false)" class="bg-white/10 hover:bg-white/20 text-gray-300 text-[10px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded">
+                        🟡 Reiniciar Check-in
+                    </button>
+                    <button onclick="pasarClasificadosAFase2()" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded shadow">
+                        ⚡ PASAR CLASIFICADOS (✔) A FASE 2 ➔
+                    </button>
+                </div>
+            </div>
+            <div id="admin-fase1" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </section>
+
+        <!-- 3. FASE 2 + FASE 3 + PLAYOFFS -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Fase 2 -->
+            <section class="lg:col-span-5 panel-box p-5">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-white/10">
+                    <div>
+                        <span class="text-[10px] text-blue-400 font-black uppercase block">LUNES 5 DE OCTUBRE</span>
+                        <h2 class="text-sm font-black uppercase">FASE 2 • GRUPOS E Y F (12 EQ)</h2>
+                    </div>
+                    <button onclick="pasarClasificadosAFase3()" class="bg-purple-600 hover:bg-purple-500 text-white text-[9px] font-black uppercase px-3 py-2 rounded">
+                        ⚡ PASAR A FASE 3 • CLASIFICADOS ➔
+                    </button>
+                </div>
+                <div id="admin-fase2" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </section>
+
+            <!-- Fase 3 • Clasificados -->
+            <section class="lg:col-span-4 panel-box p-5">
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-white/10">
+                    <div>
+                        <span class="text-[10px] text-purple-400 font-black uppercase block">LUNES 12 DE OCTUBRE</span>
+                        <h2 class="text-sm font-black uppercase">FASE 3 • CLASIFICADOS (RONDAS)</h2>
+                    </div>
+                    <button onclick="ordenarFase3YPasarASemis()" class="bg-everGold text-black text-[9px] font-black uppercase px-3 py-2 rounded">
+                        📊 ORDENAR Y PASAR A SEMIS
+                    </button>
+                </div>
+                <p class="text-[10px] text-gray-400 mb-3">Escribe la diferencia de rondas (ej. <b class="text-white">+18</b>) y presiona el botón dorado para ordenar y enviar al Top 4 a Semifinales.</p>
                 <div id="admin-fase3" class="space-y-2"></div>
             </section>
 
-            <!-- Semis y Final Visibles -->
-            <section class="lg:col-span-12 panel-box p-5 border border-purple-500/50 shadow-[0_0_20px_rgba(145,70,255,0.15)]">
+            <!-- Fase 4 (Semis) y Gran Final -->
+            <section class="lg:col-span-3 panel-box p-5 border border-purple-500/50 shadow-[0_0_20px_rgba(145,70,255,0.15)]">
                 <div class="mb-4 pb-3 border-b border-white/10">
                     <span class="text-[10px] text-everGold font-black uppercase block">12 Y 19 DE OCTUBRE</span>
                     <h2 class="text-sm font-black uppercase">SEMIFINALES Y GRAN FINAL (BO5)</h2>
                 </div>
-                <div id="admin-playoffs" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                <p class="text-[10px] text-gray-400 mb-3">Ingresa el canal de Twitch en la caja morada para poner el Stream en la tarjeta del partido.</p>
+                <div id="admin-playoffs" class="space-y-4"></div>
             </section>
         </div>
 
+        <!-- 4. EQUIPOS REGISTRADOS EN LA BASE DE DATOS -->
         <section id="seccion-equipos-registrados" class="panel-box p-6 border-t-4 border-t-vctRed scroll-mt-24">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-white/10">
                 <div>
@@ -192,9 +234,24 @@
             version: '24_grupos_v1',
             aviso: '', toleranciaFin: 0, canalTwitch: 'valorant_la',
             mvp: { activo: false, riot_id: '', equipo: '', kda: '', agente: 'Jett' },
-            fase1: { A: [], B: [], C: [], D: [] },
-            fase2: { E: [], F: [] },
-            fase3: [],
+            fase1: {
+                A: ['7z Esports', 'Abismus', 'Nönsense by Bear', 'Thalyra', 'Xiao Shīzi 北', 'Akari esports'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; }),
+                B: ['ULTRADIFF ESPORTS', 'Clarity Velvet', 'Ancestral E-Sports', 'RYUJINN', '5EverMad', 'Storm of Thorns'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; }),
+                C: ['Cruel Karma', 'AERION ACADEMY', 'Kaizen Esports', 'Ryujinn Lotus', 'YOSORA ESPORTS', 'Howlers BLX'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; }),
+                D: ['Platano Power Esports', "King's Aztek", 'Black Roses Esports', 'Howlers Esports', 'MOONRISE ESPORTS', 'Hydra'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; })
+            },
+            fase2: {
+                E: ['E1','E2','E3','E4','E5','E6'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; }),
+                F: ['F1','F2','F3','F4','F5','F6'].map(function(n) { return { nombre: n, extra: '', estado: 'normal', checkin: false }; })
+            },
+            fase3: [
+                { pos: 1, nombre: 'Clasificado #1', rd: '', eliminado: false },
+                { pos: 2, nombre: 'Clasificado #2', rd: '', eliminado: false },
+                { pos: 3, nombre: 'Clasificado #3', rd: '', eliminado: false },
+                { pos: 4, nombre: 'Clasificado #4', rd: '', eliminado: false },
+                { pos: 5, nombre: 'Puesto #5', rd: 'ELIM', eliminado: true },
+                { pos: 6, nombre: 'Puesto #6', rd: 'ELIM', eliminado: true }
+            ],
             fase4: {
                 sf1: { eq1: 'Platano Power Esports', eq2: 'YOSORA ESPORTS', score1: '', score2: '', stream: '' },
                 sf2: { eq1: 'Cruel Karma', eq2: '5EverMad', score1: '', score2: '', stream: '' }
@@ -215,6 +272,44 @@
         window.iniciarRelojTolerancia10Min = function() { datos.toleranciaFin = Date.now() + (10 * 60 * 1000); guardarTodoEnVivo(); mostrarToastAdmin('🚨 Reloj de Tolerancia activado'); };
         window.detenerRelojTolerancia = function() { datos.toleranciaFin = 0; guardarTodoEnVivo(); mostrarToastAdmin('⏹️ Reloj ocultado'); };
 
+        window.marcarTodosCheckinFase1 = function(estado) {
+            ['A','B','C','D'].forEach(function(g) {
+                (datos.fase1[g] || []).forEach(function(s) { s.checkin = estado; });
+            });
+            renderizarPanelesAdmin();
+            mostrarToastAdmin(estado ? '🟢 Todos marcados con Check-in OK' : '🟡 Check-in reiniciado');
+        };
+
+        function dibujarEditorGrupo(faseKey, letra, colorHeader) {
+            const slots = datos[faseKey][letra] || [];
+            let filas = '';
+            slots.forEach(function(s, i) {
+                filas += `
+                    <div class="bg-black/60 border border-white/10 p-2 rounded mb-1.5">
+                        <div class="flex gap-1.5 mb-1.5">
+                            <input type="text" value="${s.nombre || ''}" onchange="datos.${faseKey}.${letra}[${i}].nombre=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-white">
+                            <input type="text" value="${s.extra || ''}" placeholder="Pts/2-0" onchange="datos.${faseKey}.${letra}[${i}].extra=this.value" class="w-16 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-everGold text-center">
+                        </div>
+                        <div class="flex items-center justify-between gap-2">
+                            <label class="flex items-center gap-1.5 text-[10px] font-bold ${s.checkin ? 'text-emerald-400' : 'text-gray-400'} cursor-pointer">
+                                <input type="checkbox" ${s.checkin ? 'checked' : ''} onchange="datos.${faseKey}.${letra}[${i}].checkin=this.checked; renderizarPanelesAdmin()">
+                                ${s.checkin ? '🟢 Check-in OK' : '🟡 Check-in'}
+                            </label>
+                            <select onchange="datos.${faseKey}.${letra}[${i}].estado=this.value" class="bg-[#0b0d14] border border-white/10 text-[10px] font-bold px-2 py-1 rounded text-gray-300">
+                                <option value="normal" ${s.estado === 'normal' ? 'selected' : ''}>⚪ En Juego</option>
+                                <option value="clasificado" ${s.estado === 'clasificado' ? 'selected' : ''}>🟢 ✔ Clasificado</option>
+                                <option value="eliminado" ${s.estado === 'eliminado' ? 'selected' : ''}>🔴 ✕ Eliminado</option>
+                            </select>
+                        </div>
+                    </div>`;
+            });
+            return `
+                <div class="bg-[#080a10] border border-white/10 rounded-lg overflow-hidden">
+                    <div class="${colorHeader} py-1.5 px-3 font-black text-xs uppercase">GRUPO ${letra}</div>
+                    <div class="p-2.5">${filas}</div>
+                </div>`;
+        }
+
         function renderizarPanelesAdmin() {
             try {
                 document.getElementById('inp-aviso').value = datos.aviso || '';
@@ -227,6 +322,18 @@
                 document.getElementById('inp-mvp-kda').value = m.kda || '';
                 document.getElementById('inp-mvp-ag').value = m.agente || '';
 
+                document.getElementById('admin-fase1').innerHTML = ['A','B','C','D'].map(function(g) { return dibujarEditorGrupo('fase1', g, 'bg-red-700'); }).join('');
+                document.getElementById('admin-fase2').innerHTML = ['E','F'].map(function(g) { return dibujarEditorGrupo('fase2', g, 'bg-blue-700'); }).join('');
+
+                document.getElementById('admin-fase3').innerHTML = (datos.fase3 || []).map(function(r, i) {
+                    return `
+                        <div class="flex items-center gap-2 bg-black/60 border ${i >= 4 ? 'border-red-500/40' : 'border-emerald-500/40'} p-2 rounded">
+                            <span class="w-6 h-6 rounded flex items-center justify-center text-xs font-black ${i >= 4 ? 'bg-red-600' : 'bg-emerald-600'}">${i + 1}</span>
+                            <input type="text" value="${r.nombre || ''}" onchange="datos.fase3[${i}].nombre=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-white">
+                            <input type="text" value="${r.rd || ''}" placeholder="+12 RD" onchange="datos.fase3[${i}].rd=this.value" class="w-20 bg-[#0b0d14] border border-white/15 px-2 py-1 rounded text-xs font-bold text-everGold text-center">
+                        </div>`;
+                }).join('');
+
                 const sf1 = (datos.fase4 && datos.fase4.sf1) ? datos.fase4.sf1 : { eq1: 'Platano Power Esports', eq2: 'YOSORA ESPORTS', score1: '', score2: '', stream: '' };
                 const sf2 = (datos.fase4 && datos.fase4.sf2) ? datos.fase4.sf2 : { eq1: 'Cruel Karma', eq2: '5EverMad', score1: '', score2: '', stream: '' };
                 const fin = datos.final || { eq1: 'Ganador SF1', eq2: 'Ganador SF2', score1: '', score2: '', campeon: '', stream: '' };
@@ -237,54 +344,23 @@
                 document.getElementById('admin-playoffs').innerHTML = `
                     <div class="bg-black/60 border border-everGold/40 p-4 rounded">
                         <span class="text-[10px] font-black text-everGold block mb-3">SEMIFINAL 1 (BO5)</span>
-                        <div class="flex gap-2 mb-2">
-                            <input value="${sf1.eq1}" onchange="datos.fase4.sf1.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold">
-                            <input value="${sf1.score1}" placeholder="0" onchange="datos.fase4.sf1.score1=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold">
-                        </div>
-                        <div class="flex gap-2 mb-3">
-                            <input value="${sf1.eq2}" onchange="datos.fase4.sf1.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold">
-                            <input value="${sf1.score2}" placeholder="0" onchange="datos.fase4.sf1.score2=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span>
-                            <input value="${sf1.stream || ''}" placeholder="Canal Twitch (Ej. dunnker)" onchange="datos.fase4.sf1.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-2 rounded text-xs font-bold text-white outline-none">
-                        </div>
+                        <div class="flex gap-2 mb-2"><input value="${sf1.eq1}" onchange="datos.fase4.sf1.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold"><input value="${sf1.score1}" placeholder="0" onchange="datos.fase4.sf1.score1=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold"></div>
+                        <div class="flex gap-2 mb-3"><input value="${sf1.eq2}" onchange="datos.fase4.sf1.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold"><input value="${sf1.score2}" placeholder="0" onchange="datos.fase4.sf1.score2=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold"></div>
+                        <div class="flex items-center gap-2"><span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span><input value="${sf1.stream || ''}" placeholder="Canal Twitch (Ej. dunnker)" onchange="datos.fase4.sf1.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-2 rounded text-xs font-bold text-white outline-none"></div>
                     </div>
-                    
                     <div class="bg-black/60 border border-everGold/40 p-4 rounded">
                         <span class="text-[10px] font-black text-everGold block mb-3">SEMIFINAL 2 (BO5)</span>
-                        <div class="flex gap-2 mb-2">
-                            <input value="${sf2.eq1}" onchange="datos.fase4.sf2.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold">
-                            <input value="${sf2.score1}" placeholder="0" onchange="datos.fase4.sf2.score1=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold">
-                        </div>
-                        <div class="flex gap-2 mb-3">
-                            <input value="${sf2.eq2}" onchange="datos.fase4.sf2.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold">
-                            <input value="${sf2.score2}" placeholder="0" onchange="datos.fase4.sf2.score2=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span>
-                            <input value="${sf2.stream || ''}" placeholder="Canal Twitch (Ej. 5evermad)" onchange="datos.fase4.sf2.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-2 rounded text-xs font-bold text-white outline-none">
-                        </div>
+                        <div class="flex gap-2 mb-2"><input value="${sf2.eq1}" onchange="datos.fase4.sf2.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold"><input value="${sf2.score1}" placeholder="0" onchange="datos.fase4.sf2.score1=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold"></div>
+                        <div class="flex gap-2 mb-3"><input value="${sf2.eq2}" onchange="datos.fase4.sf2.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold"><input value="${sf2.score2}" placeholder="0" onchange="datos.fase4.sf2.score2=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold"></div>
+                        <div class="flex items-center gap-2"><span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span><input value="${sf2.stream || ''}" placeholder="Canal Twitch (Ej. 5evermad)" onchange="datos.fase4.sf2.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-2 rounded text-xs font-bold text-white outline-none"></div>
                     </div>
-
                     <div class="bg-black/60 border border-vctRed/50 p-4 rounded">
                         <span class="text-[10px] font-black text-vctRed block mb-3">🏆 GRAN FINAL (BO5)</span>
-                        <div class="flex gap-2 mb-2">
-                            <input value="${fin.eq1}" onchange="datos.final.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold">
-                            <input value="${fin.score1}" placeholder="0" onchange="datos.final.score1=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold">
-                        </div>
-                        <div class="flex gap-2 mb-3">
-                            <input value="${fin.eq2}" onchange="datos.final.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold">
-                            <input value="${fin.score2}" placeholder="0" onchange="datos.final.score2=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold">
-                        </div>
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span>
-                            <input value="${fin.stream || ''}" placeholder="Canal Twitch" onchange="datos.final.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-2 rounded text-xs font-bold text-white outline-none">
-                        </div>
-                        <label class="text-[9px] font-black uppercase text-everGold block mb-1">Campeón Oficial:</label>
-                        <input value="${fin.campeon}" onchange="datos.final.campeon=this.value" class="w-full bg-[#0b0d14] border border-everGold p-2 rounded text-sm font-black text-everGold text-center">
-                    </div>
-                `;
+                        <div class="flex gap-2 mb-2"><input value="${fin.eq1}" onchange="datos.final.eq1=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold"><input value="${fin.score1}" placeholder="0" onchange="datos.final.score1=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold"></div>
+                        <div class="flex gap-2 mb-3"><input value="${fin.eq2}" onchange="datos.final.eq2=this.value" class="flex-1 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold"><input value="${fin.score2}" placeholder="0" onchange="datos.final.score2=this.value" class="w-14 bg-[#0b0d14] border border-white/15 p-2 rounded text-xs font-bold text-center text-everGold"></div>
+                        <div class="flex items-center gap-2 mb-3"><span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest shrink-0">🟣 Stream:</span><input value="${fin.stream || ''}" placeholder="Canal Twitch" onchange="datos.final.stream=this.value" class="flex-1 bg-[#0b0d14] border border-[#9146ff]/50 p-2 rounded text-xs font-bold text-white outline-none"></div>
+                        <label class="text-[9px] font-black uppercase text-everGold block mb-1">Campeón Oficial:</label><input value="${fin.campeon}" onchange="datos.final.campeon=this.value" class="w-full bg-[#0b0d14] border border-everGold p-2 rounded text-sm font-black text-everGold text-center">
+                    </div>`;
             } catch(e) {}
         }
 
@@ -354,6 +430,42 @@
         };
 
         // --- SISTEMA DE GESTIÓN DE EQUIPOS REGISTRADOS ---
+        window.descargarLogoPNG = function(index) {
+            const eq = listaEquiposDB[index]; if (!eq) return;
+            const nombreLimpio = String(eq.nombre || 'Equipo').replace(/[^a-zA-Z0-9_-]/g, '_');
+            const ini = String(eq.nombre || '?').substring(0, 2).toUpperCase();
+            const urlLogo = eq.logo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(ini) + '&background=111&color=e5c05c&bold=true&size=512';
+            
+            const img = new Image(); img.crossOrigin = 'anonymous';
+            img.onload = function() {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.naturalWidth || 512; canvas.height = img.naturalHeight || 512;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0);
+                    const a = document.createElement('a'); a.href = canvas.toDataURL('image/png'); a.download = 'Logo_' + nombreLimpio + '.png';
+                    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                    mostrarToastAdmin('📥 Descargado: Logo_' + nombreLimpio + '.png');
+                } catch (err) {
+                    const a = document.createElement('a'); a.href = urlLogo; a.download = 'Logo_' + nombreLimpio + '.png'; a.target = '_blank';
+                    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                }
+            };
+            img.onerror = function() {
+                const a = document.createElement('a'); a.href = urlLogo; a.download = 'Logo_' + nombreLimpio + '.png'; a.target = '_blank';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            };
+            img.src = urlLogo;
+        };
+
+        window.descargarTodosLosLogosPNG = async function() {
+            if (!listaEquiposDB.length) { alert('Aún no se han cargado los equipos.'); return; }
+            mostrarToastAdmin('📦 Descargando los ' + listaEquiposDB.length + ' logos en PNG...');
+            for (let i = 0; i < listaEquiposDB.length; i++) {
+                descargarLogoPNG(i);
+                await new Promise(function(r) { return setTimeout(r, 350); });
+            }
+        };
+
         async function cargarEquiposRegistrados() {
             try {
                 const res = await fetch(API_URL + '/equipos?t=' + Date.now(), { cache: 'no-store' });
@@ -380,10 +492,7 @@
                 return !q || nom.includes(q) || cap.includes(q) || jug;
             });
 
-            if (filtrados.length === 0) { 
-                grid.innerHTML = '<p class="text-xs text-gray-400 uppercase tracking-widest py-8 text-center col-span-full">No se encontraron equipos.</p>'; 
-                return; 
-            }
+            if (filtrados.length === 0) { grid.innerHTML = '<p class="text-xs text-gray-400 uppercase tracking-widest py-8 text-center col-span-full">No se encontraron equipos.</p>'; return; }
 
             grid.innerHTML = filtrados.map(function(eq, idx) {
                 const ini = String(eq.nombre || '?').substring(0, 2).toUpperCase();
@@ -394,16 +503,7 @@
                 const jugadoresHtml = (eq.jugadores || []).map(function(j) {
                     const idSeg = textoSeguro(j.riot_id || ''); const rolTxt = String(j.role || 'TITULAR').toUpperCase();
                     const colorRol = rolTxt.includes('COACH') ? 'text-purple-400' : (rolTxt.includes('SUP') ? 'text-emerald-400' : 'text-everGold');
-                    
-                    return `
-                        <div class="flex items-center justify-between gap-2 bg-black/50 border border-white/5 px-2.5 py-1.5 rounded text-[11px]">
-                            <div class="truncate">
-                                <span class="text-[8px] ${colorRol} font-black uppercase mr-1.5">[${rolTxt}]</span>
-                                <button onclick="copiarTextoAdmin('${idSeg}')" class="font-bold text-white hover:text-everGold truncate">${j.riot_id || 'Sin ID'} 📋</button>
-                                ${j.dc ? `<span class="text-[9px] text-gray-400 ml-1">(${j.dc})</span>` : ''}
-                            </div>
-                            <a href="${j.tracker_url || '#'}" target="_blank" class="text-[9px] font-black text-vctRed hover:underline shrink-0">TRACKER ↗</a>
-                        </div>`;
+                    return '<div class="flex items-center justify-between gap-2 bg-black/50 border border-white/5 px-2.5 py-1.5 rounded text-[11px]"><div class="truncate"><span class="text-[8px] ' + colorRol + ' font-black uppercase mr-1.5">[' + rolTxt + ']</span><button onclick="copiarTextoAdmin(\'' + idSeg + '\')" class="font-bold text-white hover:text-everGold truncate">' + (j.riot_id || 'Sin ID') + ' 📋</button>' + (j.dc ? '<span class="text-[9px] text-gray-400 ml-1">(' + j.dc + ')</span>' : '') + '</div><a href="' + (j.tracker_url || '#') + '" target="_blank" class="text-[9px] font-black text-vctRed hover:underline shrink-0">TRACKER ↗</a></div>';
                 }).join('');
 
                 return `
@@ -421,9 +521,7 @@
                                     </div>
                                 </div>
                                 <div class="flex flex-col gap-1 shrink-0">
-                                    <button onclick="abrirModalEditarEquipo(${realIdx})" class="bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">
-                                        ✏️ Editar
-                                    </button>
+                                    <button onclick="abrirModalEditarEquipo(${realIdx})" class="bg-everGold/20 hover:bg-everGold text-everGold hover:text-black border border-everGold/50 text-[9px] font-black uppercase px-2.5 py-1 rounded transition-all">✏️ Editar</button>
                                 </div>
                             </div>
                             <div class="space-y-1.5 max-h-56 overflow-y-auto pr-1">${jugadoresHtml}</div>
@@ -467,13 +565,13 @@
                             </select>
                         </div>
                         <div class="sm:col-span-3">
-                            <input type="text" value="${textoSeguro(j.riot_id)}" oninput="actualizarRiotIdEditor(${i}, this.value)" placeholder="Riot ID (Nombre#TAG)" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-xs font-bold text-white outline-none">
+                            <input type="text" value="${textoSeguro(j.riot_id)}" oninput="actualizarRiotIdEditor(${i}, this.value)" placeholder="Riot ID" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-xs font-bold text-white outline-none">
                         </div>
                         <div class="sm:col-span-2">
                             <input type="text" value="${textoSeguro(j.dc)}" oninput="jugadoresEditorTemp[${i}].dc=this.value" placeholder="Discord" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-xs font-semibold text-gray-300 outline-none">
                         </div>
                         <div class="sm:col-span-3">
-                            <input id="inp-tracker-ed-${i}" type="text" value="${textoSeguro(j.tracker_url)}" oninput="jugadoresEditorTemp[${i}].tracker_url=this.value" placeholder="URL Tracker.gg" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-[10px] text-gray-400 outline-none">
+                            <input id="inp-tracker-ed-${i}" type="text" value="${textoSeguro(j.tracker_url)}" oninput="jugadoresEditorTemp[${i}].tracker_url=this.value" placeholder="URL Tracker" class="w-full bg-[#0c0e16] border border-white/15 p-2 rounded text-[10px] text-gray-400 outline-none">
                         </div>
                         <div class="sm:col-span-1 flex justify-end">
                             <button onclick="eliminarFilaJugadorEditor(${i})" class="bg-red-950/60 hover:bg-vctRed text-red-300 hover:text-white text-xs font-black px-2.5 py-1.5 rounded" title="Quitar integrante">✕</button>
@@ -522,6 +620,40 @@
                 try { sessionStorage.removeItem('5ever_equipos_cache'); } catch (e) {}
                 if (actualizadoOK) { mostrarToastAdmin('✔ Escuadra "' + nombre + '" actualizada'); cerrarModalEditarEquipo(); await cargarEquiposRegistrados(); } else { alert('No se pudo guardar.'); }
             } catch (e) { alert('Error de conexión.'); } finally { btn.disabled = false; btn.innerText = '💾 Guardar Equipo'; }
+        };
+
+        window.pasarClasificadosAFase2 = function() {
+            const clasAB = [...datos.fase1.A, ...datos.fase1.B].filter(function(s) { return s.estado === 'clasificado'; }).map(function(s) { return s.nombre; });
+            const clasCD = [...datos.fase1.C, ...datos.fase1.D].filter(function(s) { return s.estado === 'clasificado'; }).map(function(s) { return s.nombre; });
+            for (let i = 0; i < 6; i++) {
+                if (clasAB[i]) datos.fase2.E[i] = { nombre: clasAB[i], extra: '', estado: 'normal', checkin: false };
+                if (clasCD[i]) datos.fase2.F[i] = { nombre: clasCD[i], extra: '', estado: 'normal', checkin: false };
+            }
+            renderizarPanelesAdmin(); alert('✔ Clasificados de A/B a E y C/D a F.');
+        };
+
+        window.pasarClasificadosAFase3 = function() {
+            const clasEF = [...datos.fase2.E, ...datos.fase2.F].filter(function(s) { return s.estado === 'clasificado'; });
+            for (let i = 0; i < 6; i++) {
+                if (clasEF[i]) { datos.fase3[i] = { pos: i + 1, nombre: clasEF[i].nombre, rd: clasEF[i].extra || '+0', eliminado: i >= 4 }; }
+            }
+            renderizarPanelesAdmin(); alert('✔ Clasificados de Fase 2 copiados a Fase 3.');
+        };
+
+        window.ordenarFase3YPasarASemis = function() {
+            datos.fase3.sort(function(a, b) {
+                const numA = parseFloat(String(a.rd || '0').replace(/[^0-9.-]/g, '')) || -999;
+                const numB = parseFloat(String(b.rd || '0').replace(/[^0-9.-]/g, '')) || -999;
+                return numB - numA;
+            });
+            datos.fase3.forEach(function(r, idx) { r.pos = idx + 1; r.eliminado = idx >= 4; });
+
+            if (datos.fase3[0]) datos.fase4.sf1.eq1 = datos.fase3[0].nombre;
+            if (datos.fase3[3]) datos.fase4.sf1.eq2 = datos.fase3[3].nombre;
+            if (datos.fase3[1]) datos.fase4.sf2.eq1 = datos.fase3[1].nombre;
+            if (datos.fase3[2]) datos.fase4.sf2.eq2 = datos.fase3[2].nombre;
+
+            renderizarPanelesAdmin(); alert('📊 Fase 3 ordenada. Top 4 a Semifinales.');
         };
 
         cargarEstadoDesdeRender();

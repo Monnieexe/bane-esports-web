@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Copa 5EverMad | Valorant Tournament 24 Equipos</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         tailwind.config = {
             theme: { extend: { colors: { vctRed: '#ff2a3f', everGold: '#e5c05c', twitchPurple: '#9146ff', bgDark: '#05060a' } } }
@@ -25,25 +26,12 @@
             background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
         }
 
-        body.obs-transparent {
-            background: transparent !important;
-            background-image: none !important;
-        }
+        body.obs-transparent { background: transparent !important; background-image: none !important; }
 
         .vct-bg-watermark {
-            position: fixed;
-            top: 16%;
-            left: -2%;
-            font-size: 10.5vw;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: -0.04em;
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.025);
-            pointer-events: none;
-            z-index: 0;
-            white-space: nowrap;
-            user-select: none;
+            position: fixed; top: 16%; left: -2%; font-size: 10.5vw; font-weight: 900; text-transform: uppercase;
+            letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.025);
+            pointer-events: none; z-index: 0; white-space: nowrap; user-select: none;
         }
 
         .clip-card { clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
@@ -52,11 +40,8 @@
         .board-scroll::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #ff2a3f, #e5c05c); border-radius: 3px; }
 
         .phase-col {
-            position: relative;
-            background: linear-gradient(180deg, rgba(16, 19, 29, 0.96) 0%, rgba(8, 10, 15, 0.98) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.75);
+            position: relative; background: linear-gradient(180deg, rgba(16, 19, 29, 0.96) 0%, rgba(8, 10, 15, 0.98) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; box-shadow: 0 12px 35px rgba(0,0,0,0.75);
         }
         .phase-col::before {
             content: ''; position: absolute; top: -1px; left: -1px; width: 14px; height: 14px;
@@ -67,37 +52,16 @@
             border-bottom: 2px solid #ff2a3f; border-right: 2px solid #ff2a3f; border-bottom-right-radius: 9px; pointer-events: none;
         }
 
-        .phase-active {
-            border-color: rgba(255, 42, 63, 0.65) !important;
-            box-shadow: 0 0 32px rgba(255, 42, 63, 0.22), inset 0 0 25px rgba(255, 42, 63, 0.06) !important;
-        }
+        .phase-active { border-color: rgba(255, 42, 63, 0.65) !important; box-shadow: 0 0 32px rgba(255, 42, 63, 0.22), inset 0 0 25px rgba(255, 42, 63, 0.06) !important; }
 
         .match-pair {
-            position: relative;
-            background: linear-gradient(135deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.015) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            overflow: hidden;
+            position: relative; background: linear-gradient(135deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.015) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 6px; transition: all 0.2s ease; overflow: hidden;
         }
-        .match-pair:hover {
-            border-color: #ff2a3f;
-            background: linear-gradient(135deg, rgba(255, 42, 63, 0.15) 0%, rgba(229, 192, 92, 0.05) 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(255, 42, 63, 0.2);
-        }
-        .match-twitch-card {
-            border-color: rgba(145, 70, 255, 0.45) !important;
-            box-shadow: 0 0 14px rgba(145, 70, 255, 0.18);
-        }
-        .match-twitch-card:hover {
-            border-color: #9146ff !important;
-            box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important;
-        }
-        .match-stream-active {
-            border-color: #ff2a3f !important;
-            box-shadow: 0 0 18px rgba(255, 42, 63, 0.35) !important;
-        }
+        .match-pair:hover { border-color: #ff2a3f; background: linear-gradient(135deg, rgba(255, 42, 63, 0.15) 0%, rgba(229, 192, 92, 0.05) 100%); transform: translateY(-1px); box-shadow: 0 5px 15px rgba(255, 42, 63, 0.2); }
+        .match-twitch-card { border-color: rgba(145, 70, 255, 0.45) !important; box-shadow: 0 0 14px rgba(145, 70, 255, 0.18); }
+        .match-twitch-card:hover { border-color: #9146ff !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; }
+        .match-stream-active { border-color: #ff2a3f !important; box-shadow: 0 0 18px rgba(255, 42, 63, 0.35) !important; }
         
         .team-row + .team-row { border-top: 1px solid rgba(255, 255, 255, 0.07); }
         
@@ -118,7 +82,6 @@
         @keyframes goldAura { 0%, 100% { box-shadow: 0 0 18px rgba(229, 192, 92, 0.22), inset 0 0 18px rgba(229, 192, 92, 0.1); } 50% { box-shadow: 0 0 36px rgba(229, 192, 92, 0.48), inset 0 0 30px rgba(229, 192, 92, 0.22); } }
         .champion-altar { animation: goldAura 3s infinite ease-in-out; background: radial-gradient(circle at 50% 25%, rgba(229, 192, 92, 0.26) 0%, rgba(11, 13, 20, 0.96) 75%); }
         .gold-metallic-text { background: linear-gradient(to right, #fff6d6 0%, #e5c05c 45%, #b8860b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
         @keyframes vsPulse { 0%, 100% { box-shadow: 0 0 20px rgba(255, 42, 63, 0.6); transform: scale(1); } 50% { box-shadow: 0 0 35px rgba(255, 42, 63, 0.95); transform: scale(1.07); } }
         .vs-neon-badge { animation: vsPulse 2s infinite ease-in-out; }
 
@@ -185,6 +148,7 @@
                     🔒 24/24
                 </span>
             </div>
+
         </div>
 
         <!-- CRONÓMETRO OFICIAL DE TOLERANCIA 10 MINUTOS -->
@@ -230,7 +194,7 @@
             </div>
         </div>
 
-        <!-- TABLERO DE LAS 5 FASES -->
+        <!-- TABLERO DE LAS 5 FASES (CON PLACEHOLDERS PARA QUE NO SE VEA VACÍO MIENTRAS CARGA) -->
         <div class="board-scroll overflow-x-auto pb-4 pt-3">
             <div class="grid grid-cols-12 gap-3.5 min-w-[1320px] items-stretch">
 
@@ -247,8 +211,20 @@
                                 <span class="bg-black/60 px-2 py-0.5 rounded text-red-200">BO3</span>
                             </div>
                         </div>
-                        <div id="contenedor-fase1" class="grid grid-cols-2 gap-2.5"></div>
+
+                        <div id="contenedor-fase1" class="grid grid-cols-2 gap-2.5">
+                            <!-- Placeholder inicial Grupo A -->
+                            <div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">
+                                <div class="bg-gradient-to-r from-red-800 to-red-600 py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase">
+                                    <span>GRUPO A</span><span class="text-[8px] opacity-85">BO3</span>
+                                </div>
+                                <div class="p-1.5 space-y-1.5">
+                                    <div class="match-pair cursor-pointer"><span class="vs-pill-inline">VS</span><div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="text-[11px] font-bold text-gray-400">Cargando...</span></div><div class="team-row flex items-center gap-2 px-2 py-1.5 pr-8"><span class="text-[11px] font-bold text-gray-400">Cargando...</span></div></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="mt-3 bg-red-950/30 border border-red-500/30 rounded py-1.5 px-2 text-center">
                         <span class="text-[9px] font-black uppercase text-red-200 tracking-wider">12 AVANZAN • 12 ELIMINADOS</span>
                     </div>
@@ -267,8 +243,17 @@
                                 <span class="bg-black/60 px-1.5 py-0.5 rounded text-blue-200">BO3</span>
                             </div>
                         </div>
-                        <div id="contenedor-fase2" class="space-y-2.5"></div>
+                        <div id="contenedor-fase2" class="space-y-2.5">
+                             <!-- Placeholder inicial Grupo E -->
+                             <div class="bg-[#080a10] border border-white/10 rounded-md overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-800 to-blue-600 py-1 px-2.5 flex justify-between items-center font-black text-[9px] uppercase">
+                                    <span>GRUPO E</span><span class="text-[8px] opacity-85">BO3</span>
+                                </div>
+                                <div class="p-1.5 space-y-1.5"><div class="match-pair cursor-pointer"><span class="vs-pill-inline">VS</span><div class="team-row flex items-center gap-2 px-2 py-1.5"><span class="text-[11px] font-bold text-gray-400">Cargando...</span></div><div class="team-row flex items-center gap-2 px-2 py-1.5"><span class="text-[11px] font-bold text-gray-400">Cargando...</span></div></div></div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="mt-3 bg-blue-950/30 border border-blue-500/30 rounded py-1.5 px-2 text-center">
                         <span class="text-[9px] font-black uppercase text-blue-200">AVANZAN 3 POR GRUPO (6)</span>
                     </div>
@@ -281,11 +266,21 @@
                             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-purple-400 block">LUNES 12 DE OCTUBRE</span>
                             <h2 class="text-sm md:text-base font-black uppercase text-white tracking-wider">FASE 3 • CLASIFICADOS</h2>
                         </div>
+
                         <div class="bg-gradient-to-r from-indigo-900/85 via-purple-800/85 to-indigo-900/85 border border-purple-400/40 rounded p-1.5 text-center mb-3">
                             <span class="text-[9px] font-black uppercase text-white block">RANKING X DIF. DE RONDAS</span>
                         </div>
-                        <div id="contenedor-fase3" class="space-y-2 my-2"></div>
+
+                        <div id="contenedor-fase3" class="space-y-2 my-2">
+                            <div class="flex items-center gap-2.5 p-2 rounded bg-emerald-950/20 border border-emerald-500/35"><span class="w-6 h-6 rounded text-xs font-black bg-gradient-to-b from-emerald-500 to-emerald-700 text-white flex items-center justify-center shadow">1</span><span class="text-xs font-bold text-white">Clasificado #1</span></div>
+                            <div class="flex items-center gap-2.5 p-2 rounded bg-emerald-950/20 border border-emerald-500/35"><span class="w-6 h-6 rounded text-xs font-black bg-gradient-to-b from-emerald-500 to-emerald-700 text-white flex items-center justify-center shadow">2</span><span class="text-xs font-bold text-white">Clasificado #2</span></div>
+                            <div class="flex items-center gap-2.5 p-2 rounded bg-emerald-950/20 border border-emerald-500/35"><span class="w-6 h-6 rounded text-xs font-black bg-gradient-to-b from-emerald-500 to-emerald-700 text-white flex items-center justify-center shadow">3</span><span class="text-xs font-bold text-white">Clasificado #3</span></div>
+                            <div class="flex items-center gap-2.5 p-2 rounded bg-emerald-950/20 border border-emerald-500/35"><span class="w-6 h-6 rounded text-xs font-black bg-gradient-to-b from-emerald-500 to-emerald-700 text-white flex items-center justify-center shadow">4</span><span class="text-xs font-bold text-white">Clasificado #4</span></div>
+                            <div class="flex items-center justify-between p-2 rounded bg-red-950/20 border border-red-500/35"><div class="flex items-center gap-2.5"><span class="w-6 h-6 rounded text-xs font-black bg-gradient-to-b from-red-600 to-red-800 text-white flex items-center justify-center">5</span><span class="text-xs font-bold text-gray-400">Puesto #5</span></div><span class="text-[8px] font-black text-red-400">ELIM</span></div>
+                            <div class="flex items-center justify-between p-2 rounded bg-red-950/20 border border-red-500/35"><div class="flex items-center gap-2.5"><span class="w-6 h-6 rounded text-xs font-black bg-gradient-to-b from-red-600 to-red-800 text-white flex items-center justify-center">6</span><span class="text-xs font-bold text-gray-400">Puesto #6</span></div><span class="text-[8px] font-black text-red-400">ELIM</span></div>
+                        </div>
                     </div>
+
                     <div class="mt-3 bg-red-950/30 border border-red-500/30 rounded py-1.5 px-2 text-center">
                         <span class="text-[9px] font-black uppercase text-red-200">2 ELIMINADOS X RONDAS</span>
                     </div>
@@ -296,19 +291,40 @@
                     <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-everGold via-amber-400 to-everGold text-black text-[9px] font-black uppercase tracking-[0.18em] px-3 py-0.5 rounded-full shadow-[0_0_15px_rgba(229,192,92,0.85)] border border-white/30 flex items-center gap-1.5 whitespace-nowrap">
                         <span class="w-1.5 h-1.5 rounded-full bg-black animate-ping"></span> 🔥 SEMIFINALES EN VIVO
                     </div>
+
                     <div class="mt-1">
                         <div class="text-center mb-2.5">
                             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-everGold block">LUNES 12 DE OCTUBRE</span>
                             <h2 class="text-base font-black uppercase text-white tracking-wider">SEMIFINALES</h2>
                         </div>
+
                         <div class="bg-gradient-to-r from-amber-700/85 via-yellow-600/85 to-amber-700/85 border border-everGold/50 rounded p-1.5 text-center mb-4">
                             <div class="flex justify-center items-center gap-1.5 text-[9px] font-black uppercase">
                                 <span>2 GRUPOS DE 2</span>
                                 <span class="bg-black/60 px-1.5 py-0.5 rounded text-everGold">BO5</span>
                             </div>
                         </div>
-                        <div id="contenedor-fase4" class="space-y-4"></div>
+
+                        <div id="contenedor-fase4" class="space-y-4">
+                            <div class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5">
+                                <div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 1 • BO5</div>
+                                <div class="match-pair text-xs font-bold text-white cursor-pointer">
+                                    <span class="vs-pill-inline">VS</span>
+                                    <div class="team-row px-3 py-2.5 text-gray-400">Cargando...</div>
+                                    <div class="team-row px-3 py-2.5 text-gray-400">Cargando...</div>
+                                </div>
+                            </div>
+                            <div class="bg-[#080a10] border border-everGold/40 rounded-lg p-2.5">
+                                <div class="text-center text-[9px] font-black uppercase text-everGold mb-2 pb-1 border-b border-white/10">SEMIFINAL 2 • BO5</div>
+                                <div class="match-pair text-xs font-bold text-white cursor-pointer">
+                                    <span class="vs-pill-inline">VS</span>
+                                    <div class="team-row px-3 py-2.5 text-gray-400">Cargando...</div>
+                                    <div class="team-row px-3 py-2.5 text-gray-400">Cargando...</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="mt-3 bg-amber-950/30 border border-everGold/30 rounded py-1.5 px-2 text-center">
                         <span class="text-[9px] font-black uppercase text-everGold">PASA 1 POR GRUPO</span>
                     </div>
@@ -321,11 +337,23 @@
                             <span class="text-[9px] font-black uppercase tracking-[0.2em] text-everGold block">LUNES 19 DE OCTUBRE</span>
                             <h2 class="text-base font-black uppercase text-vctRed tracking-wider">GRAN FINAL</h2>
                         </div>
+
                         <div class="bg-gradient-to-r from-red-800 via-vctRed to-red-800 border border-red-400/40 rounded py-1.5 text-center font-black text-[10px] uppercase mb-4 shadow-[0_0_15px_rgba(255,42,63,0.3)]">
                             BO5 • DUELO FINAL
                         </div>
-                        <div id="contenedor-fase5-final"></div>
+
+                        <div id="contenedor-fase5-final">
+                            <div class="bg-[#080a10] border border-white/20 rounded-lg p-2.5">
+                                <div class="text-center text-[9px] font-black uppercase text-vctRed mb-2 pb-1 border-b border-white/10">POR EL TÍTULO</div>
+                                <div class="match-pair text-xs font-bold text-white cursor-pointer">
+                                    <span class="vs-pill-inline">VS</span>
+                                    <div class="team-row px-3 py-3 text-gray-400">Ganador SF1</div>
+                                    <div class="team-row px-3 py-3 text-gray-400">Ganador SF2</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div id="contenedor-fase5-campeon" class="champion-altar border border-everGold/60 rounded-xl p-4 text-center mt-4">
                         <div class="text-4xl mb-1 drop-shadow-[0_0_18px_rgba(229,192,92,0.8)]">🏆</div>
                         <span class="text-[8px] text-everGold font-black uppercase tracking-[0.3em] block">COPA 5EVERMAD</span>
@@ -1081,9 +1109,12 @@
         }
 
         async function cargarEquiposIniciales() {
-            // Aplicar de inmediato un estado local seguro
+            // Aplicar de inmediato el esqueleto visual
             aplicarDatosDeBracketEnPantalla(estadoTorneoActual, false);
-            if (equiposCargados.length > 0) { inyectarLogosEnDOM(); }
+            
+            if (equiposCargados.length > 0) { 
+                inyectarLogosEnDOM(); 
+            }
             
             try {
                 const res = await fetch(API_URL + '/equipos');
